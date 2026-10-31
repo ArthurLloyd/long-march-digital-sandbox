@@ -1,5 +1,9 @@
 import { Pause, Play, SkipBack, SkipForward } from 'lucide-react';
 import type { HistoryEvent } from '../../shared/contracts';
+import {
+  EmberCrest,
+  PlaybackDial,
+} from '../../components/exhibition/ExhibitionOrnaments';
 
 interface TimelineProps {
   events: readonly HistoryEvent[];
@@ -25,6 +29,7 @@ export function Timeline({
   const index = events.findIndex((event) => event.id === activeEventId);
   return (
     <section className="timeline" aria-label="历史时间轴">
+      <EmberCrest className="timeline-crest" />
       <div className="playback-controls">
         <button
           className="icon-button"
@@ -34,14 +39,17 @@ export function Timeline({
         >
           <SkipBack size={18} />
         </button>
-        <button
-          className="play-button"
-          aria-label={playing ? '暂停历史回放' : '播放历史回放'}
-          disabled={events.length < 2}
-          onClick={onToggle}
-        >
-          {playing ? <Pause size={19} /> : <Play size={19} />}
-        </button>
+        <span className="play-dial">
+          <PlaybackDial />
+          <button
+            className="play-button"
+            aria-label={playing ? '暂停历史回放' : '播放历史回放'}
+            disabled={events.length < 2}
+            onClick={onToggle}
+          >
+            {playing ? <Pause size={19} /> : <Play size={19} />}
+          </button>
+        </span>
         <button
           className="icon-button"
           aria-label="下一个历史节点"
@@ -85,7 +93,10 @@ export function Timeline({
         )}
       </div>
       <div className="timeline-current">
-        <span>当前事件</span>
+        <span>
+          {events.find((event) => event.id === activeEventId)?.dateText ??
+            '当前事件'}
+        </span>
         <strong>
           {events.find((event) => event.id === activeEventId)?.title ??
             '尚未开放'}

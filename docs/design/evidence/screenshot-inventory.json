@@ -1,0 +1,626 @@
+[
+  {
+    "file": "4b70eb9/phase2-1366-loading.jpg",
+    "commit": "4b70eb9",
+    "width": 1366,
+    "height": 768,
+    "bytes": 74806,
+    "sha256": "6a9de3aa533c9bb0617fb12e63296016ba413db1e27137797f0ae3efa9d1f1ec"
+  },
+  {
+    "file": "4b70eb9/phase2-1440-loading.jpg",
+    "commit": "4b70eb9",
+    "width": 1440,
+    "height": 900,
+    "bytes": 81024,
+    "sha256": "b61b32ac6d0b3a2231e122b667713206d589ed8783093cfc2df69e530d56711b"
+  },
+  {
+    "file": "4b70eb9/phase2-1920-loading.jpg",
+    "commit": "4b70eb9",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 112668,
+    "sha256": "60fb30f80dbb1d94b7292280f23497cc4d2cb11ef63c513d5cbd652318ea7a0a"
+  },
+  {
+    "file": "4b70eb9/phase2-390-about.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 40497,
+    "sha256": "c87909b878c55f84ad1b0b3098cfe830b830c2ae15c6951b36fdb41c11d79206"
+  },
+  {
+    "file": "4b70eb9/phase2-390-chapters-drawer.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 20778,
+    "sha256": "acdfee2637bcfa16a5bde690caf877761fa4d085d7cf53f6ee3be367ea5c46b7"
+  },
+  {
+    "file": "4b70eb9/phase2-390-exploring.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 47834,
+    "sha256": "5d52a8433aa24b2b7e1f831c6c6c14d844d0705aa52a53c0304710cb0b236df4"
+  },
+  {
+    "file": "4b70eb9/phase2-390-history-drawer.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 26347,
+    "sha256": "c688f247c5779abc8193d663b841c23e06f350454bb4001a89b4d0ee073ad33c"
+  },
+  {
+    "file": "4b70eb9/phase2-390-landing-sources.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 31453,
+    "sha256": "e542e159cdc41c4609e78e8ba0bbd6b6104dfd7576e3402de543f8fd3f9c38f3"
+  },
+  {
+    "file": "4b70eb9/phase2-390-landing.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 45471,
+    "sha256": "ad41563b6e8e5c82d63541ce47adbf743a71ff8794fef4398dfee25115ae4566"
+  },
+  {
+    "file": "4b70eb9/phase2-390-return.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 44406,
+    "sha256": "16517d79a07a15084e510f27518009c4078616df5e47e04ce97aa6a3bdddeb62"
+  },
+  {
+    "file": "4b70eb9/phase2-390-sources-scrolled.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 33526,
+    "sha256": "7d15359a1cfdc069df1579d78471a605c2df004f538cc6718bfe1723ce5f3891"
+  },
+  {
+    "file": "4b70eb9/phase2-390-transition.jpg",
+    "commit": "4b70eb9",
+    "width": 390,
+    "height": 844,
+    "bytes": 20062,
+    "sha256": "458ae5ffb9a3cc03a1b36afbd47e1b4af3866b1efe57aa238d94c7a8417d895b"
+  },
+  {
+    "file": "4b70eb9/phase2-430-about.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 44137,
+    "sha256": "b32bc7528a1f7ba24ae5ee34f34e907b834c27c474153bedb625afc7d5799689"
+  },
+  {
+    "file": "4b70eb9/phase2-430-exploring.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 53717,
+    "sha256": "bb7ac4a727a1ab9a36009f37c8266584adc2029d9cfc729ae911e08df1b848aa"
+  },
+  {
+    "file": "4b70eb9/phase2-430-history-drawer.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 26360,
+    "sha256": "6d0876da05e9c645f12e289de70ffc9b8ab34bfeab3b60fde1ce72bfb6cc4252"
+  },
+  {
+    "file": "4b70eb9/phase2-430-landing-sources.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 34416,
+    "sha256": "890d2666e1fbbc0c020da036d3486376ac2f4cf24a58306d18d1069263b44d8f"
+  },
+  {
+    "file": "4b70eb9/phase2-430-landing.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 50279,
+    "sha256": "47a2039091a1c4a885edcb59234eb88f1d7ac61ec55397f2d60665dd905ab886"
+  },
+  {
+    "file": "4b70eb9/phase2-430-transition.jpg",
+    "commit": "4b70eb9",
+    "width": 430,
+    "height": 932,
+    "bytes": 22062,
+    "sha256": "8b6d922e5b9ca98b7bf5e9b84329709ed6ca70d1b58768f55734b4fc37498a9c"
+  },
+  {
+    "file": "aee3dee/phase2-1366-exploring.jpg",
+    "commit": "aee3dee",
+    "width": 1366,
+    "height": 768,
+    "bytes": 107813,
+    "sha256": "87346f814efe1beca84d9e176c7db71b2bce26e7fd28744d8ab082262b9f7df3"
+  },
+  {
+    "file": "aee3dee/phase2-1366-history-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1366,
+    "height": 768,
+    "bytes": 107892,
+    "sha256": "71fc9b0e046986a551813a3f9b6e7695b0edd3464e55575ca567f6da7d8f7fdb"
+  },
+  {
+    "file": "aee3dee/phase2-1366-landing-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1366,
+    "height": 768,
+    "bytes": 136308,
+    "sha256": "f64f119644a78f39123c6e87c4451577708a4c0d1682f4af509cb161db582a57"
+  },
+  {
+    "file": "aee3dee/phase2-1366-reduced-motion.jpg",
+    "commit": "aee3dee",
+    "width": 1366,
+    "height": 768,
+    "bytes": 53029,
+    "sha256": "8fb5ba56a0d088b02f5d3a29370e9563e3175695b0b1670f6b2726f6d1cb960d"
+  },
+  {
+    "file": "aee3dee/phase2-1366-transition.jpg",
+    "commit": "aee3dee",
+    "width": 1366,
+    "height": 768,
+    "bytes": 52009,
+    "sha256": "b44df4e170fd4aca50130c41c1261410f3198fb4af995cb85fed13929b000988"
+  },
+  {
+    "file": "aee3dee/phase2-1440-chapters-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1440,
+    "height": 900,
+    "bytes": 124564,
+    "sha256": "455c6667aae1d177c95167be6dc7019704e4bdb699635eb8c0f3851b6ea82e8f"
+  },
+  {
+    "file": "aee3dee/phase2-1440-exploring.jpg",
+    "commit": "aee3dee",
+    "width": 1440,
+    "height": 900,
+    "bytes": 123055,
+    "sha256": "3e62a01c608a966ed7203a0faa42c3b298748e80603aeb5ca33cf0056de7b642"
+  },
+  {
+    "file": "aee3dee/phase2-1440-landing-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1440,
+    "height": 900,
+    "bytes": 157643,
+    "sha256": "8f36ce203aefd94db87657d5a91640da26e8e6a6400c6b780186ed67549fbcd5"
+  },
+  {
+    "file": "aee3dee/phase2-1440-reduced-motion.jpg",
+    "commit": "aee3dee",
+    "width": 1440,
+    "height": 900,
+    "bytes": 56820,
+    "sha256": "d4ee630136d0805ff60723d4b8b07310e9745ab4e537e8cff342102c28b0e2d2"
+  },
+  {
+    "file": "aee3dee/phase2-1440-transition.jpg",
+    "commit": "aee3dee",
+    "width": 1440,
+    "height": 900,
+    "bytes": 71095,
+    "sha256": "4746d04d906bfb25b334c600dc89f5dd3a19d4d6eb418bc838c8404ff6a9e899"
+  },
+  {
+    "file": "aee3dee/phase2-1920-about-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 214986,
+    "sha256": "e1e536aeb1b9ff722cfbc645f86b9db370622934e550d6374901cca451c5346c"
+  },
+  {
+    "file": "aee3dee/phase2-1920-exploring.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 170791,
+    "sha256": "cadedd683de80b94ed0aed2e0818ee947487d86434273915efa64ec8c5df4fff"
+  },
+  {
+    "file": "aee3dee/phase2-1920-history-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 171755,
+    "sha256": "2e25140597b46bc7b9a0eafdff895939ed117de4d70562096f1c4117c1a0a320"
+  },
+  {
+    "file": "aee3dee/phase2-1920-landing-restored.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 213883,
+    "sha256": "6ded543cca47447e330fbbff17141b5dae8b0195418791edcaf7a9d925735966"
+  },
+  {
+    "file": "aee3dee/phase2-1920-landing.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 215691,
+    "sha256": "0327722e430fcb966b10fd1d589b8825c535329872c8a4811e5eacd8d81b4b7e"
+  },
+  {
+    "file": "aee3dee/phase2-1920-reduced-motion.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 73974,
+    "sha256": "63b5e938359b2a1e2977d0d709c2c81f0f14763fd6d4fa82963aa5044564ff8d"
+  },
+  {
+    "file": "aee3dee/phase2-1920-transition.jpg",
+    "commit": "aee3dee",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 88514,
+    "sha256": "f2c26f122be6f0ac254c5d114e690fffece85e007ce4c65b7b501ff585549ba0"
+  },
+  {
+    "file": "de4f81f/diagnostic-viewport-api-cropped.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 933,
+    "bytes": 106663,
+    "sha256": "ef7e5f5026b2f9a6f0ac6d75a086d4bdf5efc1ff75d68ca57c8a2122145fc2ef"
+  },
+  {
+    "file": "de4f81f/phase2-1366-about.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 68211,
+    "sha256": "c0e1856bee3180807d9e029d35b351997fd317f2befeb85b2650287dc8b47153"
+  },
+  {
+    "file": "de4f81f/phase2-1366-chapters-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 40048,
+    "sha256": "aeb0190d5195af8e7324ffa2ea4054cde503df0570593555a6953067606635bd"
+  },
+  {
+    "file": "de4f81f/phase2-1366-exploring-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 52644,
+    "sha256": "1296f52ed63e7e3477e0366890404d0a9fbfe0f4b2474c35e8931e6ef47a9f9b"
+  },
+  {
+    "file": "de4f81f/phase2-1366-history-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 45529,
+    "sha256": "c77fece870d39234f3cb95159e49d596a0f1b56474cdf3daea7eaa4c96ab2967"
+  },
+  {
+    "file": "de4f81f/phase2-1366-landing-focus.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 137822,
+    "sha256": "099622b5cbd8f8b367e82efeeb0dafa13f0b61b86239417f8fadc4d33cf99207"
+  },
+  {
+    "file": "de4f81f/phase2-1366-landing-hover.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 136394,
+    "sha256": "7db2e27ac5fa6131c10c1b8ad95ab033f125ebe92532652f4e0379877531d368"
+  },
+  {
+    "file": "de4f81f/phase2-1366-landing-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 56938,
+    "sha256": "66ea9be6c1d9fbaeda5a45929fc1719dd5b83c604e47e0bed943a208d6d74c96"
+  },
+  {
+    "file": "de4f81f/phase2-1366-landing.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 136302,
+    "sha256": "ac2d6c9d72a64f00d47cd86775c049aad3334a5ced422c452cf0f2bea8b0778c"
+  },
+  {
+    "file": "de4f81f/phase2-1366-sources-scrolled.jpg",
+    "commit": "de4f81f",
+    "width": 1366,
+    "height": 768,
+    "bytes": 59447,
+    "sha256": "34e83c77aeabeb9591f06d43634b7186b5386141fe3606d0a80a7a9ffe612554"
+  },
+  {
+    "file": "de4f81f/phase2-1440-about.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 73339,
+    "sha256": "f9fee702d60ebd0cd4381193a12d02b51f16ad516abde9750c858a159aabeb4b"
+  },
+  {
+    "file": "de4f81f/phase2-1440-chapters-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 43339,
+    "sha256": "f92801084ce804a0ff84261e8ecfd74987e4ecc0a382dab8367a906b9aa28e1a"
+  },
+  {
+    "file": "de4f81f/phase2-1440-exploring-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 62075,
+    "sha256": "9eb9bab713ecbb7878c3e46303099490e21d533856f482e05e2b8facc4cb1ad9"
+  },
+  {
+    "file": "de4f81f/phase2-1440-history-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 49306,
+    "sha256": "c3cdc38b65db71b7a7d1be2b46ef0a5713e70c63e98a49200acfe0f5f8216a6f"
+  },
+  {
+    "file": "de4f81f/phase2-1440-landing-focus.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 157796,
+    "sha256": "2fb8c6a3f6fe02fcf43b62f32b3390456e6a0e1b1c649d9f4334e11c923eb401"
+  },
+  {
+    "file": "de4f81f/phase2-1440-landing-hover.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 157003,
+    "sha256": "d92dc1507b86de0082b40095cccc97983f864fb17efbe431460265f3063a38b5"
+  },
+  {
+    "file": "de4f81f/phase2-1440-landing-initial.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 155940,
+    "sha256": "791ec5a8bc44d01a0d1ee831cd8e2202359f767fd1cda192695b07c23af81413"
+  },
+  {
+    "file": "de4f81f/phase2-1440-landing-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 70245,
+    "sha256": "cd2f8e2a73609b9134d2c698369727473d954796785212e80a1faae41ac6658f"
+  },
+  {
+    "file": "de4f81f/phase2-1440-landing.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 159793,
+    "sha256": "06ebac16637928e3d11e3de694a7cb74b8b7061af8fe40e1eb8c1e801975dcb4"
+  },
+  {
+    "file": "de4f81f/phase2-1440-return.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 156047,
+    "sha256": "648e80c836467be6f268d2fc6e1d2831d16560468452a0115dbceb31726f1f68"
+  },
+  {
+    "file": "de4f81f/phase2-1440-sources-scrolled.jpg",
+    "commit": "de4f81f",
+    "width": 1440,
+    "height": 900,
+    "bytes": 66705,
+    "sha256": "8e6c2628a4b27aa98389648931f6755721e1282f7fd6e66db0a3a280219a63f6"
+  },
+  {
+    "file": "de4f81f/phase2-1920-about.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 92998,
+    "sha256": "4f4d068ae4be93e743909be5a1228c0e26839727be8a8c850505c936d957db13"
+  },
+  {
+    "file": "de4f81f/phase2-1920-chapters-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 59123,
+    "sha256": "806be63af377568a601ca245b571e6c87e2765dd938c90f2674109d3e9ec57fb"
+  },
+  {
+    "file": "de4f81f/phase2-1920-exploring-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 84091,
+    "sha256": "fe013639bdc9ab60c7570aa910a5be4437c473f12a70c5eb36c2216c73a9ff60"
+  },
+  {
+    "file": "de4f81f/phase2-1920-guide.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 78631,
+    "sha256": "e98daeb409f0bbf3c216050be27a14b0cf526ec6d7259e7265a45a29272fe018"
+  },
+  {
+    "file": "de4f81f/phase2-1920-history-drawer.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 66746,
+    "sha256": "3676d6df1523435063207836a32e4cae5194656b9b2218f68d28eb43cd07b08a"
+  },
+  {
+    "file": "de4f81f/phase2-1920-landing-focus.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 215932,
+    "sha256": "c90e4cc74ba2479e82debdde8ef3edde20e001e45a3373d8cdd6cd696a911f92"
+  },
+  {
+    "file": "de4f81f/phase2-1920-landing-hover.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 214728,
+    "sha256": "1e9ec85f82ec32361c76ebedeb86a49821edb75fa4904519747288b4efcd8677"
+  },
+  {
+    "file": "de4f81f/phase2-1920-landing-sources.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 92867,
+    "sha256": "6e094aa9407682ce072cf1d52f4886394fac8b95088b1ad22c669266b5aa3bae"
+  },
+  {
+    "file": "de4f81f/phase2-1920-landing.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 214705,
+    "sha256": "4bf382b870cdbf003300f48611957fa0e31b93a5fa9aa85d730bbc4dada19fa8"
+  },
+  {
+    "file": "de4f81f/phase2-1920-return.jpg",
+    "commit": "de4f81f",
+    "width": 1920,
+    "height": 1080,
+    "bytes": 212297,
+    "sha256": "c8f52160613834ff14d5a91a09c4ecccd682a1b1dce187252e9f89946a9e9f24"
+  },
+  {
+    "file": "f7f1974/phase2-1366-exploring.jpg",
+    "commit": "f7f1974",
+    "width": 1366,
+    "height": 768,
+    "bytes": 108134,
+    "sha256": "66f210bbb5997e0d1be5bc12e8f5619aa84c80511b67c9c22f1e24816665bf80"
+  },
+  {
+    "file": "f7f1974/phase2-1366-landing.jpg",
+    "commit": "f7f1974",
+    "width": 1366,
+    "height": 768,
+    "bytes": 136355,
+    "sha256": "46fca91ca4a24cd4f12bc0a2fab9882126ff336648d62e29078fe19157480567"
+  },
+  {
+    "file": "f7f1974/phase2-1366-return.jpg",
+    "commit": "f7f1974",
+    "width": 1366,
+    "height": 768,
+    "bytes": 134232,
+    "sha256": "c38970479b9a547c5b7d124e6d44a48d540ae5d28aca9f5ece94ec059967cfbd"
+  },
+  {
+    "file": "f7f1974/phase2-390-landing.jpg",
+    "commit": "f7f1974",
+    "width": 390,
+    "height": 844,
+    "bytes": 37710,
+    "sha256": "546739265e75da5d8683d9ad4b67378e57d2b7f8ba94aa4ff0dd2ee734f22945"
+  },
+  {
+    "file": "f7f1974/phase2-390-restored.jpg",
+    "commit": "f7f1974",
+    "width": 390,
+    "height": 844,
+    "bytes": 38326,
+    "sha256": "5ec9cb18bc5e34e974b25a7b6068ad3bceb1094788aa60768696e664a9df72e6"
+  },
+  {
+    "file": "f7f1974/phase2-390-touch-attempt.jpg",
+    "commit": "f7f1974",
+    "width": 390,
+    "height": 844,
+    "bytes": 33262,
+    "sha256": "456f8a497cec37170b639dfe1ab674a5c158dbd23e704fddc9cfc70f47612173"
+  },
+  {
+    "file": "f7f1974/phase2-430-chapters-drawer.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 22348,
+    "sha256": "3bd0099312579874a0cf7b6c41f732a7d4ac93fd85d4567969b5f6e9d78f5b6c"
+  },
+  {
+    "file": "f7f1974/phase2-430-exploring.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 53843,
+    "sha256": "5ea03fdc5f5ec2c20de9121fe47256bc20e85628e0f479ed4843f441421c20f0"
+  },
+  {
+    "file": "f7f1974/phase2-430-landing.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 41626,
+    "sha256": "d3ad9bcb186c81ef12fcb2a04c20b3489799f63757bde55a9c67bf393f7bdbdb"
+  },
+  {
+    "file": "f7f1974/phase2-430-restored.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 41285,
+    "sha256": "ecdd98cd88508f028c60eb8ff58e0b6dcf2fc3f62e0cc601027ae551c9d65865"
+  },
+  {
+    "file": "f7f1974/phase2-430-return.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 39377,
+    "sha256": "6cd091fada23ba12765b4dd68c3964e1944b4811d30baa4f81407a9238a08d54"
+  },
+  {
+    "file": "f7f1974/phase2-430-sources-scrolled.jpg",
+    "commit": "f7f1974",
+    "width": 430,
+    "height": 932,
+    "bytes": 34786,
+    "sha256": "7a32872b78aa9ef53b4b7496ceaa02eba1be37182395c9a54ff6696e7fbfd5c0"
+  }
+]

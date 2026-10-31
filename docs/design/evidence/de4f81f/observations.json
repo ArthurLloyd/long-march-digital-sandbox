@@ -1,0 +1,463 @@
+{
+  "commit": "de4f81f090a957a1ff3fcab0dc93d1d423b765e6",
+  "capture": "Chrome Browser Use fullPage:true; desktop stable document equals viewport; transition double height and diagnostic viewport capture are excluded from viewport pass",
+  "states": [
+    {
+      "name": "phase2-1920-about.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "关于展馆"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1920-landing-restored.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920,
+      "originalScreenshotAvailable": false
+    },
+    {
+      "name": "phase2-1920-transition.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "立即进入"
+      },
+      "bodyOverflow": "",
+      "docHeight": 2160,
+      "docWidth": 1910,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920,
+      "originalScreenshotAvailable": false
+    },
+    {
+      "name": "phase2-1920-exploring.jpg",
+      "active": {
+        "tag": "MAIN",
+        "text": "山河之间，等待历史的回响。历史数据正在核验，正式路线暂未开放展示。场景预留区 · 抽象几何示意预览已就绪长征历史总览开发预览历史专题专题核验中事件资料了解核验进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920,
+      "originalScreenshotAvailable": false
+    },
+    {
+      "name": "phase2-1920-chapters-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "历史专题"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1920-history-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "事件资料"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1920-exploring-sources.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1920-guide.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "使用说明"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1920-return.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 1080,
+      "docWidth": 1920,
+      "dpr": 1,
+      "height": 1080,
+      "scale": 1,
+      "width": 1920
+    },
+    {
+      "name": "phase2-1440-landing-initial.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-landing-hover.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-landing-focus.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-landing.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-landing-sources.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-about.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "关于展馆"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-exploring.jpg",
+      "active": {
+        "tag": "MAIN",
+        "text": "山河之间，等待历史的回响。历史数据正在核验，正式路线暂未开放展示。场景预留区 · 抽象几何示意预览已就绪长征历史总览开发预览历史专题专题核验中事件资料了解核验进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440,
+      "originalScreenshotAvailable": false
+    },
+    {
+      "name": "phase2-1440-chapters-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "历史专题"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-history-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "事件资料"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-exploring-sources.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-sources-scrolled.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1440-return.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 900,
+      "docWidth": 1440,
+      "dpr": 1,
+      "height": 900,
+      "scale": 1,
+      "width": 1440
+    },
+    {
+      "name": "phase2-1366-landing.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-landing-hover.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-landing-focus.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-landing-sources.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-sources-scrolled.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-about.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "关于展馆"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-exploring.jpg",
+      "active": {
+        "tag": "MAIN",
+        "text": "山河之间，等待历史的回响。历史数据正在核验，正式路线暂未开放展示。场景预留区 · 抽象几何示意预览已就绪长征历史总览开发预览历史专题专题核验中事件资料了解核验进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366,
+      "originalScreenshotAvailable": false
+    },
+    {
+      "name": "phase2-1366-chapters-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "历史专题"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-history-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "事件资料"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-exploring-sources.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "dialog": null,
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    }
+  ],
+  "storageNote": "截图存储函数捕获了旧目录；已按本轮采集顺序与代码检查点纠正目录。以下标记的首轮截图曾被后续同名截图覆盖，原DOM观测保留，但不作为修复前本地截图。1920首页及hover/focus从原始字节变量恢复。"
+}

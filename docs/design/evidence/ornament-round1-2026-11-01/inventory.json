@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-01",
+  "baseCommit": "a544ba402f2d00c38d932908b41f31ab2c9c2557",
+  "workingTree": "Uncommitted ornament/manual-entry changes; Ma Shan Zheng was active.",
+  "status": "Superseded font; not final calligraphy acceptance.",
+  "notes": [
+    "Browser fullPage captures, no image editing.",
+    "1366-landing-restored.jpg captured during the return animation and is not a stable-state acceptance image.",
+    "Confirmation observed still entering 26.33 seconds after its capture, before manual confirmation.",
+    "No final Zhi Mang Xing browser images: connection timed out after replacement."
+  ],
+  "files": [
+    {
+      "file": "1366-confirmation.jpg",
+      "pixels": [1366, 768],
+      "sha256": "c843388e586b8c9630c4c2708931fa1a858e32b179403c09d3fa07a5d7ea460f"
+    },
+    {
+      "file": "1366-exploring.jpg",
+      "pixels": [1366, 768],
+      "sha256": "912e9bb8427a028b24f9890d53e9688335a0fd2b73808c55ef8249c990f85962"
+    },
+    {
+      "file": "1366-landing-restored.jpg",
+      "pixels": [1366, 768],
+      "sha256": "549c575e6b876b42a3bf6a1cea4d96f9a486ef9d8241151e3cc2499cb41f5c10"
+    },
+    {
+      "file": "1440-chapters.jpg",
+      "pixels": [1440, 900],
+      "sha256": "9c6c1da5bbe6aa539988448e9ec93ef80fa409675fff8820021e7bcb41812959"
+    },
+    {
+      "file": "1440-entry-confirmation.jpg",
+      "pixels": [1440, 900],
+      "sha256": "c1d426a83ea3c733447d5b8d4fc18bca0ab65f96db687e270dc3532e51e9fc9c"
+    },
+    {
+      "file": "1440-exploring.jpg",
+      "pixels": [1440, 900],
+      "sha256": "fefb07ed77b47ecd8be65d1eb99d3ed12e456ddf2f864a3479b883ccf418564d"
+    },
+    {
+      "file": "1440-landing.jpg",
+      "pixels": [1440, 900],
+      "sha256": "e605ea1db975e17e69116556520596ddd07a35bcbda75bdb25f196ca82456f46"
+    },
+    {
+      "file": "1920-confirmation.jpg",
+      "pixels": [1920, 1080],
+      "sha256": "40f3b3964f32d1528fd857dcd474c33f71fbc3594fe8c31d19e4132da942eba3"
+    },
+    {
+      "file": "1920-exploring.jpg",
+      "pixels": [1920, 1080],
+      "sha256": "5b3e54e5ef752872c2bcf6aecf76ef0cdc827d686510c76d5f976e63c4b102c1"
+    },
+    {
+      "file": "1920-landing.jpg",
+      "pixels": [1920, 1080],
+      "sha256": "5bdcc5c8309a550c18dbba7a2ff06905a49512163f5b37b482980f60be364236"
+    },
+    {
+      "file": "390-confirmation.jpg",
+      "pixels": [390, 844],
+      "sha256": "f02a977ee4d5cc27ad11fb6a58e662fa8c68d49c7b3b87db5fbc3ec7cd864a95"
+    },
+    {
+      "file": "390-exploring.jpg",
+      "pixels": [390, 844],
+      "sha256": "4c706b7a790b07c68b3acd8a32c8dc9eda42a9919994867081bf44670f7fe59e"
+    },
+    {
+      "file": "390-landing.jpg",
+      "pixels": [390, 844],
+      "sha256": "63281ccaed17a4d6ffde6899733e2e7f537b74e5902d0e4bb84e8198af28cafa"
+    }
+  ]
+}

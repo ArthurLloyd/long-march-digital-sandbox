@@ -1,0 +1,24 @@
+{
+  "commit": "4b70eb9a97ab732449707e62ad09e842c25b7db0",
+  "source": "Transcribed from the Chrome Browser Use DOM measurements printed at capture time; images were subsequently filed by commit.",
+  "reducedMotion": true,
+  "states": [
+    {
+      "viewport": [1366, 768],
+      "parent": [0, 0, 1366, 638],
+      "panel": [136.59375, 159.5, 1092.8125, 338.140625]
+    },
+    {
+      "viewport": [1440, 900],
+      "parent": [0, 0, 1440, 770],
+      "panel": [144, 192.5, 1152, 408.1015625]
+    },
+    {
+      "viewport": [1920, 1080],
+      "parent": [0, 0, 1920, 950],
+      "panel": [192, 237.5, 1536, 503.5]
+    }
+  ],
+  "rectangleFormat": "x,y,width,height in CSS pixels",
+  "result": "All measured loading panels stayed within their scene parent. These were genuine lazy loading captures, without injected failure or throttling."
+}

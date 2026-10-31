@@ -1,0 +1,151 @@
+{
+  "correction": [
+    {
+      "name": "phase2-1366-exploring.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1366-history-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1366-landing-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1366-loading.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-1366-reduced-motion.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1366-transition.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1440-chapters-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1440-exploring.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1440-landing-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1440-loading.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-1440-reduced-motion.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1440-transition.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-about-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-exploring.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-history-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-landing-restored.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-landing.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-loading.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-1920-reduced-motion.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-1920-transition.jpg",
+      "commit": "aee3dee"
+    },
+    {
+      "name": "phase2-390-about.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-chapters-drawer.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-exploring.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-history-drawer.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-landing-sources.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-landing.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-return.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-sources-scrolled.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-390-transition.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-about.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-exploring.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-history-drawer.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-landing-sources.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-landing.jpg",
+      "commit": "4b70eb9"
+    },
+    {
+      "name": "phase2-430-transition.jpg",
+      "commit": "4b70eb9"
+    }
+  ],
+  "restoredOriginalImages": [
+    "diagnostic-viewport-api-cropped.jpg",
+    "phase2-1920-landing.jpg",
+    "phase2-1920-landing-hover.jpg",
+    "phase2-1920-landing-focus.jpg"
+  ],
+  "note": "All images remain original browser output, without resizing or compositing."
+}
