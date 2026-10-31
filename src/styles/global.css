@@ -86,7 +86,14 @@ svg {
   top: 12px;
 }
 .museum-app {
+  position: relative;
   min-height: 100dvh;
+}
+.museum-app[data-phase='entering'] .exploration {
+  /* Prepare the incoming scene without stacking two full-height pages. */
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
 }
 .exhibition-header {
   background: linear-gradient(180deg, #080c11eb, #080c1180 65%, transparent);

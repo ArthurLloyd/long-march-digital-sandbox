@@ -38,6 +38,7 @@ export function App() {
   const [sceneKey, setSceneKey] = useState(0);
   const enterRef = useRef<HTMLButtonElement>(null);
   const exploreRef = useRef<HTMLElement>(null);
+  const overlayTriggerRef = useRef<HTMLElement | null>(null);
   const onSceneReady = useCallback(() => setReady(true), []);
   const onSceneError = useCallback(
     (error: SceneError) => setSceneError(error),
@@ -61,11 +62,22 @@ export function App() {
       enterRef.current?.focus({ preventScroll: true }),
     );
   }
+  function rememberOverlayTrigger() {
+    // Native inert blurs the opener before the drawer's effect can read it.
+    // Keep the original opener when a chapter opens an event in a new drawer.
+    if (experience.overlay === null)
+      overlayTriggerRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+  }
   function open(overlay: Overlay) {
+    rememberOverlayTrigger();
     if (playback.playing) playback.toggle();
     dispatch({ type: 'open', overlay });
   }
   function selectEvent(id: string) {
+    rememberOverlayTrigger();
     playback.select(id);
     dispatch({ type: 'open', overlay: 'history' });
   }
@@ -183,6 +195,7 @@ export function App() {
           key={experience.overlay}
           title={titles[experience.overlay]}
           onClose={closeOverlay}
+          returnFocusRef={overlayTriggerRef}
         >
           {experience.overlay === 'chapters' && (
             <ChapterContent

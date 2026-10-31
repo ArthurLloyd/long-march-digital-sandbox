@@ -1,19 +1,27 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import {
+  useEffect,
+  useId,
+  useRef,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import { X } from 'lucide-react';
 export function ExhibitionDrawer({
   title,
   children,
   onClose,
+  returnFocusRef,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
+  returnFocusRef: RefObject<HTMLElement | null>;
 }) {
   const titleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
-    const trigger = document.activeElement;
+    const trigger = returnFocusRef.current;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     headingRef.current?.focus();
@@ -56,7 +64,7 @@ export function ExhibitionDrawer({
       if (trigger instanceof HTMLElement && trigger.isConnected)
         trigger.focus();
     };
-  }, [onClose]);
+  }, [onClose, returnFocusRef]);
   return (
     <div className="drawer-layer">
       <button
