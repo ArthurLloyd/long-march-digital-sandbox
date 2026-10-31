@@ -1,269 +1,220 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ArrowRight,
-  BookOpen,
-  ChevronRight,
-  Compass,
-  Expand,
-  Flag,
-  Layers,
-  Minimize,
-  ShieldCheck,
-} from 'lucide-react';
-import { SceneViewport } from '../components/layout/SceneViewport';
+import { BookOpen, Layers, ArrowUpRight } from 'lucide-react';
+import { publishedDataset } from '../data/verified';
 import { HistoryEventPanel } from '../features/history';
 import { Timeline, usePlayback } from '../features/timeline';
-import { publishedDataset } from '../data/verified';
+import { SceneViewport } from '../components/layout/SceneViewport';
+import { ExhibitionLanding } from '../components/exhibition/ExhibitionLanding';
+import { ExhibitionHeader } from '../components/navigation/ExhibitionHeader';
+import { ExhibitionDrawer } from '../components/overlay/ExhibitionDrawer';
+import {
+  AboutContent,
+  ChapterContent,
+  GuideContent,
+  SourceContent,
+} from '../components/overlay/ExhibitionContent';
+import { ExperienceTransition } from '../components/transition/ExperienceTransition';
+import { useExperience, type Overlay } from './experience/use-experience';
 import { useFullscreen } from '../hooks/use-fullscreen';
+import { useReducedMotion } from '../hooks/use-reduced-motion';
 import type { SceneError } from '../shared/contracts';
 
-type Panel = 'event' | 'sources' | 'guide';
-
+const titles: Record<Overlay, string> = {
+  chapters: '历史专题',
+  history: '事件资料',
+  sources: '资料来源与史料原则',
+  guide: '使用说明',
+  about: '关于展馆',
+};
 export function App() {
   const { events, routes, sources } = publishedDataset;
+  const [experience, dispatch] = useExperience();
   const playback = usePlayback(events);
-  const [panel, setPanel] = useState<Panel>('event');
-  const [panelFocusRequest, setPanelFocusRequest] = useState(0);
-  const informationRef = useRef<HTMLElement>(null);
-  const panelHeadingRef = useRef<HTMLHeadingElement>(null);
+  const { close: closePlayback } = playback;
+  const reduced = useReducedMotion();
+  const fullscreen = useFullscreen();
   const [ready, setReady] = useState(false);
   const [sceneError, setSceneError] = useState<SceneError | null>(null);
   const [sceneKey, setSceneKey] = useState(0);
-  const fullscreen = useFullscreen();
+  const enterRef = useRef<HTMLButtonElement>(null);
+  const exploreRef = useRef<HTMLElement>(null);
   const onSceneReady = useCallback(() => setReady(true), []);
   const onSceneError = useCallback(
     (error: SceneError) => setSceneError(error),
     [],
   );
+  const completeEntry = useCallback(
+    () => dispatch({ type: 'entered' }),
+    [dispatch],
+  );
+  const closeOverlay = useCallback(() => {
+    if (experience.overlay === 'history') closePlayback();
+    dispatch({ type: 'close' });
+  }, [experience.overlay, closePlayback, dispatch]);
   useEffect(() => {
-    if (panelFocusRequest === 0) return;
-    informationRef.current?.scrollIntoView({
-      behavior: 'auto',
-      block: 'start',
-    });
-    panelHeadingRef.current?.focus({ preventScroll: true });
-  }, [panelFocusRequest]);
-  const openPanel = (next: Panel) => {
-    setPanel(next);
-    if (window.matchMedia?.('(max-width: 1023px)').matches) {
-      setPanelFocusRequest((request) => request + 1);
-    }
-  };
-  const selectEvent = (id: string) => {
+    if (experience.phase === 'exploring') exploreRef.current?.focus();
+  }, [experience.phase]);
+  function home() {
+    playback.close();
+    dispatch({ type: 'home' });
+    window.requestAnimationFrame(() =>
+      enterRef.current?.focus({ preventScroll: true }),
+    );
+  }
+  function open(overlay: Overlay) {
+    if (playback.playing) playback.toggle();
+    dispatch({ type: 'open', overlay });
+  }
+  function selectEvent(id: string) {
     playback.select(id);
-    openPanel('event');
-  };
-
+    dispatch({ type: 'open', overlay: 'history' });
+  }
   return (
-    <div className="app-shell">
-      <a className="skip-link" href="#main-content">
-        跳至沙盘内容
-      </a>
-      <header className="topbar">
+    <div className="museum-app" data-phase={experience.phase}>
+      <div
+        inert={experience.overlay !== null || experience.phase === 'entering'}
+      >
         <a
-          className="brand"
-          href="#main-content"
-          aria-label="长征·不灭的火种首页"
+          className="skip-link"
+          href={
+            experience.phase === 'landing'
+              ? '#landing-content'
+              : '#main-content'
+          }
         >
-          <span className="brand-mark" aria-hidden="true">
-            <Flag size={23} strokeWidth={1.4} />
-          </span>
-          <span>
-            <strong>
-              长征<span>·</span>不灭的火种
-            </strong>
-            <small>长征三维历史数字沙盘</small>
-          </span>
+          跳至展馆内容
         </a>
-        <nav aria-label="顶部导航">
-          <button
-            className={
-              panel === 'event' ? 'nav-button is-active' : 'nav-button'
-            }
-            aria-pressed={panel === 'event'}
-            onClick={() => openPanel('event')}
-          >
-            历史专题
-          </button>
-          <button
-            className={
-              panel === 'sources' ? 'nav-button is-active' : 'nav-button'
-            }
-            aria-pressed={panel === 'sources'}
-            onClick={() => openPanel('sources')}
-          >
-            资料来源
-          </button>
-          <button
-            className={
-              panel === 'guide' ? 'nav-button is-active' : 'nav-button'
-            }
-            aria-pressed={panel === 'guide'}
-            onClick={() => openPanel('guide')}
-          >
-            使用说明
-          </button>
-        </nav>
-        <button
-          className="fullscreen-button"
-          onClick={() => void fullscreen.toggle()}
-          aria-label={fullscreen.active ? '退出全屏' : '进入全屏'}
-        >
-          {fullscreen.active ? <Minimize size={17} /> : <Expand size={17} />}
-          <span>{fullscreen.active ? '退出全屏' : '全屏体验'}</span>
-        </button>
-      </header>
-      {fullscreen.error && (
-        <p className="fullscreen-message" role="status">
-          {fullscreen.error}
-        </p>
-      )}
-
-      <main id="main-content" className="workspace" tabIndex={-1}>
-        <aside className="chapter-sidebar" aria-label="专题导航">
-          <div className="sidebar-heading">
-            <Compass size={18} strokeWidth={1.5} />
-            <h2>探索长征</h2>
-          </div>
-          <button className="topic-button" onClick={() => openPanel('event')}>
-            <span>历史进程</span>
-            <ChevronRight size={16} />
-          </button>
-          <p className="sidebar-caption">事件章节</p>
-          {events.length ? (
-            <ol className="chapter-list">
-              {events.map((event) => (
-                <li key={event.id}>
-                  <button
-                    aria-current={
-                      event.id === playback.activeEvent?.id ? 'step' : undefined
-                    }
-                    onClick={() => selectEvent(event.id)}
-                  >
-                    {event.title}
-                  </button>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className="chapter-empty">
-              <span className="chapter-rail" aria-hidden="true" />
-              <strong>章节核验中</strong>
-              <p>以可靠史料为起点，逐步开放历史节点。</p>
-            </div>
-          )}
-          <div className="sidebar-context">
-            <span>当前专题</span>
-            <strong>长征历史总览</strong>
-            <p>正式内容审核完成后开放</p>
-          </div>
-          <button
-            className="integrity-link"
-            onClick={() => openPanel('sources')}
-          >
-            <ShieldCheck size={18} strokeWidth={1.4} />
-            <span>了解史料核验原则</span>
-            <ArrowRight size={14} />
-          </button>
-        </aside>
-
-        <SceneViewport
-          key={sceneKey}
-          events={events}
-          routes={routes}
-          activeEventId={playback.activeEvent?.id ?? null}
-          playbackProgress={playback.progress}
-          onEventSelect={selectEvent}
-          onSceneReady={onSceneReady}
-          onSceneError={onSceneError}
-          ready={ready}
-          error={sceneError}
-          onRetry={() => {
-            setReady(false);
-            setSceneError(null);
-            setSceneKey((key) => key + 1);
-          }}
+        <ExhibitionHeader
+          exploring={experience.phase !== 'landing'}
+          onHome={home}
+          onOpen={open}
+          fullscreen={fullscreen.active}
+          onFullscreen={() => void fullscreen.toggle()}
         />
-
-        <aside
-          className="information-panel"
-          aria-label="事件资料与说明"
-          ref={informationRef}
+        {fullscreen.error && (
+          <p className="fullscreen-message" role="status">
+            {fullscreen.error}
+          </p>
+        )}
+        {experience.phase !== 'exploring' && (
+          <ExhibitionLanding
+            entering={experience.phase === 'entering'}
+            onEnter={() => {
+              setReady(false);
+              setSceneError(null);
+              dispatch({ type: 'enter', reduced });
+            }}
+            onAbout={() => open('about')}
+            enterRef={enterRef}
+          />
+        )}
+        {experience.phase !== 'landing' && (
+          <main
+            id="main-content"
+            className="exploration"
+            ref={exploreRef}
+            tabIndex={-1}
+            aria-label="长征沙盘探索空间"
+          >
+            <SceneViewport
+              key={sceneKey}
+              events={events}
+              routes={routes}
+              activeEventId={playback.activeEvent?.id ?? null}
+              playbackProgress={playback.progress}
+              onEventSelect={selectEvent}
+              onSceneReady={onSceneReady}
+              onSceneError={onSceneError}
+              ready={ready}
+              error={sceneError}
+              onRetry={() => {
+                setReady(false);
+                setSceneError(null);
+                setSceneKey((key) => key + 1);
+              }}
+            />
+            <div className="exploration-topic">
+              <span className="status-dot" />
+              <span>{playback.activeEvent?.title ?? '长征历史总览'}</span>
+              <span className="preview-label">开发预览</span>
+            </div>
+            <div className="exploration-tools">
+              <button className="scene-tool" onClick={() => open('chapters')}>
+                <Layers size={20} />
+                <span>
+                  历史专题
+                  <small>
+                    {events.length
+                      ? `${events.length} 个核验节点`
+                      : '专题核验中'}
+                  </small>
+                </span>
+                <ArrowUpRight size={18} />
+              </button>
+              <button className="scene-tool" onClick={() => open('history')}>
+                <BookOpen size={20} />
+                <span>
+                  事件资料
+                  <small>
+                    {playback.activeEvent ? '阅读当前事件' : '了解核验进度'}
+                  </small>
+                </span>
+                <ArrowUpRight size={18} />
+              </button>
+            </div>
+            <Timeline
+              events={events}
+              activeEventId={playback.activeEvent?.id ?? null}
+              playing={playback.playing}
+              progress={playback.progress}
+              onToggle={playback.toggle}
+              onPrevious={playback.previous}
+              onNext={playback.next}
+              onSelect={selectEvent}
+            />
+          </main>
+        )}
+      </div>
+      {experience.phase === 'entering' && (
+        <ExperienceTransition onComplete={completeEntry} />
+      )}
+      {experience.overlay && (
+        <ExhibitionDrawer
+          key={experience.overlay}
+          title={titles[experience.overlay]}
+          onClose={closeOverlay}
         >
-          <div className="panel-heading">
-            <h2 ref={panelHeadingRef} tabIndex={-1}>
-              {panel === 'event'
-                ? '事件资料'
-                : panel === 'sources'
-                  ? '资料来源'
-                  : '使用说明'}
-            </h2>
-            <BookOpen size={17} strokeWidth={1.4} />
-          </div>
-          {panel === 'event' && (
-            <HistoryEventPanel
-              event={playback.activeEvent}
-              sources={sources.filter((source) =>
-                playback.activeEvent?.sourceIds.includes(source.sourceId),
-              )}
-              onClose={playback.close}
-              teachingState={{ mode: 'observe', stepId: null }}
+          {experience.overlay === 'chapters' && (
+            <ChapterContent
+              events={events}
+              activeId={playback.activeEvent?.id ?? null}
+              onSelect={selectEvent}
             />
           )}
-          {panel === 'sources' && (
-            <section className="reading-panel">
-              <ShieldCheck size={25} strokeWidth={1.4} />
-              <h3>让每一个节点有迹可查</h3>
-              <p>目前尚未发布经复核的史料来源。</p>
-              <ul>
-                <li>正式事件与路线须关联可查证的资料。</li>
-                <li>至少两名不同成员独立复核。</li>
-                <li>近似位置与示意路线须明确标注。</li>
-                <li>艺术再现不能冒充真实档案。</li>
-              </ul>
-              <p className="integrity-note">
-                自动校验只检查数据规则，不能代替人工史实审核。
+          {experience.overlay === 'history' && (
+            <>
+              <p className="drawer-introduction">
+                {playback.activeEvent
+                  ? '阅读事件与关联史料，留意日期及地点精度。'
+                  : '历史资料正在核验，正式专题即将开放。'}
               </p>
-            </section>
+              <HistoryEventPanel
+                event={playback.activeEvent}
+                sources={sources.filter((source) =>
+                  playback.activeEvent?.sourceIds.includes(source.sourceId),
+                )}
+                onClose={closeOverlay}
+                teachingState={{ mode: 'observe', stepId: null }}
+              />
+            </>
           )}
-          {panel === 'guide' && (
-            <section className="reading-panel">
-              <Layers size={25} strokeWidth={1.4} />
-              <h3>从一个历史节点开始</h3>
-              <p>
-                当前为工程开发预览。正式数据发布后，可通过左侧章节或底部时间轴选择事件。
-              </p>
-              <ol>
-                <li>选择章节，定位相关历史事件。</li>
-                <li>在右侧阅读事件、精度标识与出处。</li>
-                <li>使用时间轴依次浏览核验节点。</li>
-              </ol>
-              <p className="integrity-note">
-                无正式节点时，播放与切换控件保持禁用。抽象底座不代表真实历史地理。
-              </p>
-            </section>
+          {experience.overlay === 'sources' && (
+            <SourceContent sources={sources} />
           )}
-          <div className="panel-footer">
-            <span className="status-dot" />
-            内容核验中
-          </div>
-        </aside>
-      </main>
-
-      <Timeline
-        events={events}
-        activeEventId={playback.activeEvent?.id ?? null}
-        playing={playback.playing}
-        progress={playback.progress}
-        onToggle={playback.toggle}
-        onPrevious={playback.previous}
-        onNext={playback.next}
-        onSelect={selectEvent}
-      />
-      <footer className="app-footer">
-        <span>赓续长征精神，智创青春新程</span>
-        <span>开发预览 · 非正式历史地图</span>
-      </footer>
+          {experience.overlay === 'guide' && <GuideContent />}
+          {experience.overlay === 'about' && <AboutContent />}
+        </ExhibitionDrawer>
+      )}
     </div>
   );
 }

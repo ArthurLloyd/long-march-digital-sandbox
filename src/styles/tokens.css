@@ -1,16 +1,17 @@
 :root {
   color-scheme: dark;
-  --background: #181a18;
-  --surface: #21231f;
-  --text: #e6e1d6;
-  --muted: #a9aa9f;
-  --gold: #bca378;
-  --gold-bright: #d5bd94;
-  --red: #783e36;
-  --red-muted: #743b332e;
-  --line: #e4dfce12;
-  --line-strong: #e4dfce26;
-  --radius: 4px;
-  --font-body: 'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
-  --font-display: 'Noto Serif SC', 'Songti SC', SimSun, serif;
+  --background: #080c11;
+  --surface: #101720;
+  --text: #f2eee8;
+  --muted: #b3b8bc;
+  --gold: #c5a46d;
+  --gold-bright: #e4caa0;
+  --red: #a82e32;
+  --red-muted: #6e1b24;
+  --line: #e4caa026;
+  --line-strong: #e4caa04d;
+  --radius: 3px;
+  --font-body: 'Noto Sans SC', sans-serif;
+  --font-display: 'Noto Serif SC', serif;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

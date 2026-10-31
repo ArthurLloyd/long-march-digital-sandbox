@@ -1,317 +1,365 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-31T11:05:49.625Z",
+  "generatedAt": "2026-10-31T13:14:01Z",
   "title": "Design System: 长征·不灭的火种",
   "extensions": {
     "colorMeta": {
       "background": {
         "role": "neutral",
-        "displayName": "炭绿背景",
+        "displayName": "墨蓝底",
         "tonalRamp": [
-          "oklch(15% 0.0049 145.40)",
-          "oklch(26% 0.0049 145.40)",
-          "oklch(38% 0.0049 145.40)",
-          "oklch(49% 0.0049 145.40)",
-          "oklch(61% 0.0049 145.40)",
-          "oklch(72% 0.0049 145.40)",
-          "oklch(84% 0.0049 145.40)",
-          "oklch(95% 0.0049 145.40)"
+          "oklch(15% 0.0127 253.44)",
+          "oklch(26% 0.0127 253.44)",
+          "oklch(38% 0.0127 253.44)",
+          "oklch(49% 0.0127 253.44)",
+          "oklch(61% 0.0127 253.44)",
+          "oklch(72% 0.0127 253.44)",
+          "oklch(84% 0.0127 253.44)",
+          "oklch(95% 0.0127 253.44)"
         ]
       },
       "surface": {
         "role": "neutral",
-        "displayName": "炭绿表面",
+        "displayName": "蓝黑表面",
         "tonalRamp": [
-          "oklch(15% 0.0079 128.82)",
-          "oklch(26% 0.0079 128.82)",
-          "oklch(38% 0.0079 128.82)",
-          "oklch(49% 0.0079 128.82)",
-          "oklch(61% 0.0079 128.82)",
-          "oklch(72% 0.0079 128.82)",
-          "oklch(84% 0.0079 128.82)",
-          "oklch(95% 0.0079 128.82)"
+          "oklch(15% 0.0210 254.94)",
+          "oklch(26% 0.0210 254.94)",
+          "oklch(38% 0.0210 254.94)",
+          "oklch(49% 0.0210 254.94)",
+          "oklch(61% 0.0210 254.94)",
+          "oklch(72% 0.0210 254.94)",
+          "oklch(84% 0.0210 254.94)",
+          "oklch(95% 0.0210 254.94)"
         ]
       },
       "text": {
         "role": "neutral",
         "displayName": "暖纸正文",
         "tonalRamp": [
-          "oklch(15% 0.0157 86.43)",
-          "oklch(26% 0.0157 86.43)",
-          "oklch(38% 0.0157 86.43)",
-          "oklch(49% 0.0157 86.43)",
-          "oklch(61% 0.0157 86.43)",
-          "oklch(72% 0.0157 86.43)",
-          "oklch(84% 0.0157 86.43)",
-          "oklch(95% 0.0157 86.43)"
+          "oklch(15% 0.0091 78.28)",
+          "oklch(26% 0.0091 78.28)",
+          "oklch(38% 0.0091 78.28)",
+          "oklch(49% 0.0091 78.28)",
+          "oklch(61% 0.0091 78.28)",
+          "oklch(72% 0.0091 78.28)",
+          "oklch(84% 0.0091 78.28)",
+          "oklch(95% 0.0091 78.28)"
         ]
       },
       "muted": {
         "role": "neutral",
-        "displayName": "灰绿次文",
+        "displayName": "银灰次文",
         "tonalRamp": [
-          "oklch(15% 0.0156 110.99)",
-          "oklch(26% 0.0156 110.99)",
-          "oklch(38% 0.0156 110.99)",
-          "oklch(49% 0.0156 110.99)",
-          "oklch(61% 0.0156 110.99)",
-          "oklch(72% 0.0156 110.99)",
-          "oklch(84% 0.0156 110.99)",
-          "oklch(95% 0.0156 110.99)"
+          "oklch(15% 0.0080 241.70)",
+          "oklch(26% 0.0080 241.70)",
+          "oklch(38% 0.0080 241.70)",
+          "oklch(49% 0.0080 241.70)",
+          "oklch(61% 0.0080 241.70)",
+          "oklch(72% 0.0080 241.70)",
+          "oklch(84% 0.0080 241.70)",
+          "oklch(95% 0.0080 241.70)"
         ]
       },
       "gold": {
         "role": "secondary",
-        "displayName": "旧金",
+        "displayName": "暗金",
         "tonalRamp": [
-          "oklch(15% 0.0651 80.89)",
-          "oklch(26% 0.0651 80.89)",
-          "oklch(38% 0.0651 80.89)",
-          "oklch(49% 0.0651 80.89)",
-          "oklch(61% 0.0651 80.89)",
-          "oklch(72% 0.0651 80.89)",
-          "oklch(84% 0.0651 80.89)",
-          "oklch(95% 0.0651 80.89)"
+          "oklch(15% 0.0820 79.72)",
+          "oklch(26% 0.0820 79.72)",
+          "oklch(38% 0.0820 79.72)",
+          "oklch(49% 0.0820 79.72)",
+          "oklch(61% 0.0820 79.72)",
+          "oklch(72% 0.0820 79.72)",
+          "oklch(84% 0.0820 79.72)",
+          "oklch(95% 0.0820 79.72)"
         ]
       },
       "gold-bright": {
         "role": "secondary",
-        "displayName": "明金",
+        "displayName": "浅金",
         "tonalRamp": [
-          "oklch(15% 0.0611 80.91)",
-          "oklch(26% 0.0611 80.91)",
-          "oklch(38% 0.0611 80.91)",
-          "oklch(49% 0.0611 80.91)",
-          "oklch(61% 0.0611 80.91)",
-          "oklch(72% 0.0611 80.91)",
-          "oklch(84% 0.0611 80.91)",
-          "oklch(95% 0.0611 80.91)"
+          "oklch(15% 0.0627 79.60)",
+          "oklch(26% 0.0627 79.60)",
+          "oklch(38% 0.0627 79.60)",
+          "oklch(49% 0.0627 79.60)",
+          "oklch(61% 0.0627 79.60)",
+          "oklch(72% 0.0627 79.60)",
+          "oklch(84% 0.0627 79.60)",
+          "oklch(95% 0.0627 79.60)"
         ]
       },
       "red": {
         "role": "primary",
-        "displayName": "暗红",
+        "displayName": "朱红",
         "tonalRamp": [
-          "oklch(15% 0.0825 29.07)",
-          "oklch(26% 0.0825 29.07)",
-          "oklch(38% 0.0825 29.07)",
-          "oklch(49% 0.0825 29.07)",
-          "oklch(61% 0.0825 29.07)",
-          "oklch(72% 0.0825 29.07)",
-          "oklch(84% 0.0825 29.07)",
-          "oklch(95% 0.0825 29.07)"
+          "oklch(15% 0.1582 23.53)",
+          "oklch(26% 0.1582 23.53)",
+          "oklch(38% 0.1582 23.53)",
+          "oklch(49% 0.1582 23.53)",
+          "oklch(61% 0.1582 23.53)",
+          "oklch(72% 0.1582 23.53)",
+          "oklch(84% 0.1582 23.53)",
+          "oklch(95% 0.1582 23.53)"
         ]
       },
       "red-muted": {
         "role": "primary",
-        "displayName": "暗红薄层",
+        "displayName": "深朱红",
         "tonalRamp": [
-          "oklch(15% 0.0817 29.25 / 0.1804)",
-          "oklch(26% 0.0817 29.25 / 0.1804)",
-          "oklch(38% 0.0817 29.25 / 0.1804)",
-          "oklch(49% 0.0817 29.25 / 0.1804)",
-          "oklch(61% 0.0817 29.25 / 0.1804)",
-          "oklch(72% 0.0817 29.25 / 0.1804)",
-          "oklch(84% 0.0817 29.25 / 0.1804)",
-          "oklch(95% 0.0817 29.25 / 0.1804)"
+          "oklch(15% 0.1157 19.28)",
+          "oklch(26% 0.1157 19.28)",
+          "oklch(38% 0.1157 19.28)",
+          "oklch(49% 0.1157 19.28)",
+          "oklch(61% 0.1157 19.28)",
+          "oklch(72% 0.1157 19.28)",
+          "oklch(84% 0.1157 19.28)",
+          "oklch(95% 0.1157 19.28)"
         ]
       },
       "line": {
         "role": "neutral",
-        "displayName": "轻分隔线",
+        "displayName": "轻金线",
         "tonalRamp": [
-          "oklch(15% 0.0234 93.35 / 0.0706)",
-          "oklch(26% 0.0234 93.35 / 0.0706)",
-          "oklch(38% 0.0234 93.35 / 0.0706)",
-          "oklch(49% 0.0234 93.35 / 0.0706)",
-          "oklch(61% 0.0234 93.35 / 0.0706)",
-          "oklch(72% 0.0234 93.35 / 0.0706)",
-          "oklch(84% 0.0234 93.35 / 0.0706)",
-          "oklch(95% 0.0234 93.35 / 0.0706)"
+          "oklch(15% 0.0627 79.60 / 0.149)",
+          "oklch(26% 0.0627 79.60 / 0.149)",
+          "oklch(38% 0.0627 79.60 / 0.149)",
+          "oklch(49% 0.0627 79.60 / 0.149)",
+          "oklch(61% 0.0627 79.60 / 0.149)",
+          "oklch(72% 0.0627 79.60 / 0.149)",
+          "oklch(84% 0.0627 79.60 / 0.149)",
+          "oklch(95% 0.0627 79.60 / 0.149)"
         ]
       },
       "line-strong": {
         "role": "neutral",
-        "displayName": "强分隔线",
+        "displayName": "强金线",
         "tonalRamp": [
-          "oklch(15% 0.0234 93.35 / 0.1490)",
-          "oklch(26% 0.0234 93.35 / 0.1490)",
-          "oklch(38% 0.0234 93.35 / 0.1490)",
-          "oklch(49% 0.0234 93.35 / 0.1490)",
-          "oklch(61% 0.0234 93.35 / 0.1490)",
-          "oklch(72% 0.0234 93.35 / 0.1490)",
-          "oklch(84% 0.0234 93.35 / 0.1490)",
-          "oklch(95% 0.0234 93.35 / 0.1490)"
+          "oklch(15% 0.0627 79.60 / 0.302)",
+          "oklch(26% 0.0627 79.60 / 0.302)",
+          "oklch(38% 0.0627 79.60 / 0.302)",
+          "oklch(49% 0.0627 79.60 / 0.302)",
+          "oklch(61% 0.0627 79.60 / 0.302)",
+          "oklch(72% 0.0627 79.60 / 0.302)",
+          "oklch(84% 0.0627 79.60 / 0.302)",
+          "oklch(95% 0.0627 79.60 / 0.302)"
         ]
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "场景主标题",
-        "purpose": "当前设备宋体栈；手机使用60px特例，字体品牌与授权未定。"
+        "displayName": "主题副标题",
+        "purpose": "“不灭的火种”的 Noto Serif SC 排印；主标题为手迹 PNG，font-size 仅作图片 em 基准。"
       },
       "headline": {
-        "displayName": "资料标题",
-        "purpose": "资料空态与阅读段落标题。"
+        "displayName": "探索主标题",
+        "purpose": "场景核验空态。"
       },
       "title": {
-        "displayName": "面板标题",
-        "purpose": "操作与资料区域标题。"
+        "displayName": "阅读标题",
+        "purpose": "抽屉标题。"
       },
       "body": {
-        "displayName": "默认正文",
-        "purpose": "页面默认14px；资料段落为12px、两倍行高。"
+        "displayName": "界面正文",
+        "purpose": "操作和默认正文。"
+      },
+      "reading": {
+        "displayName": "资料正文",
+        "purpose": "两倍行高阅读段落。"
       },
       "label": {
-        "displayName": "控件标签",
-        "purpose": "全屏等控件文字。"
-      },
-      "caption": {
-        "displayName": "辅助说明",
-        "purpose": "章节提示与辅助说明；不扩大使用更细小的现有页脚字号。"
+        "displayName": "辅助标签",
+        "purpose": "导航及状态辅助信息。"
       }
     },
     "shadows": [
       {
-        "name": "stage-thickness",
-        "value": "0 14px 28px #0004",
-        "purpose": "仅抽象占位底座下层使用；背景另有 #0009 模糊阴影层（blur(30px)），不用于普通面板。"
+        "name": "entrance",
+        "value": "0 12px 32px #0003",
+        "purpose": "仅主入口的局部投影。"
       }
     ],
     "motion": [
       {
-        "name": "control-transition",
-        "value": "color 160ms ease-out, background-color 160ms ease-out",
-        "purpose": "按钮和链接状态反馈。"
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "图片、文字、位移、进入及抽屉缓出。"
       },
       {
-        "name": "page-scroll",
-        "value": "smooth",
-        "purpose": "页面锚点默认滚动；窄屏面板导航明确使用auto，并聚焦资料标题。"
+        "name": "brush-arrive",
+        "value": "1.15s",
+        "purpose": "手迹图片从 translateY(12px) rotate(-2deg)、opacity .7 到原位，征字延后140ms；不使用clip-path裁切。"
       },
       {
-        "name": "reduced-motion",
-        "value": "prefers-reduced-motion: reduce",
-        "purpose": "关闭平滑滚动、transition和animation。"
+        "name": "title-arrive",
+        "value": "1.6s",
+        "purpose": "副标题延后250ms、说明延后400ms显现。"
+      },
+      {
+        "name": "content-arrive",
+        "value": "1s",
+        "purpose": "主操作从translateY(8px)、opacity .85显现，延后400ms。"
+      },
+      {
+        "name": "mist-reveal",
+        "value": "2.4s",
+        "purpose": "首次雾层显现，无持续背景渲染。"
+      },
+      {
+        "name": "entry",
+        "value": "650ms",
+        "purpose": "可跳过转场，减少动态时直接切换。"
+      },
+      {
+        "name": "drawer-arrive",
+        "value": "350ms",
+        "purpose": "阅读抽屉显现。"
+      },
+      {
+        "name": "entrance-sheen",
+        "value": "650ms",
+        "purpose": "主入口悬停或焦点触发扫光，不循环。"
+      },
+      {
+        "name": "ornament-and-quiet-underline",
+        "value": "350ms",
+        "purpose": "旅程纹样右移4px、次要文字下划线展开。"
+      },
+      {
+        "name": "nav-underline",
+        "value": "300ms",
+        "purpose": "导航悬停或焦点时从左展开金线。"
+      },
+      {
+        "name": "state-color",
+        "value": "200ms",
+        "purpose": "文字、背景及边框颜色反馈。"
+      },
+      {
+        "name": "state-transform",
+        "value": "300ms",
+        "purpose": "常规位移反馈。"
       }
     ],
     "breakpoints": [
       {
-        "name": "wide-min",
-        "value": "1600px"
+        "name": "compact-desktop-max",
+        "value": "1100px"
       },
       {
-        "name": "compact-max",
-        "value": "1200px"
-      },
-      {
-        "name": "stack-panel-max",
-        "value": "1023px"
+        "name": "short-desktop",
+        "value": "(min-width: 768px) and (max-height: 820px)"
       },
       {
         "name": "mobile-max",
-        "value": "639px"
+        "value": "767px"
+      },
+      {
+        "name": "narrow-mobile-max",
+        "value": "374px"
       }
     ]
   },
   "components": [
     {
-      "name": "全屏轮廓按钮",
+      "name": "开启征程",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "双金线朱红入口，旅程纹样与两行文案，悬停和焦点触发扫光。",
+      "html": "<button class=\"ds-enter\" aria-label=\"开启征程\"><span class=\"ds-enter-copy\">开启征程<small>进入三维历史沙盘</small></span><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ds-enter-arrow\" aria-hidden=\"true\" width=\"69\" height=\"57\" viewBox=\"0 0 88 72\" fill=\"none\"> <defs> <linearGradient id=\"ds-journey-gold\" x1=\"10\" y1=\"9\" x2=\"75\" y2=\"63\" gradientUnits=\"userSpaceOnUse\"> <stop stop-color=\"#f0d8a1\"/> <stop offset=\".5\" stop-color=\"#b08c57\"/> <stop offset=\"1\" stop-color=\"#e5c997\"/> </linearGradient> </defs> <path d=\"m45 5 25 14v34L45 67 20 53V19L45 5Z\" stroke=\"url(#ds-journey-gold)\" stroke-width=\".8\" opacity=\".7\"/> <path d=\"m45 10 21 12v28L45 62 24 50V22L45 10Z\" stroke=\"#e4caa0\" stroke-width=\".6\" opacity=\".25\"/> <path d=\"m29 44 9-8 9 7 9-11 7 8M28 49l12-7 9 7 11-4\" stroke=\"#e4caa0\" stroke-width=\".8\" opacity=\".35\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M8 35h55m-8-8 9 8-9 8\" stroke=\"#f0d8ac\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M9 30h12M13 40h9m48-5h8M45 1v3m0 64v3\" stroke=\"#d3b27a\" stroke-width=\".7\" opacity=\".7\"/> <path d=\"m45 14 1.8 3-1.8 3-1.8-3 1.8-3Z\" fill=\"#e4caa0\"/> </svg></button>",
+      "css": ".ds-enter{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:26px;background:var(--red-muted);color:var(--text);border:1px solid #c5a46d80;padding:15px 18px 15px 25px;min-width:270px;min-height:88px;font-size:18px;letter-spacing:.12em;box-shadow:0 12px 32px #0003}.ds-enter::after{content:'';position:absolute;inset:4px;border:1px solid #c5a46d30;pointer-events:none;transition:border-color .3s}.ds-enter::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,#e4caa01a,transparent 65%);transform:translateX(-110%);transition:transform .65s var(--ease-out)}.ds-enter:hover::before,.ds-enter:focus-visible::before{transform:translateX(110%)}.ds-enter-copy{display:block;text-align:left;font-weight:600}.ds-enter-copy small{display:block;margin-top:3px;color:#e5cdb8;font-size:11px;font-weight:400;letter-spacing:.12em}.ds-enter-arrow{display:block;width:69px;height:57px;flex:0 0 auto;object-fit:contain;transition:transform .35s var(--ease-out)}.ds-enter:hover::after,.ds-enter:focus-visible::after{border-color:#e4caa080}.ds-enter:not(:disabled):hover{background:var(--red);border-color:var(--gold-bright);transform:translateY(-3px);color:var(--text)}.ds-enter:active{transform:translateY(0)}.ds-enter:hover .ds-enter-arrow,.ds-enter:focus-visible .ds-enter-arrow{transform:translateX(4px)}.ds-enter:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-enter:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-enter,.ds-enter::before,.ds-enter::after{animation:none!important;transition:none!important}}@media(prefers-reduced-motion:reduce){.ds-enter-arrow{transition:none!important}}@media(min-width:768px) and (max-height:820px){.ds-enter{min-height:72px;padding-block:12px}}@media(max-width:767px){.ds-enter{padding:14px 20px;min-width:182px;font-size:16px;gap:18px}.ds-enter-arrow{width:48px;height:44px}}"
+    },
+    {
+      "name": "文字操作",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "首页底部右侧的了解作品入口，以短金线响应悬停和焦点。",
+      "html": "<button class=\"ds-quiet\">了解作品 <svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M7 7h10v10M7 17 17 7\"/></svg></button>",
+      "css": ".ds-quiet{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 0;border:0;background:none;color:var(--muted);font-size:15px}.ds-quiet::after{content:'';position:absolute;left:0;right:0;bottom:3px;height:1px;background:var(--gold);transform:scaleX(.2);transform-origin:left;opacity:.35;transition:transform .35s var(--ease-out),opacity .35s}.ds-quiet:hover{color:var(--gold-bright)}.ds-quiet:hover::after,.ds-quiet:focus-visible::after{transform:scaleX(1);opacity:1}.ds-quiet:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-quiet:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-quiet,.ds-quiet::before,.ds-quiet::after{animation:none!important;transition:none!important}}"
+    },
+    {
+      "name": "轮廓操作",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "顶部全屏操作；窄屏隐藏文字，仅保留有标签的图标。",
-      "html": "<button class=\"ds-outline\" aria-label=\"进入全屏\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3\"/></svg><span>全屏体验</span></button>",
-      "css": ".ds-outline{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted,#a9aa9f);padding:9px 12px;border:1px solid var(--line-strong,#e4dfce26);border-radius:var(--radius,4px)}.ds-outline:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-outline:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-outline:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-outline{transition:none!important;animation:none!important}}@media(max-width:639px){.ds-outline{padding:9px}.ds-outline span{display:none}}"
-    },
-    {
-      "name": "专题按钮",
-      "kind": "button",
-      "refersTo": "button-topic",
-      "description": "以暗红薄层标记当前历史进程入口。",
-      "html": "<button class=\"ds-topic\"><span>历史进程</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"/></svg></button>",
-      "css": ".ds-topic{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--red-muted,#743b332e);padding:11px 13px;border-radius:var(--radius,4px);font-size:13px;color:var(--text,#e6e1d6)}.ds-topic svg{color:var(--gold,#bca378)}.ds-topic:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-topic:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-topic:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-topic{transition:none!important;animation:none!important}}@media(max-width:639px){.ds-topic{padding:7px 12px;font-size:11px}}"
-    },
-    {
-      "name": "圆形播放按钮",
-      "kind": "button",
-      "refersTo": "button-play",
-      "description": "媒体播放专用；当前无正式节点，示例保持禁用。",
-      "html": "<button class=\"ds-play\" disabled aria-label=\"播放历史回放\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polygon points=\"6 3 20 12 6 21 6 3\"/></svg></button>",
-      "css": ".ds-play{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;display:grid;place-items:center;background:var(--red,#783e36);color:var(--text,#e6e1d6);width:44px;height:44px;border-radius:50%}.ds-play:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-play:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-play:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-play{transition:none!important;animation:none!important}}@media(max-width:639px){.ds-play{width:36px;height:36px}}"
-    },
-    {
-      "name": "图标按钮",
-      "kind": "button",
-      "refersTo": "button-icon",
-      "description": "时间轴前后节点及关闭资料等次要操作；无可用节点时禁用。",
-      "html": "<button class=\"ds-icon\" aria-label=\"上一个历史节点\" disabled><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m19 20-9-8 9-8ZM5 19V5\"/></svg></button>",
-      "css": ".ds-icon{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;display:grid;place-items:center;padding:9px;border-radius:var(--radius,4px);color:var(--text,#e6e1d6)}.ds-icon:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-icon:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-icon:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-icon{transition:none!important;animation:none!important}}@media(max-width:639px){.ds-icon{padding:7px}}"
-    },
-    {
-      "name": "文字重试按钮",
-      "kind": "button",
-      "refersTo": "button-text",
-      "description": "加载异常中的场景重试操作。",
-      "html": "<button class=\"ds-text\">重试场景</button>",
-      "css": ".ds-text{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;font-size:14px;color:var(--gold-bright,#d5bd94);text-decoration:underline;text-underline-offset:5px}.ds-text:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-text:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-text:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-text{transition:none!important;animation:none!important}}"
+      "description": "场景重试的轮廓按钮。",
+      "html": "<button class=\"ds-outline\">重试场景</button>",
+      "css": ".ds-outline{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);background:none;color:var(--text);border:1px solid var(--line-strong);border-radius:var(--radius);padding:12px 22px}.ds-outline:hover{color:var(--gold-bright)}.ds-outline:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-outline:disabled{opacity:.4;cursor:not-allowed}"
     },
     {
       "name": "顶部导航",
       "kind": "nav",
       "refersTo": "navigation",
-      "description": "选中项采用正文色与金色底线；实际应用同步 aria-pressed，窄屏切换后滚动并聚焦资料标题。",
-      "html": "<nav class=\"ds-nav\" aria-label=\"顶部导航\"><button class=\"ds-nav-button\" aria-pressed=\"true\">历史专题</button><button class=\"ds-nav-button\" aria-pressed=\"false\">资料来源</button><button class=\"ds-nav-button\" aria-pressed=\"false\">使用说明</button></nav>",
-      "css": ".ds-nav{display:flex;gap:36px;height:98px}.ds-nav-button{border:0;background:none;cursor:pointer;transition:color 160ms ease-out,background-color 160ms ease-out;font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;font-size:14px;position:relative;white-space:nowrap;padding:0 3px;color:var(--muted,#a9aa9f)}.ds-nav-button[aria-pressed=true]{color:var(--text,#e6e1d6)}.ds-nav-button[aria-pressed=true]::after{content:'';height:2px;background:var(--gold,#bca378);position:absolute;left:3px;right:3px;bottom:0}.ds-nav-button:not(:disabled):hover{color:var(--gold-bright,#d5bd94)}.ds-nav-button:focus-visible{outline:2px solid var(--gold-bright,#d5bd94);outline-offset:5px}.ds-nav-button:disabled{cursor:not-allowed;opacity:.4}@media(prefers-reduced-motion:reduce){.ds-nav-button{transition:none!important;animation:none!important}}@media(max-width:1200px){.ds-nav{gap:25px}}@media(max-width:1023px){.ds-nav{height:48px;width:100%;justify-content:center}}@media(max-width:639px){.ds-nav{gap:35px}.ds-nav-button{font-size:12px}}"
+      "description": "顶部史料与关于入口，透明渐变衬底与悬停/焦点金线。",
+      "html": "<nav class=\"ds-nav\" aria-label=\"顶部导航\"><button>关于展馆</button><button>史料原则</button></nav>",
+      "css": ".ds-nav{display:flex;gap:36px;background:linear-gradient(180deg,#080c11eb,#080c1180 65%,transparent)}.ds-nav button{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);position:relative;display:flex;align-items:center;gap:8px;padding:8px 0;font-size:15px;color:var(--muted);border:0;background:none}.ds-nav button::after{content:'';position:absolute;left:0;right:0;bottom:3px;height:1px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease-out)}.ds-nav button:hover{color:var(--gold-bright)}.ds-nav button:hover::after,.ds-nav button:focus-visible::after{transform:scaleX(1)}.ds-nav button:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-nav button:disabled{opacity:.4;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.ds-nav button,.ds-nav button::before,.ds-nav button::after{animation:none!important;transition:none!important}}"
     },
     {
       "name": "开发预览标签",
       "kind": "chip",
       "refersTo": "chip-preview",
-      "description": "静态开发状态标识，不是筛选操作。",
+      "description": "非交互状态标签。",
       "html": "<span class=\"ds-preview\">开发预览</span>",
-      "css": ".ds-preview{font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;display:inline-block;color:var(--gold-bright,#d5bd94);border:1px solid #aa8d6250;border-radius:var(--radius,4px);padding:2px 8px;font-size:10px;white-space:nowrap}"
+      "css": ".ds-preview{font:12px/1.8 var(--font-body);color:var(--gold-bright);border:1px solid var(--line-strong);border-radius:2px;padding:2px 8px}"
     },
     {
-      "name": "资料核验面板",
-      "kind": "card",
-      "refersTo": "information-panel",
-      "description": "开放式资料容器，以细线分隔，展示真实的核验空态。",
-      "html": "<aside class=\"ds-information\" aria-label=\"事件资料与说明\"><h2 class=\"ds-panel-title\">事件资料</h2><section class=\"ds-empty\"><h3 class=\"ds-empty-title\">每一段历史，都有据可循。</h3><p class=\"ds-empty-copy\">史料完成复核后，在这里阅读事件、地点与原始出处。</p><p class=\"ds-integrity\">正式内容须经两名成员独立复核。</p></section></aside>",
-      "css": ".ds-information{font-family:var(--font-body,'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif);font-weight:400;line-height:1.7;color:var(--text,#e6e1d6);border-left:1px solid var(--line,#e4dfce12);padding:29px 0 20px 25px;min-width:0}.ds-panel-title{margin:0;font-size:14px;letter-spacing:.08em;font-weight:500}.ds-empty{padding-top:45px}.ds-empty-title{margin:21px 0 14px;font-family:var(--font-display,'Noto Serif SC','Songti SC',SimSun,serif);font-size:19px;font-weight:500;line-height:1.9}.ds-empty-copy{margin:0;color:var(--muted,#a9aa9f);font-size:12px;line-height:2}.ds-integrity{margin:31px 0 0;color:var(--gold,#bca378);font-size:10px;line-height:1.9}@media(max-width:1200px){.ds-information{padding-left:20px}.ds-empty-title{font-size:17px}}@media(max-width:1023px){.ds-information{border-left:0;border-top:1px solid var(--line,#e4dfce12);padding:25px 0}.ds-empty{padding-top:20px;max-width:680px}.ds-empty-title{margin-top:12px}}"
+      "name": "场景工具",
+      "kind": "button",
+      "refersTo": "scene-tool",
+      "description": "带辅助说明的章节入口。",
+      "html": "<button class=\"ds-tool\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m12 3 10 5-10 5L2 8l10-5Zm-10 9 10 5 10-5M2 16l10 5 10-5\"/></svg><span>历史专题<small>专题核验中</small></span><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M7 7h10v10M7 17 17 7\"/></svg></button>",
+      "css": ".ds-tool{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);display:flex;align-items:center;gap:16px;text-align:left;padding:15px 20px;min-width:216px;background:#101720e6;color:var(--text);border:1px solid var(--line-strong);border-radius:var(--radius)}.ds-tool small{display:block;font-size:12px;color:var(--muted)}.ds-tool:hover{color:var(--gold-bright)}.ds-tool:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-tool:disabled{opacity:.4;cursor:not-allowed}.ds-tool>svg{flex-shrink:0}.ds-tool>svg:first-child{color:var(--gold)}.ds-tool>svg:last-child{margin-left:auto}@media(prefers-reduced-motion:reduce){.ds-tool{transition:none!important}}@media(prefers-reduced-transparency:reduce){.ds-tool{background:var(--surface)}}"
+    },
+    {
+      "name": "回放按钮",
+      "kind": "button",
+      "refersTo": "button-play",
+      "description": "圆形播放控件，无核验节点时禁用。",
+      "html": "<button class=\"ds-play\" aria-label=\"播放历史回放\" disabled><svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m8 5 11 7-11 7V5Z\"/></svg></button>",
+      "css": ".ds-play{font-family:var(--font-body);font-size:16px;line-height:1.8;cursor:pointer;transition:color .2s,background-color .2s,border-color .2s,transform .3s var(--ease-out);width:52px;height:52px;border-radius:50%;border:0;background:var(--red-muted);color:var(--text);display:grid;place-items:center}.ds-play:not(:disabled):hover{color:var(--gold-bright)}.ds-play:focus-visible{outline:2px solid var(--gold-bright);outline-offset:5px}.ds-play:disabled{opacity:.4;cursor:not-allowed}"
+    },
+    {
+      "name": "火种印章",
+      "kind": "custom",
+      "refersTo": "brand-emblem",
+      "description": "盾形、火种与山纹组成的原创主题印章，非历史徽章。",
+      "html": "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"ds-ember\" aria-hidden=\"true\" width=\"52\" height=\"59\" viewBox=\"0 0 64 72\" fill=\"none\"> <defs> <linearGradient id=\"ds-ember-lacquer\" x1=\"8\" y1=\"2\" x2=\"55\" y2=\"68\" gradientUnits=\"userSpaceOnUse\"> <stop stop-color=\"#a53534\"/> <stop offset=\".52\" stop-color=\"#72242b\"/> <stop offset=\"1\" stop-color=\"#451b23\"/> </linearGradient> <linearGradient id=\"ds-ember-foil\" x1=\"8\" y1=\"4\" x2=\"57\" y2=\"66\" gradientUnits=\"userSpaceOnUse\"> <stop stop-color=\"#f0d9a7\"/> <stop offset=\".5\" stop-color=\"#b99255\"/> <stop offset=\"1\" stop-color=\"#e2c68d\"/> </linearGradient> </defs> <path d=\"M32 2 59 14v30c0 10-11 20-27 26C16 64 5 54 5 44V14L32 2Z\" fill=\"url(#ds-ember-lacquer)\"/> <path d=\"m32 5 24 11v28c0 8-9 17-24 23C17 61 8 52 8 44V16L32 5Z\" stroke=\"url(#ds-ember-foil)\" stroke-width=\".8\"/> <path d=\"m15 22 17-8 17 8M15 48v-5m34 5v-5\" stroke=\"#e0c18a\" stroke-width=\".7\" opacity=\".55\"/> <path d=\"M35 20c-9 5-6 12-11 18-3 3-4 8-1 11 4 5 13 5 18 0 6-7 0-12-2-15 0 6-3 7-4 5-2-3 4-11 0-19Z\" fill=\"url(#ds-ember-foil)\"/> <path d=\"m14 54 9-7 8 8 8-6 11 6M20 58l9-3 7 4 8-2\" stroke=\"url(#ds-ember-foil)\" stroke-width=\"1.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"m32 10 1.5 2.5L32 15l-1.5-2.5L32 10Z\" fill=\"#eed7a1\"/> </svg>",
+      "css": ".ds-ember{display:block;width:52px;height:59px;object-fit:contain;flex:0 0 auto}@media(max-width:767px){.ds-ember{width:36px;height:42px}}"
     }
   ],
   "narrative": {
-    "northStar": "暗色历史数字展馆",
-    "overview": "以炭绿深底、暗红入口和少量旧金色建立安静、庄重的历史探索环境。中文宋体承担主标题的历史感，操作与资料采用黑体；细线、留白和字号差异组织信息，视觉重心落在场景及可追溯的资料。\n\n这是依据当前代码提取的初始化系统，尚无经批准的视觉效果图或授权图像资产。中央展台是 DOM/CSS 抽象占位；其几何、网格和光影没有历史地理含义。前置 token 记录实际实现，来源为 `src/styles/tokens.css` 和 `src/styles/global.css`。",
+    "northStar": "山河之间，信念长明",
+    "overview": "以墨蓝山河、暖纸色手迹标题、朱红入口与暗金细线建立庄重的数字展陈。山河画面、取字编排和主题纹样共同承担身份，网页文字与控件承担叙事和操作；阅读区域保持平整、疏朗。\n\n本文件从 Phase 2 源码提取，替代 Phase 1 三栏壳的旧规范。用户已否定首版 SVG 山体；当前采用原创生成的山河栅格画面，制作记录见 `docs/design/hero-art-provenance.md`。按最新要求，前台不显示 AI／非历史地貌的显式提示。装饰背景不提供地点、路线或史料证据。\n\n**验证状态：暂定。** 浏览器访问策略仍拒绝自动采集；用户提供了阶段截图并据此指出问题，但最终手迹、组件和动效组合尚未完成新一轮全表面截图复审。旧 SVG 截图不代表本实现。桌面优先，手机基础结构仍待实机验收，不能宣称最终视觉通过。",
     "keyCharacteristics": [
-      "深色低饱和底色，暗红与旧金色克制点题。",
-      "宋体标题与黑体操作形成层级，设备字体是当前实现约束。",
-      "面板以细分隔线组织，抽象展台局部产生深度。",
-      "核验空态、键盘焦点与移动端读序属于界面的一部分。"
+      "墨蓝深底与暖纸文字，朱红主入口、暗金辅助强调。",
+      "手迹取字主标题、自托管宋体副标题与黑体阅读，层级分明。",
+      "全屏展陈与场景主体，章节和资料按需打开。",
+      "有限入场动效、可跳过转场与明确的键盘操作路径。"
     ],
     "rules": [
       {
         "name": "The Accent Restraint Rule",
-        "body": "暗红与金色用于已有的主题、状态和操作层级，保持大面积深色阅读底。",
+        "body": "朱红承担主要动作，金色承担层级与反馈，深底保留大面积留白。",
         "section": "colors"
       },
       {
-        "name": "The Local Depth Rule",
-        "body": "展台的透视与阴影限定于场景，不扩散到资料、导航和时间轴。",
+        "name": "The Reading Surface Rule",
+        "body": "资料区域依靠色阶和细线分层，背景纵深不进入正文。",
         "section": "elevation"
       }
     ],
     "dos": [
-      "**Do** 沿用现有色彩、细线与轻圆角，让场景和资料拥有清晰主次。",
-      "**Do** 保留核验提示、抽象几何说明、禁用状态和可见键盘焦点。",
-      "**Do** 在窄屏保持专题→场景→资料→回放的读序，并让面板导航滚动及聚焦目标。",
-      "**Do** 将减少动态效果偏好应用于滚动、过渡和动画。"
+      "Do 沿用墨蓝、暖纸、朱红与金线的主次关系。",
+      "Do 保留手迹取字原笔画与透明边界，以宋体副标题和黑体正文建立阅读层级。",
+      "Do 保留核验空态、禁用反馈、可见焦点及抽屉键盘操作。",
+      "Do 尊重减少动态和减少透明偏好，保留转场跳过操作。",
+      "Do 对最终手迹、组件和动效组合重新截图复审，区分源码记录与视觉验收。"
     ],
     "donts": [
-      "**Don't** 为填充界面而虚构史实、人物引文、地形、坐标、路线或人工审核。",
-      "**Don't** 将占位网格、抽象展台或艺术再现表述为真实历史地图或档案。",
-      "**Don't** 将局部展台阴影复制成通用面板装饰。",
-      "**Don't** 将当前设备字体回退或细小页脚字号提升为未来所有界面的品牌要求。"
+      "Don't 将被否定的 SVG 截图或阶段截图用作最终视觉验收证据。",
+      "Don't 把手迹取字重排称为毛泽东为本展馆题字，或用裁切动画截断笔画。",
+      "Don't 将装饰山河、色带或回放进度解释为真实地形与行军路线。",
+      "Don't 为填充页面虚构历史节点、引文、坐标、来源或人工审核。",
+      "Don't 将主入口投影扩展为所有资料容器的装饰。",
+      "Don't 将未验收的手机布局或小字号说明定为通用标准。"
     ]
   }
 }

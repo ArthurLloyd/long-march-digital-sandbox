@@ -85,7 +85,10 @@ export function Timeline({
         )}
       </div>
       <div className="timeline-current">
-        <span>当前事件</span>
+        <span>
+          {events.find((event) => event.id === activeEventId)?.dateText ??
+            '当前事件'}
+        </span>
         <strong>
           {events.find((event) => event.id === activeEventId)?.title ??
             '尚未开放'}

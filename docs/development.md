@@ -31,7 +31,7 @@ App 测试覆盖启动、空态、导航、全屏反馈；数据测试覆盖坐�
 
 ## 资源与故障
 
-不预置历史照片、地形、音频或字体下载；当前字体使用设备已有中文字体，不向第三方字体服务发请求。未来自托管字体必须保存许可。
+不预置历史照片、真实地形或音频。Phase 2 自托管 Fontsource Noto Serif SC 与 Noto Sans SC（5.3.1，OFL-1.1），字体与网页同源提供，许可随 `public/licenses/OFL-1.1.txt` 发布。首页手迹标题为两个本地 PNG，不是新字体包；取字来源、比例和去底步骤见 `docs/design/title-calligraphy-research.md`，使用说明随 `public/licenses/title-calligraphy-SOURCE.txt` 发布。山河主题素材及组件纹样分别记录于 `docs/design/hero-art-provenance.md`、`docs/design/ornament-provenance.md`，不进入历史数据。
 
 无历史数据属于正常状态。场景加载用 Suspense 占位；异常可重试。A 的真实场景加入后须测试 WebGL 缺失、低性能设备与资源释放，不能用本次 DOM 占位测试宣称 WebGL 已验证。
 

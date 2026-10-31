@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import type { HistoryEvent } from '../../shared/contracts';
 
 type State = { index: number; playing: boolean; closed: boolean };
@@ -29,6 +29,7 @@ export function usePlayback(events: readonly HistoryEvent[]) {
   });
   const index = Math.max(0, Math.min(state.index, events.length - 1));
   const playing = state.playing && events.length > 1;
+  const close = useCallback(() => dispatch({ type: 'close' }), []);
   useEffect(() => {
     if (!playing) return;
     const interval = window.setInterval(
@@ -60,6 +61,6 @@ export function usePlayback(events: readonly HistoryEvent[]) {
         dispatch({ type: 'toggle' });
       }
     },
-    close: () => dispatch({ type: 'close' }),
+    close,
   };
 }
