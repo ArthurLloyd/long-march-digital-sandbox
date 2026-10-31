@@ -1,5 +1,11 @@
 # 三人 GitHub 协作
 
+## Phase 3 · C0 公共契约
+
+C0 使用新的独立 PR，目标 main，等待用户审核后再决定合并，不再记入已经合并的 PR #3。公共类型与接线方式见 [v2 接线说明](architecture/v2-integration-guide.md)。v1 数据和组件继续有效，正式 dataset.json 仍由 B 管理；C0 没有代替 A/B 提交实现或史料。
+
+A/B 可先准备 v1 兼容工程和隔离小样；C0 合并后同步 main，使用相同的 experienceId、互动 ID、阶段、回调与审核门禁。不要各自新增全局时钟或完成存储，也不要从其他 feature 的内部文件取状态。
+
 仓库：`https://github.com/ArthurLloyd/long-march-digital-sandbox`，目标为 Private，稳定分支 main。由所有者邀请另外两位成员。初始化提交直接到 main；后续全部通过 PR。
 
 ## 开工命令

@@ -14,11 +14,20 @@
 ```json
 {
   "schemaVersion": 2,
-  "events": [], "routes": [], "sources": [],
-  "topics": [], "phases": [], "people": [], "places": [],
-  "forceTracks": [], "forceSnapshots": [],
-  "experiences": [], "segments": [], "interactions": [],
-  "fallbackContents": [], "assets": []
+  "events": [],
+  "routes": [],
+  "sources": [],
+  "topics": [],
+  "phases": [],
+  "people": [],
+  "places": [],
+  "forceTracks": [],
+  "forceSnapshots": [],
+  "experiences": [],
+  "segments": [],
+  "interactions": [],
+  "fallbackContents": [],
+  "assets": []
 }
 ```
 
@@ -26,19 +35,21 @@
 
 所有正式历史对象，包括段落、素材、等价内容，追加原有共同审核字段和 sourceIds。ID 在所属集合内唯一，引用数组不重复。所有引用即使处于草稿也须存在。
 
-| 类型 / 集合 | 业务字段 |
-| --- | --- |
-| Topic / topics | topicId, title, summary, phaseIds, eventIds, displayOrder |
-| HistoricalPhase / phases | phaseId, topicId, title, timeRange, timePrecision, sequence, eventIds |
-| HistoricalPerson / people | personId, name, summary, detail, relatedEventIds, relatedTopicIds, assetIds |
-| HistoricalPlace / places | placeId, historicalName, modernName（可 null）, placeType, summary, detail, coordinates, coordinatePrecision, relatedEventIds, assetIds |
-| ForceTrack / forceTracks | trackId, unitId, name, camp（red_army/nationalist_army/other）, snapshotIds |
-| ForceSnapshot / forceSnapshots | snapshotId, trackId, phaseId, coordinates, coordinatePrecision, region（可 null）, routeId（可 null）, displayMode（point/region/route/hidden） |
-| ExperienceManifest / experiences | experienceId, topicId, linkedEventIds, scriptVersion, completionPolicyVersion, segmentIds, requiredInteractionIds, terminalSegmentId, fallbackContentId, assetIds |
-| ExperienceSegment / segments | segmentId, experienceId, kind, title, text, contentType, presentation, durationSeconds（可 null）, interactionIds, assetIds |
-| InteractionDefinition / interactions | interactionId, experienceId, segmentId, interactionType, prompt, required, feedback, explanation, completionRequirements，加各类型专属字段 |
-| EquivalentExperienceContent / fallbackContents | fallbackContentId, experienceId, steps |
-| AssetReference / assets | assetId, title, filePath, creator, origin, assetType, representation, disclosure, rightsStatus, rightsNote, attribution, transformations, relatedPersonIds, relatedPlaceIds, relatedEventIds |
+reviewerId 使用稳定 GitHub 登录名，比较时忽略大小写；同一登录名变更大小写不能计为第二位人员。机器仍不能验证真实身份或识别任意别名。
+
+| 类型 / 集合                                    | 业务字段                                                                                                                                                                                     |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Topic / topics                                 | topicId, title, summary, phaseIds, eventIds, displayOrder                                                                                                                                    |
+| HistoricalPhase / phases                       | phaseId, topicId, title, timeRange, timePrecision, sequence, eventIds                                                                                                                        |
+| HistoricalPerson / people                      | personId, name, summary, detail, relatedEventIds, relatedTopicIds, assetIds                                                                                                                  |
+| HistoricalPlace / places                       | placeId, historicalName, modernName（可 null）, placeType, summary, detail, coordinates, coordinatePrecision, relatedEventIds, assetIds                                                      |
+| ForceTrack / forceTracks                       | trackId, unitId, name, camp（red_army/nationalist_army/other）, snapshotIds                                                                                                                  |
+| ForceSnapshot / forceSnapshots                 | snapshotId, trackId, phaseId, coordinates, coordinatePrecision, region（可 null）, routeId（可 null）, displayMode（point/region/route/hidden）                                              |
+| ExperienceManifest / experiences               | experienceId, topicId, linkedEventIds, scriptVersion, completionPolicyVersion, segmentIds, requiredInteractionIds, terminalSegmentId, fallbackContentId, assetIds                            |
+| ExperienceSegment / segments                   | segmentId, experienceId, kind, title, text, contentType, presentation, durationSeconds（可 null）, interactionIds, assetIds                                                                  |
+| InteractionDefinition / interactions           | interactionId, experienceId, segmentId, interactionType, prompt, required, feedback, explanation, completionRequirements，加各类型专属字段                                                   |
+| EquivalentExperienceContent / fallbackContents | fallbackContentId, experienceId, steps                                                                                                                                                       |
+| AssetReference / assets                        | assetId, title, filePath, creator, origin, assetType, representation, disclosure, rightsStatus, rightsNote, attribution, transformations, relatedPersonIds, relatedPlaceIds, relatedEventIds |
 
 timeRange 为 `{ start: string | null, end: string | null, label: string }`。day 使用有效 YYYY-MM-DD 且两端相等；month 使用 YYYY-MM；year 使用 YYYY；range 使用同粒度日期端点；unknown 两端 null。开始不得晚于结束，不补造缺失日月。
 
@@ -58,14 +69,14 @@ ForceTrack 与 snapshotIds 双向一致，同一 track/phase 最多一个样本�
 
 EXPERIENCE_CATALOG 只表达产品约定，没有审核或 published 字段，不自动写入 dataset。ExperienceId/InteractionId 从常量推导。
 
-| 编号 | experienceId | 必要互动 / interactionType |
-| --- | --- | --- |
-| E01 | exp-zunyi-conference | zy-01 observe_hotspots；zy-02 classify_source |
-| E02 | exp-sidu-chishui | sd-01 observe_hotspots（listed 顺序）；sd-02 evidence_selection |
-| E03 | exp-qiaodu-jinshajiang | js-01 observe_hotspots；js-02 material_matching |
-| E04 | exp-feiduo-ludingqiao | ld-01 observe_hotspots；ld-02 sort_sequence |
-| E05 | exp-crossing-snow-mountains | sn-01 observe_hotspots；sn-02 evidence_selection |
-| E06 | exp-crossing-grasslands | gr-01 observe_hotspots；gr-02 evidence_selection |
+| 编号 | experienceId                | 必要互动 / interactionType                                      |
+| ---- | --------------------------- | --------------------------------------------------------------- |
+| E01  | exp-zunyi-conference        | zy-01 observe_hotspots；zy-02 classify_source                   |
+| E02  | exp-sidu-chishui            | sd-01 observe_hotspots（listed 顺序）；sd-02 evidence_selection |
+| E03  | exp-qiaodu-jinshajiang      | js-01 observe_hotspots；js-02 material_matching                 |
+| E04  | exp-feiduo-ludingqiao       | ld-01 observe_hotspots；ld-02 sort_sequence                     |
+| E05  | exp-crossing-snow-mountains | sn-01 observe_hotspots；sn-02 evidence_selection                |
+| E06  | exp-crossing-grasslands     | gr-01 observe_hotspots；gr-02 evidence_selection                |
 
 manifest 恰有对应两个必要互动，各自 required: true。四渡赤水一个完成记录，雪山和草地分开。本版只接受上述十二个互动，扩展需协调契约。完整内容要求见 docs/plans/2026-11-01-experience-standard.md。
 
@@ -73,9 +84,9 @@ manifest 恰有对应两个必要互动，各自 required: true。四渡赤水�
 
 - observe_hotspots：materials、requiredMaterialIds、visitOrder（any/listed）。material 含 materialId/title/text/contentType/assetIds/sourceIds，必看项必须存在。
 - sort_sequence：choices（choiceId/text）、correctOrder，完整排列；ld-02 恰好三项。
-- evidence_selection：choices、correctChoiceId，至少两项，正确项存在。
-- material_matching：materials、conclusions（conclusionId/text）、correctPairs（materialId/conclusionId），完整一一配对。
-- classify_source：materials、correctClassifications（materialId/category），完整分类；category 为 primary_source/editorial_summary/artistic_recreation。
+- evidence_selection：choices、correctChoiceId，两项，正确项存在。
+- material_matching：两份 materials、两条 conclusions（conclusionId/text）、correctPairs（materialId/conclusionId），完整一一配对。
+- classify_source：三份 materials、correctClassifications（materialId/category），完整覆盖三类；category 为 primary_source/editorial_summary/artistic_recreation。
 
 严格拒绝未知 action/script/code 字段；不执行 eval，不将字符串作为 HTML 或 JavaScript。互动只影响学习反馈，不改变历史。
 
@@ -97,16 +108,16 @@ completionRecordSchema 验证结构；isCompletionRecordForExperience 验证 ID�
 
 ## v2 模块接口（独立于 v1）
 
-| 接口 | 提供 / 消费 | 语义 |
-| --- | --- | --- |
-| HistoricalObjectSelection | A/B → C | kind: event/person/place/topic 与稳定 id |
-| HistoricalPhaseControllerProps | B 内容、C 状态 | phases, activePhaseId, playing, onPhaseChange, onPlayingChange |
-| ForceLayerProps | C → A | tracks, snapshots, routes, activePhaseId，无推算方法 |
-| LongMarchSceneV2Props | C → A | 保留 v1，增加 dataset/phaseId/selection/cameraBookmark/onObjectSelect/onCameraBookmark |
-| ImmersiveExperienceProps | C → A | manifest, segments, assets, command, ImmersiveRendererCallbacks |
-| TeachingInteractionProps | C → B | interaction, response, explanationAcknowledged, onResponse, onExplanationAcknowledged |
-| HistoricalDetailProps | C → B | detail（带 kind 的对象）、sources、assets、onNavigate、onClose |
-| EquivalentExperienceProps | C → B | content, activeStepId, onStepViewed；互动使用 TeachingInteractionProps |
+| 接口                           | 提供 / 消费    | 语义                                                                                   |
+| ------------------------------ | -------------- | -------------------------------------------------------------------------------------- |
+| HistoricalObjectSelection      | A/B → C        | kind: event/person/place/topic 与稳定 id                                               |
+| HistoricalPhaseControllerProps | B 内容、C 状态 | phases, activePhaseId, playing, onPhaseChange, onPlayingChange                         |
+| ForceLayerProps                | C → A          | tracks, snapshots, routes, activePhaseId，无推算方法                                   |
+| LongMarchSceneV2Props          | C → A          | 保留 v1，增加 dataset/phaseId/selection/cameraBookmark/onObjectSelect/onCameraBookmark |
+| ImmersiveExperienceProps       | C → A          | manifest, segments, assets, command, ImmersiveRendererCallbacks                        |
+| TeachingInteractionProps       | C → B          | interaction, response, explanationAcknowledged, onResponse, onExplanationAcknowledged  |
+| HistoricalDetailProps          | C → B          | detail（带 kind 的对象）、sources、assets、onNavigate、onClose                         |
+| EquivalentExperienceProps      | C → B          | content, activeStepId, onStepViewed；互动使用 TeachingInteractionProps                 |
 
 CameraBookmark 为 `{ sceneId, coordinateSystem: 'scene-local', position: [x,y,z], target: [x,y,z], zoom, phaseId }`，不是历史经纬度；A 检查场景一致后恢复，C 保存普通数据。
 
@@ -118,7 +129,7 @@ InteractionResponse 按 interactionType 区分 visitedMaterialIds/orderedChoiceI
 
 /__dev/contracts 由仅 serve 的 Vite 中间件提供，入口在 src/tests/workbench/，不从 App/main 导入。样本 draft + unpublished，无真人审核记录，标明非史实。可测试旧模块、阶段输入、JSON 校验与回调；新增渲染／教学组件按接线说明发现。
 
-生产构建检查实际 chunk module IDs，含 fixtures/tests/workbench 即失败；自动测试故意引入样本的拒绝路径，正式 build 验证正常路径。接线说明见 docs/architecture/v2-integration-guide.md。
+生产构建检查实际 chunk module IDs，含 fixtures/tests/workbench 即失败；自动测试故意引入样本的拒绝路径，正式 build 验证正常路径。validate:data 还检查发布视图中的素材文件存在于 public 内，拒绝缺失文件或符号链接越界。接线说明见 docs/architecture/v2-integration-guide.md。
 
 ## 附录：保留的 v1 接口与规则
 
