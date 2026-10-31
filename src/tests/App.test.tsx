@@ -72,7 +72,7 @@ describe('基础应用与空状态', () => {
       screen.getByRole('heading', { name: '事件资料' }),
     ).toBeInTheDocument();
   });
-  it('窄屏导航打开资料并移动键盘焦点', async () => {
+  it('导航抽屉关闭后恢复键盘焦点', async () => {
     const user = await enter();
     const trigger = screen.getByRole('button', {
       name: '资料来源',
@@ -107,7 +107,9 @@ describe('展馆进入、返回与无障碍', () => {
     render(<App />);
     await user.click(screen.getByRole('button', { name: '开启征程' }));
     expect(screen.getByText('山河之间，开启征程。')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '立即进入' }));
+    expect(screen.getByRole('button', { name: '立即进入' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: '开启征程' })).toBeDisabled();
+    await user.keyboard('{Enter}');
     expect(screen.queryByText('山河之间，开启征程。')).not.toBeInTheDocument();
     expect(
       screen.getByRole('main', { name: '长征沙盘探索空间' }),

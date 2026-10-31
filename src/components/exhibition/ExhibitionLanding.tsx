@@ -42,7 +42,7 @@ export function ExhibitionLanding({
               className="title-glyph title-glyph-zheng"
               src={titleZheng}
               width={520}
-              height={410}
+              height={520}
               alt=""
               decoding="async"
             />
@@ -58,6 +58,7 @@ export function ExhibitionLanding({
             ref={enterRef}
             onClick={onEnter}
             aria-label="开启征程"
+            disabled={entering}
           >
             <span className="enter-copy">
               开启征程<small>进入三维历史沙盘</small>

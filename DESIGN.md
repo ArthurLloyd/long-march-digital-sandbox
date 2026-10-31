@@ -148,11 +148,11 @@ components:
 
 字体通过 Fontsource 的 unicode-range 分片随项目提供，采用 OFL-1.1；许可见 `public/licenses/`。宋体用于副标题、说明、阅读标题和章节名，黑体用于正文、导航与操作。
 
-主标题由 `title-chang.png`（480 × 740）和 `title-zheng.png`（520 × 410）横向编排，从 1962 年毛泽东手书诗作题名取字，保留原笔画比例和飞白。来源与处理记录见 `docs/design/title-calligraphy-research.md`；不能表述为毛泽东为本展馆题字。取字不包含相邻字残点，图片四边保留透明边界。
+主标题由 `title-chang.png`（480 × 740）和 `title-zheng.png`（520 × 520）横向编排，从 1962 年毛泽东手书诗作题名取字，保留原笔画比例和飞白。来源与处理记录见 `docs/design/title-calligraphy-research.md`；不能表述为毛泽东为本展馆题字。“征”完整保留彳旁末点，不误判为邻字删去；图片四边保留透明边界。
 
 ### Hierarchy
 
-- **Hero artwork**：图片容器的 `font-size` 仅为 em 尺寸基准（clamp(120px, 11.8vw, 190px)），不是字体字号；容器高（1.25em），长字高（1.2em）、征字高（0.92em），间距（0.1em），征字向下偏移（0.13em）。
+- **Hero artwork**：图片容器的 `font-size` 仅为 em 尺寸基准（clamp(120px, 11.8vw, 190px)），不是字体字号；容器高（1.25em），长字高（1.2em）、征字高（1.1em），间距（0.1em），征字向下偏移（0.13em）。
 - **Display**：主题副标题“不灭的火种”使用前置 display token；不把手迹图片的尺寸登记为字体 token。
 - **Headline / Title**：探索空态与抽屉标题使用对应 token；阅读小标题采用宋体（26px、行高 1.7）。
 - **Body / Reading**：默认正文行高较紧，资料正文使用 reading token；错误说明最长（52ch）。

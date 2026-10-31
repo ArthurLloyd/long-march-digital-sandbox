@@ -13,6 +13,7 @@ type Action =
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'enter':
+      if (state.phase !== 'landing') return state;
       return {
         phase: action.reduced ? 'exploring' : 'entering',
         overlay: null,
