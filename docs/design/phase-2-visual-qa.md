@@ -1,4 +1,84 @@
-# Phase 2.5–2.6 真实浏览器视觉验收
+# Phase 2.5–2.7 浏览器与视觉验收
+
+## 2026-11-01 当前结论
+
+Chrome 页面访问已在新聊天恢复。**三个桌面尺寸的静态布局和本轮列出的交互已实测；发现的焦点恢复、转场文档增高、加载面板越界均已修复并复验。** 随后完成两种手机尺寸的窄视口检查及局部修正。没有据此宣布 Phase 2 全部完成，PR #3 继续保持 Draft。
+
+- 仓库开始状态：`feat/app-shell`，`de4f81f`，工作区干净；远程 head 同为 `de4f81f090a957a1ff3fcab0dc93d1d423b765e6`，main 为 `4b2822d28150a72a7b479ce0b5f1c3ffc2ddf1b1`。
+- 页面修复提交：`aee3dee`（焦点与转场）、`4b70eb9`（加载反馈边界）、`f7f1974`（手机文字遮罩与底部右侧入口）。后续文档提交不改变画面。
+- 浏览器：用户已有的 Chrome localhost 标签页；版本 `156.0.8078.79`，由本机 Chrome 可执行文件的版本信息采集。
+- 系统：Microsoft Windows 11 家庭版中文版，`10.0.26300`。
+- 原服务已在主机复核：`127.0.0.1:5173`，PID `52484`；没有重复启动服务，也没有切换端口。
+- 只观察及操作 `http://127.0.0.1:5173/`。先通过正常 Chrome 工具成功读取页面，之后才使用同标签页的开发能力检查 hover、减少动态和触摸；没有出现新的站点权限拒绝，没有通过别的表面读取被拒页面。
+- 实测 CSS 视口：1920×1080、1440×900、1366×768、390×844、430×932。DOM 的 `innerWidth/innerHeight` 与文档尺寸相符；工具覆盖下 DPR 为 1，`visualViewport.scale` 为 1。未读取 Chrome 缩放菜单和 Windows 显示缩放，不能据此报告它们为 100%。
+- 证据索引：[截图尺寸与 SHA-256](evidence/screenshot-inventory.json)。共78份原始JPEG：77份目标尺寸画面、1份裁切接口诊断；不是78项验收全部通过。按采集时的页面提交分目录保存，未缩放、拼接或加标注。
+
+### 截图接口和归档限制
+
+本次 `fullPage:false` 首次返回了放大裁切的 1920×933 画面，虽然 DOM 为 1920×1080。该图仅保留为 [接口诊断图](evidence/de4f81f/diagnostic-viewport-api-cropped.jpg)，不算指定尺寸通过。随后使用正常浏览器工具的 `fullPage:true`，并核对文档宽高与原始图片宽高；稳定页面的文档恰好等于目标视口，因此这些完整页面图同时覆盖完整目标视口。没有将超长页面图伪称为目标视口图。
+
+存储辅助函数曾捕获旧目录，部分后续同名图覆盖了首轮图。已依据采集顺序、文件时间和代码检查点重新归档，映射见 [归档更正](evidence/capture-filing.json)。最初1920首页及hover/focus从仍保留的原始字节变量恢复；其余被覆盖的首轮图片没有补造。原 DOM 观测仍保留在 [首轮观测](evidence/de4f81f/observations.json)，其中 `originalScreenshotAvailable: false` 的条目不能当作对应首轮本地图片。转场首次两屏原图在本聊天工具输出中观察到，本地同名图已被复验图覆盖；修复前的2160px文档高度仍有原始 DOM 记录。
+
+### 发现、修复与复验
+
+| ID  | 级别 | 实测发现                                                                                                       | 修复                                                                                                           | 复验依据                                                                                                                                                                                                                                                  |
+| --- | ---- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F03 | P1   | 打开抽屉时，原生 `inert` 已让触发按钮失焦；抽屉 effect 读到 BODY，关闭后无法返回原按钮。jsdom 未模拟这个失焦。 | App 在触发事件中保存 opener；抽屉关闭恢复保存的元素，专题切换事件时保留原工具入口。新增失焦回归测试。`aee3dee` | 三种桌面以键盘打开、Esc关闭恢复原按钮；1366事件抽屉用关闭按钮恢复。见 [1920](evidence/aee3dee/phase2-1920-about-restored.jpg)、[1440](evidence/aee3dee/phase2-1440-chapters-restored.jpg)、[1366](evidence/aee3dee/phase2-1366-history-restored.jpg)。    |
+| L01 | P2   | entering 阶段首页和探索页同时参与文档流；1920×1080时文档高2160。                                               | incoming scene 保持挂载以准备资源，但转场期间绝对定位并隐藏；不叠成两屏。`aee3dee`                             | 三种桌面转场图与 DOM 高度均等于1080/900/768，立即进入有焦点，Enter跳过后聚焦探索主体。                                                                                                                                                                    |
+| L02 | P2   | 减少动态的真实懒加载瞬间，`.scene-module > *` 强制加载框宽高100%，覆盖其 inset 约束，右侧及底部被裁切。        | 通用场景尺寸规则排除 `.scene-state`。`4b70eb9`                                                                 | 三种桌面重新加载实际 lazy 模块后采集 [1920](evidence/4b70eb9/phase2-1920-loading.jpg)、[1440](evidence/4b70eb9/phase2-1440-loading.jpg)、[1366](evidence/4b70eb9/phase2-1366-loading.jpg)；矩形完全在场景内。这些是实际加载瞬间，不是人为失败或慢速模拟。 |
+| M01 | P2   | 手机媒体查询将“了解作品”放到底部左侧，与保留右侧入口的要求不符。                                               | 手机入口 `align-self: flex-end`。`f7f1974`                                                                     | [390](evidence/f7f1974/phase2-390-landing.jpg)、[430](evidence/f7f1974/phase2-430-landing.jpg) 中均在右下，未与标语或主按钮遮挡。                                                                                                                         |
+| M02 | P2   | 手机背景裁切让部分金色文字落在较亮雾层上，可读性减弱。                                                         | 仅加强手机首页文字背后的墨蓝遮罩，保留山河素材、手迹与构图。`f7f1974`                                          | 同上两张原图；属于视觉可读性修正，没有据此宣称全站 WCAG 对比度认证。                                                                                                                                                                                      |
+
+本轮没有修改手迹素材。“征”左下彳旁末点在网页图中保留，右下邻字碎笔没有重新引入。A/B目录、正式数据及公共contracts相对 `de4f81f` 无改动。
+
+### 桌面实测矩阵
+
+“通过”只覆盖该行所列状态；首次动画连续性、性能和真实模块失败路径单列，不由静态图推断。`de4f81f`的未改动布局图与后续针对性复验共同构成本轮证据。
+
+| 状态                      | 1920×1080                                                       | 1440×900                                                        | 1366×768                                                        |
+| ------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| 稳定首页／字形与主按钮    | [通过](evidence/de4f81f/phase2-1920-landing.jpg)                | [通过](evidence/de4f81f/phase2-1440-landing.jpg)                | [通过，最终代码](evidence/f7f1974/phase2-1366-landing.jpg)      |
+| 主按钮hover               | [通过](evidence/de4f81f/phase2-1920-landing-hover.jpg)          | [通过](evidence/de4f81f/phase2-1440-landing-hover.jpg)          | [通过](evidence/de4f81f/phase2-1366-landing-hover.jpg)          |
+| Tab聚焦主按钮             | [通过](evidence/de4f81f/phase2-1920-landing-focus.jpg)          | [通过](evidence/de4f81f/phase2-1440-landing-focus.jpg)          | [通过](evidence/de4f81f/phase2-1366-landing-focus.jpg)          |
+| 顶部史料原则              | [通过](evidence/de4f81f/phase2-1920-landing-sources.jpg)        | [通过](evidence/de4f81f/phase2-1440-landing-sources.jpg)        | [通过](evidence/de4f81f/phase2-1366-landing-sources.jpg)        |
+| 底部了解作品／关于        | [通过](evidence/de4f81f/phase2-1920-about.jpg)                  | [通过](evidence/de4f81f/phase2-1440-about.jpg)                  | [通过](evidence/de4f81f/phase2-1366-about.jpg)                  |
+| 关闭恢复、滚动解锁        | [修复后通过](evidence/aee3dee/phase2-1920-landing-restored.jpg) | [修复后通过](evidence/aee3dee/phase2-1440-landing-restored.jpg) | [修复后通过](evidence/aee3dee/phase2-1366-landing-restored.jpg) |
+| 转场布局／Enter立即进入   | [修复后通过](evidence/aee3dee/phase2-1920-transition.jpg)       | [修复后通过](evidence/aee3dee/phase2-1440-transition.jpg)       | [修复后通过](evidence/aee3dee/phase2-1366-transition.jpg)       |
+| 探索／合法空态            | [通过](evidence/aee3dee/phase2-1920-exploring.jpg)              | [通过](evidence/aee3dee/phase2-1440-exploring.jpg)              | [通过，最终代码](evidence/f7f1974/phase2-1366-exploring.jpg)    |
+| 历史专题                  | [通过](evidence/de4f81f/phase2-1920-chapters-drawer.jpg)        | [通过](evidence/de4f81f/phase2-1440-chapters-drawer.jpg)        | [通过](evidence/de4f81f/phase2-1366-chapters-drawer.jpg)        |
+| 事件资料空态              | [通过](evidence/de4f81f/phase2-1920-history-drawer.jpg)         | [通过](evidence/de4f81f/phase2-1440-history-drawer.jpg)         | [通过](evidence/de4f81f/phase2-1366-history-drawer.jpg)         |
+| 探索中资料来源            | [通过](evidence/de4f81f/phase2-1920-exploring-sources.jpg)      | [通过](evidence/de4f81f/phase2-1440-exploring-sources.jpg)      | [通过](evidence/de4f81f/phase2-1366-exploring-sources.jpg)      |
+| 长正文与固定关闭区        | 全文可容纳                                                      | [正文可滚动](evidence/de4f81f/phase2-1440-sources-scrolled.jpg) | [正文可滚动](evidence/de4f81f/phase2-1366-sources-scrolled.jpg) |
+| 返回首页                  | [通过](evidence/de4f81f/phase2-1920-return.jpg)                 | [通过](evidence/de4f81f/phase2-1440-return.jpg)                 | [通过，最终代码](evidence/f7f1974/phase2-1366-return.jpg)       |
+| 减少动态：立即进入        | 通过；phase直接为exploring                                      | 通过；同左                                                      | 通过；同左                                                      |
+| 真实lazy加载反馈          | [修复后通过](evidence/4b70eb9/phase2-1920-loading.jpg)          | [修复后通过](evidence/4b70eb9/phase2-1440-loading.jpg)          | [修复后通过](evidence/4b70eb9/phase2-1366-loading.jpg)          |
+| 首次动画完整连续性／闪烁  | 待短录屏或逐帧证据                                              | 同左                                                            | 同左                                                            |
+| 快速连续点击              | 自动测试已覆盖重复状态；浏览器连续点击尚未录制                  | 同左                                                            | 同左                                                            |
+| 真实WebGL错误／超时／重试 | 待A模块集成；隔离测试通过不能代替实测                           | 同左                                                            | 同左                                                            |
+
+抽屉标题自动获得焦点，Tab保持在可操作区域；Esc、关闭按钮、返回入口均已实际操作。资料均为空时，不生成事件或路线以填充截图。长事件、来源展开及回放正向路径仍依赖后续正式内容与模块集成。
+
+### 手机视口检查
+
+| 尺寸    | 首页／标题／右侧入口                                  | 抽屉、正文、关闭                                                                                                  | 探索、时间轴与返回                                                                                                                                                 | 限制                         |
+| ------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| 390×844 | [修复后通过](evidence/f7f1974/phase2-390-landing.jpg) | [滚轮正文](evidence/4b70eb9/phase2-390-sources-scrolled.jpg)、[Esc恢复](evidence/f7f1974/phase2-390-restored.jpg) | [探索空态](evidence/4b70eb9/phase2-390-exploring.jpg)、[事件资料](evidence/4b70eb9/phase2-390-history-drawer.jpg)、[返回](evidence/4b70eb9/phase2-390-return.jpg)  | 桌面Chrome窄视口；真机待验收 |
+| 430×932 | [修复后通过](evidence/f7f1974/phase2-430-landing.jpg) | [正文滚轮](evidence/f7f1974/phase2-430-sources-scrolled.jpg)、[Esc恢复](evidence/f7f1974/phase2-430-restored.jpg) | [探索空态](evidence/f7f1974/phase2-430-exploring.jpg)、[历史专题](evidence/f7f1974/phase2-430-chapters-drawer.jpg)、[返回](evidence/f7f1974/phase2-430-return.jpg) | 同左                         |
+
+两种视口文档宽度均等于视口宽度，未出现横向溢出。390首页实际测得品牌高度约51px、导航44px、全屏44×44px、开启征程约207×88px、了解作品约81×45px。没有把鼠标滚轮当成触摸证据：两次合成触摸尝试没有观察到正文位移，结果明确记为**未通过该验证尝试，尚不能判定是真实手机缺陷还是工具输入差异**，见 [尝试截图](evidence/f7f1974/phase2-390-touch-attempt.jpg) 和 [记录](evidence/f7f1974/observations.json)。真机触摸、动态地址栏、安全区域、iOS/Android浏览器仍待实测；360与平板未纳入本轮。
+
+### 检查、性能与剩余门槛
+
+- `lint`、`typecheck`、`test`（8文件47项）、`validate:data`（0事件／0路线／0来源）、`build` 已在最终页面代码后运行通过。截图JSON曾触发格式告警，归档后统一格式化，最终 `format:check` 与 `git diff --check` 通过；78份JPEG校验和一致，QA中的本地证据链接均存在。
+- React检查确认 opener只在交互事件中写入ref，effect依赖及清理保留；没有新增依赖或公共接口变化。Impeccable检测在桌面修复后运行一次，输出包含既有字号、色值与圆角 advisory，未声称全站零告警。`design.json`滞后于DESIGN.md，未自动重建。
+- 按复验开始时间过滤控制台：未发现应用来源的错误或警告；观察到两条 Zotero Chrome扩展“Receiving end does not exist”连接错误，来源URL为扩展脚本，保存在记录中，没有把它们伪称应用错误，也没有操作扩展设置。
+- LCP、CLS、INP、真实首屏时间和动画帧率仍未测量。静态截图不能证明无闪烁或GPU性能；没有捏造录屏或性能数值。
+- 完成后已清除viewport覆盖、减少动态和触摸模拟。原用户标签页保留。
+- 放行仍需：真实A/B集成与失败恢复、手机真机触摸、动画连续性与性能证据、素材使用条件和人工内容审核。当前保持Draft，不合并main，不签署任何真人复核。
+
+## 2026-10-31 受限验收原记录
+
+以下内容保留当日事实，其“未采集／待验收”是当日状态；本轮更新以以上2026-11-01记录为准。
 
 ## 当前记录
 

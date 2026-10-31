@@ -1,0 +1,65 @@
+{
+  "commit": "aee3dee",
+  "browser": "Chrome 156.0.8078.79",
+  "system": "Windows 11 10.0.26300",
+  "states": [],
+  "checks": [
+    {
+      "width": 1440,
+      "expected": "史料原则",
+      "active": "史料原则",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1440,
+      "expected": "了解作品",
+      "active": "了解作品",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1440,
+      "expected": "历史专题专题核验中",
+      "active": "历史专题专题核验中",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1366,
+      "expected": "史料原则",
+      "active": "史料原则",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1366,
+      "expected": "了解作品",
+      "active": "了解作品",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1366,
+      "expected": "事件资料了解核验进度",
+      "active": "事件资料了解核验进度",
+      "dialogs": 0,
+      "locked": ""
+    },
+    {
+      "width": 1366,
+      "reducedMotion": true,
+      "phaseImmediatelyAfterEntry": "exploring"
+    },
+    {
+      "width": 1440,
+      "reducedMotion": true,
+      "phaseImmediatelyAfterEntry": "exploring"
+    },
+    {
+      "width": 1920,
+      "reducedMotion": true,
+      "phaseImmediatelyAfterEntry": "exploring"
+    }
+  ]
+}

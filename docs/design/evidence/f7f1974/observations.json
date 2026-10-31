@@ -1,0 +1,209 @@
+{
+  "commit": "f7f19742fbd6303f23137aef35956838940151fb",
+  "browser": "Chrome 156.0.8078.79",
+  "system": "Windows 11 10.0.26300",
+  "capture": "Chrome fullPage:true; stable desktop/mobile document dimensions equal requested viewport except diagnostic screenshot.",
+  "states": [
+    {
+      "name": "phase2-390-landing.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 844,
+      "docWidth": 390,
+      "dpr": 1,
+      "height": 844,
+      "scale": 1,
+      "width": 390
+    },
+    {
+      "name": "phase2-390-touch-attempt.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "docHeight": 844,
+      "docWidth": 390,
+      "dpr": 1,
+      "height": 844,
+      "scale": 1,
+      "width": 390
+    },
+    {
+      "name": "phase2-390-restored.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "史料原则"
+      },
+      "bodyOverflow": "",
+      "docHeight": 844,
+      "docWidth": 390,
+      "dpr": 1,
+      "height": 844,
+      "scale": 1,
+      "width": 390
+    },
+    {
+      "name": "phase2-430-sources-scrolled.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "资料来源与史料原则"
+      },
+      "bodyOverflow": "hidden",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-430-restored.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "史料原则"
+      },
+      "bodyOverflow": "",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-430-landing.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "了解作品 "
+      },
+      "bodyOverflow": "",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-430-exploring.jpg",
+      "active": {
+        "tag": "MAIN",
+        "text": "山河之间，等待历史的回响。历史数据正在核验，正式路线暂未开放展示。场景预留区 · 抽象几何示意预览已就绪长征历史总览开发预览历史专题专题核验中事件资料了解核验进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-430-chapters-drawer.jpg",
+      "active": {
+        "tag": "H2",
+        "text": "历史专题"
+      },
+      "bodyOverflow": "hidden",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-430-return.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 932,
+      "docWidth": 430,
+      "dpr": 1,
+      "height": 932,
+      "scale": 1,
+      "width": 430
+    },
+    {
+      "name": "phase2-1366-landing.jpg",
+      "active": {
+        "tag": "BODY",
+        "text": "\n    跳至展馆内容长征·不灭的火种长征主题数字展馆关于展馆史料原则全屏体验长征胜利九十周年  1936—2026不灭的火种循历史足迹，见信仰之光。开启征程进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-exploring.jpg",
+      "active": {
+        "tag": "MAIN",
+        "text": "山河之间，等待历史的回响。历史数据正在核验，正式路线暂未开放展示。场景预留区 · 抽象几何示意预览已就绪长征历史总览开发预览历史专题专题核验中事件资料了解核验进"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    },
+    {
+      "name": "phase2-1366-return.jpg",
+      "active": {
+        "tag": "BUTTON",
+        "text": "开启征程进入三维历史沙盘"
+      },
+      "bodyOverflow": "",
+      "docHeight": 768,
+      "docWidth": 1366,
+      "dpr": 1,
+      "height": 768,
+      "scale": 1,
+      "width": 1366
+    }
+  ],
+  "checks": [
+    {
+      "width": 390,
+      "syntheticTouch": {
+        "before": 0,
+        "after": 0,
+        "result": "No scroll observed; touch behavior is not accepted by this attempt."
+      }
+    },
+    {
+      "width": 430,
+      "syntheticTouch": {
+        "scrollTop": 0,
+        "result": "No scroll observed with separated touch events; not accepted."
+      }
+    }
+  ],
+  "consoleSince": "2026-10-31T16:47:41.114Z",
+  "console": [
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-31T16:55:36.106Z",
+      "url": "chrome-extension://ekhagklcjbdpajgpjgmbionohlpdbjgc/zotero.js"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-31T16:55:36.106Z",
+      "url": "chrome-extension://ekhagklcjbdpajgpjgmbionohlpdbjgc/inject/inject.js"
+    }
+  ],
+  "cleanup": "Viewport override reset; reduced-motion and touch emulation cleared."
+}
