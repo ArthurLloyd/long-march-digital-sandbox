@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../app/App';
@@ -17,6 +17,7 @@ async function enter() {
   const user = userEvent.setup();
   render(<App />);
   await user.click(screen.getByRole('button', { name: '开启征程' }));
+  await user.click(screen.getByRole('button', { name: '立即进入' }));
   await screen.findByText('预览已就绪');
   return user;
 }
@@ -101,7 +102,7 @@ describe('展馆进入、返回与无障碍', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '开启征程' })).toBeEnabled();
   });
-  it('常规动画可跳过，核心交互不依赖动画结束事件', async () => {
+  it('常规模式须主动确认，核心交互不依赖动画结束事件', async () => {
     mockMotion(false);
     const user = userEvent.setup();
     render(<App />);
@@ -115,14 +116,43 @@ describe('展馆进入、返回与无障碍', () => {
       screen.getByRole('main', { name: '长征沙盘探索空间' }),
     ).toHaveFocus();
   });
-  it('减少动画时立即进入，没有过渡遮罩', async () => {
-    await enter();
-    expect(
-      screen.queryByRole('button', { name: '立即进入' }),
-    ).not.toBeInTheDocument();
+  it('减少动画只减少视觉效果，仍须确认进入', async () => {
+    mockMotion();
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: '开启征程' }));
+    expect(screen.getByRole('button', { name: '立即进入' })).toHaveFocus();
+    expect(document.querySelector('.museum-app')).toHaveAttribute(
+      'data-phase',
+      'entering',
+    );
+    await user.click(screen.getByRole('button', { name: '立即进入' }));
     expect(
       screen.getByRole('main', { name: '长征沙盘探索空间' }),
     ).toHaveFocus();
+  });
+  it('进入确认可取消，并恢复首页入口焦点和可操作状态', async () => {
+    mockMotion(false);
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole('button', { name: '开启征程' }));
+    await user.click(
+      within(screen.getByRole('dialog')).getByRole('button', {
+        name: '返回首页',
+      }),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: '开启征程' })).toHaveFocus(),
+    );
+    expect(document.querySelector('.museum-app')).toHaveAttribute(
+      'data-phase',
+      'landing',
+    );
+    expect(document.querySelector('[inert]')).toBeNull();
+    await user.click(screen.getByRole('button', { name: '开启征程' }));
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: '开启征程' })).toBeEnabled();
   });
   it('返回首页后可再次进入，焦点回到开启征程', async () => {
     const user = await enter();
@@ -131,6 +161,7 @@ describe('展馆进入、返回与无障碍', () => {
       expect(screen.getByRole('button', { name: '开启征程' })).toHaveFocus(),
     );
     await user.click(screen.getByRole('button', { name: '开启征程' }));
+    await user.click(screen.getByRole('button', { name: '立即进入' }));
     await screen.findByText('预览已就绪');
   });
   it('抽屉锁定背景并将 Tab 保持在操作区', async () => {

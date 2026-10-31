@@ -13,5 +13,6 @@
   --radius: 3px;
   --font-body: 'Noto Sans SC', sans-serif;
   --font-display: 'Noto Serif SC', serif;
+  --font-art: 'Ember Calligraphy', 'Noto Serif SC', serif;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

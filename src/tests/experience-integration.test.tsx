@@ -26,6 +26,7 @@ async function start() {
   const user = userEvent.setup();
   render(<App />);
   await user.click(screen.getByRole('button', { name: '开启征程' }));
+  await user.click(screen.getByRole('button', { name: '立即进入' }));
   await screen.findByText('预览已就绪');
   await user.click(screen.getByRole('button', { name: /历史专题/ }));
   await user.click(

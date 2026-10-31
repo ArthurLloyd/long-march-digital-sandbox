@@ -1,15 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="88" height="72" viewBox="0 0 88 72" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="112" height="80" viewBox="0 0 112 80" fill="none">
   <defs>
-    <linearGradient id="gold" x1="10" y1="9" x2="75" y2="63" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#f0d8a1"/>
-      <stop offset=".5" stop-color="#b08c57"/>
-      <stop offset="1" stop-color="#e5c997"/>
+    <linearGradient id="metal" x1="9" y1="18" x2="94" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ac7d43"/>
+      <stop offset=".38" stop-color="#f6dfad"/>
+      <stop offset=".72" stop-color="#c49b5e"/>
+      <stop offset="1" stop-color="#f2d69a"/>
     </linearGradient>
   </defs>
-  <path d="m45 5 25 14v34L45 67 20 53V19L45 5Z" stroke="url(#gold)" stroke-width=".8" opacity=".7"/>
-  <path d="m45 10 21 12v28L45 62 24 50V22L45 10Z" stroke="#e4caa0" stroke-width=".6" opacity=".25"/>
-  <path d="m29 44 9-8 9 7 9-11 7 8M28 49l12-7 9 7 11-4" stroke="#e4caa0" stroke-width=".8" opacity=".35" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M8 35h55m-8-8 9 8-9 8" stroke="#f0d8ac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M9 30h12M13 40h9m48-5h8M45 1v3m0 64v3" stroke="#d3b27a" stroke-width=".7" opacity=".7"/>
-  <path d="m45 14 1.8 3-1.8 3-1.8-3 1.8-3Z" fill="#e4caa0"/>
+  <path d="M7 48c13-17 22-10 30-19 9-10 21-11 33-6M8 54c16-16 25-7 37-19 7-7 15-9 25-7M16 62c14-13 26-5 40-18" stroke="url(#metal)" stroke-width="1.2"/>
+  <path d="m38 17 5-6 5 6-5 6-5-6Z" stroke="#dbbc80" stroke-width=".8"/>
+  <path d="m43 14 2 3-2 3-2-3Z" fill="#f3d59a"/>
+  <path d="M29 42h40l-8-13 35 13-35 13 8-13" fill="url(#metal)"/>
+  <path d="M33 40h40l-5-7 23 9-23 9 5-7H41" stroke="#f9e4b8" stroke-width=".7"/>
+  <path d="M60 13c13 0 24 9 28 20M95 49C83 64 64 69 51 64" stroke="url(#metal)" stroke-width=".85"/>
+  <path d="m84 18 5 2 2 5-5-2Z" fill="#d1aa69"/>
+  <path d="M19 24h10m-5-5v10M101 40h7M10 69h17m4 0h6" stroke="#ceab71" stroke-width=".8"/>
+  <path d="M52 7v4m0 59v4" stroke="#d9b77e"/>
 </svg>

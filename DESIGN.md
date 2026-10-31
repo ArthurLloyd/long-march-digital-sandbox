@@ -20,11 +20,11 @@ typography:
     lineHeight: 1.5
     letterSpacing: '0.22em'
   headline:
-    fontFamily: "'Noto Serif SC', serif"
-    fontSize: 'clamp(32px, 3.1vw, 52px)'
-    fontWeight: 600
-    lineHeight: 1.7
-    letterSpacing: '0.08em'
+    fontFamily: "'Ember Calligraphy', 'Noto Serif SC', serif"
+    fontSize: 'clamp(48px, 4.2vw, 76px)'
+    fontWeight: 400
+    lineHeight: 1.32
+    letterSpacing: '0.02em'
   title:
     fontFamily: "'Noto Serif SC', serif"
     fontSize: '23px'
@@ -61,7 +61,7 @@ components:
   button-primary:
     backgroundColor: '{colors.red-muted}'
     textColor: '{colors.text}'
-    padding: '15px 18px 15px 25px'
+    padding: '20px 26px 20px 32px'
   button-primary-hover:
     backgroundColor: '{colors.red}'
     textColor: '{colors.text}'
@@ -92,7 +92,7 @@ components:
     backgroundColor: '#101720e6'
     textColor: '{colors.text}'
     rounded: '{rounded.control}'
-    padding: '15px 20px'
+    padding: '19px 22px'
   reading-drawer:
     backgroundColor: '#101720fa'
     textColor: '{colors.text}'
@@ -113,10 +113,12 @@ components:
 
 **Key Characteristics:**
 
+2026-11-01 本轮补充：红金控件首轮已有截图；用户否定首轮字体后已换成志莽行书，但浏览器连接中断，最终字体整页验收待补。以下既有布局实测不自动覆盖新字体。参见 QA 最新记录。
+
 - 墨蓝深底与暖纸文字，朱红主入口、暗金辅助强调。
 - 手迹取字主标题、自托管宋体副标题与黑体阅读，层级分明。
 - 全屏展陈与场景主体，章节和资料按需打开。
-- 有限入场动效、可跳过转场与明确的键盘操作路径。
+- 有限入场动效、必须主动确认的进入页与明确的键盘操作路径。
 
 ## Colors
 
@@ -146,6 +148,8 @@ components:
 **Display Font:** 副标题及阅读标题使用自托管 Noto Serif SC（600），回退 serif。
 **Body Font:** 自托管 Noto Sans SC（400、600），回退 sans-serif。
 
+**Art Font:** 探索空态与装饰控件采用自托管 Zhi Mang Xing（志莽行书，400），CSS 名为 Ember Calligraphy。保留现代文案，不冒充历史人物手迹。字库来源、OFL 与子集信息见 `docs/design/exploration-calligraphy.md`；2026-11-01 撤下用户否定的 Ma Shan Zheng。探索标题桌面最大 76px、短屏 60px；手机 35–40px，行高 1.45。
+
 字体通过 Fontsource 的 unicode-range 分片随项目提供，采用 OFL-1.1；许可见 `public/licenses/`。宋体用于副标题、说明、阅读标题和章节名，黑体用于正文、导航与操作。
 
 主标题由 `title-chang.png`（480 × 740）和 `title-zheng.png`（520 × 520）横向编排，从 1962 年毛泽东手书诗作题名取字，保留原笔画比例和飞白。来源与处理记录见 `docs/design/title-calligraphy-research.md`；不能表述为毛泽东为本展馆题字。“征”完整保留彳旁末点，不误判为邻字删去；图片四边保留透明边界。
@@ -154,7 +158,7 @@ components:
 
 - **Hero artwork**：图片容器的 `font-size` 仅为 em 尺寸基准（clamp(120px, 11.8vw, 190px)），不是字体字号；容器高（1.25em），长字高（1.2em）、征字高（1.1em），间距（0.1em），征字向下偏移（0.13em）。
 - **Display**：主题副标题“不灭的火种”使用前置 display token；不把手迹图片的尺寸登记为字体 token。
-- **Headline / Title**：探索空态与抽屉标题使用对应 token；阅读小标题采用宋体（26px、行高 1.7）。
+- **Headline / Title**：探索空态采用行书；抽屉和阅读标题继续采用宋体，阅读小标题为 26px、行高 1.7。
 - **Body / Reading**：默认正文行高较紧，资料正文使用 reading token；错误说明最长（52ch）。
 - **Label**：导航通常为（15px），辅助信息为（12–14px）；小字号不作为新增正文的范本。
 
@@ -184,6 +188,8 @@ components:
 **The Reading Surface Rule.** 资料区域依靠色阶和细线分层，背景纵深不进入正文。
 
 ## Shapes
+
+本轮装饰操作采用阶形边框、回纹角饰与金色内外线，控件纹样见 `ExhibitionOrnaments.tsx`。入口 326×104px（短屏高 94px，手机 270×96px）；工具 266×100px（手机高 90px）；播放按钮外加 76px 刻度环（手机 64px）。细节使用金色明暗与漆面层次，阅读抽屉沿用平整表面。
 
 主体、主入口与桌面抽屉保持直边；普通轮廓控件轻微圆角，预览标签更紧凑，手机抽屉仅顶部圆角。播放按钮和状态点采用圆形；描边与分隔以一像素细线为主。山河轮廓来自栅格素材，不再使用被否定的多边形 SVG 山体。主题印章结合盾形、火种与山纹；旅程箭头结合六边形金线和山纹，均为装饰图形，不是历史徽章或地理路线。
 
@@ -217,7 +223,7 @@ components:
 
 ### Motion
 
-手迹图片轻抬并旋正显现（1.15s），征字延后（140ms）；不使用 clip-path 裁切字底，也不模拟原作者真实书写过程。副标题及说明显现（1.6s），操作显现（1s，延后 400ms）；雾层首次显现（2.4s），没有持续背景渲染。进入转场（650ms）可跳过，抽屉显现（350ms），共用缓出曲线见 sidecar。
+手迹图片轻抬并旋正显现（1.15s），征字延后（140ms）；不使用 clip-path 裁切字底，也不模拟原作者真实书写过程。副标题及说明显现（1.6s），操作显现（1s，延后 400ms）；雾层首次显现（2.4s），没有持续背景渲染。进入确认页不再使用定时自动完成；必须主动激活“立即进入”，可返回或按 Esc 取消，减少动态模式保留同样的确认。抽屉显现（350ms）。
 
 主入口扫光（650ms）、纹样位移与次要文字下划线（350ms）、导航下划线（300ms），仅响应悬停或焦点，不循环播放。
 
@@ -230,7 +236,7 @@ components:
 - **Do** 沿用墨蓝、暖纸、朱红与金线的主次关系。
 - **Do** 保留手迹取字原笔画与透明边界，以宋体副标题和黑体正文建立阅读层级。
 - **Do** 保留核验空态、禁用反馈、可见焦点及抽屉键盘操作。
-- **Do** 尊重减少动态和减少透明偏好，保留转场跳过操作。
+- **Do** 尊重减少动态和减少透明偏好，保留用户主动确认进入的步骤。
 - **Do** 对最终手迹、组件和动效组合重新截图复审，区分源码记录与视觉验收。
 
 ### Don't:

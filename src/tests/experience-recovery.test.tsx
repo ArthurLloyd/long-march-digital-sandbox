@@ -37,6 +37,9 @@ describe('场景超时后的完整恢复路径', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: '开启征程' }));
     });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: '立即进入' }));
+    });
     const mountsBeforeRetry = scene.mounts;
     await act(async () => vi.advanceTimersByTimeAsync(15000));
     expect(screen.getByRole('alert')).toHaveTextContent('场景加载时间较长');

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { BookOpen, Layers, ArrowUpRight } from 'lucide-react';
 import { publishedDataset } from '../data/verified';
 import { HistoryEventPanel } from '../features/history';
 import { Timeline, usePlayback } from '../features/timeline';
@@ -16,7 +15,11 @@ import {
 import { ExperienceTransition } from '../components/transition/ExperienceTransition';
 import { useExperience, type Overlay } from './experience/use-experience';
 import { useFullscreen } from '../hooks/use-fullscreen';
-import { useReducedMotion } from '../hooks/use-reduced-motion';
+import {
+  ForwardOrnament,
+  OrnamentFrame,
+  ToolEmblem,
+} from '../components/exhibition/ExhibitionOrnaments';
 import type { SceneError } from '../shared/contracts';
 
 const titles: Record<Overlay, string> = {
@@ -31,7 +34,6 @@ export function App() {
   const [experience, dispatch] = useExperience();
   const playback = usePlayback(events);
   const { close: closePlayback } = playback;
-  const reduced = useReducedMotion();
   const fullscreen = useFullscreen();
   const [ready, setReady] = useState(false);
   const [sceneError, setSceneError] = useState<SceneError | null>(null);
@@ -114,7 +116,7 @@ export function App() {
             onEnter={() => {
               setReady(false);
               setSceneError(null);
-              dispatch({ type: 'enter', reduced });
+              dispatch({ type: 'enter' });
             }}
             onAbout={() => open('about')}
             enterRef={enterRef}
@@ -152,26 +154,28 @@ export function App() {
             </div>
             <div className="exploration-tools">
               <button className="scene-tool" onClick={() => open('chapters')}>
-                <Layers size={20} />
-                <span>
-                  历史专题
+                <OrnamentFrame />
+                <ToolEmblem kind="chapters" />
+                <span className="scene-tool-copy">
+                  <strong>历史专题</strong>
                   <small>
                     {events.length
                       ? `${events.length} 个核验节点`
                       : '专题核验中'}
                   </small>
                 </span>
-                <ArrowUpRight size={18} />
+                <ForwardOrnament />
               </button>
               <button className="scene-tool" onClick={() => open('history')}>
-                <BookOpen size={20} />
-                <span>
-                  事件资料
+                <OrnamentFrame />
+                <ToolEmblem kind="history" />
+                <span className="scene-tool-copy">
+                  <strong>事件资料</strong>
                   <small>
                     {playback.activeEvent ? '阅读当前事件' : '了解核验进度'}
                   </small>
                 </span>
-                <ArrowUpRight size={18} />
+                <ForwardOrnament />
               </button>
             </div>
             <Timeline
@@ -188,7 +192,7 @@ export function App() {
         )}
       </div>
       {experience.phase === 'entering' && (
-        <ExperienceTransition onComplete={completeEntry} />
+        <ExperienceTransition onComplete={completeEntry} onCancel={home} />
       )}
       {experience.overlay && (
         <ExhibitionDrawer

@@ -4,6 +4,7 @@ import titleChang from '../../assets/exhibition/title-chang.png';
 import titleZheng from '../../assets/exhibition/title-zheng.png';
 import journeyOrnament from '../../assets/exhibition/journey-ornament.svg';
 import { MountainArtwork } from './MountainArtwork';
+import { OrnamentFrame } from './ExhibitionOrnaments';
 
 interface Props {
   entering: boolean;
@@ -60,6 +61,7 @@ export function ExhibitionLanding({
             aria-label="开启征程"
             disabled={entering}
           >
+            <OrnamentFrame />
             <span className="enter-copy">
               开启征程<small>进入三维历史沙盘</small>
             </span>

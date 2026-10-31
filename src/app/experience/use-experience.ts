@@ -5,7 +5,7 @@ type State = {
   overlay: Overlay | null;
 };
 type Action =
-  | { type: 'enter'; reduced: boolean }
+  | { type: 'enter' }
   | { type: 'entered' }
   | { type: 'home' }
   | { type: 'open'; overlay: Overlay }
@@ -15,7 +15,7 @@ function reducer(state: State, action: Action): State {
     case 'enter':
       if (state.phase !== 'landing') return state;
       return {
-        phase: action.reduced ? 'exploring' : 'entering',
+        phase: 'entering',
         overlay: null,
       };
     case 'entered':
