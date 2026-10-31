@@ -4,6 +4,8 @@
 
 当前分支 feat/app-shell；未合并 main。工程实现与自动化检查已推进，**最终视觉验收尚未完成，不作为正式完成交付**。首版 SVG 山河已被用户否定并撤下，现为新山河主视觉。最终提交和 PR 地址见本次对话报告／GitHub 分支。
 
+实现检查点：[`c7a7fc2`](https://github.com/ArthurLloyd/long-march-digital-sandbox/commit/c7a7fc218958240310757cb21610872d8a94de2b)，39 个文件，已推送 origin/feat/app-shell。草稿 PR：[#3](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/3)。本报告的仓库同步记录另以文档提交保存，最新提交以分支和 PR 为准。
+
 第一阶段已经同步 main：`4b2822d28150a72a7b479ce0b5f1c3ffc2ddf1b1`。本阶段只提交 C 的分支，PR 保持草稿。用户要求以后每完成一个阶段都提交并推送一次，不能把“本地已做完”视为仓库已更新。
 
 阶段状态：2.1 现状审计及方向已记录；2.2 首页、2.3 探索壳、2.4 体验串联的代码已实现；2.5 有响应式及无障碍代码与自动测试，仍待浏览器多尺寸验收；2.6 本地六项检查通过，最终浏览器证据未齐。桌面视觉先验收，再做手机端最终打磨。
