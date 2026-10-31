@@ -1128,7 +1128,7 @@ svg {
   }
   .landing-vignette {
     background:
-      linear-gradient(90deg, #080c114d, transparent),
+      linear-gradient(90deg, #080c11b3, #080c1199 75%, #080c114d),
       linear-gradient(0deg, #080c11 2%, transparent 60%);
   }
   .landing-bottom {
@@ -1139,6 +1139,9 @@ svg {
     align-items: flex-start;
     gap: 15px;
     padding-top: 18px;
+  }
+  .landing-bottom .quiet-button {
+    align-self: flex-end;
   }
   .theme-motto {
     font-size: 12px;
