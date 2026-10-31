@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:contracts": "vite --host 127.0.0.1 --open /__dev/contracts",
     "build": "npm run validate:data && tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "lint": "eslint .",
