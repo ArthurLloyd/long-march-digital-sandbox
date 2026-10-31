@@ -30,7 +30,7 @@ export const humanReviewSchema = z.strictObject({
 });
 export type HumanReview = z.infer<typeof humanReviewSchema>;
 
-const reviewFields = {
+export const reviewFields = {
   reviewStatus: reviewStatusSchema,
   releaseStatus: z.enum(['unpublished', 'published']),
   reviewedBy: z.array(nonempty),
@@ -155,10 +155,11 @@ export const sourceReferenceSchema = z.strictObject({
 });
 export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 
-export const historyDatasetSchema = z.strictObject({
+export const historyDatasetV1Schema = z.strictObject({
   events: z.array(historyEventSchema),
   routes: z.array(routeFeatureSchema),
   sources: z.array(sourceReferenceSchema),
 });
-export type HistoryDataset = z.infer<typeof historyDatasetSchema>;
+/** Legacy v1 shape. Versioned consumers use VersionedHistoryDataset. */
+export type HistoryDataset = z.infer<typeof historyDatasetV1Schema>;
 export type ReviewStatus = z.infer<typeof reviewStatusSchema>;

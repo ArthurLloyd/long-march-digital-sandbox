@@ -1,2 +1,13 @@
 export * from './data';
+export * from './dataset';
+export * from './experience-catalog';
+export * from './topics';
+export * from './phases';
+export * from './entities';
+export * from './forces';
+export * from './assets';
+export * from './interactions';
+export * from './experiences';
+export * from './completion';
 export type * from './modules';
+export * from './modules-v2';
