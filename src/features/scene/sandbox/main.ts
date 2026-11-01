@@ -8,8 +8,9 @@ import type { Heightfield, RiverData } from './terrain';
 import type { UnitSpec } from './units';
 import type { Point3 } from './motion';
 import { createImmersiveGallery } from './immersive-gallery';
+import { createBridgeExperience } from './bridge-experience';
 
-if (!import.meta.env.DEV)
+if (!import.meta.env.DEV && import.meta.env.MODE !== 'showcase')
   throw new Error('The sandbox is a development-only presentation.');
 const root = document.querySelector<HTMLDivElement>('#sandbox')!;
 const icons = {
@@ -29,20 +30,20 @@ const svg = (name: keyof typeof icons) =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 root.innerHTML = `<main class="atlas" aria-label="长征区域沙盘交互演示">
 <div class="scene-canvas" id="canvas-host"></div><div id="labels" class="map-labels"></div><div class="vignette" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="/" aria-label="返回长征展馆"><span class="brand-mark">征</span><span>长征<span class="brand-sep"> / </span>不灭的火种<small>THE LONG MARCH · DIGITAL ATLAS</small></span></a><div class="top-actions"><button id="immersive-entry" class="landscape-launch">走进山河 ↗</button><span class="preview-badge">交互演示</span><button class="icon" id="about" aria-label="查看资料与演示说明">${svg('info')}</button><button class="icon" id="fullscreen" aria-label="全屏观看">${svg('expand')}</button></div></header>
+<header class="topbar"><a class="brand" href="/" aria-label="返回长征展馆"><span class="brand-mark">征</span><span>长征<span class="brand-sep"> / </span>不灭的火种<small>THE LONG MARCH · DIGITAL ATLAS</small></span></a><div class="top-actions"><button id="crossing-entry" class="landscape-launch">峡谷行军 ↗</button><span class="preview-badge">交互演示</span><button class="icon" id="about" aria-label="查看资料与演示说明">${svg('info')}</button><button class="icon" id="fullscreen" aria-label="全屏观看">${svg('expand')}</button></div></header>
 <section class="intro"><p class="eyebrow"><i></i> REGION STUDY / 01</p><h1>山河<span>行迹</span></h1><p class="region">大渡河谷 <span>·</span> 区域沙盘</p><p class="intro-line">循山势，观水脉。<br>让行进的轨迹，在眼前展开。</p><div class="region-rule"></div><span class="coordinate">101.96°—102.40° E<br>29.72°—30.12° N</span></section>
 <nav class="view-controls" aria-label="沙盘视角"><button id="overview" class="view-button active">${svg('reset')}<span>全览</span></button><button id="top" class="view-button">${svg('layers')}<span>俯瞰</span></button><button id="near" class="view-button">${svg('focus')}<span>近观队伍</span></button><span class="control-line"></span><button id="zoom-in" class="icon" aria-label="放大沙盘">${svg('plus')}</button><button id="zoom-out" class="icon" aria-label="缩小沙盘">${svg('minus')}</button></nav>
-<button class="landscape-teaser" id="landscape-teaser" aria-label="浏览三处沉浸环境"><img src="/assets/textures/immersive-landscapes/river-valley-cover.webp" alt=""/><span>走进山河<b>↗</b></span></button>
+<button class="landscape-teaser" id="landscape-teaser" aria-label="进入峡谷查看石壁与军队"><img src="/assets/terrain/scene-kit/bridge-cover.jpg" alt=""/><span>峡谷行军<b>↗</b></span></button>
 <div class="compass" aria-hidden="true"><span>N</span><i></i><small>北</small></div>
 <aside class="map-key"><p><i class="unit-dot red"></i>行进队伍 <span id="detail-mode">远景标识</span></p><p><i class="unit-dot blue"></i>对照队伍</p><small>示意编队 · 不代表实际兵力</small></aside>
-<div class="map-tools"><label><input type="checkbox" id="contours"/>地形层次</label><label><input type="checkbox" id="routes" checked/>行进示意</label><label><input type="checkbox" id="follow"/>跟随队伍</label><button id="quality">精细画质</button></div>
+<div class="map-tools"><label><input type="checkbox" id="contours"/>地形层次</label><label><input type="checkbox" id="routes" checked/>行进示意</label><label><input type="checkbox" id="follow"/>跟随队伍</label><button id="quality">精细画质</button><button id="assets-open">场景素材 ↓</button></div>
 <p class="gesture">拖动旋转 <b>·</b> 滚轮缩放 <b>·</b> 双指平移</p>
 <section class="timeline" aria-label="行进时间轴"><div class="timeline-heading"><div><span class="eyebrow">JOURNEY</span><strong id="stage-title">沿谷启程</strong><span class="timeline-disclosure">演示进度 · 非历史日期与路线</span></div><div class="playback"><button id="replay" class="icon" aria-label="回到起点">${svg('reset')}</button><button id="play" class="play-button" aria-label="播放行进">${svg('play')}</button><button id="speed" aria-label="切换播放速度">1×</button><span id="progress-text">00 / 100</span></div></div>
 <div class="scrubber"><input id="time" type="range" min="0" max="1000" value="0" step="1" aria-label="行进时间轴" aria-valuetext="沿谷启程，0%"/><div class="timeline-ticks" aria-label="行进节点"></div></div></section>
 <footer class="credit"><span>地形：Mapzen / AWS · USGS · 水系：© OpenStreetMap contributors</span><span>现代地理底图</span></footer>
 <div class="loading" id="loading"><span class="loading-ring"></span><strong>山河渐次展开</strong><p>正在载入区域地形与场景</p></div><div class="error" id="error" hidden role="alert"><h2>暂时无法展开沙盘</h2><p></p><button id="retry">重新载入</button></div>
-<dialog id="detail-dialog"><button class="dialog-close icon" aria-label="关闭资料">${svg('close')}</button><p class="eyebrow">LANDSCAPE OBSERVATION</p><h2 id="dialog-title"></h2><p id="dialog-text"></p><button id="bridge-entry" class="primary" hidden>进入桥谷漫游 <span>↗</span></button><small class="dialog-note">工程观察节点；历史正文、真实阶段与路线待资料复核后接入。</small></dialog>
-<dialog id="about-dialog"><button class="dialog-close icon" aria-label="关闭说明">${svg('close')}</button><p class="eyebrow">ABOUT THE ATLAS</p><h2>一张可以走近的地图</h2><p>地形采用 Mapzen / AWS 高程数据，水系来自 OpenStreetMap。当前展示现代地理背景，地形垂直放大 2 倍；树木与人物为表现性模型。</p><p>队伍、节点和时间轴用于验证交互，不对应真实历史行军。近景显示白模，远景显示点与箭头；拖动时间轴可前进或回退。</p><a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noreferrer">高程资料 ↗</a> <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">水系资料与许可 ↗</a></dialog>
+<dialog id="detail-dialog"><button class="dialog-close icon" aria-label="关闭资料">${svg('close')}</button><p class="eyebrow">LANDSCAPE OBSERVATION</p><h2 id="dialog-title"></h2><p id="dialog-text"></p><button id="bridge-entry" class="primary" hidden>进入峡谷行军 <span>↗</span></button><small class="dialog-note">现代地理底图 · 编队与局部场景为艺术演绎。</small></dialog>
+<dialog id="assets-dialog"><button class="dialog-close icon" aria-label="关闭素材">×</button><p class="eyebrow">SCENE COLLECTION</p><h2>山河与行军</h2><p>人物、编队、岩壁、桥索与木板共同组成三维场景。环境画面提供远景氛围。</p><a href="/assets/terrain/scene-kit/clay-marcher.glb" download>人物模型 · 含行走动画 ↓</a><br/><a href="/assets/terrain/scene-kit/marching-company.glb" download>十八人编队 · 含旗帜 ↓</a><br/><a href="/assets/textures/immersive-landscapes/river-valley.webp" download>山河之间 · 环境画面 ↓</a><br/><a href="/assets/textures/immersive-landscapes/snow-pass.webp" download>雪岭微光 · 环境画面 ↓</a><br/><a href="/assets/textures/immersive-landscapes/grassland.webp" download>草地回声 · 环境画面 ↓</a><p class="dialog-note">原创白模与艺术环境，用于视觉表达。</p></dialog><dialog id="about-dialog"><button class="dialog-close icon" aria-label="关闭说明">${svg('close')}</button><p class="eyebrow">ABOUT THE ATLAS</p><h2>一张可以走近的地图</h2><p>地形采用 Mapzen / AWS 高程数据，水系来自 OpenStreetMap。当前展示现代地理背景，地形垂直放大 2 倍；树木与人物为表现性模型。</p><p>队伍、节点和时间轴用于验证交互，不对应真实历史行军。近景显示白模，远景显示点与箭头；拖动时间轴可前进或回退。</p><a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noreferrer">高程资料 ↗</a> <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">水系资料与许可 ↗</a><button id="immersive-entry" class="primary">浏览环境印象 ↗</button><button id="legacy-entry" class="primary">体验观桥互动 ↗</button></dialog>
 <dialog id="bridge-dialog" class="immersive"><button class="bridge-close" aria-label="返回区域沙盘">← 返回沙盘</button><iframe title="桥谷艺术场景漫游" loading="lazy"></iframe></dialog>
 </main>`;
 const $ = <T extends HTMLElement = HTMLElement>(id: string) =>
@@ -57,7 +58,7 @@ const nodes: SandboxNode[] = [
   },
   {
     id: 'bridge',
-    title: '桥谷漫游',
+    title: '峡谷行军',
     progress: 0.5,
     coordinates: [102.225, 29.91],
   },
@@ -75,7 +76,7 @@ const descriptions: Record<string, string> = {
   river:
     '水系勾勒出谷地的走向。切换俯瞰视角，观察支流与主河谷的关系；放大后，可查看队伍如何随进度移动。',
   bridge:
-    '从地图进入局部空间，体验桥面、峡谷与水流的尺度。漫游期间地图暂停，退出后保留原来的时间进度和视角。',
+    '石壁垂向水面，铁索连起两岸。走近队伍，拖动时间轴，观察编队沿桥行进。',
   ridge:
     '拉近视角，箭头会切换为白色人物模型。队列的规模是视觉示意，不表示任何真实部队的兵力。',
   end: '把时间轴拖回任意位置，队伍与轨迹会同步回到该位置。你也可以回到全览，重新观察整片河谷。',
@@ -125,16 +126,17 @@ for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog')) {
     }
   });
 }
+$('assets-open').addEventListener('click', () => {
+  engine?.play(false);
+  $<HTMLDialogElement>('assets-dialog').showModal();
+});
 $('about').addEventListener('click', () => {
   engine?.play(false);
   $<HTMLDialogElement>('about-dialog').showModal();
 });
 $('bridge-entry').addEventListener('click', () => {
   $<HTMLDialogElement>('detail-dialog').close();
-  const d = $<HTMLDialogElement>('bridge-dialog');
-  d.querySelector('iframe')!.src = '../prototype/index.html';
-  engine?.setSuspended(true);
-  d.showModal();
+  crossing.open();
 });
 $<HTMLDialogElement>('bridge-dialog').addEventListener('close', () => {
   engine?.setSuspended(false);
@@ -145,8 +147,36 @@ const immersiveGallery = createImmersiveGallery(root, {
   onOpen: () => engine?.setSuspended(true),
   onClose: () => engine?.setSuspended(false),
 });
-$('immersive-entry').addEventListener('click', () => immersiveGallery.open());
-$('landscape-teaser').addEventListener('click', () => immersiveGallery.open());
+const crossing = createBridgeExperience(root, {
+  onOpen() {
+    const current = engine?.getState().progress ?? progress;
+    engine?.setSuspended(true);
+    return current;
+  },
+  onClose(value) {
+    engine?.setProgress(value);
+    engine?.setSuspended(false);
+  },
+});
+$('crossing-entry').addEventListener('click', () => {
+  engine?.setProgress(0.5);
+  crossing.open();
+});
+$('immersive-entry').addEventListener('click', () => {
+  $<HTMLDialogElement>('about-dialog').close();
+  immersiveGallery.open();
+});
+$('legacy-entry').addEventListener('click', () => {
+  $<HTMLDialogElement>('about-dialog').close();
+  const d = $<HTMLDialogElement>('bridge-dialog');
+  d.querySelector('iframe')!.src = '../prototype/index.html';
+  engine?.setSuspended(true);
+  d.showModal();
+});
+$('landscape-teaser').addEventListener('click', () => {
+  engine?.setProgress(0.5);
+  crossing.open();
+});
 $('retry').addEventListener('click', () => location.reload());
 function showError(message: string) {
   $('loading').hidden = true;
@@ -303,6 +333,7 @@ try {
 }
 function dispose() {
   disposed = true;
+  crossing.dispose();
   immersiveGallery.dispose();
   engine?.dispose();
   engine = null;

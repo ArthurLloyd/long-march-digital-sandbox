@@ -10,7 +10,7 @@ import {
   observeStudy,
 } from './sequence';
 
-if (!import.meta.env.DEV)
+if (!import.meta.env.DEV && import.meta.env.MODE !== 'showcase')
   throw new Error('Scene study is available in development only.');
 
 const symbols: Record<string, string> = {

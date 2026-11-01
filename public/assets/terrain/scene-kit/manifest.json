@@ -1,0 +1,22 @@
+{
+  "title": "Original clay marching kit",
+  "date": "2026-11-02",
+  "authoring": "Original Three.js procedural geometry",
+  "style": "Ivory clay figure, backpack, cap, gaiters, boots and unmarked red flag",
+  "scope": "Artistic demonstration. 18 visible figures do not represent historical strength or verified uniform detail.",
+  "source": "src/features/scene/prototype/marching-company.ts",
+  "entries": [
+    {
+      "file": "clay-marcher.glb",
+      "bytes": 441416,
+      "sha256": "2283cb56d89b4d7f67f6c32a86c5ded068b7c12c8a9a3598a795a034068e6d46",
+      "animationClips": ["March"]
+    },
+    {
+      "file": "marching-company.glb",
+      "bytes": 496496,
+      "sha256": "53192f154acf4b105cd25349097338bb87e0271ba5ca4e151c9c1cad125ab7ed",
+      "animationClips": []
+    }
+  ]
+}

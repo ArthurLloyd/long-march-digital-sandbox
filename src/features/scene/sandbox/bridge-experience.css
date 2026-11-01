@@ -1,0 +1,276 @@
+dialog.crossing-dialog {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #10252b;
+}
+.crossing-canvas,
+.crossing-shade {
+  position: absolute;
+  inset: 0;
+}
+.crossing-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.crossing-shade {
+  pointer-events: none;
+  background: linear-gradient(
+    #051a2470,
+    transparent 28%,
+    transparent 66%,
+    #071b26ed
+  );
+}
+.crossing-header {
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eadbb32f;
+  padding-bottom: 17px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.crossing-header button {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.crossing-header i {
+  color: #cdb27b;
+  margin: 0 14px;
+}
+.crossing-title {
+  position: absolute;
+  left: 46px;
+  top: 112px;
+  pointer-events: none;
+  text-shadow: 0 2px 22px #071b28;
+}
+dialog .crossing-title p {
+  font: 9px sans-serif;
+  letter-spacing: 3px;
+  color: #e5d5ae;
+}
+.crossing-title h2 {
+  font: 600 44px/1.5 'Noto Serif SC';
+  letter-spacing: 8px;
+  margin: 18px 0 12px;
+}
+.crossing-title h2 span {
+  display: block;
+}
+dialog .crossing-title .crossing-line {
+  font: 11px/2 'Noto Sans SC';
+  letter-spacing: 2px;
+}
+.crossing-views {
+  position: absolute;
+  right: 36px;
+  top: 112px;
+  display: grid;
+  padding: 7px;
+  border: 1px solid #e0c89866;
+  background: #10242bb5;
+  backdrop-filter: blur(8px);
+  gap: 4px;
+}
+.crossing-views button {
+  text-align: left;
+  padding: 12px 15px;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.crossing-views button[aria-pressed='true'] {
+  background: #d8c18f26;
+  color: #f1daa6;
+}
+.crossing-caption {
+  position: absolute;
+  bottom: 172px;
+  left: 46px;
+  right: 46px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #dedcc9;
+  letter-spacing: 2px;
+}
+.crossing-caption small {
+  font-size: 10px;
+}
+.crossing-timeline {
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 30px;
+  border: 1px solid #e0c89850;
+  background: #142b2ed9;
+  backdrop-filter: blur(16px);
+  padding: 22px 28px 17px;
+}
+.crossing-timeline > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 12px;
+}
+.crossing-kicker {
+  font-size: 10px;
+  color: #cbb47b;
+  letter-spacing: 3px;
+}
+.crossing-timeline strong {
+  font: 600 18px 'Noto Serif SC';
+  letter-spacing: 3px;
+}
+.crossing-instruction {
+  font-size: 10px;
+  color: #a7b9b3;
+  margin-right: auto;
+}
+.crossing-timeline button {
+  border: 1px solid #e0c89855;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.crossing-timeline output {
+  font: 11px monospace;
+  letter-spacing: 1px;
+  min-width: 66px;
+}
+.crossing-timeline input {
+  width: 100%;
+  appearance: none;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: ew-resize;
+}
+.crossing-timeline input::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    #d7c18e var(--progress, 50%),
+    #65808070 var(--progress, 50%)
+  );
+}
+.crossing-timeline input::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: #203c3d;
+  border: 3px solid #e4cca1;
+  box-shadow: 0 0 0 4px #d4b47822;
+}
+.crossing-timeline input::-moz-range-track {
+  height: 2px;
+  background: #65808070;
+}
+.crossing-timeline input::-moz-range-thumb {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #203c3d;
+  border: 3px solid #e4cca1;
+}
+.crossing-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #c4ccb9;
+  padding-top: 7px;
+}
+.crossing-error {
+  position: absolute;
+  inset: 30%;
+  background: #10242bee;
+  padding: 30px;
+}
+@media (max-width: 600px) {
+  .crossing-header {
+    left: 16px;
+    right: 16px;
+    top: 15px;
+    letter-spacing: 0;
+  }
+  .crossing-header > span {
+    display: none;
+  }
+  .crossing-header button {
+    padding: 8px 4px;
+    font-size: 10px;
+  }
+  .crossing-title {
+    left: 24px;
+    top: 88px;
+  }
+  .crossing-title h2 {
+    font-size: 32px;
+    letter-spacing: 5px;
+  }
+  .crossing-title h2 span {
+    display: inline;
+  }
+  dialog .crossing-title .crossing-line {
+    font-size: 10px;
+  }
+  .crossing-views {
+    top: auto;
+    bottom: 200px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: space-around;
+    padding: 4px;
+  }
+  .crossing-views button {
+    padding: 12px 5px;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .crossing-caption {
+    bottom: 166px;
+    left: 20px;
+    right: 20px;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .crossing-timeline {
+    left: 12px;
+    right: 12px;
+    bottom: 20px;
+    padding: 18px 14px;
+  }
+  .crossing-timeline > div:first-child {
+    gap: 12px;
+  }
+  .crossing-timeline strong {
+    font-size: 15px;
+    letter-spacing: 1px;
+    margin-right: auto;
+  }
+  .crossing-instruction,
+  .crossing-kicker {
+    display: none;
+  }
+  .crossing-timeline button {
+    padding: 7px;
+  }
+  .crossing-timeline output {
+    font-size: 10px;
+    min-width: 51px;
+  }
+}
