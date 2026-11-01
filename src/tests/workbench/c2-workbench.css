@@ -29,8 +29,9 @@
 }
 .c2-map-probe-empty {
   top: auto;
-  left: auto;
-  right: clamp(24px, 4vw, 80px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   bottom: 16px;
   width: min(320px, 28vw) !important;
   max-height: 128px;
