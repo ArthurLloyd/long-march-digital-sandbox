@@ -5,6 +5,18 @@ import type { HistoryDataset } from '../shared/contracts';
 import { simulatePublishedSample } from './fixtures/c1-sample';
 import { App } from '../app/App';
 
+// App-shell tests isolate the scene boundary. Real GPU behavior is checked in
+// scene-renderer.test.ts and browser QA; jsdom has no WebGL implementation.
+vi.mock('../features/scene', async () => {
+  const { useEffect } = await import('react');
+  return {
+    LongMarchScene: ({ onSceneReady }: { onSceneReady: () => void }) => {
+      useEffect(() => onSceneReady(), [onSceneReady]);
+      return <div aria-label="三维场景测试替身" />;
+    },
+  };
+});
+
 // Inject synthetic published-review structures in test memory only; no formal data or real approvals.
 const mockData = vi.hoisted(
   () => ({ events: [], routes: [], sources: [] }) as HistoryDataset,
