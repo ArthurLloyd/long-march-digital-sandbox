@@ -1,0 +1,61 @@
+{
+  "id": "dadu-valley-modern-dem",
+  "bounds": [101.96, 29.72, 102.4, 30.12],
+  "size": 321,
+  "min": 1209,
+  "max": 5960,
+  "projection": "EPSG:3857",
+  "heightUnits": "metres",
+  "verticalExaggeration": 2.0,
+  "source": "Mapzen / AWS Terrain Tiles; global SRTM/GMTED2010 courtesy of USGS",
+  "sourceUrl": "https://registry.opendata.aws/terrain-tiles/",
+  "acquiredAt": "2026-11-01",
+  "tiles": [
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1604/844.png",
+      "sha256": "26b18ec77890862086275b7d3fd956ddf6e1df11a0ff2c9c7cd663054015cdfa",
+      "bytes": 78963
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1605/844.png",
+      "sha256": "4f7fc545e82b0be71bf490f5fb701b35a53ec2ee703320b67b6a7c027d5de202",
+      "bytes": 76654
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1606/844.png",
+      "sha256": "5952359c6cf0c4d11aa5285d4ca3b1e473d89344d9e874133712a2a7c40b79cf",
+      "bytes": 78330
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1604/845.png",
+      "sha256": "3640bcf6bc0eb7a32b874f38bac5399708206e93f8152140922b8b1f08b10a2d",
+      "bytes": 74730
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1605/845.png",
+      "sha256": "4cc7524df1eace23b1abb5772621970dfa9e9bbe1425394c8b1118a9ad52f31c",
+      "bytes": 75574
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1606/845.png",
+      "sha256": "5fc09569fe0f6f41fa7bedf57144f31d6122e5e415618516d5ece9f146ec19f2",
+      "bytes": 76101
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1604/846.png",
+      "sha256": "0aee747dfab88bec16f8aa41c7492e2ac0e3bba2df983093ed33cf3cfcc2ec9f",
+      "bytes": 75206
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1605/846.png",
+      "sha256": "315f6f591df150cdfe07f3b5d69777970e6ef4a0011bfdf5593dbc3037b0e82f",
+      "bytes": 75119
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/11/1606/846.png",
+      "sha256": "c233eb98a6b2deaafe6df283d13b92450cc2731779eb5d863960e4531c47b6ba",
+      "bytes": 74691
+    }
+  ],
+  "processing": "Terrarium decoded, bilinear sampled on uniform Web Mercator grid, rounded to metre. No invented landforms. Modern reference, not 1935 reconstruction."
+}
