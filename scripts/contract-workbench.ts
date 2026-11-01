@@ -3,7 +3,9 @@ import type { Plugin } from 'vite';
 export const CONTRACT_WORKBENCH_PATH = '/__dev/contracts';
 export function assertProductionModules(moduleIds: readonly string[]) {
   const forbidden = moduleIds.filter((id) =>
-    /\/src\/(?:data\/fixtures|tests)\//.test(id.replaceAll('\\', '/')),
+    /\/src\/(?:data\/fixtures|tests|app\/panorama)\//.test(
+      id.replaceAll('\\', '/'),
+    ),
   );
   if (forbidden.length)
     throw new Error(`生产构建包含隔离测试模块：${forbidden.join(', ')}`);
@@ -12,6 +14,10 @@ export function productionIsolationPlugin(): Plugin {
   return {
     name: 'production-contract-isolation',
     apply: 'build',
+    transform(_code, id) {
+      assertProductionModules([id]);
+      return null;
+    },
     generateBundle(_options, bundle) {
       for (const output of Object.values(bundle)) {
         if (output.type === 'chunk')
