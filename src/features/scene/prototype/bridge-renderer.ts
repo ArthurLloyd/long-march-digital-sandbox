@@ -1,5 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { createBridgeMaterials } from './bridge-materials';
+import { createCanyon } from './bridge-landscape';
+import { createAtmosphere } from './bridge-atmosphere';
 
 export interface StudyMetrics {
   fps: number;
@@ -9,14 +17,24 @@ export interface StudyMetrics {
   geometries: number;
   textures: number;
 }
+export interface StudyHotspot {
+  id: 'bridge' | 'banks';
+  x: number;
+  y: number;
+  visible: boolean;
+}
 export interface BridgeStudyOptions {
   reduced: boolean;
   onFrame: (delta: number) => void;
   onMetrics: (metrics: StudyMetrics) => void;
   onError: (message: string) => void;
+  onExplore?: () => void;
+  onCameraMode?: (mode: 'guided' | 'free') => void;
+  /** Optional normalized anchors; getHotspots() returns host-relative pixels. */
+  onAnchors?: (anchors: StudyHotspot[]) => void;
 }
 
-/** Every dimension is invented local art-space, never a surveyed historical place. */
+/** Entire landscape and bridge are invented local art-space, never surveyed history. */
 export function createBridgeStudy(
   host: HTMLElement,
   options: BridgeStudyOptions,
@@ -25,209 +43,77 @@ export function createBridgeStudy(
     antialias: true,
     powerPreference: 'high-performance',
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  let low = window.innerWidth < 700;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, low ? 1 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.13;
-  renderer.shadowMap.enabled = true;
+  renderer.toneMappingExposure = 0.95;
+  renderer.shadowMap.enabled = !low;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.info.autoReset = false;
+  renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute(
     'aria-label',
-    '非地理艺术河谷，可拖动环顾，使用预设视角按钮也能观察',
+    '峡谷视野。拖动探索，滚轮缩放；方向键环顾，加减键缩放，Home回到远观。',
   );
-  renderer.domElement.tabIndex = 0;
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#829492');
-  scene.fog = new THREE.FogExp2('#829492', 0.0054);
-  const sky = new THREE.Mesh(
-    new THREE.SphereGeometry(800, 32, 20),
-    new THREE.ShaderMaterial({
-      side: THREE.BackSide,
-      depthWrite: false,
-      uniforms: {},
-      vertexShader:
-        'varying vec3 vDirection; void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: `varying vec3 vDirection;
-        void main(){vec3 d=normalize(vDirection);float h=smoothstep(-.08,.55,d.y);
-        vec3 color=mix(vec3(.60,.64,.59),vec3(.14,.25,.31),h);
-        float warmth=pow(max(0.,dot(d,normalize(vec3(-.24,.22,-1.)))),26.);
-        color+=vec3(.30,.16,.04)*warmth;gl_FragColor=vec4(color,1.);}`,
-    }),
-  );
-  scene.add(sky);
-  const camera = new THREE.PerspectiveCamera(43, 1, 0.2, 1000);
+  scene.background = new THREE.Color('#6b8a91');
+  scene.fog = new THREE.FogExp2('#6b8a91', 0.0038);
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.15, 1600);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = !options.reduced;
   controls.dampingFactor = 0.07;
-  controls.minDistance = 22;
-  controls.minAzimuthAngle = -0.35;
-  controls.maxAzimuthAngle = 0.35;
-  controls.maxDistance = 180;
-  controls.maxPolarAngle = Math.PI * 0.43;
-  controls.minPolarAngle = 0.3;
+  controls.minDistance = 8;
+  controls.maxDistance = 245;
+  controls.minPolarAngle = 0.18;
+  controls.maxPolarAngle = Math.PI * 0.495;
   controls.enablePan = false;
-  controls.rotateSpeed = 0.35;
+  controls.rotateSpeed = 0.34;
   controls.zoomSpeed = 0.55;
-  scene.add(new THREE.HemisphereLight('#c1d2d3', '#232a25', 1.8));
-  const sun = new THREE.DirectionalLight('#ffd29a', 6.2);
-  sun.position.set(-95, 150, -160);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(1024, 1024);
+  scene.add(new THREE.HemisphereLight('#a6cce3', '#13232a', 1.0));
+  const sun = new THREE.DirectionalLight('#ffc47e', 4.2);
+  sun.position.set(-95, 90, -160);
+  sun.target.position.set(0, 25, -8);
+  scene.add(sun.target);
+  sun.castShadow = !low;
+  sun.shadow.mapSize.set(1536, 1536);
   Object.assign(sun.shadow.camera, {
-    left: -70,
-    right: 70,
-    top: 70,
+    left: -85,
+    right: 85,
+    top: 90,
     bottom: -70,
     near: 1,
-    far: 360,
+    far: 350,
   });
-  sun.shadow.normalBias = 0.2;
+  sun.shadow.normalBias = 0.11;
+  sun.shadow.bias = -0.00015;
   scene.add(sun);
-  scene.add(new THREE.AmbientLight('#9aaca9', 0.25));
-  const bridgeFill = new THREE.DirectionalLight('#c3dce1', 1.1);
-  bridgeFill.position.set(25, 65, 100);
-  scene.add(bridgeFill);
-
-  // A small deterministic noise texture supplies stone grain; it is original procedural material.
-  const grainData = new Uint8Array(128 * 128 * 4);
-  let randomState = 71237;
-  for (let i = 0; i < 128 * 128; i++) {
-    randomState = (randomState * 1664525 + 1013904223) >>> 0;
-    const value = 110 + (randomState % 95);
-    grainData.set([value, value, value, 255], i * 4);
-  }
-  const grain = new THREE.DataTexture(grainData, 128, 128, THREE.RGBAFormat);
-  grain.wrapS = grain.wrapT = THREE.RepeatWrapping;
-  grain.repeat.set(9, 16);
-  grain.needsUpdate = true;
-
-  const rock = new THREE.MeshStandardMaterial({
-    color: '#84918a',
-    roughness: 0.97,
-    metalness: 0.02,
-    flatShading: false,
-    bumpMap: grain,
-    bumpScale: 0.2,
-    vertexColors: true,
-  });
-  const stone = new THREE.MeshStandardMaterial({
-    color: '#949084',
-    roughness: 0.95,
-  });
-  const wood = new THREE.MeshStandardMaterial({
-    color: '#aa8356',
-    roughness: 0.89,
-  });
-  const iron = new THREE.MeshStandardMaterial({
-    color: '#4f534c',
-    roughness: 0.68,
-    metalness: 0.65,
-  });
+  const fill = new THREE.DirectionalLight('#8fb8d0', 1.1);
+  fill.position.set(10, 75, 100);
+  scene.add(fill);
+  const bridgeLight = new THREE.SpotLight('#ffd29a', 14000, 230, 0.58, 0.7, 2);
+  bridgeLight.position.set(-10, 100, 20);
+  bridgeLight.target.position.set(0, 40, -8);
+  scene.add(bridgeLight, bridgeLight.target);
+  const materials = createBridgeMaterials();
+  const { rock, stone, wood, iron } = materials;
+  const atmosphere = createAtmosphere();
+  scene.add(atmosphere.group);
+  const canyon = createCanyon(materials.noise, rock);
+  scene.add(canyon.group);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const envScene = new THREE.Scene();
+  envScene.add(atmosphere.sky.clone());
+  const environment = pmrem.fromScene(envScene, 0, 0.1, 1600);
+  pmrem.dispose();
+  scene.environment = environment.texture;
+  scene.environmentIntensity = 0.3;
   const red = new THREE.MeshStandardMaterial({
-    color: '#82392d',
-    roughness: 0.9,
+    color: '#8f3629',
+    roughness: 0.94,
     side: THREE.DoubleSide,
   });
-
-  function massif(
-    side: number,
-    offset: number,
-    height: number,
-    depth: number,
-    shade: number,
-  ) {
-    const geometry = new THREE.PlaneGeometry(160, depth, 68, 150);
-    geometry.rotateX(-Math.PI / 2);
-    const vertices = geometry.attributes.position!;
-    const colors: number[] = [];
-    for (let i = 0; i < vertices.count; i++) {
-      const x = vertices.getX(i);
-      const z = vertices.getZ(i) + offset;
-      const edge = (x + 80) / 160;
-      const bend = Math.sin(z * 0.012) * 3.5 + Math.sin(z * 0.031) * 1.2;
-      const worldX = side * (21 + edge * 160 + bend);
-      const cliff = 24 * (1 - Math.exp(-edge * 27));
-      const ridge = Math.pow(edge, 1.17) * height;
-      const fold =
-        Math.sin(z * 0.025 + edge * 7 + side) * 13 +
-        Math.sin(z * 0.064 - edge * 13) * 4.5 +
-        Math.cos(z * 0.13 + edge * 21) * 1.6;
-      let y = 7 + cliff + ridge + fold * Math.min(1, edge * 3.5);
-      // A cut terrace visibly receives both bridge abutments, instead of swallowing their towers.
-      const terrace =
-        Math.exp(-Math.pow((z + 8) / 14, 4)) *
-        Math.exp(-Math.pow((Math.abs(worldX) - 40) / 15, 4));
-      y = THREE.MathUtils.lerp(y, 39.6, terrace);
-      vertices.setXYZ(i, worldX, y, z);
-      const stratum = Math.sin(y * 0.33 + Math.sin(z * 0.022) * 2) * 0.025;
-      const v =
-        shade *
-        (0.62 + edge * 0.14 + stratum + Math.sin(z * 0.07 + edge * 29) * 0.025);
-      colors.push(v * 0.91, v, v * 0.96);
-    }
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    if (side < 0 && geometry.index) {
-      const indices = geometry.index;
-      for (let i = 0; i < indices.count; i += 3) {
-        const b = indices.getX(i + 1);
-        indices.setX(i + 1, indices.getX(i + 2));
-        indices.setX(i + 2, b);
-      }
-    }
-    geometry.computeVertexNormals();
-    const mesh = new THREE.Mesh(geometry, rock);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-  }
-  massif(-1, -190, 100, 780, 1);
-  massif(1, -190, 125, 780, 0.91);
-
-  // Continuous irregular ridgelines, deliberately without recognizable geographic coordinates.
-  for (let layer = 0; layer < 3; layer++) {
-    const geometry = new THREE.PlaneGeometry(780, 160, 140, 1);
-    const vertices = geometry.attributes.position!;
-    for (let i = 0; i < vertices.count; i++) {
-      const x = vertices.getX(i);
-      const upper = vertices.getY(i) > 0;
-      const crest =
-        76 +
-        layer * 18 +
-        Math.sin(x * 0.009 + layer * 1.7) * 30 +
-        Math.sin(x * 0.023 - layer) * 14 +
-        Math.sin(x * 0.047 + 0.8) * 5;
-      vertices.setXYZ(i, x, upper ? crest : -35, -500 - layer * 85);
-    }
-    geometry.computeVertexNormals();
-    const material = new THREE.MeshBasicMaterial({
-      color: ['#59716f', '#6c807c', '#82938b'][layer],
-      side: THREE.DoubleSide,
-    });
-    scene.add(new THREE.Mesh(geometry, material));
-  }
-
-  const riverMaterial = new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 } },
-    vertexShader: `varying vec2 vUv; varying float vDepth; uniform float time;
-      void main(){vUv=uv; vec3 p=position; p.z+=sin(p.y*.16+time)*.09+cos(p.x*.45+time)*.05;
-      vec4 view=modelViewMatrix*vec4(p,1.);vDepth=-view.z;gl_Position=projectionMatrix*view;}`,
-    fragmentShader: `varying vec2 vUv; varying float vDepth; uniform float time;
-      void main(){float r=sin(vUv.x*150.+sin(vUv.y*110.+time*.5)*3.);
-      float w=sin(vUv.y*1800.-time*4.+sin(vUv.x*25.)*5.);float fleck=pow(max(0.,r*w),16.);
-      float reflection=exp(-pow((vUv.x-.34)*9.,2.))*.17;
-      vec3 c=mix(vec3(.12,.26,.27),vec3(.46,.60,.55),fleck*.28+reflection);
-      c+=vec3(.19,.12,.045)*reflection;float fog=1.-exp(-.0054*.0054*vDepth*vDepth);
-      gl_FragColor=vec4(mix(c,vec3(.51,.58,.57),clamp(fog,0.,1.)),1.);}`,
-  });
-  const river = new THREE.Mesh(
-    new THREE.PlaneGeometry(65, 1500, 24, 180),
-    riverMaterial,
-  );
-  river.rotation.x = -Math.PI / 2;
-  river.position.set(0, 7, -500);
-  scene.add(river);
-
   function box(
     w: number,
     h: number,
@@ -237,7 +123,10 @@ export function createBridgeStudy(
     z: number,
     material: THREE.Material,
   ) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+    const mesh = new THREE.Mesh(
+      new RoundedBoxGeometry(w, h, d, 2, Math.min(0.14, h * 0.12)),
+      material,
+    );
     mesh.position.set(x, y, z);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -254,7 +143,7 @@ export function createBridgeStudy(
     box(1.8, 1, 9, side * 32, 51, -8, stone);
   }
   const planks = new THREE.InstancedMesh(
-    new THREE.BoxGeometry(0.58, 0.28, 4.3),
+    new RoundedBoxGeometry(0.61, 0.25, 4.3, 2, 0.035),
     wood,
     94,
   );
@@ -265,12 +154,16 @@ export function createBridgeStudy(
     const x = -32 + (i / 93) * 64;
     const sag = 1.8 * (1 - (x / 32) ** 2);
     plank.position.set(x, 41 - sag, -8);
-    plank.rotation.z = Math.atan((3.6 * x) / 1024);
+    plank.rotation.set(
+      Math.sin(i * 3.1) * 0.009,
+      Math.sin(i * 2.7) * 0.007,
+      Math.atan((3.6 * x) / 1024),
+    );
     plank.updateMatrix();
     planks.setMatrixAt(i, plank.matrix);
     planks.setColorAt(
       i,
-      new THREE.Color().setHSL(0.095, 0.23, 0.65 + Math.sin(i * 2.17) * 0.08),
+      new THREE.Color().setHSL(0.095, 0.12, 0.78 + Math.sin(i * 2.17) * 0.07),
     );
   }
   scene.add(planks);
@@ -341,71 +234,214 @@ export function createBridgeStudy(
   ribbon.rotation.y = 0.7;
   scene.add(ribbon);
 
-  const halo = new THREE.Mesh(
-    new THREE.PlaneGeometry(270, 270),
-    new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      vertexShader:
-        'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader:
-        'varying vec2 vUv; void main(){float d=distance(vUv,vec2(.5));float a=exp(-d*d*24.)*.38;gl_FragColor=vec4(.96,.68,.34,a);}',
-    }),
+  const fasteners = new THREE.InstancedMesh(
+    new THREE.IcosahedronGeometry(0.043, 1),
+    iron,
+    188,
   );
-  halo.position.set(-58, 150, -350);
-  scene.add(halo);
+  const bolt = new THREE.Object3D();
+  for (let i = 0; i < 94; i++)
+    for (let side = 0; side < 2; side++) {
+      const x = -32 + (i / 93) * 64;
+      bolt.position.set(
+        x,
+        41.15 - 1.8 * (1 - (x / 32) ** 2),
+        -8 + (side ? 1.6 : -1.6),
+      );
+      bolt.scale.set(1, 0.35, 1);
+      bolt.updateMatrix();
+      fasteners.setMatrixAt(i * 2 + side, bolt.matrix);
+    }
+  scene.add(fasteners);
+  const chain = new THREE.InstancedMesh(
+    new THREE.TorusGeometry(0.135, 0.028, 5, 12),
+    iron,
+    300,
+  );
+  const link = new THREE.Object3D();
+  for (let side = 0; side < 2; side++)
+    for (let i = 0; i < 150; i++) {
+      const x = -32 + (i / 149) * 64;
+      link.position.set(x, 43 + (x / 32) ** 2 * 8, side ? -5.6 : -10.4);
+      link.rotation.set(i % 2 ? Math.PI / 2 : 0, 0, Math.atan(x / 64));
+      link.scale.set(1.65, 1, 1);
+      link.updateMatrix();
+      chain.setMatrixAt(side * 150 + i, link.matrix);
+    }
+  scene.add(chain);
 
+  const composer = new EffectComposer(renderer);
+  const renderPass = new RenderPass(scene, camera);
+  const bloom = new UnrealBloomPass(
+    new THREE.Vector2(640, 360),
+    0.2,
+    0.55,
+    1.15,
+  );
+  const output = new OutputPass();
+  composer.addPass(renderPass);
+  composer.addPass(bloom);
+  composer.addPass(output);
   const poses = [
     {
-      position: new THREE.Vector3(8, 70, 115),
-      target: new THREE.Vector3(-8, 33, -45),
+      position: new THREE.Vector3(16, 84, 130),
+      target: new THREE.Vector3(-20, 43, -65),
     },
     {
-      position: new THREE.Vector3(6, 54, 38),
-      target: new THREE.Vector3(0, 43, -8),
+      position: new THREE.Vector3(-24, 44.8, -3),
+      target: new THREE.Vector3(13, 42, -8),
     },
     {
-      position: new THREE.Vector3(-4, 85, 105),
-      target: new THREE.Vector3(4, 35, -50),
+      position: new THREE.Vector3(14, 89, 76),
+      target: new THREE.Vector3(4, 37, -35),
     },
   ];
-  let auto = true,
+  let auto = !options.reduced,
     elapsed = 0,
+    visualTime = 0,
+    paused = false,
     active = true,
     raf = 0,
     last = 0,
-    metricTime = 0;
+    metricTime = 0,
+    anchorTime = 0;
   let samples: number[] = [];
+  let width = 1,
+    height = 1,
+    resizePending = true;
+  let transition: {
+    from: THREE.Vector3;
+    to: THREE.Vector3;
+    fromTarget: THREE.Vector3;
+    toTarget: THREE.Vector3;
+    time: number;
+    guided: boolean;
+  } | null = null;
   const end = new THREE.Vector3();
-  function pose(index: number) {
-    const p = poses[index]!;
-    camera.position.copy(p.position);
-    controls.target.copy(p.target);
-    controls.update();
-    auto = false;
+  function safety() {
+    const nearBridge = camera.position.z > -25 && camera.position.z < 10;
+    camera.position.x = THREE.MathUtils.clamp(
+      camera.position.x,
+      nearBridge ? -26 : -19,
+      nearBridge ? 26 : 19,
+    );
+    camera.position.z = THREE.MathUtils.clamp(camera.position.z, -150, 220);
+    canyon.constrainCamera(camera.position);
+    camera.position.y = Math.max(
+      nearBridge && Math.abs(camera.position.x) > 19 ? 43 : 12,
+      camera.position.y,
+    );
+    camera.lookAt(controls.target);
   }
-  pose(0);
-  auto = !options.reduced;
-  const manual = () => {
+  function guidedPose() {
+    const section = elapsed < 22 ? 0 : 1;
+    const b = THREE.MathUtils.clamp(
+      section === 0 ? elapsed / 22 : (elapsed - 22) / 38,
+      0,
+      1,
+    );
+    const t = b * b * (3 - 2 * b);
+    return {
+      position: new THREE.Vector3().lerpVectors(
+        poses[section]!.position,
+        poses[section + 1]!.position,
+        t,
+      ),
+      target: new THREE.Vector3().lerpVectors(
+        poses[section]!.target,
+        poses[section + 1]!.target,
+        t,
+      ),
+    };
+  }
+  function moveTo(
+    position: THREE.Vector3,
+    target: THREE.Vector3,
+    guided = false,
+  ) {
     auto = false;
-  };
+    if (options.reduced) {
+      camera.position.copy(position);
+      controls.target.copy(target);
+      controls.update();
+      safety();
+      transition = null;
+      auto = guided;
+    } else
+      transition = {
+        from: camera.position.clone(),
+        to: position.clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: target.clone(),
+        time: 0,
+        guided,
+      };
+    options.onCameraMode?.(guided ? 'guided' : 'free');
+  }
+  function pose(index: number) {
+    const p = poses[index];
+    if (!p) return;
+    options.onExplore?.();
+    moveTo(p.position, p.target);
+  }
+  camera.position.copy(poses[0]!.position);
+  controls.target.copy(poses[0]!.target);
+  controls.update();
+  options.onCameraMode?.(auto ? 'guided' : 'free');
+  function manual() {
+    auto = false;
+    transition = null;
+    options.onExplore?.();
+    options.onCameraMode?.('free');
+  }
   controls.addEventListener('start', manual);
-  const resize = () => {
-    const { width, height } = host.getBoundingClientRect();
-    if (!width || !height) return;
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  };
-  const observer = new ResizeObserver(resize);
+  function resize() {
+    const rect = host.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return;
+    const w = Math.round(rect.width),
+      h = Math.round(rect.height);
+    if (w !== width || h !== height) {
+      width = w;
+      height = h;
+      renderer.setSize(w, h, false);
+      composer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resizePending = false;
+  }
+  const observer = new ResizeObserver(() => {
+    resizePending = true;
+  });
   observer.observe(host);
-  resize();
+  const spots = [
+    { id: 'bridge' as const, position: new THREE.Vector3(0, 42, -8) },
+    { id: 'banks' as const, position: new THREE.Vector3(31, 48, -28) },
+  ];
+  function getHotspots(): StudyHotspot[] {
+    camera.updateMatrixWorld();
+    return spots.map((spot) => {
+      const p = spot.position.clone().project(camera);
+      const visible =
+        p.z > -1 &&
+        p.z < 1 &&
+        p.x > -0.96 &&
+        p.x < 0.96 &&
+        p.y > -0.96 &&
+        p.y < 0.96;
+      return {
+        id: spot.id,
+        x: (p.x * 0.5 + 0.5) * width,
+        y: (-0.5 * p.y + 0.5) * height,
+        visible,
+      };
+    });
+  }
   const contextLost = (event: Event) => {
     event.preventDefault();
     active = false;
     cancelAnimationFrame(raf);
-    options.onError('三维上下文中断。请重新载入小样；本次未记录完成状态。');
+    options.onError('画面暂时中断，请重新载入。');
   };
   renderer.domElement.addEventListener('webglcontextlost', contextLost);
   const visibility = () => {
@@ -431,63 +467,85 @@ export function createBridgeStudy(
     )
       return;
     event.preventDefault();
-    auto = false;
+    manual();
     if (event.key === 'Home') {
       pose(0);
       return;
     }
-    const offset = camera.position.clone().sub(controls.target);
-    const spherical = new THREE.Spherical().setFromVector3(offset);
-    if (event.key === 'ArrowLeft') spherical.theta -= 0.08;
-    if (event.key === 'ArrowRight') spherical.theta += 0.08;
-    if (event.key === 'ArrowUp') spherical.phi -= 0.06;
-    if (event.key === 'ArrowDown') spherical.phi += 0.06;
+    const spherical = new THREE.Spherical().setFromVector3(
+      camera.position.clone().sub(controls.target),
+    );
+    if (event.key === 'ArrowLeft') spherical.theta -= 0.07;
+    if (event.key === 'ArrowRight') spherical.theta += 0.07;
+    if (event.key === 'ArrowUp') spherical.phi -= 0.05;
+    if (event.key === 'ArrowDown') spherical.phi += 0.05;
     if (event.key === '+') spherical.radius *= 0.9;
     if (event.key === '-') spherical.radius *= 1.1;
-    spherical.phi = THREE.MathUtils.clamp(spherical.phi, 0.3, Math.PI * 0.43);
-    spherical.radius = THREE.MathUtils.clamp(spherical.radius, 22, 180);
+    spherical.phi = THREE.MathUtils.clamp(spherical.phi, 0.18, Math.PI * 0.495);
+    spherical.radius = THREE.MathUtils.clamp(spherical.radius, 8, 245);
     camera.position.copy(controls.target).add(end.setFromSpherical(spherical));
     controls.update();
+    safety();
   };
   renderer.domElement.addEventListener('keydown', keyboard);
   function frame(now: number) {
     if (!active || document.hidden) return;
     raf = requestAnimationFrame(frame);
-    const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
     if (last && now - last < 31) return;
+    const dt = last ? Math.min((now - last) / 1000, 0.1) : 0;
     if (last) samples.push(now - last);
     last = now;
+    if (resizePending) resize();
     options.onFrame(dt);
-    if (auto && !options.reduced) {
-      const section = elapsed < 22 ? 0 : 1;
-      const blend =
-        section === 0 ? elapsed / 22 : Math.min(1, (elapsed - 22) / 38);
-      const ease = blend * blend * (3 - 2 * blend);
-      camera.position.lerpVectors(
-        poses[section]!.position,
-        poses[section + 1]!.position,
-        ease,
-      );
+    if (!paused && !options.reduced) visualTime += dt;
+    if (transition) {
+      if (transition.guided) {
+        const target = guidedPose();
+        transition.to.copy(target.position);
+        transition.toTarget.copy(target.target);
+      }
+      transition.time += dt;
+      const p = Math.min(1, transition.time / 1.25);
+      const t = p * p * (3 - 2 * p);
+      camera.position.lerpVectors(transition.from, transition.to, t);
       controls.target.lerpVectors(
-        poses[section]!.target,
-        poses[section + 1]!.target,
-        ease,
+        transition.fromTarget,
+        transition.toTarget,
+        t,
       );
+      camera.position.y += Math.sin(p * Math.PI) * 3;
+      if (p === 1) {
+        auto = transition.guided;
+        transition = null;
+      }
+    } else if (auto && !options.reduced && !paused) {
+      const p = guidedPose();
+      camera.position.copy(p.position);
+      controls.target.copy(p.target);
     }
-    riverMaterial.uniforms.time!.value = options.reduced ? 0 : elapsed;
-    halo.quaternion.copy(camera.quaternion);
+    atmosphere.update(options.reduced ? 0 : visualTime, camera);
+    if (!options.reduced && !paused) {
+      const p = ribbon.geometry.attributes.position!;
+      for (let i = 0; i < p.count; i++)
+        p.setZ(i, Math.sin(p.getY(i) * 2 + visualTime * 1.6) * 0.1);
+      p.needsUpdate = true;
+    }
     controls.update();
-    // Viewpoint movement stays inside the open river corridor; no preset or orbit can enter a cliff.
-    camera.position.x = THREE.MathUtils.clamp(camera.position.x, -17, 17);
-    camera.position.z = Math.max(16, camera.position.z);
-    camera.position.y = Math.max(27, camera.position.y);
-    camera.lookAt(controls.target);
+    safety();
+    if (now - anchorTime > 66) {
+      options.onAnchors?.(
+        getHotspots().map((p) => ({ ...p, x: p.x / width, y: p.y / height })),
+      );
+      anchorTime = now;
+    }
     try {
-      renderer.render(scene, camera);
+      renderer.info.reset();
+      if (low) renderer.render(scene, camera);
+      else composer.render(dt);
     } catch {
       active = false;
       cancelAnimationFrame(raf);
-      options.onError('渲染中断，请重载小样后重试。');
+      options.onError('画面暂时中断，请重新载入。');
       return;
     }
     if (now - metricTime > 2000 && samples.length > 3) {
@@ -504,20 +562,41 @@ export function createBridgeStudy(
       samples = [];
     }
   }
+  canyon.setLow(low);
+  atmosphere.setLow(low);
   raf = requestAnimationFrame(frame);
   return {
     setTime(value: number) {
-      elapsed = value;
+      elapsed = THREE.MathUtils.clamp(
+        Number.isFinite(value) ? value : 0,
+        0,
+        60,
+      );
+    },
+    setPaused(value: boolean) {
+      paused = value;
     },
     pose,
-    resumeCamera() {
-      auto = !options.reduced;
+    getHotspots,
+    focusSpot(id: 'bridge' | 'banks') {
+      pose(id === 'bridge' ? 1 : 2);
     },
-    quality(low: boolean) {
+    focus(id: 'bridge' | 'banks') {
+      pose(id === 'bridge' ? 1 : 2);
+    },
+    resumeCamera() {
+      const p = guidedPose();
+      moveTo(p.position, p.target, !options.reduced);
+    },
+    quality(value: boolean) {
+      low = value;
       renderer.setPixelRatio(low ? 1 : Math.min(window.devicePixelRatio, 1.5));
+      composer.setPixelRatio(renderer.getPixelRatio());
       renderer.shadowMap.enabled = !low;
       sun.castShadow = !low;
-      resize();
+      canyon.setLow(low);
+      atmosphere.setLow(low);
+      resizePending = true;
     },
     dispose() {
       active = false;
@@ -528,22 +607,26 @@ export function createBridgeStudy(
       document.removeEventListener('visibilitychange', visibility);
       renderer.domElement.removeEventListener('keydown', keyboard);
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
-      const geometries = new Set<THREE.BufferGeometry>();
-      const materials = new Set<THREE.Material>();
+      const geometries = new Set<THREE.BufferGeometry>(),
+        mats = new Set<THREE.Material>();
       scene.traverse((object) => {
         if (object instanceof THREE.InstancedMesh) object.dispose();
         if (object instanceof THREE.Mesh) {
           geometries.add(object.geometry);
-          for (const material of Array.isArray(object.material)
+          for (const m of Array.isArray(object.material)
             ? object.material
             : [object.material])
-            materials.add(material);
+            mats.add(m);
         }
       });
-      geometries.forEach((geometry) => geometry.dispose());
-      materials.forEach((material) => material.dispose());
-      grain.dispose();
+      geometries.forEach((g) => g.dispose());
+      mats.forEach((m) => m.dispose());
+      materials.dispose();
+      environment.dispose();
       sun.shadow.dispose();
+      bloom.dispose();
+      output.dispose();
+      composer.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
       renderer.domElement.remove();

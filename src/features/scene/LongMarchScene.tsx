@@ -127,12 +127,20 @@ export function LongMarchScene(props: LongMarchSceneProps) {
         </button>
       </div>
       <div className={styles.caption}>
-        <p>
-          <span className={styles.emberDot} />
-          {hasGeometry
-            ? '已发布坐标展示 · 平面投影，无地形高程'
-            : '艺术化表现 / 非史实地图'}
-        </p>
+        {hasGeometry ? (
+          <p>
+            <span className={styles.emberDot} />
+            已发布坐标 · 平面投影
+          </p>
+        ) : (
+          <details className={styles.artDisclosure}>
+            <summary>
+              <span className={styles.emberDot} />
+              艺术演绎
+            </summary>
+            <p>以火种为意象的原创三维展陈，不代表历史地图或真实地形。</p>
+          </details>
+        )}
         {hasSchematic && (
           <p className={styles.schematic}>宏观示意，非真实行军路线</p>
         )}

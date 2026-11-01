@@ -248,3 +248,48 @@
     backdrop-filter: none;
   }
 }
+.artDisclosure {
+  position: relative;
+  pointer-events: auto;
+}
+.artDisclosure summary {
+  cursor: pointer;
+  list-style: none;
+  min-height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.artDisclosure summary::-webkit-details-marker {
+  display: none;
+}
+.artDisclosure summary:focus-visible {
+  outline: 1px solid #d5a466;
+  outline-offset: 3px;
+}
+.artDisclosure > p {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 245px;
+  padding: 14px 17px;
+  background: #101e29f5;
+  border: 1px solid #b48b5755;
+  color: #c5c8bd;
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.9;
+  box-shadow: 0 15px 45px #0005;
+}
+@media (max-width: 760px) {
+  .artDisclosure summary {
+    justify-content: flex-start;
+  }
+  .artDisclosure > p {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: 0;
+    transform: none;
+  }
+}
