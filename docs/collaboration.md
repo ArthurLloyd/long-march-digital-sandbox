@@ -1,5 +1,11 @@
 # 三人 GitHub 协作
 
+## C2 独立叠加分支
+
+C2 使用 feat/c2-history-orchestration，[Draft PR #7](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/7) 以未合并的 feat/c1-experience-controller 为 base，差异只包含 C2。没有向 C0/C1 或 A0 分支追加提交，没有自动合并 #4/#5/#6/#7。
+
+真实模块接线与数据语义见 [C2 交接](architecture/c2-integration-guide.md)，实际范围与工具停止项见 [报告](architecture/phase-c2-report.md)。C0/C1 合并后重新核对 main 再调整 base；squash 出现重复差异时使用新分支选择性迁移 C2 提交，不强推。A/B 在自己的分支保护本人工作，正式基线合并后再 merge origin/main，不提前混入未完成的 C2。未自动私信成员。
+
 ## C1 独立叠加分支
 
 C1 使用 feat/c1-experience-controller。PR #4 未合并时，从完整 C0 建分支并创建 base 为 feat/app-shell 的 Draft Stacked PR，差异只含 C1；不得继续推到 PR #4 的 head，也不自动合并。CI 增加对该叠加 base 的检查。

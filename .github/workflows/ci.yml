@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [main, feat/app-shell]
+    branches: [main, feat/app-shell, feat/c1-experience-controller]
   push:
     branches: [main]
 

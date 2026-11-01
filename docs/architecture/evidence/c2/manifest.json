@@ -1,0 +1,161 @@
+{
+  "date": "2026-11-01",
+  "environment": "Windows / Chrome / local Vite 127.0.0.1:5173",
+  "flow": "/__dev/contracts?flow=c2",
+  "engineeringOnly": true,
+  "captures": [
+    {
+      "file": "50f2bf3-18-viewport-reset.jpg",
+      "codeCommit": "50f2bf359559027053a889510ca15d6d68203fe8",
+      "imageWidth": 1270,
+      "imageHeight": 617,
+      "scope": "After successful viewport.reset(); topic A phase 3/3 paused. Does not demonstrate hidden-page pause."
+    },
+    {
+      "file": "7f3e1be-16-invalid-1366.jpg",
+      "codeCommit": "7f3e1be5b2785f6db90418c223ba4ffdd97769ac",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "7f3e1be-17-empty-final-1366.jpg",
+      "codeCommit": "7f3e1be5b2785f6db90418c223ba4ffdd97769ac",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "89a6460-01-stage-forces-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1430,
+      "imageHeight": 894
+    },
+    {
+      "file": "89a6460-02-first-intro-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 900
+    },
+    {
+      "file": "89a6460-03-exit-context-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1430,
+      "imageHeight": 1042
+    },
+    {
+      "file": "89a6460-04-ready-complete-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 700
+    },
+    {
+      "file": "89a6460-05-unlocked-reading-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 700
+    },
+    {
+      "file": "89a6460-06-refresh-reading-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 900
+    },
+    {
+      "file": "89a6460-07-topic-tree-1920.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1920,
+      "imageHeight": 1080
+    },
+    {
+      "file": "89a6460-08-place-1920.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1920,
+      "imageHeight": 1080
+    },
+    {
+      "file": "89a6460-09-topic-switch-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "89a6460-10-no-force-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "89a6460-11-empty-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "efd524b-13-related-focus-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "efd524b-14-withdrawn-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "efd524b-15-empty-fixed-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    }
+  ],
+  "exportedDomMeasurement": {
+    "state": "overview-1440",
+    "innerWidth": 1440,
+    "innerHeight": 900,
+    "documentScrollWidth": 1430,
+    "mainScrollWidth": 1430,
+    "mainClientWidth": 1430
+  },
+  "followup": {
+    "date": "2026-11-01",
+    "codeCommit": "50f2bf359559027053a889510ca15d6d68203fe8",
+    "viewportReset": {
+      "result": "success",
+      "before": {
+        "innerWidth": 1280,
+        "innerHeight": 622,
+        "visibilityState": "visible"
+      },
+      "after": {
+        "innerWidth": 1280,
+        "innerHeight": 622,
+        "visibilityState": "visible"
+      },
+      "scope": "Explicit override cleared through the supported viewport API; OS display settings unchanged. The previous override was not shown to remain active in this new chat."
+    },
+    "backgroundPause": {
+      "result": "not_verified",
+      "reason": "Native Chrome binding again stopped because the current browser URL could not be determined with enough confidence. No new play/hide trial began; hidden was not observed. No further computer/browser controls were issued after the stop."
+    }
+  },
+  "edgeFollowup": {
+    "date": "2026-11-01",
+    "codeCommit": "d523a21681ba867e73a91a246ec6f9f31c83f978",
+    "pageControls": "Confirmed home confirmation and entry to topic A phase 1/3 paused through the supported Edge browser interface.",
+    "nativeWindow": "Minimized. Attempting documented activation, window rebinding and state capture through the installed skill API stopped on the same Windows browser URL identification restriction; successful restore was not confirmed.",
+    "backgroundPause": "not_verified",
+    "scope": "No play/hide trial began. Hidden was not observed. No browser or desktop controls were issued after the stop in this turn. Existing viewport reset result is unchanged."
+  },
+  "backgroundAcceptanceDecision": {
+    "date": "2026-11-01",
+    "requestedBy": "user",
+    "status": "not_verified_not_required_this_round",
+    "note": "After Edge native control was blocked, the user chose to stop this acceptance item for this round. No further control attempts or manual retest are requested. Previous evidence and instructions remain audit history; this is not a pass or an application failure."
+  },
+  "limits": [
+    "Other DOM measurements were observed but not exported before Computer Use ended; image dimensions are not DOM overflow measurements.",
+    "Actual background hiding was not confirmed: the tool still reported visible. Windows Computer Use then stopped because it could not reliably determine the current browser URL.",
+    "The last viewport override in the original session was 1366x768. Tool shutdown prevented reset in that session. No further browser operation or alternate browser-control mechanism was used in that stopped turn.",
+    "The followup reset succeeded; the original blocked observations remain historical evidence. Actual background hidden-page pause remains unverified."
+  ]
+}

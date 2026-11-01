@@ -139,7 +139,10 @@ export function useHistoricalExperience({
   const pause = useCallback(() => dispatch({ type: 'pause' }), []);
   useVisibilityPause(pause);
   const openHistoricalObject = useCallback(
-    (selection: HistoricalObjectSelection) => {
+    (
+      selection: HistoricalObjectSelection,
+      entryContext?: ExplorationContext,
+    ) => {
       pauseMacro();
       onSelect?.(selection);
       store.refresh();
@@ -151,7 +154,7 @@ export function useHistoricalExperience({
           selection,
           store.getSnapshot().records,
         ),
-        context: { ...context, selection },
+        context: { ...(entryContext ?? context), selection },
       });
     },
     [catalog, context, pauseMacro, store, onSelect],
@@ -330,6 +333,11 @@ export function useHistoricalExperience({
       close();
       dispatch({ type: 'clear_selection' });
     },
+    // Macro navigation already owns its next phase; do not restore an old context or pause a tick.
+    resetMacroSelection: useCallback(
+      () => dispatch({ type: 'clear_selection' }),
+      [],
+    ),
     clearRecords: () => store.clear(),
     response: (id: InteractionId, value: unknown) => {
       if (run)

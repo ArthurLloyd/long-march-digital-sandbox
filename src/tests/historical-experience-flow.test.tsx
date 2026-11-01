@@ -155,6 +155,8 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
       id: 'fixture-event-2',
       title: '普通工程事件',
     });
+    data.topics[0]!.eventIds.push('fixture-event-2');
+    data.phases[0]!.eventIds.push('fixture-event-2');
     function Details(props: HistoricalDetailProps) {
       return (
         <>
@@ -327,7 +329,7 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
       screen.getByRole('button', { name: '完成体验，阅读资料' }),
     ).toBeDisabled();
   });
-  it('宏观自动播放经过重点事件不打开体验，手动访问才进入', async () => {
+  it('无阶段兼容回放经过重点事件不打开体验，手动访问才进入', async () => {
     const user = userEvent.setup();
     const data = simulatePublishedSample();
     data.events.push({
@@ -335,6 +337,10 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
       id: 'fixture-event-2',
       title: '另一个工程事件',
     });
+    data.topics[0]!.phaseIds = [];
+    data.phases = [];
+    data.forceTracks = [];
+    data.forceSnapshots = [];
     render(
       <App
         input={data}

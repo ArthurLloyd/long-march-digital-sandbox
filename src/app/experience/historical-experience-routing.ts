@@ -26,6 +26,8 @@ export interface ExperienceCatalog {
   /** Restriction metadata only. Never read content or grant access from this index. */
   gates: ReadonlyMap<string, string>;
   error: string | null;
+  /** Restriction metadata only: withdrawal must not reactivate the legacy clock. */
+  phaseSystem: boolean;
 }
 export function selectionKey(selection: HistoricalObjectSelection) {
   return `${selection.kind}:${selection.id}`;
@@ -44,11 +46,17 @@ export function createExperienceCatalog(input: unknown): ExperienceCatalog {
         manifest.experienceId,
       );
     }
-    return { published, gates, error: null };
+    return {
+      published,
+      gates,
+      error: null,
+      phaseSystem: candidate.phases.length > 0,
+    };
   } catch {
     return {
       published: normalizeDataset({ events: [], routes: [], sources: [] }),
       gates: new Map(),
+      phaseSystem: false,
       error: '历史资料暂不可用，请稍后重试。',
     };
   }

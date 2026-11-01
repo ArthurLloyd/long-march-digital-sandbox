@@ -93,7 +93,7 @@ export function ChapterContent({
         <div className="reading-section">
           <BookOpen className="content-symbol" size={32} />
           <h3>等待一段有据可循的历史</h3>
-          <p>历史资料正在核验，正式专题即将开放。</p>
+          <p>历史专题正在核验，正式内容暂未开放。</p>
           <p>章节开放后，可在这里选择节点，联动沙盘与历史时间轴。</p>
         </div>
       )}
