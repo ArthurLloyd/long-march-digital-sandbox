@@ -1,6 +1,6 @@
 # 长征·不灭的火种
 
-当前 C2 开发分支已提供专题内历史阶段时钟、专题/人物/地点导航、当前阶段态势筛选和 C1 体验联动，见 [C2 报告](docs/architecture/phase-c2-report.md)、[接线](docs/architecture/c2-integration-guide.md)与[验收](docs/architecture/phase-c2-desktop-qa.md)。[Draft PR #7](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/7) 依赖尚未合并的 C1 #6/C0 #4，并不代表 main 已具有这些功能。正式数据仍为空，真实 A/B v2 场景、史料与媒体/性能待接入。下方保留已有稳定界面说明。
+Phase M 已将 C0 #4、C1 #6、C2 #7 和 A0 替代集成 [PR #8](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/8) 按顺序合入 main，完整组合回归 232 项通过。main 已具备阶段时钟、资料导航、当前阶段态势输入筛选、C1 体验调度和真实 v1 Three.js 艺术展台，见[合并与组合验收报告](docs/architecture/merge-integration-report.md)。正式历史数据仍为空，A 的 v2/沉浸渲染器、B 的真实历史内容与双人审核尚待交付；C3 尚未开始。后台隐藏暂停专项按用户决定保持未验证。下方保留已有稳定界面说明及其阶段记录。
 
 长征三维历史数字沙盘，面向 2026 年“赓续长征精神，智创青春新程”微程序大赛。
 
@@ -64,7 +64,7 @@ src/
   tests/           应用、数据门禁和播放测试
 ```
 
-`LongMarchScene` 与 `HistoryEventPanel` 目前是最小适配层，A/B 在同名公共出口替换实现。C 的探索容器通过 lazy/Suspense 接入场景，提供超时、异常及重试；事件资料由抽屉容器承载。当前未加载真实 Three.js 渲染器。首页素材制作记录、字体许可及接口兼容说明见 `docs/design/`。
+`LongMarchScene` 已接入 A0 的真实 v1 Three.js 展台；`HistoryEventPanel` 仍为 B 的基础适配层。C 的探索容器通过 lazy/Suspense 接入场景，提供超时、异常及重试；事件资料由抽屉容器承载。v2 地图和正式沉浸渲染器尚未交付，独立艺术工程原型保留在开发入口。首页素材制作记录、字体许可及接口兼容说明见 `docs/design/`。
 
 ## 数据与发布
 
