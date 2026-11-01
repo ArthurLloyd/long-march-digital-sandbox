@@ -1,5 +1,13 @@
 # 开发与排错
 
+## C0 接口开发
+
+执行 `npm run dev:contracts` 可打开仅开发环境的 `/__dev/contracts` 工作台。它使用未发布合成样本，只供 A/B 接线、JSON 验证和回调观察。正式页面没有该入口，生产构建实际引用 fixtures 或 tests 会失败。详见 [v2 接线说明](architecture/v2-integration-guide.md)。
+
+`npm run validate:data` 同时支持 v1/v2，并检查发布素材文件是否实际位于 public 内。CompletionRecord 与 canCompleteExperience 只是后续 C1 的类型/条件基础，当前不保存体验完成状态。
+
+构建隔离测试会临时启动本机 HTTP 服务并在结束后关闭；受限执行环境需允许回环连接。不要跳过该测试或关闭门禁以制造通过结果。
+
 ## 环境与复现
 
 推荐 Node.js 24 LTS（初始化 24.16.0）、npm 11。Vite 8.3.5 的 Node 要求为 ^20.19.0 或 >=22.12.0；Vitest 5.0.5 需要 ^22.12.0、^24 或 >=26，因此 package engines 取共同可用范围。使用 `.nvmrc` 与锁文件，CI 使用 Node 24。

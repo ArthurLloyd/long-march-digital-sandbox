@@ -1,8 +1,12 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import {
+  contractWorkbenchPlugin,
+  productionIsolationPlugin,
+} from './scripts/contract-workbench.ts';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), contractWorkbenchPlugin(), productionIsolationPlugin()],
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.ts'],

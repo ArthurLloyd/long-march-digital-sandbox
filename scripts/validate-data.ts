@@ -1,7 +1,11 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { validateDataset } from '../src/shared/utils/validate-dataset.ts';
-import type { HistoryDataset } from '../src/shared/contracts/data.ts';
+import {
+  getPublishedDatasetV2,
+  validateDataset,
+} from '../src/shared/utils/validate-dataset.ts';
+import { normalizeDataset } from '../src/shared/contracts/dataset.ts';
+import { validatePublishedAssets } from './validate-published-assets.ts';
 
 const root = new URL('../src/data/verified/', import.meta.url);
 async function collect(directory: URL): Promise<unknown[]> {
@@ -27,12 +31,19 @@ try {
     throw new Error(
       '当前契约只允许 dataset.json 一个正式数据入口；扩展前须由 C 同步运行时加载器与校验脚本。',
     );
-  const data = validateDataset(files[0]) as HistoryDataset;
+  const data = normalizeDataset(validateDataset(files[0]));
+  await validatePublishedAssets(
+    new URL('../public/', import.meta.url),
+    getPublishedDatasetV2(files[0]).assets,
+  );
   console.log(
     `历史数据校验通过：${data.events.length} 个事件，${data.routes.length} 条路线，${data.sources.length} 条来源。`,
   );
   console.log(
     `数据目录：${fileURLToPath(root)}；空数据集有效，不代表已完成史实审核。`,
+  );
+  console.log(
+    `v2 扩展：${data.topics.length} 个专题，${data.phases.length} 个阶段，${data.experiences.length} 个体验，${data.assets.length} 个素材。`,
   );
 } catch (error) {
   console.error(
