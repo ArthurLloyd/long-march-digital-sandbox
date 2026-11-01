@@ -58,12 +58,8 @@ describe('基础应用与空状态', () => {
     expect(screen.getByText(HISTORY_EMPTY_MESSAGE)).toBeInTheDocument();
     expect(screen.getByText('开发预览')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '播放专题阶段' })).toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: '上一历史阶段' }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: '下一历史阶段' }),
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: '上一历史阶段' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: '下一历史阶段' })).toBeDisabled();
     expect(document.querySelector('canvas')).toBeNull();
   });
   it('资料来源和使用说明导航可操作', async () => {
