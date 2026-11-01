@@ -2,7 +2,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 const root = createRoot(document.getElementById('root')!);
-if (new URLSearchParams(window.location.search).get('flow') === 'c2') {
+if (new URLSearchParams(window.location.search).get('flow') === 'c3') {
+  const { C3Workbench } = await import('./C3Workbench');
+  root.render(
+    <StrictMode>
+      <C3Workbench />
+    </StrictMode>,
+  );
+} else if (new URLSearchParams(window.location.search).get('flow') === 'c2') {
   const { C2Workbench } = await import('./C2Workbench');
   root.render(
     <StrictMode>

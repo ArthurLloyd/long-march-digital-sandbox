@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import candidateDataset from '../data/verified/dataset.json';
+import releaseSnapshot from 'virtual:history-release';
 import { HistoryEventPanel } from '../features/history';
 import {
   Timeline,
@@ -39,7 +39,10 @@ import {
   type HistoricalObjectSelection,
   type SceneError,
 } from '../shared/contracts';
-import { createExperienceCatalog } from './experience/historical-experience-routing';
+import {
+  createExperienceCatalog,
+  type ExperienceCatalog,
+} from './experience/historical-experience-routing';
 import { useHistoricalExperience } from './experience/use-historical-experience';
 import {
   loadExperienceModules,
@@ -68,16 +71,29 @@ const titles: Record<Overlay, string> = {
   about: '关于展馆',
 };
 export function App({
-  input = candidateDataset,
+  input,
   modules: injectedModules,
   completionStore,
+  developmentCatalog,
 }: {
   input?: unknown;
   modules?: ExperienceModules;
   completionStore?: CompletionStore;
+  /** Dev workbenches only; compiled out of the production path. */
+  developmentCatalog?: ExperienceCatalog;
 } = {}) {
-  const catalog = useMemo(() => createExperienceCatalog(input), [input]);
+  const catalog = useMemo(
+    () =>
+      import.meta.env.DEV && developmentCatalog
+        ? developmentCatalog
+        : createExperienceCatalog(
+            input === undefined ? releaseSnapshot.dataset : input,
+            input === undefined ? releaseSnapshot.restrictions : undefined,
+          ),
+    [input, developmentCatalog],
+  );
   const { events, routes, sources } = catalog.published;
+  const candidateReview = import.meta.env.DEV && Boolean(developmentCatalog);
   const [experience, dispatch] = useExperience();
   const phaseMode = catalog.phaseSystem;
   const clock = useHistoricalPhase(
@@ -471,7 +487,7 @@ export function App({
                   <strong>历史专题</strong>
                   <small>
                     {events.length
-                      ? `${events.length} 个核验节点`
+                      ? `${events.length} 个${candidateReview ? '候选' : '核验'}节点`
                       : '专题核验中'}
                   </small>
                 </span>
@@ -495,6 +511,7 @@ export function App({
             </div>
             {phaseMode ? (
               <PhaseTimeline
+                candidateReview={candidateReview}
                 clock={clock}
                 events={sceneData.events}
                 activeEventId={activeEvent?.id ?? null}
@@ -535,6 +552,7 @@ export function App({
         >
           {experience.overlay === 'chapters' && phaseMode && (
             <HistoricalNavigation
+              candidateReview={candidateReview}
               dataset={catalog.published}
               topicId={clock.selectedTopicId}
               phaseId={phaseId}

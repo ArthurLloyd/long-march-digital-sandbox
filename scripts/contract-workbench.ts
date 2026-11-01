@@ -2,8 +2,14 @@ import type { Plugin } from 'vite';
 
 export const CONTRACT_WORKBENCH_PATH = '/__dev/contracts';
 export function assertProductionModules(moduleIds: readonly string[]) {
-  const forbidden = moduleIds.filter((id) =>
-    /\/src\/(?:data\/fixtures|tests)\//.test(id.replaceAll('\\', '/')),
+  const forbidden = moduleIds.filter(
+    (id) =>
+      /\/src\/(?:data\/fixtures|tests|features\/history\/review)\//.test(
+        id.replaceAll('\\', '/'),
+      ) ||
+      /\/src\/features\/scene\/(?:sandbox\/(?:main|immersive-gallery|panorama)|prototype\/main)\.[tj]s/.test(
+        id.replaceAll('\\', '/'),
+      ),
   );
   if (forbidden.length)
     throw new Error(`生产构建包含隔离测试模块：${forbidden.join(', ')}`);
