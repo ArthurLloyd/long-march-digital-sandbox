@@ -1,0 +1,83 @@
+{
+  "topics": [
+    {
+      "topic": "遵义会议",
+      "heading": ["遵义会议"]
+    },
+    {
+      "topic": "四渡赤水",
+      "heading": ["四渡赤水"]
+    },
+    {
+      "topic": "巧渡金沙江",
+      "heading": ["巧渡金沙江"]
+    },
+    {
+      "topic": "飞夺泸定桥",
+      "heading": ["飞夺泸定桥"]
+    },
+    {
+      "topic": "翻越雪山",
+      "heading": ["翻越雪山"]
+    },
+    {
+      "topic": "穿越草地",
+      "heading": ["穿越草地"]
+    }
+  ],
+  "people": [
+    {
+      "person": "毛泽东",
+      "images": [
+        "毛泽东真实照片 · 1950年（页面中英月日记载不一，不取精确月日）",
+        "毛泽东 · 同人艺术形象"
+      ],
+      "rightsPending": 0
+    },
+    {
+      "person": "周恩来",
+      "images": [
+        "周恩来真实照片 · 1917年（按来源元数据）",
+        "周恩来 · 同人艺术形象"
+      ],
+      "rightsPending": 2
+    },
+    {
+      "person": "朱德",
+      "images": [
+        "朱德真实照片 · 1922年（不采用有歧义的月日）",
+        "朱德 · 同人艺术形象"
+      ],
+      "rightsPending": 0
+    },
+    {
+      "person": "刘伯承",
+      "images": [
+        "刘伯承真实照片 · 20世纪20年代（按来源元数据）",
+        "刘伯承 · 同人艺术形象"
+      ],
+      "rightsPending": 2
+    },
+    {
+      "person": "杨成武",
+      "images": [
+        "杨成武真实照片 · 1937年11月，合影左起第三人为杨成武",
+        "杨成武 · 同人艺术形象"
+      ],
+      "rightsPending": 0
+    },
+    {
+      "person": "黄开湘",
+      "images": [],
+      "rightsPending": 0
+    }
+  ],
+  "reviewAfterRefresh": "已读 0 / 5 段 · 已确认解释 0 / 2",
+  "ludingComplete": "已读 5 / 5 段 · 已确认解释 2 / 2",
+  "returnToSandbox": {
+    "progress": 500,
+    "iframe": "about:blank",
+    "canvas": 1
+  },
+  "hiddenPause": "按用户要求跳过，未验证"
+}
