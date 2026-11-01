@@ -1,5 +1,11 @@
 # 三人 GitHub 协作
 
+## C1 独立叠加分支
+
+C1 使用 feat/c1-experience-controller。PR #4 未合并时，从完整 C0 建分支并创建 base 为 feat/app-shell 的 Draft Stacked PR，差异只含 C1；不得继续推到 PR #4 的 head，也不自动合并。CI 增加对该叠加 base 的检查。
+
+C0 合并后重新核对 main。正常合并可调整 C1 base；squash 造成重复 C0 差异时，用新分支选择性 cherry-pick C1 提交，不强推共享分支。A/B 接线见 [C1 说明](architecture/c1-integration-guide.md)，不自动私信成员。
+
 ## Phase 3 · C0 公共契约
 
 C0 使用新的独立 PR，目标 main，等待用户审核后再决定合并，不再记入已经合并的 PR #3。公共类型与接线方式见 [v2 接线说明](architecture/v2-integration-guide.md)。v1 数据和组件继续有效，正式 dataset.json 仍由 B 管理；C0 没有代替 A/B 提交实现或史料。

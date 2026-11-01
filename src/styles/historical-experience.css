@@ -1,0 +1,80 @@
+.exploration-topic {
+  flex-wrap: wrap;
+  max-width: calc(100% - 48px);
+}
+.clear-selection {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+.exhibition-drawer.experience-drawer {
+  width: min(1060px, 94vw);
+}
+.experience-drawer .drawer-content {
+  padding: 24px 32px;
+}
+.experience-intro,
+.experience-reading,
+.experience-feedback {
+  max-width: 72ch;
+}
+.experience-intro h3,
+.experience-interaction h3,
+.experience-exit h3 {
+  color: var(--gold-bright);
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin: 8px 0 20px;
+}
+.experience-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+.experience-progress {
+  color: var(--gold-bright);
+  font-variant-numeric: tabular-nums;
+}
+.experience-stage {
+  min-height: 160px;
+  position: relative;
+}
+.experience-stage canvas,
+.experience-stage video {
+  max-width: 100%;
+}
+.experience-subtitles {
+  max-width: 72ch;
+  padding: 16px 0;
+  color: var(--text);
+  line-height: 1.9;
+}
+.experience-interaction {
+  padding: 24px 0;
+  border-block: 1px solid var(--line-strong);
+  margin: 24px 0;
+}
+.experience-feedback {
+  padding: 16px 0;
+  color: var(--gold-bright);
+}
+.experience-sources {
+  margin-top: 28px;
+}
+.experience-exit,
+.experience-supplement {
+  padding-block: 20px;
+}
+.experience-drawer [hidden] {
+  display: none !important;
+}
+.experience-drawer button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.experience-drawer h3:focus {
+  outline-offset: 6px;
+}

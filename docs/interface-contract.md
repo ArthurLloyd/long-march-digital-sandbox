@@ -1,5 +1,11 @@
 # 公共接口 v1 / v2（Phase 3 · C0）
 
+## C1 运行补充
+
+公共 schema 和 A/B props 保持 C0 不变。C 的 useHistoricalExperience/ExperienceHost 现提供独立运行状态机、唯一对象入口、runId 防护、五类响应、解释确认、显式完成、浏览器记忆和退出/重播/等价调度，见 [C1 接线说明](architecture/c1-integration-guide.md)。A/B 的正式三维成品与史料仍待交付和审核。
+
+usePlayback 新增兼容的 pause()。普通关闭正文只暂停并收起，保留选中，显式取消选择/返回首页才清空。产品关联的候选索引仅用于拒绝撤回体验被当普通事件打开，不提供任何发布资格或候选内容。下方 C0 设计和旧版附录的状态语义以此 C1 补充为准。
+
 以下 C0 设计先于实现确定兼容方式；后附的 v1 说明继续适用于旧数据与旧组件。C0 只建设契约、验证、发布过滤和隔离调试，不实现正式体验状态机。
 
 ## v2 兼容分析
@@ -184,7 +190,7 @@ import type { LongMarchSceneProps } from '../../shared/contracts';
 // teachingState: { mode: 'observe' | 'teaching_simulation'; stepId: string | null }
 ```
 
-B 管理内容与教学步骤内部逻辑，C 管理选择和容器开关。关闭当前事件清空选中态、暂停播放；重新选择或播放恢复。当前 null 状态显示核验占位。不要从 panel 修改 app 状态或引入自己的全局选择 store。
+B 管理内容与教学步骤内部逻辑，C 管理选择和容器开关。C1 关闭当前事件收起正文并暂停播放，保留选中；显式取消选择或返回首页才清空。当前 null 状态显示核验占位。不要从 panel 修改 app 状态或引入自己的全局选择 store。
 
 ## 运行时入口
 

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { publishedDataset } from '../data/verified';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import candidateDataset from '../data/verified/dataset.json';
 import { HistoryEventPanel } from '../features/history';
 import { Timeline, usePlayback } from '../features/timeline';
 import { SceneViewport } from '../components/layout/SceneViewport';
@@ -20,7 +20,24 @@ import {
   OrnamentFrame,
   ToolEmblem,
 } from '../components/exhibition/ExhibitionOrnaments';
-import type { SceneError } from '../shared/contracts';
+import {
+  cameraBookmarkSchema,
+  type CameraBookmark,
+  type HistoricalObjectSelection,
+  type SceneError,
+} from '../shared/contracts';
+import { createExperienceCatalog } from './experience/historical-experience-routing';
+import { useHistoricalExperience } from './experience/use-historical-experience';
+import {
+  loadExperienceModules,
+  type ExperienceModules,
+} from './experience/experience-modules';
+import type { CompletionStore } from './experience/experience-completion-service';
+import type { ExplorationContext } from './experience/historical-experience-reducer';
+import { restoreCameraBookmark } from './experience/experience-context';
+import { ExperienceHost } from '../components/experience/ExperienceHost';
+import { CompletionSettings } from '../components/experience/CompletionSettings';
+import { useReducedMotion } from '../hooks/use-reduced-motion';
 
 const titles: Record<Overlay, string> = {
   chapters: '历史专题',
@@ -29,11 +46,77 @@ const titles: Record<Overlay, string> = {
   guide: '使用说明',
   about: '关于展馆',
 };
-export function App() {
-  const { events, routes, sources } = publishedDataset;
+export function App({
+  input = candidateDataset,
+  modules: injectedModules,
+  completionStore,
+}: {
+  input?: unknown;
+  modules?: ExperienceModules;
+  completionStore?: CompletionStore;
+} = {}) {
+  const catalog = useMemo(() => createExperienceCatalog(input), [input]);
+  const { events, routes, sources } = catalog.published;
   const [experience, dispatch] = useExperience();
   const playback = usePlayback(events);
-  const { close: closePlayback } = playback;
+  const { pause: pausePlayback } = playback;
+  const reducedMotion = useReducedMotion();
+  const [modules, setModules] = useState<ExperienceModules>({
+    LegacyDetails: HistoryEventPanel,
+  });
+  const [phaseId, setPhaseId] = useState<string | null>(null);
+  const [bookmark, setBookmark] = useState<CameraBookmark | null>(null);
+  const context = useMemo<ExplorationContext>(
+    () => ({
+      selection: playback.activeEvent
+        ? { kind: 'event', id: playback.activeEvent.id }
+        : null,
+      phaseId,
+      bookmark,
+    }),
+    [playback.activeEvent, phaseId, bookmark],
+  );
+  const restoreContext = useCallback(
+    (saved: ExplorationContext) => {
+      pausePlayback();
+      setPhaseId(saved.phaseId);
+      setBookmark(
+        restoreCameraBookmark(saved.bookmark, {
+          sceneId: bookmark?.sceneId ?? null,
+          phaseId: saved.phaseId,
+        }),
+      );
+    },
+    [bookmark?.sceneId, pausePlayback],
+  );
+  const historical = useHistoricalExperience({
+    catalog,
+    modules: injectedModules ?? modules,
+    store: completionStore,
+    context,
+    pauseMacro: pausePlayback,
+    restoreContext,
+    reducedMotion,
+    onSelect: (selection) => {
+      rememberOverlayTrigger();
+      if (selection.kind === 'event') playback.select(selection.id);
+      dispatch({ type: 'close' });
+    },
+  });
+  useEffect(() => {
+    if (injectedModules || experience.phase !== 'exploring') return;
+    let active = true;
+    void loadExperienceModules()
+      .then((value) => {
+        if (active) setModules(value);
+      })
+      .catch(() => {
+        if (active) setModules({ LegacyDetails: HistoryEventPanel });
+      });
+    return () => {
+      active = false;
+    };
+  }, [injectedModules, experience.phase]);
   const fullscreen = useFullscreen();
   const [ready, setReady] = useState(false);
   const [sceneError, setSceneError] = useState<SceneError | null>(null);
@@ -51,13 +134,16 @@ export function App() {
     [dispatch],
   );
   const closeOverlay = useCallback(() => {
-    if (experience.overlay === 'history') closePlayback();
+    pausePlayback();
     dispatch({ type: 'close' });
-  }, [experience.overlay, closePlayback, dispatch]);
+  }, [pausePlayback, dispatch]);
   useEffect(() => {
     if (experience.phase === 'exploring') exploreRef.current?.focus();
   }, [experience.phase]);
   function home() {
+    historical.clearSelection();
+    setBookmark(null);
+    setPhaseId(null);
     playback.close();
     dispatch({ type: 'home' });
     window.requestAnimationFrame(() =>
@@ -67,7 +153,7 @@ export function App() {
   function rememberOverlayTrigger() {
     // Native inert blurs the opener before the drawer's effect can read it.
     // Keep the original opener when a chapter opens an event in a new drawer.
-    if (experience.overlay === null)
+    if (experience.overlay === null && historical.state.status === 'idle')
       overlayTriggerRef.current =
         document.activeElement instanceof HTMLElement
           ? document.activeElement
@@ -75,18 +161,27 @@ export function App() {
   }
   function open(overlay: Overlay) {
     rememberOverlayTrigger();
-    if (playback.playing) playback.toggle();
+    pausePlayback();
+    if (overlay === 'history' && playback.activeEvent) {
+      selectEvent(playback.activeEvent.id);
+      return;
+    }
     dispatch({ type: 'open', overlay });
   }
   function selectEvent(id: string) {
-    rememberOverlayTrigger();
-    playback.select(id);
-    dispatch({ type: 'open', overlay: 'history' });
+    openHistoricalObject({ kind: 'event', id });
+  }
+  function openHistoricalObject(selection: HistoricalObjectSelection) {
+    historical.openHistoricalObject(selection);
   }
   return (
     <div className="museum-app" data-phase={experience.phase}>
       <div
-        inert={experience.overlay !== null || experience.phase === 'entering'}
+        inert={
+          experience.overlay !== null ||
+          experience.phase === 'entering' ||
+          historical.state.status !== 'idle'
+        }
       >
         <a
           className="skip-link"
@@ -108,6 +203,11 @@ export function App() {
         {fullscreen.error && (
           <p className="fullscreen-message" role="status">
             {fullscreen.error}
+          </p>
+        )}
+        {catalog.error && (
+          <p className="fullscreen-message" role="alert">
+            {catalog.error}
           </p>
         )}
         {experience.phase !== 'exploring' && (
@@ -144,13 +244,53 @@ export function App() {
               onRetry={() => {
                 setReady(false);
                 setSceneError(null);
+                setBookmark(null);
                 setSceneKey((key) => key + 1);
               }}
+              renderScene={
+                (injectedModules ?? modules).Map
+                  ? (props) => {
+                      const Map = (injectedModules ?? modules).Map!;
+                      return (
+                        <Map
+                          {...props}
+                          dataset={catalog.published}
+                          phaseId={phaseId}
+                          selection={historical.state.selection}
+                          cameraBookmark={bookmark}
+                          onObjectSelect={openHistoricalObject}
+                          onCameraBookmark={(value) => {
+                            const result =
+                              cameraBookmarkSchema.safeParse(value);
+                            if (
+                              result.success &&
+                              result.data.phaseId === phaseId &&
+                              (!bookmark ||
+                                bookmark.sceneId === result.data.sceneId)
+                            )
+                              setBookmark(result.data);
+                          }}
+                        />
+                      );
+                    }
+                  : undefined
+              }
             />
             <div className="exploration-topic">
               <span className="status-dot" />
               <span>{playback.activeEvent?.title ?? '长征历史总览'}</span>
               <span className="preview-label">开发预览</span>
+              {historical.state.selection && (
+                <button
+                  className="clear-selection"
+                  onClick={() => {
+                    historical.clearSelection();
+                    playback.close();
+                  }}
+                >
+                  取消当前选择
+                </button>
+              )}
             </div>
             <div className="exploration-tools">
               <button className="scene-tool" onClick={() => open('chapters')}>
@@ -184,8 +324,15 @@ export function App() {
               playing={playback.playing}
               progress={playback.progress}
               onToggle={playback.toggle}
-              onPrevious={playback.previous}
-              onNext={playback.next}
+              onPrevious={() => {
+                const event = events[Math.max(0, playback.index - 1)];
+                if (event) selectEvent(event.id);
+              }}
+              onNext={() => {
+                const event =
+                  events[Math.min(events.length - 1, playback.index + 1)];
+                if (event) selectEvent(event.id);
+              }}
               onSelect={selectEvent}
             />
           </main>
@@ -206,6 +353,8 @@ export function App() {
               events={events}
               activeId={playback.activeEvent?.id ?? null}
               onSelect={selectEvent}
+              dataset={catalog.published}
+              onObjectSelect={openHistoricalObject}
             />
           )}
           {experience.overlay === 'history' && (
@@ -229,9 +378,21 @@ export function App() {
             <SourceContent sources={sources} />
           )}
           {experience.overlay === 'guide' && <GuideContent />}
-          {experience.overlay === 'about' && <AboutContent />}
+          {experience.overlay === 'about' && (
+            <>
+              <AboutContent />
+              <CompletionSettings onClear={historical.clearRecords} />
+              {historical.snapshot.notice && (
+                <p role="status">{historical.snapshot.notice}</p>
+              )}
+            </>
+          )}
         </ExhibitionDrawer>
       )}
+      <ExperienceHost
+        controller={historical}
+        returnFocusRef={overlayTriggerRef}
+      />
     </div>
   );
 }

@@ -1,0 +1,27 @@
+[
+  {
+    "documentWidth": 1440,
+    "drawerClientWidth": 546,
+    "drawerScrollWidth": 546,
+    "drawerWidth": 546,
+    "height": 900,
+    "state": "reading-1440",
+    "width": 1440
+  },
+  {
+    "documentWidth": 1366,
+    "drawerClientWidth": 518,
+    "drawerScrollWidth": 518,
+    "height": 768,
+    "state": "intro-1366",
+    "width": 1366
+  },
+  {
+    "documentWidth": 1920,
+    "drawerClientWidth": 1059,
+    "drawerScrollWidth": 1059,
+    "height": 1080,
+    "state": "equivalent-ready-1920",
+    "width": 1920
+  }
+]

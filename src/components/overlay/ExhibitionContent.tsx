@@ -1,38 +1,103 @@
 import { ArrowRight, BookOpen, ShieldCheck } from 'lucide-react';
-import type { HistoryEvent, SourceReference } from '../../shared/contracts';
+import type {
+  HistoryEvent,
+  SourceReference,
+  HistoryDatasetV2,
+  HistoricalObjectSelection,
+} from '../../shared/contracts';
 export function ChapterContent({
   events,
   activeId,
   onSelect,
+  dataset,
+  onObjectSelect,
 }: {
   events: readonly HistoryEvent[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  dataset?: HistoryDatasetV2;
+  onObjectSelect?: (selection: HistoricalObjectSelection) => void;
 }) {
-  return events.length ? (
-    <ol className="chapter-list">
-      {events.map((event) => (
-        <li key={event.id}>
-          <button
-            onClick={() => onSelect(event.id)}
-            aria-current={event.id === activeId ? 'step' : undefined}
-          >
-            <span>
-              <small>{event.dateText}</small>
-              <strong>{event.title}</strong>
-            </span>
-            <ArrowRight size={18} />
-          </button>
-        </li>
-      ))}
-    </ol>
-  ) : (
-    <div className="reading-section">
-      <BookOpen className="content-symbol" size={32} />
-      <h3>等待一段有据可循的历史</h3>
-      <p>历史资料正在核验，正式专题即将开放。</p>
-      <p>章节开放后，可在这里选择节点，联动沙盘与历史时间轴。</p>
-    </div>
+  return (
+    <>
+      {dataset && onObjectSelect && (
+        <>
+          {dataset.topics.length > 0 && (
+            <section>
+              <h3>专题</h3>
+              {dataset.topics.map((r) => (
+                <button
+                  className="text-button"
+                  key={r.topicId}
+                  onClick={() =>
+                    onObjectSelect({ kind: 'topic', id: r.topicId })
+                  }
+                >
+                  {r.title}
+                </button>
+              ))}
+            </section>
+          )}
+          {dataset.people.length > 0 && (
+            <section>
+              <h3>人物</h3>
+              {dataset.people.map((r) => (
+                <button
+                  className="text-button"
+                  key={r.personId}
+                  onClick={() =>
+                    onObjectSelect({ kind: 'person', id: r.personId })
+                  }
+                >
+                  {r.name}
+                </button>
+              ))}
+            </section>
+          )}
+          {dataset.places.length > 0 && (
+            <section>
+              <h3>地点</h3>
+              {dataset.places.map((r) => (
+                <button
+                  className="text-button"
+                  key={r.placeId}
+                  onClick={() =>
+                    onObjectSelect({ kind: 'place', id: r.placeId })
+                  }
+                >
+                  {r.historicalName}
+                </button>
+              ))}
+            </section>
+          )}
+        </>
+      )}
+      {events.length ? (
+        <ol className="chapter-list">
+          {events.map((event) => (
+            <li key={event.id}>
+              <button
+                onClick={() => onSelect(event.id)}
+                aria-current={event.id === activeId ? 'step' : undefined}
+              >
+                <span>
+                  <small>{event.dateText}</small>
+                  <strong>{event.title}</strong>
+                </span>
+                <ArrowRight size={18} />
+              </button>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div className="reading-section">
+          <BookOpen className="content-symbol" size={32} />
+          <h3>等待一段有据可循的历史</h3>
+          <p>历史资料正在核验，正式专题即将开放。</p>
+          <p>章节开放后，可在这里选择节点，联动沙盘与历史时间轴。</p>
+        </div>
+      )}
+    </>
   );
 }
 export function SourceContent({
@@ -129,7 +194,7 @@ export function GuideContent() {
       </ol>
       <p>
         按 Esc 关闭面板，按 Tab
-        切换控件；可随时返回首页。系统启用减少动态效果时，入场和转场立即完成。
+        切换控件；可随时返回首页。减少动态效果会减弱动画，仍须主动确认进入；历史体验可选择等价图文。
       </p>
     </div>
   );
