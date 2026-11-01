@@ -223,8 +223,23 @@ describe('C2 真实 App、C1 与公开模块边界联动', () => {
     await user.click(screen.getByRole('button', { name: '工程甲·重点入口' }));
     await user.click(screen.getByRole('button', { name: /历史专题/ }));
     await user.click(
+      screen.getByRole('button', {
+        name: '虚构测试条目（非历史人物）',
+      }),
+    );
+    expect(
+      screen.getByRole('heading', {
+        name: '虚构测试条目（非历史人物）',
+      }),
+    ).toHaveFocus();
+    await user.click(
       screen.getByRole('button', { name: /测试占位（非历史地点）/ }),
     );
+    expect(
+      screen.getByRole('heading', {
+        name: '测试占位（非历史地点）',
+      }),
+    ).toHaveFocus();
     expect(screen.getByText(/地点类型：现代对照地点/)).toBeInTheDocument();
     await user.click(
       within(screen.getByRole('region', { name: '关联历史资料' })).getByRole(

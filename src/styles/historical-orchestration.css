@@ -143,7 +143,7 @@
   overflow-y: auto;
 }
 .phase-cadence {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   margin-top: 8px;
 }

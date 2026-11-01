@@ -47,7 +47,12 @@ export function ExperienceHost({
       // Keep focus inside the existing drawer without resetting live controls.
       dialog.querySelector<HTMLElement>('h2')?.focus();
     }
-  }, [state.status, run?.activeInteractionId]);
+  }, [
+    state.status,
+    run?.activeInteractionId,
+    state.selection?.kind,
+    state.selection?.id,
+  ]);
   useEffect(() => {
     if (playCommand !== 'playing')
       stage.current

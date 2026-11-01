@@ -13,34 +13,39 @@ export function C2EngineeringMap(props: LongMarchSceneV2Props) {
   const { onSceneReady } = props;
   useEffect(() => onSceneReady(), [onSceneReady]);
   return (
-    <section className="c2-map-probe" aria-label="C2 工程阶段接线">
+    <section
+      className={`c2-map-probe${props.phaseId === null ? ' c2-map-probe-empty' : ''}`}
+      aria-label="C2 工程阶段接线"
+    >
       <p>工程数据回显，非三维地理图层，坐标不代表真实历史。</p>
-      <div className="c2-probe-actions">
-        <button
-          className="outlined-button"
-          disabled={!props.events.length}
-          onClick={() =>
-            props.onObjectSelect({ kind: 'event', id: props.events[0]!.id })
-          }
-        >
-          工程：打开当前阶段事件
-        </button>
-        <button
-          className="outlined-button"
-          onClick={() =>
-            props.onCameraBookmark({
-              sceneId: 'c2-engineering-map',
-              coordinateSystem: 'scene-local',
-              position: [1, 2, 3],
-              target: [0, 0, 0],
-              zoom: 1,
-              phaseId: props.phaseId,
-            })
-          }
-        >
-          工程：保存当前视角
-        </button>
-      </div>
+      {props.phaseId !== null && (
+        <div className="c2-probe-actions">
+          <button
+            className="outlined-button"
+            disabled={!props.events.length}
+            onClick={() =>
+              props.onObjectSelect({ kind: 'event', id: props.events[0]!.id })
+            }
+          >
+            工程：打开当前阶段事件
+          </button>
+          <button
+            className="outlined-button"
+            onClick={() =>
+              props.onCameraBookmark({
+                sceneId: 'c2-engineering-map',
+                coordinateSystem: 'scene-local',
+                position: [1, 2, 3],
+                target: [0, 0, 0],
+                zoom: 1,
+                phaseId: props.phaseId,
+              })
+            }
+          >
+            工程：保存当前视角
+          </button>
+        </div>
+      )}
       <details>
         <summary>工程输入回显</summary>
         <output aria-label="工程当前阶段">{props.phaseId ?? 'none'}</output>
