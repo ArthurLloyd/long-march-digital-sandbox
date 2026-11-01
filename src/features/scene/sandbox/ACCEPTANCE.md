@@ -25,7 +25,7 @@
 
 - `npm run lint`：通过。
 - `npm run typecheck`：通过。
-- `npm run test`：28 文件、262 测试通过，含本轮 4 个位置／端点／细节迟滞／投影测试。
+- `npm run test`：29 文件、265 测试通过；新增编队实例矩阵一致、来回拖动位置与桥面接触、非法输入和端点测试。
 - `npm run validate:data`：通过（通过 build 执行）；B 候选已存在，尚未审核发布，正式投影仍为空。
 - `npm run build`：通过，保留 Three.js 场景 chunk 大于 500 kB 的提示，未改 C 的构建配置。
 - `npm run format:check`：通过。
@@ -45,7 +45,7 @@ JSDOM 在既有 WebGL 失败分支测试打印 getContext 未实现提示，所�
 ## 未完成与后续
 
 - 已实际调用 MiniMax Design，三套环境预览接入完成。背面无缝验收未通过，进一步修复被现有积分不足阻挡，未充值。
-- 新区域地图是开发演示，不是已替换正式 App 的 LongMarchSceneV2；已有 v1 主组件保持兼容。
+- 区域地图和桥谷已打成独立 showcase 包，不是已替换正式 App 的 LongMarchSceneV2；已有 v1 主组件保持兼容。
 - B 新候选已到仓库，可据其分镜准备后续重点体验；尚无可公开展示的真实部队几何，不能给演示单位套上历史身份。
 - 2–3 个正式沉浸重点内容、审核后的媒体、完整 C1/v2 正式接线尚待完成。
 - 未专项验证背景标签暂停、减少动态系统设置、WebGL context 丢失、长期 GPU 内存、真实手机；不以代码存在代替验收。
@@ -61,3 +61,18 @@ JSDOM 在既有 WebGL 失败分支测试打印 getContext 未实现提示，所�
 - 开发热更新期间出现一次白页，手动重载恢复；最终重载与场景进出正常。未据此声称全设备稳定。
 
 新增证据：[场景目录](evidence/immersive-gallery.jpg)、[河谷](evidence/river-panorama.jpg)、[雪山](evidence/snow-panorama.jpg)、[草地](evidence/grass-panorama.jpg)、[手机全景](evidence/immersive-mobile.jpg)。
+
+## 三维整合包实际检查（11 月 2 日）
+
+在独立构建产物 `/sandbox/index.html` 上执行，非 Vite 热更新页面。
+
+- 峡谷显示原程序岩壁、桥梁、铁索、木板、河水与 18 人白模编队。MiniMax 只融合天空细节；没有把全景照片用作可行走地形。
+- 50% → 100% → 50% 后全部 18 人位置完全一致；播放实际前进、暂停有效。75% 返回地图，区域进度保持 75%，局部 canvas 已移除。
+- 近看军队、远望山河、桥索与石壁、回望来路四视角已在浏览器操作；真实截图见下方。
+- 原版观桥 iframe 在同一静态包中加载，自由观景和观察桥索交互实际可用。退出后的当前页 console error/warn 为空。
+- Chrome 390×844 桌面模拟视口中，近景人物、视角按钮与底部时间轴可见；没有据此声称手机真机性能。
+- 两份 GLB 由 GLTFLoader 实际解析成功。单人物有 27 个 mesh、1 秒 March 动画与 4 条旋转轨道；编队有 18 个独立可编辑人物，静态模型无动画 clip。
+- 静态包内人物、编队、封面文件与源码素材逐字节一致。
+- 专用 showcase 构建成功；原正式构建继续通过，保留既有 chunk 大小提示。
+
+证据：[近看军队](evidence/combined-army.jpg)、[峡谷全景](evidence/combined-wide.jpg)、[手机尺寸](evidence/combined-mobile.jpg)。本节不将前文旧页面短时 FPS 采样转作新整合场景的性能结论。

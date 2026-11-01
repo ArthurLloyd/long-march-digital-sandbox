@@ -318,7 +318,7 @@ export function createRegionalRenderer(
   function focusUnit() {
     const p = units[0]?.group.position.clone() ?? new THREE.Vector3();
     fly(
-      p.clone().add(new THREE.Vector3(4.2, 7.2, 7.4)),
+      p.clone().add(new THREE.Vector3(2.2, 2.8, 3.4)),
       p.clone().add(new THREE.Vector3(0, 0.3, 0)),
     );
   }
