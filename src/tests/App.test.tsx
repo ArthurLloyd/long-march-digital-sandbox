@@ -4,6 +4,18 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../app/App';
 import { HISTORY_EMPTY_MESSAGE } from '../shared/constants/messages';
 
+// App-shell tests isolate the scene boundary. Real GPU behavior is checked in
+// scene-renderer.test.ts and browser QA; jsdom has no WebGL implementation.
+vi.mock('../features/scene', async () => {
+  const { useEffect } = await import('react');
+  return {
+    LongMarchScene: ({ onSceneReady }: { onSceneReady: () => void }) => {
+      useEffect(() => onSceneReady(), [onSceneReady]);
+      return <div aria-label="三维场景测试替身" />;
+    },
+  };
+});
+
 function mockMotion(reduced = true) {
   vi.stubGlobal('matchMedia', (query: string) => ({
     matches: reduced && query.includes('reduced-motion'),
@@ -32,7 +44,7 @@ describe('基础应用与空状态', () => {
       screen.getByRole('navigation', { name: '顶部导航' }),
     ).toBeInTheDocument();
     expect(
-      await screen.findByLabelText('抽象沙盘占位，不代表真实地形或历史路线'),
+      await screen.findByLabelText('三维场景测试替身'),
     ).toBeInTheDocument();
     await user.click(
       screen.getByRole('button', { name: '历史专题专题核验中' }),

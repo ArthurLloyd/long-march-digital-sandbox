@@ -9,6 +9,18 @@ import { C2EngineeringMap } from './workbench/C2Workbench';
 import { engineeringModules } from './workbench/c1-modules';
 import type { LongMarchSceneV2Props } from '../shared/contracts';
 
+// Only the v1 fallback scene is mocked: absent v2 maps still exercise fallback.
+// Keep App/C1/C2 navigation assertions independent of jsdom's lack of WebGL.
+vi.mock('../features/scene', async () => {
+  const { useEffect } = await import('react');
+  return {
+    LongMarchScene: ({ onSceneReady }: { onSceneReady: () => void }) => {
+      useEffect(() => onSceneReady(), [onSceneReady]);
+      return <div aria-label="三维场景测试替身" />;
+    },
+  };
+});
+
 beforeEach(() => {
   localStorage.clear();
   vi.stubGlobal('matchMedia', () => ({

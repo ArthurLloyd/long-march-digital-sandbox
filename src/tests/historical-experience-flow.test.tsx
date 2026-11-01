@@ -26,6 +26,18 @@ import type {
 import { useHistoricalExperience } from '../app/experience/use-historical-experience';
 import { createExperienceCatalog } from '../app/experience/historical-experience-routing';
 
+// Only the v1 fallback scene is mocked: missing v2/experience modules remain missing.
+// These App flow tests run in jsdom; GPU lifecycle has separate scene coverage.
+vi.mock('../features/scene', async () => {
+  const { useEffect } = await import('react');
+  return {
+    LongMarchScene: ({ onSceneReady }: { onSceneReady: () => void }) => {
+      useEffect(() => onSceneReady(), [onSceneReady]);
+      return <div aria-label="三维场景测试替身" />;
+    },
+  };
+});
+
 beforeEach(() => {
   localStorage.clear();
   vi.stubGlobal('matchMedia', () => ({
