@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { Suspense, useEffect, useRef, type RefObject } from 'react';
 import { ExhibitionDrawer } from '../overlay/ExhibitionDrawer';
 import { SourceContent } from '../overlay/ExhibitionContent';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
@@ -59,7 +59,18 @@ export function ExperienceHost({
     Equivalent = modules.Equivalent,
     Details = modules.Details,
     Legacy = modules.LegacyDetails;
-  const sources = route ? route.detail.record.sourceIds : [];
+  const sources = [
+    ...new Set([
+      ...(route?.detail.record.sourceIds ?? []),
+      ...(route?.bundle?.manifest.sourceIds ?? []),
+      ...(segment?.sourceIds ?? []),
+      ...(interaction?.sourceIds ?? []),
+      ...(interaction && 'materials' in interaction
+        ? interaction.materials.flatMap((material) => material.sourceIds)
+        : []),
+      ...(run?.mode === 'equivalent' ? run.bundle.fallback.sourceIds : []),
+    ]),
+  ];
   const title = route ? detailTitle(route.detail) : '历史体验';
   const canFinish =
     completionForState(state, new Date().toISOString()) !== null;
@@ -153,31 +164,40 @@ export function ExperienceHost({
         )}
         {state.status === 'reading' && route && (
           <section className="experience-reading">
-            {Details ? (
-              <Details
-                detail={route.detail}
-                sources={cSourceList()}
-                assets={c.catalog.published.assets}
-                onNavigate={c.navigate}
-                onClose={c.close}
-              />
-            ) : route.detail.kind === 'event' && Legacy ? (
-              <Legacy
-                event={route.detail.record}
-                sources={cSourceList()}
-                teachingState={{ mode: 'observe', stepId: null }}
-                onClose={c.close}
-              />
-            ) : (
-              <>
-                <h3>{detailTitle(route.detail)}</h3>
-                <p>
-                  {'detail' in route.detail.record
-                    ? route.detail.record.detail
-                    : route.detail.record.summary}
-                </p>
-              </>
-            )}
+            <ErrorBoundary
+              title="资料暂时无法加载"
+              message="请重试或关闭面板后重新打开资料。"
+              className="experience-module-error"
+              retryLabel="重新加载资料"
+            >
+              <Suspense fallback={<p role="status">正在加载资料组件。</p>}>
+                {Details ? (
+                  <Details
+                    detail={route.detail}
+                    sources={cSourceList()}
+                    assets={c.catalog.published.assets}
+                    onNavigate={c.navigate}
+                    onClose={c.close}
+                  />
+                ) : route.detail.kind === 'event' && Legacy ? (
+                  <Legacy
+                    event={route.detail.record}
+                    sources={cSourceList()}
+                    teachingState={{ mode: 'observe', stepId: null }}
+                    onClose={c.close}
+                  />
+                ) : (
+                  <>
+                    <h3>{detailTitle(route.detail)}</h3>
+                    <p>
+                      {'detail' in route.detail.record
+                        ? route.detail.record.detail
+                        : route.detail.record.summary}
+                    </p>
+                  </>
+                )}
+              </Suspense>
+            </ErrorBoundary>
             {route.bundle && (
               <button className="outlined-button" onClick={() => c.start()}>
                 重播体验
@@ -212,18 +232,22 @@ export function ExperienceHost({
                   })
                 }
               >
-                {run.mode !== 'equivalent' && Renderer && c.rendererProps && (
-                  <Renderer {...c.rendererProps} />
-                )}
-                {run.mode === 'equivalent' && Equivalent && (
-                  <Equivalent
-                    content={run.bundle.fallback}
-                    activeStepId={
-                      run.bundle.fallback.steps[run.index]?.stepId ?? null
-                    }
-                    onStepViewed={c.stepViewed}
-                  />
-                )}
+                <Suspense
+                  fallback={<p role="status">正在加载体验组件，您仍可退出。</p>}
+                >
+                  {run.mode !== 'equivalent' && Renderer && c.rendererProps && (
+                    <Renderer {...c.rendererProps} />
+                  )}
+                  {run.mode === 'equivalent' && Equivalent && (
+                    <Equivalent
+                      content={run.bundle.fallback}
+                      activeStepId={
+                        run.bundle.fallback.steps[run.index]?.stepId ?? null
+                      }
+                      onStepViewed={c.stepViewed}
+                    />
+                  )}
+                </Suspense>
               </ErrorBoundary>
               {c.subtitles && segment && (
                 <p className="experience-subtitles" aria-label="当前段落字幕">
@@ -264,15 +288,19 @@ export function ExperienceHost({
                       })
                     }
                   >
-                    <Teaching
-                      interaction={interaction}
-                      response={progress?.response ?? null}
-                      explanationAcknowledged={run.acknowledged.includes(
-                        interaction.interactionId,
-                      )}
-                      onResponse={c.response}
-                      onExplanationAcknowledged={c.acknowledge}
-                    />
+                    <Suspense
+                      fallback={<p role="status">正在加载教学互动。</p>}
+                    >
+                      <Teaching
+                        interaction={interaction}
+                        response={progress?.response ?? null}
+                        explanationAcknowledged={run.acknowledged.includes(
+                          interaction.interactionId,
+                        )}
+                        onResponse={c.response}
+                        onExplanationAcknowledged={c.acknowledge}
+                      />
+                    </Suspense>
                   </ErrorBoundary>
                   {progress?.complete ? (
                     <div className="experience-feedback">
@@ -310,15 +338,6 @@ export function ExperienceHost({
               )}
             {state.status === 'equivalent_experience' && (
               <div className="experience-actions">
-                <button
-                  className="outlined-button"
-                  disabled={run.reached}
-                  onClick={() =>
-                    c.stepViewed(run.bundle.fallback.steps[run.index]!.stepId)
-                  }
-                >
-                  我已阅读本段
-                </button>
                 <button
                   className="outlined-button"
                   disabled={!run.reached}

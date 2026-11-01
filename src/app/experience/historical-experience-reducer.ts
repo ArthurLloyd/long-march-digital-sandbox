@@ -123,6 +123,8 @@ export function matchesRun(
 ) {
   return (
     state.run !== null &&
+    report !== null &&
+    typeof report === 'object' &&
     state.run.runId === report.runId &&
     state.run.experienceId === report.experienceId &&
     state.run.scriptVersion === report.scriptVersion
@@ -325,6 +327,18 @@ export function historicalExperienceReducer(
           }
         : state;
     case 'error':
+      if (
+        !action.report.error ||
+        typeof action.report.error.message !== 'string' ||
+        typeof action.report.error.retryable !== 'boolean' ||
+        ![
+          'webgl_unavailable',
+          'asset_load_failed',
+          'render_failed',
+          'media_unavailable',
+        ].includes(action.report.error.code)
+      )
+        return state;
       return ['idle', 'reading', 'exit_confirm'].includes(state.status)
         ? state
         : { ...state, status: 'error', error: action.report.error };

@@ -8,7 +8,7 @@ export const COMPLETION_STORAGE_KEY = 'long-march.experience-completion.v1';
 const envelopeSchema = z.strictObject({
   schemaVersion: z.literal(1),
   generation: z.string().regex(/^(0|\d{16,}-[A-Za-z0-9-]+)$/),
-  records: z.array(z.unknown()).max(6),
+  records: z.array(z.unknown()).max(12),
 });
 export interface CompletionSnapshot {
   records: readonly CompletionRecord[];
@@ -26,18 +26,37 @@ interface Options {
 function mergeRecords(...groups: readonly (readonly CompletionRecord[])[]) {
   const records = new Map<string, CompletionRecord>();
   for (const record of groups.flat()) {
-    const previous = records.get(record.experienceId);
+    const key = `${record.experienceId}:${record.completionPolicyVersion}`;
+    const previous = records.get(key);
     if (
       !previous ||
-      record.completionPolicyVersion > previous.completionPolicyVersion ||
-      (record.completionPolicyVersion === previous.completionPolicyVersion &&
-        Date.parse(record.completedAt) > Date.parse(previous.completedAt))
+      Date.parse(record.completedAt) > Date.parse(previous.completedAt)
     )
-      records.set(record.experienceId, record);
+      records.set(key, record);
   }
-  return [...records.values()].sort((a, b) =>
-    a.experienceId.localeCompare(b.experienceId),
-  );
+  const grouped = new Map<string, CompletionRecord[]>();
+  for (const record of records.values())
+    grouped.set(record.experienceId, [
+      ...(grouped.get(record.experienceId) ?? []),
+      record,
+    ]);
+  // Retain two recent policy versions per product ID. A mismatched cached version
+  // must not prevent the user from legitimately completing the current policy.
+  return [...grouped.values()]
+    .flatMap((entries) =>
+      entries
+        .sort(
+          (a, b) =>
+            Date.parse(b.completedAt) - Date.parse(a.completedAt) ||
+            b.completionPolicyVersion - a.completionPolicyVersion,
+        )
+        .slice(0, 2),
+    )
+    .sort(
+      (a, b) =>
+        a.experienceId.localeCompare(b.experienceId) ||
+        b.completionPolicyVersion - a.completionPolicyVersion,
+    );
 }
 export class CompletionStore {
   private get key() {

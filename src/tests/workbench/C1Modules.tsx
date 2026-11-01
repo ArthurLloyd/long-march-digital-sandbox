@@ -120,6 +120,14 @@ export function EngineeringEquivalent(props: EquivalentExperienceProps) {
   return (
     <section aria-label="合成等价内容">
       <p>{step?.text}</p>
+      {step && (
+        <button
+          className="outlined-button"
+          onClick={() => props.onStepViewed(step.stepId)}
+        >
+          我已阅读本段
+        </button>
+      )}
     </section>
   );
 }

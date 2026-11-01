@@ -18,6 +18,11 @@ import { engineeringModules } from './workbench/c1-modules';
 import { CompletionSettings } from '../components/experience/CompletionSettings';
 import { restoreCameraBookmark } from '../app/experience/experience-context';
 import type { HistoricalDetailProps } from '../shared/contracts';
+import { lazy, type ComponentType } from 'react';
+import type {
+  EquivalentExperienceProps,
+  ImmersiveExperienceProps,
+} from '../shared/contracts';
 import { useHistoricalExperience } from '../app/experience/use-historical-experience';
 import { createExperienceCatalog } from '../app/experience/historical-experience-routing';
 
@@ -101,6 +106,44 @@ async function finishEquivalent(user: ReturnType<typeof userEvent.setup>) {
   }
 }
 describe('C1 完整应用闭环（明确工程适配器）', () => {
+  it('懒加载未完成也能退出，等价内容未呈现时不能确认阅读', async () => {
+    const user = userEvent.setup();
+    const Renderer = lazy(
+      () =>
+        new Promise<{ default: ComponentType<ImmersiveExperienceProps> }>(
+          () => {},
+        ),
+    );
+    const Equivalent = lazy(
+      () =>
+        new Promise<{ default: ComponentType<EquivalentExperienceProps> }>(
+          () => {},
+        ),
+    );
+    const store = makeStore();
+    render(
+      <App
+        input={simulatePublishedSample()}
+        modules={{ ...engineeringModules, Renderer, Equivalent }}
+        completionStore={store}
+      />,
+    );
+    await enter(user);
+    await openEvent(user);
+    await user.click(screen.getByRole('button', { name: '开始体验' }));
+    expect(
+      screen.getByText('正在加载体验组件，您仍可退出。'),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '退出体验' }));
+    await user.click(
+      screen.getByRole('button', { name: '确认退出，返回沙盘' }),
+    );
+    await openEvent(user);
+    await user.click(screen.getByRole('button', { name: '开始等价图文体验' }));
+    expect(screen.queryByRole('button', { name: '我已阅读本段' })).toBeNull();
+    expect(screen.getByRole('button', { name: '下一段' })).toBeDisabled();
+    expect(store.getSnapshot().records).toHaveLength(0);
+  });
   it('资料关联导航也经过首次门槛，并同步宏观选中节点', async () => {
     const user = userEvent.setup();
     const data = simulatePublishedSample();

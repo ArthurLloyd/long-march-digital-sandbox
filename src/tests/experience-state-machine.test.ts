@@ -15,6 +15,24 @@ import {
 import { simulatePublishedSample } from './fixtures/c1-sample';
 
 describe('C1 运行顺序与回调防护', () => {
+  it('空回调或错误形状不会让应用崩溃或改变运行状态', () => {
+    const state = startState();
+    expect(
+      reduce(state, {
+        type: 'ready',
+        report: null as unknown as NonNullable<typeof state.run>,
+      }),
+    ).toBe(state);
+    expect(
+      reduce(state, {
+        type: 'error',
+        report: {
+          ...state.run!,
+          error: null as unknown as NonNullable<typeof state.error>,
+        },
+      }),
+    ).toBe(state);
+  });
   it('重新开始产生的新实例拒绝上一次实际运行的回调', () => {
     const old = startState();
     const next = reduce(introState(), {

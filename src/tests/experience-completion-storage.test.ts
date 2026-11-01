@@ -24,6 +24,21 @@ const make = () =>
   new CompletionStore({ storage: () => localStorage, events: window });
 beforeEach(() => localStorage.clear());
 describe('C1 版本化浏览器记忆', () => {
+  it('错误的缓存规则版本不会阻塞用户重新完成当前规则', () => {
+    const store = make();
+    store.save(record(3, 99));
+    store.save(record(3, 1));
+    expect(
+      make()
+        .getSnapshot()
+        .records.some((item) => item.completionPolicyVersion === 1),
+    ).toBe(true);
+    expect(
+      make()
+        .getSnapshot()
+        .records.some((item) => item.completionPolicyVersion === 99),
+    ).toBe(true);
+  });
   it('迟到的删除事件不能抹掉当前磁盘的新完成记录；开发键与正式键隔离', () => {
     const store = make();
     const off = store.subscribe(vi.fn());
