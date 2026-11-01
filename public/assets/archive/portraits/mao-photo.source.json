@@ -1,0 +1,88 @@
+{
+  "personId": "person-mao",
+  "photoPeriod": "1950年（页面中英月日记载不一，不取精确月日）",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Mao_Zedong_1950_Portrait_(3x4_cropped).jpg",
+  "originalDownloadURL": "https://upload.wikimedia.org/wikipedia/commons/0/05/Mao_Zedong_1950_Portrait_%283x4_cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "creator": "陈正清（Commons署名）",
+  "licenseAssessment": "Commons列PD-China和美国未续期依据。该图作为1950年肖像，自主展示不等于1935年现场。",
+  "rightsStatus": "cleared",
+  "sha256": "102681763dd631bf217665de2c19120ba4a5ec4a5c874873c1493668604a3af7",
+  "transformations": ["原文件字节复制；未修复、未上色、未生成替代图"],
+  "accessedAt": "2026-11-01",
+  "metadata": {
+    "DateTime": {
+      "value": "2025-12-01 17:03:07",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "Mao Zedong 1950 Portrait (3x4 cropped)",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "Mao suit|Images with extracted images|Extracted images|CC-PD-Mark|Photographs distributed by Associated Press|Mao Zedong in 1950|PD-old-50-1964|PD-old missing SDC copyright status|Communist symbols|Portraits of Mao Zedong|Copyrighted in Germany",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "This is an official portrait of Mao Zedong (aka Mao Tse-Tung), chairman of the Chinese Communist Party, taken on November 10, 1950, in Beijing, China.",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "10 November 1950",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<a rel=\"nofollow\" class=\"external free\" href=\"https://newsroom.ap.org/editorial-photos-videos/detail?itemid=dfab0b3b1ce5da11af9f0014c2589dfb&amp;mediatype=photo\">https://newsroom.ap.org/editorial-photos-videos/detail?itemid=dfab0b3b1ce5da11af9f0014c2589dfb&amp;mediatype=photo</a>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "Chen Zhengqing (1917–1966)",
+      "source": "commons-desc-page"
+    },
+    "Permission": {
+      "value": "Associated Press images distributed to news organizations in the United States between 1931 and 1963 <a rel=\"nofollow\" class=\"external text\" href=\"http://onlinebooks.library.upenn.edu/cce/\">did not have their copyright renewed</a> and are also in the public domain.",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "communist",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  }
+}
