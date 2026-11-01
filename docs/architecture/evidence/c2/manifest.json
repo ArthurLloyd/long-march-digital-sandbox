@@ -1,0 +1,117 @@
+{
+  "date": "2026-11-01",
+  "environment": "Windows / Chrome / local Vite 127.0.0.1:5173",
+  "flow": "/__dev/contracts?flow=c2",
+  "engineeringOnly": true,
+  "captures": [
+    {
+      "file": "7f3e1be-16-invalid-1366.jpg",
+      "codeCommit": "7f3e1be5b2785f6db90418c223ba4ffdd97769ac",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "7f3e1be-17-empty-final-1366.jpg",
+      "codeCommit": "7f3e1be5b2785f6db90418c223ba4ffdd97769ac",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "89a6460-01-stage-forces-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1430,
+      "imageHeight": 894
+    },
+    {
+      "file": "89a6460-02-first-intro-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 900
+    },
+    {
+      "file": "89a6460-03-exit-context-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1430,
+      "imageHeight": 1042
+    },
+    {
+      "file": "89a6460-04-ready-complete-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 700
+    },
+    {
+      "file": "89a6460-05-unlocked-reading-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 700
+    },
+    {
+      "file": "89a6460-06-refresh-reading-1440.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1440,
+      "imageHeight": 900
+    },
+    {
+      "file": "89a6460-07-topic-tree-1920.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1920,
+      "imageHeight": 1080
+    },
+    {
+      "file": "89a6460-08-place-1920.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1920,
+      "imageHeight": 1080
+    },
+    {
+      "file": "89a6460-09-topic-switch-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "89a6460-10-no-force-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "89a6460-11-empty-1366.jpg",
+      "codeCommit": "89a6460e95ecc43d12e42ae83bb56615ac120731",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    },
+    {
+      "file": "efd524b-13-related-focus-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "efd524b-14-withdrawn-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1366,
+      "imageHeight": 768
+    },
+    {
+      "file": "efd524b-15-empty-fixed-1366.jpg",
+      "codeCommit": "efd524b69a11140f96a6a3ce53364ad4ee435eb8",
+      "imageWidth": 1356,
+      "imageHeight": 910
+    }
+  ],
+  "exportedDomMeasurement": {
+    "state": "overview-1440",
+    "innerWidth": 1440,
+    "innerHeight": 900,
+    "documentScrollWidth": 1430,
+    "mainScrollWidth": 1430,
+    "mainClientWidth": 1430
+  },
+  "limits": [
+    "Other DOM measurements were observed but not exported before Computer Use ended; image dimensions are not DOM overflow measurements.",
+    "Actual background hiding was not confirmed: the tool still reported visible. Windows Computer Use then stopped because it could not reliably determine the current browser URL.",
+    "The last viewport override was 1366x768. Tool shutdown prevented reset. No further browser operation or alternate browser-control mechanism was used."
+  ]
+}
