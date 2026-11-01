@@ -7,6 +7,7 @@ import type { HistoricalExperienceController } from '../../app/experience/use-hi
 import { completionForState } from '../../app/experience/historical-experience-reducer';
 import '../../styles/historical-experience.css';
 import { RelatedHistoryLinks } from './RelatedHistoryLinks';
+import { replayOptions } from '../../app/experience/replay-options';
 
 function detailTitle(detail: HistoricalDetail) {
   const record = detail.record;
@@ -88,6 +89,9 @@ export function ExperienceHost({
   const title = route ? detailTitle(route.detail) : '历史体验';
   const canFinish =
     completionForState(state, new Date().toISOString()) !== null;
+  const replay = route?.bundle
+    ? replayOptions(route.bundle, modules, c.reducedMotion)
+    : null;
   return (
     <ExhibitionDrawer
       title={
@@ -218,9 +222,27 @@ export function ExperienceHost({
               onNavigate={c.navigate}
             />
             {route.bundle && (
-              <button className="outlined-button" onClick={() => c.start()}>
-                重播体验
-              </button>
+              <div className="experience-actions">
+                <button
+                  className="outlined-button"
+                  disabled={!replay?.immersive}
+                  onClick={() => c.start(replay?.rendererMode)}
+                >
+                  三维沉浸重播
+                </button>
+                <button
+                  className="outlined-button"
+                  disabled={!replay?.equivalent}
+                  onClick={() => c.start('equivalent')}
+                >
+                  图文体验重播
+                </button>
+                {!replay?.immersive && !replay?.equivalent && (
+                  <p role="status">
+                    重播所需的呈现或教学模块暂不可用，您仍可阅读正文。
+                  </p>
+                )}
+              </div>
             )}
           </section>
         )}

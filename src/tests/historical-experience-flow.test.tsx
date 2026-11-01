@@ -255,7 +255,7 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
     expect(
       screen.getByRole('heading', { name: '工程正文（非史实）' }),
     ).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '重播体验' }));
+    await user.click(screen.getByRole('button', { name: '三维沉浸重播' }));
     await user.click(screen.getByRole('button', { name: '退出体验' }));
     await user.click(
       screen.getByRole('button', { name: '确认退出，返回沙盘' }),
@@ -277,7 +277,7 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
     );
     await enter(user);
     await openEvent(user);
-    expect(screen.getByRole('button', { name: '重播体验' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '三维沉浸重播' })).toBeEnabled();
   });
   it('未完成退出不记录；错误和 reduced-motion 都不能自动通关', async () => {
     const user = userEvent.setup();

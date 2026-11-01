@@ -6,6 +6,7 @@ import { createPhaseModel, phaseTimeText } from '../../features/timeline';
 import '../../styles/historical-orchestration.css';
 
 interface Props {
+  candidateReview?: boolean;
   dataset: HistoryDatasetV2;
   topicId: string | null;
   phaseId: string | null;
@@ -17,6 +18,7 @@ interface Props {
 
 /** Receives the complete published catalog. Scene projections never feed this directory. */
 export function HistoricalNavigation({
+  candidateReview = false,
   dataset,
   topicId,
   phaseId,
@@ -67,7 +69,8 @@ export function HistoricalNavigation({
           <summary>
             <strong>{topic.title}</strong>
             <span>
-              {model.orders.get(topic.topicId)?.length ?? 0} 个开放阶段
+              {model.orders.get(topic.topicId)?.length ?? 0} 个
+              {candidateReview ? '候选' : '开放'}阶段
               {topic.topicId === topicId ? ' · 当前专题' : ''}
             </span>
           </summary>
@@ -173,7 +176,9 @@ export function HistoricalNavigation({
         (e) => !dataset.topics.some((t) => t.eventIds.includes(e.id)),
       ) && (
         <details className="history-entities">
-          <summary>其他已发布事件</summary>
+          <summary>
+            {candidateReview ? '其他候选事件' : '其他已发布事件'}
+          </summary>
           {dataset.events
             .filter(
               (e) => !dataset.topics.some((t) => t.eventIds.includes(e.id)),
