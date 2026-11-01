@@ -124,6 +124,10 @@ LongMarchSceneV2Props、ForceLayerProps、onObjectSelect、onCameraBookmark 均�
 
 2026-11-01 新聊天补验基线 50f2bf359559027053a889510ca15d6d68203fe8：显式 viewport reset 成功，DOM 前后均为 1280×622、visible，截图 18 显示原第 3/3 阶段暂停；不将截图尺寸当作视口尺寸。随后选择新清单中的原生 Chrome 窗口时，同一 URL 识别限制再次停止电脑控制，本轮未建立 hidden 前提，没有再控制或绕过。尺寸恢复现已完成，后台暂停继续待人工补验，未发现可归因的应用缺陷。本次只更新验收、报告、设计记录和证据清单/截图，未改运行代码。重新核对 #4/#5/#6 均 open/unmerged，#7 仍 Draft，base/head 分支不变。
 
+2026-11-01 Edge 补验基线 d523a21681ba867e73a91a246ec6f9f31c83f978：网页接口实际完成首页确认到第一阶段暂停，但原生窗口处于最小化；使用已安装技能文档所列正式 API 尝试激活/恢复和读取时，再次触发相同 Windows URL 识别限制，立即停止本轮电脑控制。未开始播放/隐藏测试，未观测 hidden，真实后台暂停继续待人工补验。网页可控不代表原生窗口控制可用；无应用代码修复，未改 A/B、正式数据、依赖或浏览器设置。完整经过追加于桌面验收，不抹去原受阻记录。
+
+Edge 补验记录追加后重新通过 lint、typecheck、format:check、validate:data、build、git diff --check，宿主测试 22 文件、217 项全部通过。本次只追加四份文档/清单，未新增或替换截图；最终 CI 结果更新于 PR #7。
+
 ## 11. 发布与来源状态
 
 正式数据仍只有 src/data/verified/dataset.json，完全未改。唯一内容授权来自原发布视图；候选 gates/phaseSystem 只收紧访问，不展示候选史料。地方/人物/素材/来源撤回不能通过关联或完成记录重新授权。
