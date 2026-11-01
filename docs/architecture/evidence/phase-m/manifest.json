@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-01",
+  "stage": "Phase M pre-merge review, not merged main",
+  "codeCommit": "10f9af06b5af0445fb9506cc6c94e8320e57065d",
+  "parents": [
+    "098cb60467fe98f87851882f2cff981ba08d4172",
+    "918b79225df6a0477081154014136de9ac20bec9"
+  ],
+  "environment": "Windows / Edge / Vite production preview on 127.0.0.1:4173",
+  "viewport": { "innerWidth": 1912, "innerHeight": 994, "overrideSet": false },
+  "captures": [
+    {
+      "file": "10f9af0-01-production-scene-edge.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994,
+      "scope": "Actual production preview: A0 procedural artwork, empty formal history dataset, ready, canvas=1."
+    },
+    {
+      "file": "10f9af0-02-camera-top-edge.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994,
+      "scope": "Actual change to top camera view after clicking the camera control."
+    },
+    {
+      "file": "10f9af0-03-art-disclosure-edge.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994,
+      "scope": "Art disclosure expanded through keyboard Enter; explicitly not a historical map or terrain reconstruction."
+    }
+  ],
+  "observations": {
+    "firstEntryCanvasCount": 1,
+    "homeCanvasCount": 0,
+    "reentryCanvasCount": 1,
+    "reentrySceneBusy": "false",
+    "readyText": "预览已就绪",
+    "pageErrorLogs": [],
+    "artDisclosureOpen": true,
+    "artDisclosureText": "艺术演绎以火种为意象的原创三维展陈，不代表历史地图或真实地形。"
+  },
+  "checks": {
+    "firstCombinedTestRun": { "files": 25, "passed": 230, "failed": 2 },
+    "targetedAfterBoundaryFix": { "files": 2, "passed": 24, "failed": 0 },
+    "finalCombinedTestRun": { "files": 25, "passed": 232, "failed": 0 },
+    "lint": "passed",
+    "typecheck": "passed",
+    "formatCheck": "passed",
+    "dataValidation": "passed; formal dataset empty",
+    "build": "passed; scene chunk size warning retained",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "This is a local review branch; the four original PRs and main are unchanged. No GitHub CI was run for this local checkpoint.",
+    "Only one exit/reentry cycle was observed. Canvas removal is not proof of complete GPU memory reclamation or a performance certification.",
+    "No FPS benchmark, long-running GPU stress test, full three-size post-merge regression or historical-content review was performed.",
+    "Real hidden-page pause remains not verified, skipped at user request. No background acceptance attempt was made.",
+    "The prototype Crossing experience is development-only and is not a verified Luding Bridge historical experience.",
+    "The temporary preview tab was closed and its loopback preview service was stopped."
+  ]
+}
