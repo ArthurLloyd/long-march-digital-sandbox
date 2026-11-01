@@ -146,6 +146,12 @@
     "backgroundPause": "not_verified",
     "scope": "No play/hide trial began. Hidden was not observed. No browser or desktop controls were issued after the stop in this turn. Existing viewport reset result is unchanged."
   },
+  "backgroundAcceptanceDecision": {
+    "date": "2026-11-01",
+    "requestedBy": "user",
+    "status": "not_verified_not_required_this_round",
+    "note": "After Edge native control was blocked, the user chose to stop this acceptance item for this round. No further control attempts or manual retest are requested. Previous evidence and instructions remain audit history; this is not a pass or an application failure."
+  },
   "limits": [
     "Other DOM measurements were observed but not exported before Computer Use ended; image dimensions are not DOM overflow measurements.",
     "Actual background hiding was not confirmed: the tool still reported visible. Windows Computer Use then stopped because it could not reliably determine the current browser URL.",
