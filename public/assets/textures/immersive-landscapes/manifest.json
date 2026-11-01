@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "description": "Three AI environment concept scenes, generated in the user-authorized MiniMax Design project. No historical coordinates or unit routes implied.",
+  "originalResolution": [3840, 1920],
+  "webEncoding": "WebP quality 90, original dimensions retained. Original PNGs remain in MiniMax project.",
+  "items": [
+    {
+      "id": "river-valley",
+      "file": "river-valley.webp",
+      "width": 3840,
+      "height": 1920,
+      "bytes": 1907708,
+      "sha256": "f60594edbd04160a337339a314701220395562060747f5d3979a73f03edfca86",
+      "sourceFile": "川西高山河谷全景修复版.png",
+      "sourceSha256": "afdba547e9689940afc1b167e44e6216b875b6cc9c4c2a1dd448cd76f0a99668",
+      "cover": "river-valley-cover.webp",
+      "generator": "MiniMax Design / Design Image 2.5 Pro",
+      "generatedDate": "2026-11-02",
+      "requestedProjection": "360x180 equirectangular",
+      "seamReview": "Inspected in Three.js sphere at front and rear seam. NOT seamless-production-approved; visible rear continuity defects remain. Repair candidates preserved in MiniMax project.",
+      "status": "interactive art preview; seam refinement and historical review pending",
+      "sourceOriginalFile": "川西高山河谷全景.png",
+      "sourceOriginalSha256": "c4a13c01ae841f8077c6b5e18dd45f062273e4b793909e64fecff76642a1dbda",
+      "coverSource": "MiniMax perspective crop of first-generation panorama; same scene composition, retained for navigation."
+    },
+    {
+      "id": "snow-pass",
+      "file": "snow-pass.webp",
+      "width": 3840,
+      "height": 1920,
+      "bytes": 1783342,
+      "sha256": "ec3c26d7b9004b59a34ada9b8363c07c3809802d6115d43112f6113a2ccc47fb",
+      "sourceFile": "高海拔雪山垭口全景.png",
+      "sourceSha256": "2e17caf9f9c3657c92dbfb6e4ffe6c14e4c679b8358a9a641de0efe57c734a77",
+      "cover": "snow-pass-cover.webp",
+      "generator": "MiniMax Design / Design Image 2.5 Pro",
+      "generatedDate": "2026-11-02",
+      "requestedProjection": "360x180 equirectangular",
+      "seamReview": "Inspected in Three.js sphere at front and rear seam. NOT seamless-production-approved; visible rear continuity defects remain. Repair candidates preserved in MiniMax project.",
+      "status": "interactive art preview; seam refinement and historical review pending",
+      "sourceOriginalFile": "高海拔雪山垭口全景.png",
+      "sourceOriginalSha256": "2e17caf9f9c3657c92dbfb6e4ffe6c14e4c679b8358a9a641de0efe57c734a77",
+      "coverSource": "MiniMax perspective crop of first-generation panorama; same scene composition, retained for navigation."
+    },
+    {
+      "id": "grassland",
+      "file": "grassland.webp",
+      "width": 3840,
+      "height": 1920,
+      "bytes": 1932270,
+      "sha256": "70b12d4f346546db2a29921787ab10995869e039c61d24637d2f65e99bfd4878",
+      "sourceFile": "高原湿地草原全景.png",
+      "sourceSha256": "7e4aaf596690c1816320b8acce2f15649aad4ab303e93536c14632b5eda25c06",
+      "cover": "grassland-cover.webp",
+      "generator": "MiniMax Design / Design Image 2.5 Pro",
+      "generatedDate": "2026-11-02",
+      "requestedProjection": "360x180 equirectangular",
+      "seamReview": "Inspected in Three.js sphere at front and rear seam. NOT seamless-production-approved; visible rear continuity defects remain. Repair candidates preserved in MiniMax project.",
+      "status": "interactive art preview; seam refinement and historical review pending",
+      "sourceOriginalFile": "高原湿地草原全景.png",
+      "sourceOriginalSha256": "7e4aaf596690c1816320b8acce2f15649aad4ab303e93536c14632b5eda25c06",
+      "coverSource": "MiniMax perspective crop of first-generation panorama; same scene composition, retained for navigation."
+    }
+  ],
+  "generationCalls": 6,
+  "limitations": [
+    "AI environment concepts, not measured or historical reconstruction.",
+    "2:1 image generation does not guarantee perfect spherical continuity.",
+    "Still-image panorama, not generated video."
+  ],
+  "refinementBlocker": {
+    "reason": "MiniMax existing credit balance insufficient for the next image edit. Generation stopped without purchase.",
+    "availableCredits": 277,
+    "requiredCredits": 410,
+    "scope": "seam-centered inpainting only; map and panorama interaction remain usable"
+  }
+}
