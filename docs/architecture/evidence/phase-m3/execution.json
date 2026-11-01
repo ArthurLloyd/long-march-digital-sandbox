@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-01",
+  "engineeringMain": "b666281cdb6e80571ed2f569e02fa273e61c260c",
+  "stages": [
+    {
+      "stage": "C0 main",
+      "sha": "a426ce3ba22fa1d2758f356dbd3a185185de23e7",
+      "tests": 136,
+      "files": 14,
+      "checks": "npm ci, lint, typecheck, format:check, test, validate:data, build, diff passed",
+      "ci": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41292107206",
+      "note": "Initial npm ci EPERM; user authorized stopping verified Vite PID 32540, then npm ci and all checks succeeded. Existing audit 12 moderate; no upgrade."
+    },
+    {
+      "stage": "C1 main",
+      "sha": "3a6590d7111df6ee439a210d9eecec9a1b7a6889",
+      "tests": 187,
+      "files": 18,
+      "checks": "npm ci, lint, typecheck, format:check, test, validate:data, build, diff passed",
+      "ci": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41292723007",
+      "preCi": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41292595663"
+    },
+    {
+      "stage": "C2 main",
+      "sha": "ef96d81555cae8a4b3137c5781e1de33f4cdf0d0",
+      "tests": 217,
+      "files": 22,
+      "checks": "npm ci, lint, typecheck, format:check, test, validate:data, build, diff passed",
+      "ci": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41293069184",
+      "preCi": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41292902965",
+      "note": "Auto-review initially rejected on stale CI-in-progress evidence; direct fresh gh checks/run success proof obtained, same connector approved and merged."
+    },
+    {
+      "stage": "A0 combined main",
+      "sha": "b666281cdb6e80571ed2f569e02fa273e61c260c",
+      "tests": 232,
+      "files": 25,
+      "checks": "npm ci, lint, typecheck, format:check, test, validate:data, build, diff passed",
+      "ci": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41293560574",
+      "preCi": "https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41293364295",
+      "pr": 8,
+      "note": "Original PR5 auto-marked merged by ancestor reachability; no direct merge5 call. A branch preserved918b792."
+    }
+  ],
+  "originalA0": {
+    "head": "918b79225df6a0477081154014136de9ac20bec9",
+    "state": "MERGED indirectly through PR8",
+    "githubMergeCommit": "0b092d0da137b6add6cf2320056f4fff6499e17f",
+    "branchPreserved": true
+  },
+  "integrationPR": "https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/8",
+  "backgroundAcceptance": "not_verified_not_required_this_round",
+  "c3Started": false
+}

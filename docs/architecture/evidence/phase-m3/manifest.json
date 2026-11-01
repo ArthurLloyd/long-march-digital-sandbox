@@ -1,0 +1,133 @@
+{
+  "date": "2026-11-01",
+  "codeCommit": "b666281cdb6e80571ed2f569e02fa273e61c260c",
+  "environment": "Windows / Edge / production build preview at 127.0.0.1:4173",
+  "captures": [
+    {
+      "file": "b666281-03-main-home-1920.jpg",
+      "imageWidth": 1920,
+      "imageHeight": 998,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scope": "Home page before explicit entry; tool capture is shorter than DOM viewport."
+    },
+    {
+      "file": "b666281-04-main-confirm-1920.jpg",
+      "imageWidth": 1920,
+      "imageHeight": 1080,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scope": "Explicit entry confirmation."
+    },
+    {
+      "file": "b666281-05-main-scene-1920.jpg",
+      "imageWidth": 1920,
+      "imageHeight": 1080,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scope": "Settled real A0 artwork and empty formal dataset after entry."
+    },
+    {
+      "file": "b666281-06-main-top-1440.jpg",
+      "imageWidth": 1440,
+      "imageHeight": 900,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "scope": "Actual camera change after top-view control."
+    },
+    {
+      "file": "b666281-07-main-scene-1366.jpg",
+      "imageWidth": 1366,
+      "imageHeight": 768,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "scope": "Scene and overview control at 1366 desktop."
+    },
+    {
+      "file": "b666281-08-main-empty-detail-1366.jpg",
+      "imageWidth": 1366,
+      "imageHeight": 768,
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "scope": "Formal historical detail remains unverified/unpublished empty state with two-person review notice."
+    },
+    {
+      "file": "b666281-09-main-reset-reentry.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994,
+      "viewport": {
+        "width": 1912,
+        "height": 994
+      },
+      "scope": "Reentry ready with one canvas after successful viewport reset."
+    }
+  ],
+  "measurements": [
+    {
+      "state": "home-1920",
+      "innerWidth": 1920,
+      "innerHeight": 1080,
+      "documentScrollWidth": 1920,
+      "canvasCount": 0
+    },
+    {
+      "state": "scene-1920",
+      "innerWidth": 1920,
+      "innerHeight": 1080,
+      "documentScrollWidth": 1920,
+      "canvasCount": 1,
+      "sceneBusy": "false"
+    },
+    {
+      "state": "top-1440",
+      "innerWidth": 1440,
+      "innerHeight": 900,
+      "documentScrollWidth": 1440,
+      "canvasCount": 1
+    },
+    {
+      "state": "scene-1366",
+      "innerWidth": 1366,
+      "innerHeight": 768,
+      "documentScrollWidth": 1366,
+      "canvasCount": 1
+    },
+    {
+      "state": "home-after-exit",
+      "canvasCount": 0
+    },
+    {
+      "state": "reentry-1366",
+      "innerWidth": 1366,
+      "innerHeight": 768,
+      "canvasCount": 1,
+      "sceneBusy": "false"
+    }
+  ],
+  "viewportReset": {
+    "result": "success",
+    "innerWidth": 1912,
+    "innerHeight": 994
+  },
+  "pageErrorLogs": [],
+  "previewStopped": true,
+  "agentTabClosed": true,
+  "limits": [
+    "Not a verified historical map, terrain, troop display or formal Luding Bridge experience.",
+    "No real hidden-page acceptance, native-window control, FPS benchmark or long-term GPU reclamation certification.",
+    "C1/C2 non-regression was checked through the full actual merged-main automated suite. Real B content and v2 renderers remain unavailable.",
+    "Code SHA identifies the tested engineering main; the later documentation-only archive does not alter runtime code."
+  ]
+}
