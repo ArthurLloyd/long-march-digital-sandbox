@@ -5,6 +5,13 @@
   "engineeringOnly": true,
   "captures": [
     {
+      "file": "50f2bf3-18-viewport-reset.jpg",
+      "codeCommit": "50f2bf359559027053a889510ca15d6d68203fe8",
+      "imageWidth": 1270,
+      "imageHeight": 617,
+      "scope": "After successful viewport.reset(); topic A phase 3/3 paused. Does not demonstrate hidden-page pause."
+    },
+    {
       "file": "7f3e1be-16-invalid-1366.jpg",
       "codeCommit": "7f3e1be5b2785f6db90418c223ba4ffdd97769ac",
       "imageWidth": 1356,
@@ -109,9 +116,32 @@
     "mainScrollWidth": 1430,
     "mainClientWidth": 1430
   },
+  "followup": {
+    "date": "2026-11-01",
+    "codeCommit": "50f2bf359559027053a889510ca15d6d68203fe8",
+    "viewportReset": {
+      "result": "success",
+      "before": {
+        "innerWidth": 1280,
+        "innerHeight": 622,
+        "visibilityState": "visible"
+      },
+      "after": {
+        "innerWidth": 1280,
+        "innerHeight": 622,
+        "visibilityState": "visible"
+      },
+      "scope": "Explicit override cleared through the supported viewport API; OS display settings unchanged. The previous override was not shown to remain active in this new chat."
+    },
+    "backgroundPause": {
+      "result": "not_verified",
+      "reason": "Native Chrome binding again stopped because the current browser URL could not be determined with enough confidence. No new play/hide trial began; hidden was not observed. No further computer/browser controls were issued after the stop."
+    }
+  },
   "limits": [
     "Other DOM measurements were observed but not exported before Computer Use ended; image dimensions are not DOM overflow measurements.",
     "Actual background hiding was not confirmed: the tool still reported visible. Windows Computer Use then stopped because it could not reliably determine the current browser URL.",
-    "The last viewport override was 1366x768. Tool shutdown prevented reset. No further browser operation or alternate browser-control mechanism was used."
+    "The last viewport override in the original session was 1366x768. Tool shutdown prevented reset in that session. No further browser operation or alternate browser-control mechanism was used in that stopped turn.",
+    "The followup reset succeeded; the original blocked observations remain historical evidence. Actual background hidden-page pause remains unverified."
   ]
 }
