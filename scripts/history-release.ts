@@ -267,10 +267,16 @@ export function historyReleasePlugin(): Plugin {
         };
       return html;
     },
-    configurePreviewServer(server) {
+    async configurePreviewServer(server) {
+      const allowed = new Set(releaseAssetFiles((await loadSource()).dataset));
       server.middlewares.use((request, response, next) => {
         const path = new URL(request.url ?? '/', 'http://localhost').pathname;
-        if (path.startsWith('/__dev/') || path.startsWith('/src/')) {
+        if (
+          path.startsWith('/__dev/') ||
+          path.startsWith('/src/') ||
+          (/^\/assets\/(?:archive|terrain|textures)\//.test(path) &&
+            !allowed.has(path.slice(1)))
+        ) {
           response.statusCode = 404;
           response.end('Not found');
           return;

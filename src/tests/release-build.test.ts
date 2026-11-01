@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { build } from 'vite';
+import { build, preview } from 'vite';
 import { fileURLToPath } from 'node:url';
 import {
   mkdtemp,
@@ -90,6 +90,34 @@ describe('实际产物的数据与资源发布边界', () => {
       expect(js).not.toContain('两份记载均将铁索');
       expect(js).not.toContain('simulation-only-a');
       expect(js).not.toContain('createCandidateReviewCatalog');
+      const server = await preview({
+        root: fileURLToPath(new URL('../../', import.meta.url)),
+        logLevel: 'silent',
+        build: { outDir },
+        preview: { host: '127.0.0.1', port: 0, strictPort: true },
+      });
+      try {
+        const address = server.httpServer.address();
+        if (!address || typeof address === 'string')
+          throw new Error('未取得预览地址');
+        const base = `http://127.0.0.1:${address.port}`;
+        const home = await fetch(base + '/');
+        expect(home.status).toBe(200);
+        expect(await home.text()).toContain('<div id="root">');
+        for (const path of [
+          '/__dev/contracts?flow=c3',
+          '/src/features/history/review/index.html',
+          '/assets/archive/portraits/zhou-photo.jpg',
+        ]) {
+          const response = await fetch(base + path);
+          await response.text();
+          expect(response.status, path).toBe(404);
+        }
+      } finally {
+        await new Promise<void>((done) =>
+          server.httpServer.close(() => done()),
+        );
+      }
     } finally {
       await rm(directory, { recursive: true, force: true });
     }

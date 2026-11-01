@@ -7,7 +7,7 @@ export function assertProductionModules(moduleIds: readonly string[]) {
       /\/src\/(?:data\/fixtures|tests|features\/history\/review)\//.test(
         id.replaceAll('\\', '/'),
       ) ||
-      /\/src\/features\/scene\/(?:sandbox\/(?:main|immersive-gallery|panorama)|prototype\/main)\.[tj]s/.test(
+      /\/src\/features\/scene\/(?:sandbox\/(?:main|immersive-gallery|panorama|bridge-experience)|prototype\/main)\.[tj]s/.test(
         id.replaceAll('\\', '/'),
       ),
   );
