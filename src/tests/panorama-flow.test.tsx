@@ -41,13 +41,14 @@ describe('全景原型真实导航与沉浸插槽', () => {
     const user = userEvent.setup();
     render(<PanoramaApp candidate={candidate()} />);
     const nav = within(screen.getByRole('navigation', { name: '重要事件' }));
+    await user.click(screen.getByText('地图图层'));
     await user.selectOptions(
-      screen.getByRole('combobox', { name: '地形高度倍率' }),
+      screen.getByRole('combobox', { name: '地势表现强度' }),
       '24',
     );
     expect(camera.setVerticalExaggeration).toHaveBeenLastCalledWith(24);
     await user.selectOptions(
-      screen.getByRole('combobox', { name: '地形高度倍率' }),
+      screen.getByRole('combobox', { name: '地势表现强度' }),
       '1',
     );
     expect(camera.setVerticalExaggeration).toHaveBeenLastCalledWith(1);

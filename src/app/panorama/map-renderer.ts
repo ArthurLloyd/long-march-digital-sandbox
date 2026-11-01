@@ -1,18 +1,10 @@
+import { sampleCameraFlight } from './camera-flight';
+import { composeTerrainView } from './camera-composition';
+import { createModernLandscape } from './modern-landscape';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import type { GeoBounds } from './geography';
-import {
-  geography,
-  MAP_DEPTH,
-  MAP_WIDTH,
-  heightAt,
-  projectGeo,
-  regionCenter,
-  inCoverage,
-} from './geography';
+import { projectGeo, regionCenter, inCoverage } from './geography';
 import { PANORAMA_NODES, REGIONS, type RegionId } from './navigation';
 import type { PublishedMapRoute } from './route-layers';
 
@@ -66,6 +58,8 @@ export function createPanoramaMap(
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.setClearColor('#17343a');
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute(
     'aria-label',
     '长征涉及区域现代三维地理参考。方向键可环顾，地图按钮提供区域定位。',
@@ -76,101 +70,29 @@ export function createPanoramaMap(
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
-  controls.minDistance = 1.4;
+  controls.minDistance = 0.18;
   controls.maxDistance = 58;
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.minPolarAngle = 0.12;
   controls.enablePan = true;
   controls.screenSpacePanning = false;
-  const ambient = new THREE.HemisphereLight('#d7ebdc', '#213f38', 1.7);
-  const sun = new THREE.DirectionalLight('#fff1d3', 2.8);
+  const ambient = new THREE.HemisphereLight('#c8dcd6', '#152e26', 0.7);
+  const sun = new THREE.DirectionalLight('#fff1d3', 3.2);
   sun.position.set(-15, 20, -12);
-  scene.add(ambient, sun);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.left = -16;
+  sun.shadow.camera.right = 16;
+  sun.shadow.camera.top = 16;
+  sun.shadow.camera.bottom = -16;
+  sun.shadow.camera.near = 0.1;
+  sun.shadow.camera.far = 70;
+  sun.shadow.normalBias = 0.0015;
+  scene.add(ambient, sun, sun.target);
 
-  const terrain = new THREE.PlaneGeometry(
-    MAP_WIDTH,
-    MAP_DEPTH,
-    geography.cols - 1,
-    geography.rows - 1,
-  );
-  terrain.rotateX(-Math.PI / 2);
-  const positions = terrain.getAttribute('position');
+  const landscape = createModernLandscape(scene, renderer);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
-  const scaledHeights = new Float32Array(positions.count);
-  const colors = new Float32Array(positions.count * 3);
-  const low = new THREE.Color('#345d48'),
-    middle = new THREE.Color('#68806a'),
-    high = new THREE.Color('#a39f80'),
-    peak = new THREE.Color('#e3dfce');
-  for (let i = 0; i < positions.count; i++) {
-    const metres = Math.max(0, geography.heights[i] ?? 0);
-    scaledHeights[i] = heightAt(positions.getX(i), positions.getZ(i), 1);
-    positions.setY(i, scaledHeights[i]! * verticalExaggeration);
-    const color =
-      metres < 1500
-        ? low.clone().lerp(middle, metres / 1500)
-        : metres < 4200
-          ? middle.clone().lerp(high, (metres - 1500) / 2700)
-          : high.clone().lerp(peak, Math.min(1, (metres - 4200) / 1800));
-    colors[i * 3] = color.r;
-    colors[i * 3 + 1] = color.g;
-    colors[i * 3 + 2] = color.b;
-  }
-  terrain.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  terrain.computeVertexNormals();
-  const material = new THREE.MeshStandardMaterial({
-    vertexColors: true,
-    roughness: 1,
-    metalness: 0,
-  });
-  const mesh = new THREE.Mesh(terrain, material);
-  scene.add(mesh);
-  const base = new THREE.Mesh(
-    new THREE.BoxGeometry(MAP_WIDTH, 0.25, MAP_DEPTH),
-    new THREE.MeshStandardMaterial({ color: '#294844', roughness: 1 }),
-  );
-  base.position.y = -0.13;
-  scene.add(base);
-  const outline = new THREE.LineSegments(
-    new THREE.EdgesGeometry(base.geometry),
-    new THREE.LineBasicMaterial({
-      color: '#a2aa89',
-      transparent: true,
-      opacity: 0.55,
-    }),
-  );
-  outline.position.copy(base.position);
-  scene.add(outline);
-
-  const rivers = new THREE.Group();
-  const riverMaterial = new LineMaterial({
-    color: '#81bdc8',
-    transparent: true,
-    opacity: 0.9,
-  });
-  riverMaterial.linewidth = 3.2;
-  const riverLines: { line: Line2; points: readonly THREE.Vector3[] }[] = [];
-  for (const river of geography.rivers) {
-    for (const line of river.coordinates) {
-      const points = line.map((point) => {
-        const [x, z] = projectGeo([point[0]!, point[1]!]);
-        return new THREE.Vector3(
-          x,
-          heightAt(x, z, verticalExaggeration) + 0.008,
-          z,
-        );
-      });
-      const renderedLine = new Line2(
-        new LineGeometry().setPositions(
-          points.flatMap((point) => point.toArray()),
-        ),
-        riverMaterial,
-      );
-      riverLines.push({ line: renderedLine, points });
-      rivers.add(renderedLine);
-    }
-  }
-  scene.add(rivers);
+  const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
   const routeGroup = new THREE.Group();
   scene.add(routeGroup);
   const clearRoutes = () => {
@@ -193,21 +115,19 @@ export function createPanoramaMap(
     const [x, z] = projectGeo(regionCenter(REGIONS[node.id]));
     return {
       id: node.id,
-      point: new THREE.Vector3(
-        x,
-        heightAt(x, z, verticalExaggeration) + 0.12,
-        z,
-      ),
+      point: new THREE.Vector3(x, heightAt(x, z) + 0.12, z),
     };
   });
   let disposed = false,
     suspended = false,
     frame = 0,
     didRender = false;
+  let focusRevision = 0;
   let width = 1,
     height = 1;
   let flight: null | {
     start: number;
+    duration: number;
     from: THREE.Vector3;
     to: THREE.Vector3;
     targetFrom: THREE.Vector3;
@@ -222,6 +142,12 @@ export function createPanoramaMap(
     } else
       flight = {
         start: performance.now(),
+        duration:
+          camera.position.distanceTo(controls.target) /
+            Math.max(0.01, position.distanceTo(target)) >
+            6 || controls.target.distanceTo(target) > 3
+            ? 2400
+            : 1600,
         from: camera.position.clone(),
         to: position,
         targetFrom: controls.target.clone(),
@@ -230,14 +156,26 @@ export function createPanoramaMap(
   };
   const cancel = () => {
     flight = null;
+    focusRevision++;
+    landscape.cancelPending();
   };
   controls.addEventListener('start', cancel);
-  const overview = (top = false) =>
+  const overview = (top = false) => {
+    focusRevision++;
+    landscape.overview();
+    sun.target.position.set(0, 0, 0);
+    sun.position.set(-15, 20, -12);
+    sun.shadow.camera.left = -16;
+    sun.shadow.camera.right = 16;
+    sun.shadow.camera.top = 16;
+    sun.shadow.camera.bottom = -16;
+    sun.shadow.camera.updateProjectionMatrix();
     travel(
-      new THREE.Vector3(0, top ? 35 : 25, top ? 0.1 : 23),
+      new THREE.Vector3(0, top ? 31 : 20, top ? 0.1 : 19),
       new THREE.Vector3(0, 0, 0),
     );
-  camera.position.set(0, 25, 23);
+  };
+  camera.position.set(0, 20, 19);
   controls.target.set(0, 0, 0);
   controls.update();
   const resize = () => {
@@ -245,7 +183,6 @@ export function createPanoramaMap(
     width = Math.max(1, rect.width);
     height = Math.max(1, rect.height);
     renderer.setSize(width, height, false);
-    riverMaterial.resolution.set(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
@@ -296,13 +233,25 @@ export function createPanoramaMap(
     frame = requestAnimationFrame(draw);
     if (suspended) return;
     if (flight) {
-      const t = Math.min(1, (now - flight.start) / 1200);
-      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      camera.position.lerpVectors(flight.from, flight.to, ease);
-      controls.target.lerpVectors(flight.targetFrom, flight.targetTo, ease);
+      const t = Math.min(1, (now - flight.start) / flight.duration);
+      const pose = sampleCameraFlight(
+        {
+          position: flight.from.toArray(),
+          target: flight.targetFrom.toArray(),
+        },
+        { position: flight.to.toArray(), target: flight.targetTo.toArray() },
+        t,
+      );
+      camera.position.fromArray(pose.position);
+      controls.target.fromArray(pose.target);
+      camera.position.y = Math.max(
+        camera.position.y,
+        heightAt(camera.position.x, camera.position.z) + 0.015,
+      );
       if (t === 1) flight = null;
     }
     controls.update();
+    landscape.update(options.reducedMotion ? 0 : now / 1000);
     try {
       renderer.render(scene, camera);
       if (!didRender) {
@@ -320,6 +269,7 @@ export function createPanoramaMap(
     }
     options.onMarkers(
       markers.map((marker) => {
+        marker.point.y = heightAt(marker.point.x, marker.point.z) + 0.12;
         const point = marker.point.clone().project(camera);
         return {
           id: marker.id,
@@ -337,30 +287,43 @@ export function createPanoramaMap(
   frame = requestAnimationFrame(draw);
   return {
     focus(bounds) {
-      const [x, z] = projectGeo(regionCenter(bounds));
-      const target = new THREE.Vector3(
-        x,
-        heightAt(x, z, verticalExaggeration),
-        z,
-      );
-      const left = projectGeo([bounds[0], bounds[1]]),
-        right = projectGeo([bounds[2], bounds[3]]);
-      const span = Math.max(
-        Math.abs(right[0] - left[0]),
-        Math.abs(right[1] - left[1]),
-        1.7,
-      );
-      const distance = Math.max(1.45, span * 0.6);
-      const position = target
-        .clone()
-        .add(
-          new THREE.Vector3(distance * 0.12, distance * 0.4, distance * 0.92),
+      const revision = ++focusRevision;
+      const id = (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(
+        ([, value]) => value.every((n, i) => n === bounds[i]),
+      )?.[0];
+      const complete = (
+        pivot: {
+          x: number;
+          z: number;
+          viewDirection?: { x: number; z: number };
+          waterLevel?: number;
+          riverCandidates?: { x: number; z: number; level: number }[];
+        } | null,
+      ) => {
+        if (disposed || revision !== focusRevision) return;
+        const fallback = projectGeo(regionCenter(bounds));
+        const x = pivot?.x ?? fallback[0],
+          z = pivot?.z ?? fallback[1];
+        const direction = pivot?.viewDirection ?? { x: 0.15, z: 1 };
+        const pose = composeTerrainView(
+          { x, z, y: pivot?.waterLevel ?? heightAt(x, z) },
+          direction,
+          heightAt,
+          pivot?.riverCandidates,
         );
-      position.y = Math.max(
-        position.y,
-        heightAt(position.x, position.z, verticalExaggeration) + 0.3,
-      );
-      travel(position, target);
+        const target = new THREE.Vector3(...pose.target);
+        const position = new THREE.Vector3(...pose.position);
+        sun.target.position.copy(target);
+        sun.position.copy(target).add(new THREE.Vector3(-7, 12, -5));
+        sun.shadow.camera.left = -3;
+        sun.shadow.camera.right = 3;
+        sun.shadow.camera.top = 3;
+        sun.shadow.camera.bottom = -3;
+        sun.shadow.camera.updateProjectionMatrix();
+        travel(position, target);
+      };
+      if (id) void landscape.focus(id).then(complete);
+      else complete(null);
     },
     overview,
     zoom(direction) {
@@ -425,55 +388,35 @@ export function createPanoramaMap(
             continue;
           }
           const [x, z] = projectGeo(point);
-          segment.push(
-            new THREE.Vector3(
-              x,
-              heightAt(x, z, verticalExaggeration) + 0.025,
-              z,
-            ),
-          );
+          segment.push(new THREE.Vector3(x, heightAt(x, z) + 0.025, z));
         }
         flush();
       }
     },
     setRivers: (visible) => {
-      rivers.visible = visible;
+      landscape.setRivers(visible);
     },
     setVerticalExaggeration(value) {
       if (![1, 6, 12, 24].includes(value) || value === verticalExaggeration)
         return;
+      cancel();
+      const previous = heightAt(controls.target.x, controls.target.z);
       verticalExaggeration = value;
-      for (let i = 0; i < positions.count; i++)
-        positions.setY(i, scaledHeights[i]! * value);
-      positions.needsUpdate = true;
-      terrain.computeVertexNormals();
-      terrain.computeBoundingSphere();
-      const drape = (group: THREE.Group, offset: number) =>
-        group.traverse((object) => {
-          if (object instanceof THREE.Line || object instanceof THREE.Points) {
-            const points = object.geometry.getAttribute('position');
-            for (let i = 0; i < points.count; i++)
-              points.setY(
-                i,
-                heightAt(points.getX(i), points.getZ(i), value) + offset,
-              );
-            points.needsUpdate = true;
-            object.geometry.computeBoundingSphere();
-          }
-        });
-      riverLines.forEach(({ line, points }) => {
-        line.geometry.dispose();
-        line.geometry = new LineGeometry().setPositions(
-          points.flatMap((point) => [
-            point.x,
-            heightAt(point.x, point.z, value) + 0.008,
-            point.z,
-          ]),
-        );
-      });
-      drape(routeGroup, 0.025);
-      markers.forEach((marker) => {
-        marker.point.y = heightAt(marker.point.x, marker.point.z, value) + 0.12;
+      landscape.setExaggeration(value);
+      const delta = heightAt(controls.target.x, controls.target.z) - previous;
+      controls.target.y += delta;
+      camera.position.y += delta;
+      camera.position.y = Math.max(
+        camera.position.y,
+        heightAt(camera.position.x, camera.position.z) + 0.25,
+      );
+      routeGroup.traverse((object) => {
+        if (object instanceof THREE.Line || object instanceof THREE.Points) {
+          const p = object.geometry.getAttribute('position');
+          for (let i = 0; i < p.count; i++)
+            p.setY(i, heightAt(p.getX(i), p.getZ(i)) + 0.025);
+          p.needsUpdate = true;
+        }
       });
     },
     suspend: (value) => {
@@ -482,6 +425,7 @@ export function createPanoramaMap(
     dispose() {
       if (disposed) return;
       disposed = true;
+      landscape.dispose();
       cancelAnimationFrame(frame);
       observer.disconnect();
       controls.removeEventListener('start', cancel);

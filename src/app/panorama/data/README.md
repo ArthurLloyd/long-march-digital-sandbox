@@ -14,7 +14,7 @@
 
 使用 Natural Earth 官方维护库 `nvkelso/natural-earth-vector` 中 `ne_10m_rivers_lake_centerlines.geojson`，上游 commit 固定于 `ca96624a56bd078437bca8184e78163e5039ad19`。根据 [Natural Earth 使用条款](https://www.naturalearthdata.com/about/terms-of-use/)，数据为公有领域。
 
-保留 67 个范围内要素的原始顶点及连续河段；不平滑、不连接断段、不补造漏段。包括 Yangtze、Yellow、Gan、Xiang、Wu、Dadu、Yalong、Min、Jialing 等现代水系。**此源未提供命名为 Chishui 的河段**，因此没有用邻近河流假扮赤水河；四渡演示板的“水系轴”也不含地理坐标。局部赤水河与渡口需要后续有来源的高精资料。
+保留 67 个范围内要素的原始顶点及连续河段；不连接断段、不补造漏段。包括 Yangtze、Yellow、Gan、Xiang、Wu、Dadu、Yalong、Min、Jialing 等现代水系。**Natural Earth 此源未提供命名为 Chishui 的河段**，因此没有用邻近河流假扮赤水河。后续已在 `details/modern-water.json` 单独补充有原始 OSM way ID、下载哈希和 ODbL 归属的现代赤水河与大渡河，共 49 个 way；见 `details/README.md`。现代河流显示细分、水位平滑、河槽、宽深及动态波纹为艺术加工，原始中心线不改写。历史渡口仍未知；四渡演示板的“水系轴”不含地理坐标。
 
 主要山地观察清单：南岭与赣南丘陵、云贵高原、横断山地、川西山地与四川盆地、秦岭、陕甘黄土高原。现阶段由真实高程表达轮廓，不另外杜撰山峰定位；后续地名、精度和历史关联由 A/B 细化复核。
 

@@ -130,8 +130,18 @@ export function MapCanvas({
       )}
       <span className="pan-map-status" role="status">
         {ready && !error
-          ? `现代地形 · 高度 ${exaggeration}×${exaggeration === 1 ? ' 未额外夸张' : ' 艺术增强'} · 河宽为显示增强`
+          ? `现代地形 · ${exaggeration === 1 ? '原始地势' : exaggeration === 6 ? '层峦' : exaggeration === 12 ? '雄浑' : '磅礴'}${exaggeration === 1 ? '' : ' · 近景艺术适配'} · 河宽/深度为艺术表达`
           : '地图载入中'}
+      </span>
+      <span className="pan-map-attribution">
+        现代地理：USGS / Mapzen · Natural Earth ·{' '}
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noreferrer"
+        >
+          © OpenStreetMap contributors · ODbL
+        </a>
       </span>
     </div>
   );

@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Expand,
+  ChevronDown,
   Focus,
   Layers,
   Map,
@@ -187,15 +188,18 @@ export function PanoramaApp({ candidate }: { candidate: HistoryDatasetV2 }) {
             </button>
           ))}
         </nav>
-        <div className="pan-layer-controls">
-          <h2>
-            <Layers size={15} />
-            地图图层
-          </h2>
+        <details className="pan-layer-controls">
+          <summary>
+            <span>
+              <Layers size={15} />
+              地图图层
+            </span>
+            <ChevronDown size={15} />
+          </summary>
           <label className="pan-height-control">
-            地形高度
+            地势表现
             <select
-              aria-label="地形高度倍率"
+              aria-label="地势表现强度"
               value={exaggeration}
               onChange={(event) => {
                 const value = Number(event.target.value);
@@ -203,10 +207,10 @@ export function PanoramaApp({ candidate }: { candidate: HistoryDatasetV2 }) {
                   setExaggeration(value);
               }}
             >
-              <option value="1">1× 未额外夸张</option>
-              <option value="6">6× 艺术增强</option>
-              <option value="12">12× 艺术增强</option>
-              <option value="24">24× 艺术增强</option>
+              <option value="1">原始地势</option>
+              <option value="6">层峦 · 适度增强</option>
+              <option value="12">雄浑 · 近景适配</option>
+              <option value="24">磅礴 · 强艺术表现</option>
             </select>
           </label>
           <label>
@@ -232,7 +236,7 @@ export function PanoramaApp({ candidate }: { candidate: HistoryDatasetV2 }) {
             已核路线 {publishedRoutes.length} 条<br />
             事件细分与沉浸局部路径待交付。多支主力按 unitId 分层，不虚构队伍。
           </p>
-        </div>
+        </details>
       </aside>
       <main
         className="pan-main"
@@ -423,11 +427,18 @@ export function PanoramaApp({ candidate }: { candidate: HistoryDatasetV2 }) {
           <summary>底图来源与使用边界</summary>
           <p>
             Mapzen / Tilezen Terrain Tiles；全球 GMTED2010 / SRTM：USGS，全球
-            ETOPO1：NOAA。河流：Natural Earth，公有领域。
+            ETOPO1：NOAA。全景河流：Natural
+            Earth，公有领域；赤水河与大渡河细节：© OpenStreetMap
+            contributors，ODbL。
           </p>
           <p>
-            现代高程 385×321 网格，z6；高度可选 1×/6×/12×/24×，默认 12×
-            艺术增强，河宽为显示增强。
+            通用岩石表面：Poly Haven「Rock Boulder Dry」，CC0；摄影 Dimitrios
+            Savva、处理 Rico Cilliers。它是美术材质，不是沿线实地或历史照片。
+          </p>
+          <p>
+            全景现代高程 z6，八区域细节
+            z9；地势分四档艺术表现，近景起伏按镜头尺度适配。
+            河流具有艺术宽深与水面，不是实测水文。
             现代河流经过小比例尺概化，不能替代历史河道、赤水渡口与行军证据。此图不含政治边界，不是地图合规认证。
           </p>
           <p>
@@ -439,8 +450,8 @@ export function PanoramaApp({ candidate }: { candidate: HistoryDatasetV2 }) {
       <footer className="pan-timeline" inert={slot !== null}>
         <div className="pan-timeline-heading">
           <div>
-            <h2>长征全景浏览</h2>
-            <p>浏览顺序不代表各军团统一历史时间；自动推进不等于体验完成。</p>
+            <h2 aria-label={`全景浏览：${step.title}`}>{step.title}</h2>
+            <p>{step.timeLabel} · 候选资料</p>
           </div>
           <label>
             <input

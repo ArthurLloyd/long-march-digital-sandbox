@@ -260,16 +260,21 @@
   display: flex;
   justify-content: space-between;
   pointer-events: none;
-  font-size: 10px;
-  color: #d6dbc8;
+  font-size: 11px;
+  color: #f0ebdb;
+  z-index: 2;
+  background: #10292fe8;
+  padding: 6px 8px;
   font-variant-numeric: tabular-nums;
 }
 .pan-map-status {
   position: absolute;
-  bottom: 9px;
+  bottom: 31px;
   left: 16px;
-  font-size: 10px;
-  color: #d6dbc8;
+  font-size: 11px;
+  color: #f0ebdb;
+  background: #10292ff0;
+  padding: 3px 6px;
   pointer-events: none;
 }
 .pan-map-toolbar {
@@ -292,7 +297,7 @@
 }
 .pan-map-caption {
   position: absolute;
-  bottom: 35px;
+  bottom: 62px;
   left: 20px;
   right: 20px;
   pointer-events: none;
@@ -300,6 +305,9 @@
   flex-direction: column;
   gap: 7px;
   text-shadow: 0 2px 4px #122f32;
+  z-index: 2;
+  padding: 18px 14px 14px;
+  background: linear-gradient(90deg, #10292ff0, #10292f9c 58%, #10292f00);
 }
 .pan-map-caption strong {
   font-family: var(--font-display);
@@ -939,4 +947,62 @@
   width: 100%;
   max-width: none;
   margin-top: 6px;
+}
+
+.pan-map-attribution {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  z-index: 7;
+  color: #dce4d5;
+  font-size: 11px;
+  line-height: 1.5;
+  background: #153438b8;
+  padding: 2px 4px;
+}
+.pan-map-attribution a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pan-layer-controls summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px 0 10px;
+  list-style: none;
+  color: #ead7b3;
+}
+.pan-layer-controls summary > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pan-layer-controls summary::-webkit-details-marker {
+  display: none;
+}
+.pan-layer-controls[open] summary > svg {
+  transform: rotate(180deg);
+}
+.pan-timeline-heading h2 {
+  font-family: 'Panorama Cinematic', var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ecd6aa;
+}
+.pan-playback button:nth-child(3) {
+  width: 40px;
+  height: 40px;
+  background: #87383c;
+  border-color: #ba8b6b;
+  color: #f5e5c8;
+}
+.pan-playback button:nth-child(3):hover:not(:disabled) {
+  background: #a34847;
+}
+.pan-timeline {
+  background: linear-gradient(110deg, #122f35, #10292f);
 }

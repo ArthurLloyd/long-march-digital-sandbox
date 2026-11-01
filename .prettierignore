@@ -7,3 +7,5 @@ package-lock.json
 artifacts
 # Deterministic generated geography; SHA-256 is recorded in its provenance.
 src/app/panorama/data/modern-geography.json
+
+src/app/panorama/data/details/*.json
