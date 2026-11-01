@@ -1,0 +1,16 @@
+{
+  "personId": "person-yang",
+  "referenceAssetId": "asset-yang-photo",
+  "referencePhotoPath": "/assets/archive/portraits/yang-photo.jpg",
+  "referencePhotoSHA256": "8ff32be086fb2115868d5768acef500127a37657d84ecdc32d813ec4b722a78a",
+  "referencePhotoSource": "https://commons.wikimedia.org/wiki/File:Anti-Japanese_National_Army_commanders,_November_1937.jpg",
+  "createdAt": "2026-11-01",
+  "creator": "OpenAI 图像生成工具；B 内容制作",
+  "method": "以本目录真实历史照片为唯一图像参考，身份保持与插画风格转绘；杨成武使用原合影左起第三人；未进行二次图像编辑。",
+  "promptFile": "generation-prompts.json",
+  "promptKey": "yang",
+  "sha256": "2f5355e4f41b549eb5169f6748fa79bbda9f386280619ca421b579c2d5be3551",
+  "representation": "ai_recreation",
+  "rightsStatus": "cleared",
+  "limitations": "不是历史照片，不是照片修复，不代表1935年的年龄、服装或事件现场。杨成武由合影提取的视觉身份需人工对照原图图注。"
+}

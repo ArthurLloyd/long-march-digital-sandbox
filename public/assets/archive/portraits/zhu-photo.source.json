@@ -1,0 +1,83 @@
+{
+  "personId": "person-zhu",
+  "photoPeriod": "1922年（不采用有歧义的月日）",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Zhu_De_(1922).jpg",
+  "originalDownloadURL": "https://upload.wikimedia.org/wikipedia/commons/2/20/Zhu_De_%281922%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "creator": "佚名",
+  "licenseAssessment": "Commons列匿名作品公有领域及美国出版年代依据，原图来源指向中国共产党新闻网。",
+  "rightsStatus": "cleared",
+  "sha256": "2336080b34b689af37bb0c0183665981378c36125d209157f7c73fc096478c97",
+  "transformations": ["原文件字节复制；未修复、未上色、未生成替代图"],
+  "accessedAt": "2026-11-01",
+  "metadata": {
+    "DateTime": {
+      "value": "2023-09-13 00:17:26",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "Zhu De (1922)",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "Zhu De|PD US expired|PD-anon-70-EU|September 1922 in Berlin|PD-US missing SDC copyright status",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "​1922年9月,朱德抛弃高官厚禄,到欧洲寻求新的革 命道路。同年11月,在德国柏林由张申府、周恩来介绍加 入中国共产党。图为朱德在柏林。",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "September 1922",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<a rel=\"nofollow\" class=\"external text\" href=\"http://cpc.people.com.cn/GB/143527/147175/8853437.html\">人物照片：朱德在德国柏林留影</a>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "unknown",
+      "source": "commons-desc-page"
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  }
+}

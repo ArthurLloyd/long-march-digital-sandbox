@@ -1,0 +1,83 @@
+{
+  "personId": "person-liu",
+  "photoPeriod": "20世纪20年代（按来源元数据）",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:Liu_Bocheng_in_youth.jpg",
+  "originalDownloadURL": "https://upload.wikimedia.org/wikipedia/commons/9/91/Liu_Bocheng_in_youth.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "creator": "佚名",
+  "licenseAssessment": "Commons列PD-China，原始首次发表信息仍缺；不采用版权有争议的1955年标准像。",
+  "rightsStatus": "unknown",
+  "sha256": "8977a3ad096e499568d8adc7118db449f43b7d3f6d3003fc1dd8eb9557e577f4",
+  "transformations": ["原文件字节复制；未修复、未上色、未生成替代图"],
+  "accessedAt": "2026-11-01",
+  "metadata": {
+    "DateTime": {
+      "value": "2016-07-19 12:24:43",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "Liu Bocheng in youth",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "PD China|Liu Bocheng|Template Unknown (author)|PD-old missing SDC copyright status",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "​1920年代供职于川军时的刘伯承",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "1920s<div style=\"display: none;\">date QS:P,+1920-00-00T00:00:00Z/8</div>",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://news.cnhubei.com/xw/wuhan/201405/t2927751_3.shtml\">http://news.cnhubei.com/xw/wuhan/201405/t2927751_3.shtml</a>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "Unknown author<span style=\"display: none;\">Unknown author</span>",
+      "source": "commons-desc-page"
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  }
+}

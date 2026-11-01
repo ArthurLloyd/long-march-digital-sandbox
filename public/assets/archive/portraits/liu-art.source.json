@@ -1,0 +1,16 @@
+{
+  "personId": "person-liu",
+  "referenceAssetId": "asset-liu-photo",
+  "referencePhotoPath": "/assets/archive/portraits/liu-photo.jpg",
+  "referencePhotoSHA256": "8977a3ad096e499568d8adc7118db449f43b7d3f6d3003fc1dd8eb9557e577f4",
+  "referencePhotoSource": "https://commons.wikimedia.org/wiki/File:Liu_Bocheng_in_youth.jpg",
+  "createdAt": "2026-11-01",
+  "creator": "OpenAI 图像生成工具；B 内容制作",
+  "method": "以本目录真实历史照片为唯一图像参考，身份保持与插画风格转绘；杨成武使用原合影左起第三人；未进行二次图像编辑。",
+  "promptFile": "generation-prompts.json",
+  "promptKey": "liu",
+  "sha256": "cef9225183e9734a15464da0557410e7b3af0cf3b1752cddd66fd4035d2015c5",
+  "representation": "ai_recreation",
+  "rightsStatus": "unknown",
+  "limitations": "不是历史照片，不是照片修复，不代表1935年的年龄、服装或事件现场。杨成武由合影提取的视觉身份需人工对照原图图注。"
+}

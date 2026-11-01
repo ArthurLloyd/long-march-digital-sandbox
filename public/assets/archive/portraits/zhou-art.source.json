@@ -1,0 +1,16 @@
+{
+  "personId": "person-zhou",
+  "referenceAssetId": "asset-zhou-photo",
+  "referencePhotoPath": "/assets/archive/portraits/zhou-photo.jpg",
+  "referencePhotoSHA256": "4648928aea4392b395cee2fd5c2fd34e404de4a2bf296b03ac3ae21a4d4382a2",
+  "referencePhotoSource": "https://commons.wikimedia.org/wiki/File:ZhouEnlai.jpg",
+  "createdAt": "2026-11-01",
+  "creator": "OpenAI 图像生成工具；B 内容制作",
+  "method": "以本目录真实历史照片为唯一图像参考，身份保持与插画风格转绘；杨成武使用原合影左起第三人；未进行二次图像编辑。",
+  "promptFile": "generation-prompts.json",
+  "promptKey": "zhou",
+  "sha256": "6bf504f7d26c69f1bdea242615494dd508dc5388e3f66ff5d8d0d9cad57026f2",
+  "representation": "ai_recreation",
+  "rightsStatus": "unknown",
+  "limitations": "不是历史照片，不是照片修复，不代表1935年的年龄、服装或事件现场。杨成武由合影提取的视觉身份需人工对照原图图注。"
+}

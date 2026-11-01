@@ -1,0 +1,88 @@
+{
+  "personId": "person-zhou",
+  "photoPeriod": "1917年（按来源元数据）",
+  "sourcePage": "https://commons.wikimedia.org/wiki/File:ZhouEnlai.jpg",
+  "originalDownloadURL": "https://upload.wikimedia.org/wikipedia/commons/0/06/ZhouEnlai.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "creator": "佚名",
+  "licenseAssessment": "Commons列PD-China，但原始出版物仅写old photos。已保存来源，公开使用前需补原出版物或由人员确认适用范围。",
+  "rightsStatus": "unknown",
+  "sha256": "4648928aea4392b395cee2fd5c2fd34e404de4a2bf296b03ac3ae21a4d4382a2",
+  "transformations": ["原文件字节复制；未修复、未上色、未生成替代图"],
+  "accessedAt": "2026-11-01",
+  "metadata": {
+    "DateTime": {
+      "value": "2006-06-26 07:13:20",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "ZhouEnlai",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "Alumni of Meiji University|Zhou Enlai|PD China|PD-old missing SDC copyright status",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "<a href=\"//commons.wikimedia.org/wiki/Zhou_Enlai\" class=\"mw-redirect\" title=\"Zhou Enlai\">Zhou Enlai</a>, Premier of <a href=\"//commons.wikimedia.org/wiki/China\" class=\"mw-redirect\" title=\"China\">China</a>",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "1917",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "From old photos",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "<span lang=\"en\">Anonymous</span><span style=\"display:none\">Unknown author</span>",
+      "source": "commons-desc-page"
+    },
+    "Permission": {
+      "value": "PD licence according to Chinese law , See below",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "LicenseShortName": {
+      "value": "Public domain",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Public domain",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Copyrighted": {
+      "value": "False",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "pd",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  }
+}
