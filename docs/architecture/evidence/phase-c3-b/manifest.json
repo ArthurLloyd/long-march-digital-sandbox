@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-02",
+  "main": "cbbc916bd3fe4698c6fe2eb61e8bb3bd2c9dde25",
+  "pr": 15,
+  "base": "fix/ci-history-import",
+  "aHead": "fa040fb9983450bec2eb066fb98c783be9bc41f2",
+  "codeCommit": "7e5a69ec0bae9b0b6fa9202e74eb3ec241bc88f4",
+  "ownChecks": {
+    "files": 31,
+    "tests": 272,
+    "allPassed": true
+  },
+  "aCombined": {
+    "commit": "009cfddeb8513de5991c5e13fde66de23663bc18",
+    "files": 33,
+    "tests": 279,
+    "allPassed": true
+  },
+  "formalPublishedRecords": 0,
+  "unverifiedHiddenPause": true,
+  "screenshots": [
+    {
+      "file": "a-grass-art.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 132098,
+      "sha256": "8ab3eb0758301c68859da2986997f8535972372d15d97c3d0964aead16c22f9e"
+    },
+    {
+      "file": "a-latest-crossing.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 138944,
+      "sha256": "45c29408e00264266028f7eab53b12607784253245f25d680d55f63fc6a2c3d6"
+    },
+    {
+      "file": "a-river-art.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 124811,
+      "sha256": "a6f665058f70a4a5ed336e23fbd5c525aa09861b01e66f26523c14f9bb68742b"
+    },
+    {
+      "file": "a-snow-art.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 136350,
+      "sha256": "6f86ef40a7899828dac56dab0c7eaa14f1075b0fece733f23ea667816247820a"
+    },
+    {
+      "file": "dev-details-replay-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 141137,
+      "sha256": "696fa2427d73558774f956f18f835eef614765900c49626f340a1606d9dc05b5"
+    },
+    {
+      "file": "dev-home-1920.jpg",
+      "width": 1910,
+      "height": 1074,
+      "bytes": 201791,
+      "sha256": "00aa4072d6260ba661f7f8fe99ef1349e99fc31f6f49f3b7bd89ebe7086af421"
+    },
+    {
+      "file": "dev-intro-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 68417,
+      "sha256": "bc701c8effa35b169adbdb9195beb3a96822bb9468f806323b1134c5c0f08fbb"
+    },
+    {
+      "file": "dev-ld02-1366.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 65693,
+      "sha256": "92be53b1a044fe2e6b0a9423d727be41e64eaf93f5624d70228512616c1d1164"
+    },
+    {
+      "file": "dev-ld02-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 104010,
+      "sha256": "56a21153258e24f8135db82a2ba35e5e15b651d9267e3e349e67b005f6a9cdf4"
+    },
+    {
+      "file": "dev-refresh-reading-1440.jpg",
+      "width": 1440,
+      "height": 900,
+      "bytes": 100717,
+      "sha256": "c7b9d1ee931bf730780241da955fb711ae7e61efbf0ccb89c7fa8df37ab532c4"
+    },
+    {
+      "file": "dev-replay-complete-1366.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 50338,
+      "sha256": "af94936ad7da66c578525e57c92a2612abb2d4f37086682779902cb0098ab7e7"
+    },
+    {
+      "file": "dev-replay-reset-1366.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 68145,
+      "sha256": "6b05fc87e84359cc89c6060815ba490468ed52edc3460d048ca3babc4eb958c6"
+    },
+    {
+      "file": "prod-gate-1920.jpg",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 68895,
+      "sha256": "330848195825768b9d0a4cfe807cdf5e45839ae786e1431af7f3c28c45720fff"
+    },
+    {
+      "file": "prod-home-1366.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 134273,
+      "sha256": "266bf7324aebc3314bcb7241c980f3819383074751313cc6d3c67a74669a6daf"
+    },
+    {
+      "file": "prod-scene-1366.jpg",
+      "width": 1366,
+      "height": 768,
+      "bytes": 119710,
+      "sha256": "a3feec1f52f372c8c5576821f2e079835edf9fb40d8e3b4455cd8a87b9aa9c67"
+    },
+    {
+      "file": "prod-scene-1440.jpg",
+      "width": 1440,
+      "height": 900,
+      "bytes": 139933,
+      "sha256": "6f4fb2bf4c4d5b7d6b768a6bb6b8ed09e96d0bb63549386eb49d1bd00c4dac4f"
+    }
+  ]
+}

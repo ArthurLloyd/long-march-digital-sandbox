@@ -1,0 +1,41 @@
+{
+  "codeCommit": "7e5a69ec0bae9b0b6fa9202e74eb3ec241bc88f4",
+  "sourceSha256": "2c45a680a291f0cee795c4388a448de0bd09dbef655a19748b4d05d40f48eb4b",
+  "files": 600,
+  "bytes": 19960439,
+  "extensions": {
+    ".woff2": 295,
+    ".css": 2,
+    ".js": 2,
+    ".webp": 1,
+    ".woff": 294,
+    ".png": 2,
+    ".html": 1,
+    ".txt": 3
+  },
+  "publishedCounts": {
+    "events": 0,
+    "routes": 0,
+    "sources": 0,
+    "topics": 0,
+    "phases": 0,
+    "people": 0,
+    "places": 0,
+    "forceTracks": 0,
+    "forceSnapshots": 0,
+    "experiences": 0,
+    "segments": 0,
+    "interactions": 0,
+    "fallbackContents": 0,
+    "assets": 0
+  },
+  "allowedPublicFiles": [
+    "assets/fonts/zhi-mang-xing-display.woff2",
+    "licenses/Zhi-Mang-Xing-OFL.txt",
+    "licenses/title-calligraphy-SOURCE.txt",
+    "licenses/OFL-1.1.txt"
+  ],
+  "protectedFiles": [],
+  "assertReleaseFiles": "passed",
+  "denyOnlyPhaseSystem": true
+}
