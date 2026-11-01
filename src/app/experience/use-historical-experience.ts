@@ -31,6 +31,7 @@ import {
   type ExplorationContext,
 } from './historical-experience-reducer';
 import type { ExperienceModules } from './experience-modules';
+import { replayOptions } from './replay-options';
 
 interface Options {
   catalog: ExperienceCatalog;
@@ -173,19 +174,25 @@ export function useHistoricalExperience({
       });
       return;
     }
+    const options = replayOptions(route.bundle, modules, reducedMotion);
+    const previous = store
+      .getSnapshot()
+      .records.find(
+        (record) =>
+          record.experienceId === route.bundle!.manifest.experienceId &&
+          record.completionPolicyVersion ===
+            route.bundle!.manifest.completionPolicyVersion,
+      )?.completionMode;
     const mode =
       requested ??
-      (reducedMotion
+      (previous === 'equivalent' && options.equivalent
         ? 'equivalent'
-        : route.bundle.segments.some((r) => r.presentation === 'video') &&
-            route.bundle.segments.every(
-              (r) => r.presentation === 'video' || r.presentation === 'text',
-            )
-          ? 'video'
-          : '3d');
+        : options.immersive
+          ? options.rendererMode
+          : 'equivalent');
     if (
       !modules.Teaching ||
-      (mode === 'equivalent' ? !modules.Equivalent : !modules.Renderer)
+      (mode === 'equivalent' ? !options.equivalent : !options.immersive)
     ) {
       dispatch({
         type: 'unavailable',

@@ -1,0 +1,54 @@
+{
+  "productionSizes": [
+    {
+      "kind": "production",
+      "canvas": 1,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "width": 1920
+    },
+    {
+      "kind": "production",
+      "canvas": 1,
+      "height": 900,
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "kind": "production-home",
+      "canvas": 0,
+      "height": 768,
+      "scrollWidth": 1366,
+      "width": 1366
+    }
+  ],
+  "candidateFlow": {
+    "firstCompletion": "1920 UI 完成五段、两项互动、两次解释、主动完成",
+    "refresh": "1440 刷新后 UI 直达正文",
+    "replay": "1366 第一段/0互动重播，未完成退出保留记录，再次实际完成",
+    "phaseRestore": "飞夺泸定桥资料阶段 / ld-phase",
+    "storage": "只由 UI 触发开发键写入，未直接修改存储或 reducer"
+  },
+  "art": [
+    {
+      "scene": "river-valley",
+      "fov": "62",
+      "loaded": "true",
+      "yaw": "1.4908"
+    },
+    {
+      "scene": "snow-pass",
+      "fov": "68",
+      "loaded": "true",
+      "yaw": "1.5708"
+    },
+    {
+      "scene": "grassland",
+      "fov": "68",
+      "loaded": "true",
+      "yaw": "1.5708"
+    }
+  ],
+  "aAuditedHead": "fa040fb9983450bec2eb066fb98c783be9bc41f2",
+  "hiddenPause": "未验证，用户暂不验收"
+}

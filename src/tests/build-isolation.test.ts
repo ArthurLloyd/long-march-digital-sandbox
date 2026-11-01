@@ -18,6 +18,9 @@ describe('真实 Vite 开发入口与生产隔离', () => {
     const server = await createServer({
       configFile: false,
       plugins: [contractWorkbenchPlugin()],
+      // This server only tests HTML middleware. Do not overwrite the real
+      // application's dependency cache while another dev server is running.
+      optimizeDeps: { noDiscovery: true, include: [] },
       server: { host: '127.0.0.1', port: 0 },
       logLevel: 'silent',
     });

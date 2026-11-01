@@ -185,7 +185,7 @@ describe('C2 真实 App、C1 与公开模块边界联动', () => {
     await user.click(
       screen.getByRole('button', { name: '工程：打开当前阶段事件' }),
     );
-    expect(screen.getByRole('button', { name: '重播体验' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '三维沉浸重播' })).toBeEnabled();
     app.unmount();
     render(
       <App input={input} modules={modules} completionStore={makeStore()} />,
@@ -195,7 +195,7 @@ describe('C2 真实 App、C1 与公开模块边界联动', () => {
     await user.click(
       screen.getByRole('button', { name: '工程：打开当前阶段事件' }),
     );
-    expect(screen.getByRole('button', { name: '重播体验' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '三维沉浸重播' })).toBeEnabled();
   });
   it('专题选择与空态势不弹体验，嵌套事件保存明确目标阶段', async () => {
     const user = userEvent.setup();
@@ -318,7 +318,7 @@ describe('C2 真实 App、C1 与公开模块边界联动', () => {
     await user.click(
       screen.getByRole('button', { name: '工程：打开当前阶段事件' }),
     );
-    expect(screen.getByRole('button', { name: '重播体验' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: '三维沉浸重播' })).toBeEnabled();
     const withdrawn = structuredClone(input);
     withdrawn.topics[0]!.releaseStatus = 'unpublished';
     app.rerender(

@@ -9,12 +9,14 @@ import { phaseTimeText } from './historical-phase-selectors';
 import '../../styles/historical-orchestration.css';
 
 export function PhaseTimeline({
+  candidateReview = false,
   clock,
   events,
   activeEventId,
   onSelectPhase,
   onSelectEvent,
 }: {
+  candidateReview?: boolean;
   clock: ReturnType<typeof useHistoricalPhase>;
   events: readonly HistoryEvent[];
   activeEventId: string | null;
@@ -47,7 +49,7 @@ export function PhaseTimeline({
               final
                 ? '已到专题末段，可使用重播专题'
                 : clock.phases.length < 2
-                  ? '至少两个已发布阶段才能播放'
+                  ? `至少两个${candidateReview ? '候选' : '已发布'}阶段才能播放`
                   : '按专题内部顺序播放'
             }
             onClick={clock.playing ? clock.pause : clock.play}
@@ -77,7 +79,7 @@ export function PhaseTimeline({
           <strong>历史阶段</strong>
           <span>
             {clock.phase
-              ? `${clock.index + 1} / ${clock.phases.length} 个已发布阶段`
+              ? `${clock.index + 1} / ${clock.phases.length} 个${candidateReview ? '候选' : '已发布'}阶段`
               : '史料核验中'}
           </span>
         </div>

@@ -2,7 +2,13 @@ name: CI
 
 on:
   pull_request:
-    branches: [main, feat/app-shell, feat/c1-experience-controller]
+    branches:
+      [
+        main,
+        feat/app-shell,
+        feat/c1-experience-controller,
+        fix/ci-history-import,
+      ]
   push:
     branches: [main]
 
