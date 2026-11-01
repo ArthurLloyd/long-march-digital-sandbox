@@ -1,0 +1,386 @@
+{
+  "baseline": "78c315ae92ba55b09ae12e2cad87fd281c4b8801",
+  "scriptVersion": "b-draft-1.1.0",
+  "release": "candidate-unpublished",
+  "note": "累计B变更；manifest自身不递归计算哈希。C建议补丁仅是docs文件，不覆盖C源码。",
+  "files": [
+    {
+      "path": "src/features/history/EquivalentExperience.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "065fd251004b70172cc835a0e0670a6c599ad8cc34c195477fa2dec20bb73812",
+      "bytes": 1250
+    },
+    {
+      "path": "src/features/history/HistoricalDetailPanel.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "7e103f0cf2c98e776ddf90ce58b490edf2285b874234248e5d02223f4285e528",
+      "bytes": 8097
+    },
+    {
+      "path": "src/features/history/HistoryAssetGallery.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "95685c793bad52def54813d4eb425ed15443d28b9ad04002ef262fc42e9f40a0",
+      "bytes": 2377
+    },
+    {
+      "path": "src/features/history/HistoryText.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "f9ed61e3b2a67b1fe8f3ac046cbc13a1468253be863e064adb8deffcf8618126",
+      "bytes": 433
+    },
+    {
+      "path": "src/features/history/README.md",
+      "action": "modify",
+      "original_sha256": "8cdd27a383d52fd62726bfd790dca666f39511390c986986852a44f0c1ffe4ac",
+      "sha256": "ebfa0b5274c4b17676686afb67e72028a41a9f59678a895c2f1fc0bc8e31670b",
+      "bytes": 2201
+    },
+    {
+      "path": "src/features/history/TeachingInteraction.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "653b971b0150702e77fa637a624c4e8cae237ab512da1ac61fec3f24a1fdab01",
+      "bytes": 11010
+    },
+    {
+      "path": "src/features/history/asset-selection.ts",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "820537076f0eda510f9164de5c631a0df79dc8c588da1bc4df1fe2935287ea33",
+      "bytes": 681
+    },
+    {
+      "path": "src/features/history/history.module.css",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "0fd9f1e9dd3830d0f90c026c177bf4158a4abf53a91b9d75c6a7e97ed8f76dbe",
+      "bytes": 2281
+    },
+    {
+      "path": "src/features/history/history.test.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "2ae715631e4888c9ad31411aaec8b02164ac4a92b32792082db99f24eb4fc12c",
+      "bytes": 9400
+    },
+    {
+      "path": "src/features/history/index.ts",
+      "action": "modify",
+      "original_sha256": "f5b89b624fa98ea09dcd88ebcf941ea88fd5cec9ee547d9eaa6ec89cfe39199d",
+      "sha256": "b13e5589d01e95c4dbcb139a2d3e307736d10050d5608c4b0db6d26bd0addba6",
+      "bytes": 246
+    },
+    {
+      "path": "src/features/history/interaction-state.ts",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "fce9fe33fcaf82609c2fdccbe219781d3130c3df54476aaf212bb44d42a1527d",
+      "bytes": 2998
+    },
+    {
+      "path": "src/features/history/review/ReviewPanel.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "58140164e982d777fe9bc6af19bbf5b31dfe3135209d516d923ec95978e4c8b0",
+      "bytes": 12580
+    },
+    {
+      "path": "src/features/history/review/index.html",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "278b48041a7f4db05d02bff8fde7d0c7daa43aa35f8633f51a0ce1e94dfdcd51",
+      "bytes": 391
+    },
+    {
+      "path": "src/features/history/review/main.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "303fdafa90ec474471e1e57e340709c85a28a510dda04f56e19ef0f2f200020b",
+      "bytes": 808
+    },
+    {
+      "path": "src/features/history/review/review.module.css",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "00a8585cee70707cba5b72abc3f1af37a5f259132b299fc6ca9609dea03751e3",
+      "bytes": 2754
+    },
+    {
+      "path": "src/features/history/review.test.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "9d677e7f6068e59c8492c92cc1ad1ec0313db5b6ce36d205a60d9525bac279c7",
+      "bytes": 7466
+    },
+    {
+      "path": "src/data/verified/dataset.json",
+      "action": "modify",
+      "original_sha256": "d6572e7d1a8c9f2e62527546b9dbe6fbf2d0dc29b0f1d1f10436c924cded6fa7",
+      "sha256": "2c45a680a291f0cee795c4388a448de0bd09dbef655a19748b4d05d40f48eb4b",
+      "bytes": 149569
+    },
+    {
+      "path": "docs/sources/B-ASSET-AND-SPATIAL-GAPS.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "be298d66b4b6bf1ee095c03f616627f96d1a774c8eec43fd50a9ea503b882959",
+      "bytes": 2375
+    },
+    {
+      "path": "docs/sources/B-SOURCE-REGISTER.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "da70fac21ffd0a7b60d06ec048bb8c0dba295f31bb60ee62be93e2369610df51",
+      "bytes": 15233
+    },
+    {
+      "path": "docs/history-review/B-CHECKS.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "f4f4d60b9cbf7155c068bd902d3d95f6f8ea5845a2612eed97c496643fffc5d0",
+      "bytes": 3830
+    },
+    {
+      "path": "docs/history-review/B-DELIVERY.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "422040bd4763fbb4052bf7f6d8c1d8262c3db9478e4c769977def2167732cbaa",
+      "bytes": 6501
+    },
+    {
+      "path": "docs/history-review/B-INSTALL.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "1cd2734e087888bfbd1f0c7f074cd9417d8fa497200c646480bf630538a5daf1",
+      "bytes": 2936
+    },
+    {
+      "path": "docs/history-review/B-PORTRAIT-ASSETS.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "3ec061c3f17c9c6d768af47a70f6491d7fec7135bd6b2154b5c4e69aa425d646",
+      "bytes": 3973
+    },
+    {
+      "path": "docs/history-review/B-SPATIAL-HANDOFF.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "f635b4aac9946c37c66008f7ea4808563b9bd4e21440f579e6f4728517516b63",
+      "bytes": 7624
+    },
+    {
+      "path": "docs/history-review/B-START-HERE.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "3dba54921df367d0af46d7cba1a0a65204deaa480c1dcae89dfa49cbec035420",
+      "bytes": 2613
+    },
+    {
+      "path": "docs/history-review/C-TEST-HANDOFF.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "cc6cc83037628c565b1751945776e04e253c967ec5315ea638cfeaf1a51d18ac",
+      "bytes": 1858
+    },
+    {
+      "path": "docs/history-review/gr-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "7d47a84f39463d0409f1dd782fe2fa76857608eee6f92e9139052a93d7545f13",
+      "bytes": 9403
+    },
+    {
+      "path": "docs/history-review/integration/C-v2-empty-state.patch",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "204ddd28cc72ff6055644b2bdc8f5e77618f7d2a219153f7fd66f0da5c3e8708",
+      "bytes": 839
+    },
+    {
+      "path": "docs/history-review/js-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "2bfb8776a8aad249e5132b1059da33f3735ce8d9a590571b37d180127fbea9d5",
+      "bytes": 8248
+    },
+    {
+      "path": "docs/history-review/ld-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "b536017b0f835b7bfa7f57763e17b8cc2595fae3a041df02d44fe4494522cd8e",
+      "bytes": 9438
+    },
+    {
+      "path": "docs/history-review/sd-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "03416306c9182736afc17494c86e2ee76b14b00ec61042d06356f6c0cc54495c",
+      "bytes": 8582
+    },
+    {
+      "path": "docs/history-review/sn-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "acf9fd6636c21fe2a9ba0e0432362fd6e8341bcbb24b908356b1c80cb7db4413",
+      "bytes": 8309
+    },
+    {
+      "path": "docs/history-review/zy-content-pack.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "92ade60851ac48390e72fb0fe033913461dd7a0d090e8c426bb388acf1b6b4b8",
+      "bytes": 12000
+    },
+    {
+      "path": "public/assets/archive/portraits/generation-prompts.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "fd9ffe0b8f94387b9fb03ab6887dc8dd561526d068766b2b2dbb52951314153e",
+      "bytes": 5512
+    },
+    {
+      "path": "public/assets/archive/portraits/liu-art.png",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "cef9225183e9734a15464da0557410e7b3af0cf3b1752cddd66fd4035d2015c5",
+      "bytes": 2819805
+    },
+    {
+      "path": "public/assets/archive/portraits/liu-art.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "3e21608a7dd14966ff150f3310feeb6588cbcbb257a13409c33e59e88be84c79",
+      "bytes": 988
+    },
+    {
+      "path": "public/assets/archive/portraits/liu-photo.jpg",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "8977a3ad096e499568d8adc7118db449f43b7d3f6d3003fc1dd8eb9557e577f4",
+      "bytes": 189312
+    },
+    {
+      "path": "public/assets/archive/portraits/liu-photo.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "45e849dcb81e50572c376b62031b99eb220fd10106e1a35c4ea30f455a28e3a0",
+      "bytes": 2711
+    },
+    {
+      "path": "public/assets/archive/portraits/mao-art.png",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "10b934e91732c056ce42cb8072d668dceec830edf4698023f6a20284bb215024",
+      "bytes": 2715759
+    },
+    {
+      "path": "public/assets/archive/portraits/mao-art.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "0fb63804e120603597eb7d6b47ca5a15b74107b462db90a8d8a073290969a629",
+      "bytes": 1006
+    },
+    {
+      "path": "public/assets/archive/portraits/mao-photo.jpg",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "102681763dd631bf217665de2c19120ba4a5ec4a5c874873c1493668604a3af7",
+      "bytes": 180305
+    },
+    {
+      "path": "public/assets/archive/portraits/mao-photo.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "c39dff6f36a9298719abfecfd830e14c0d20687deafd509c36d6f23af711fcdf",
+      "bytes": 3496
+    },
+    {
+      "path": "public/assets/archive/portraits/yang-art.png",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "2f5355e4f41b549eb5169f6748fa79bbda9f386280619ca421b579c2d5be3551",
+      "bytes": 3011977
+    },
+    {
+      "path": "public/assets/archive/portraits/yang-art.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "c63e10b43ec8af13e256a2123cb66befb40ec968c902c5afea5b40d7fef5c515",
+      "bytes": 1025
+    },
+    {
+      "path": "public/assets/archive/portraits/yang-photo.jpg",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "8ff32be086fb2115868d5768acef500127a37657d84ecdc32d813ec4b722a78a",
+      "bytes": 126148
+    },
+    {
+      "path": "public/assets/archive/portraits/yang-photo.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "afac7fd2ac3d6684c690a6bf61eb451d12b0b0f0864a9942ba542fc697bc26ce",
+      "bytes": 3113
+    },
+    {
+      "path": "public/assets/archive/portraits/zhou-art.png",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "6bf504f7d26c69f1bdea242615494dd508dc5388e3f66ff5d8d0d9cad57026f2",
+      "bytes": 2812371
+    },
+    {
+      "path": "public/assets/archive/portraits/zhou-art.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "4880d2e5dbf285a8516562355e77cd33615d3543fbbb351392796f0675b1eb1c",
+      "bytes": 981
+    },
+    {
+      "path": "public/assets/archive/portraits/zhou-photo.jpg",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "4648928aea4392b395cee2fd5c2fd34e404de4a2bf296b03ac3ae21a4d4382a2",
+      "bytes": 20381
+    },
+    {
+      "path": "public/assets/archive/portraits/zhou-photo.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "bb5f071f647eea39b8a53c548fcf46dab9ffcab27908e7e559942ea13398ab88",
+      "bytes": 2827
+    },
+    {
+      "path": "public/assets/archive/portraits/zhu-art.png",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "f40ae72303fdc72a8634777545a50b084b75afd58f836489a1a5b0988b19fbff",
+      "bytes": 2910532
+    },
+    {
+      "path": "public/assets/archive/portraits/zhu-art.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "a26ce98c6e631d85215a8aa5f95ff2d9ad8afb7d0bce8e97b1ff24faa43249ca",
+      "bytes": 981
+    },
+    {
+      "path": "public/assets/archive/portraits/zhu-photo.jpg",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "2336080b34b689af37bb0c0183665981378c36125d209157f7c73fc096478c97",
+      "bytes": 57767
+    },
+    {
+      "path": "public/assets/archive/portraits/zhu-photo.source.json",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "ef87a2ccda35a304510ef2e929cf4af12eaf8f1f6f355345d66cc49ca9b93135",
+      "bytes": 2720
+    }
+  ]
+}

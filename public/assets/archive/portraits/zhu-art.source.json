@@ -1,0 +1,16 @@
+{
+  "personId": "person-zhu",
+  "referenceAssetId": "asset-zhu-photo",
+  "referencePhotoPath": "/assets/archive/portraits/zhu-photo.jpg",
+  "referencePhotoSHA256": "2336080b34b689af37bb0c0183665981378c36125d209157f7c73fc096478c97",
+  "referencePhotoSource": "https://commons.wikimedia.org/wiki/File:Zhu_De_(1922).jpg",
+  "createdAt": "2026-11-01",
+  "creator": "OpenAI 图像生成工具；B 内容制作",
+  "method": "以本目录真实历史照片为唯一图像参考，身份保持与插画风格转绘；杨成武使用原合影左起第三人；未进行二次图像编辑。",
+  "promptFile": "generation-prompts.json",
+  "promptKey": "zhu",
+  "sha256": "f40ae72303fdc72a8634777545a50b084b75afd58f836489a1a5b0988b19fbff",
+  "representation": "ai_recreation",
+  "rightsStatus": "cleared",
+  "limitations": "不是历史照片，不是照片修复，不代表1935年的年龄、服装或事件现场。杨成武由合影提取的视觉身份需人工对照原图图注。"
+}
