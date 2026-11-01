@@ -18,6 +18,7 @@ export interface CompletionSnapshot {
 }
 type Backend = Pick<Storage, 'getItem' | 'setItem'>;
 interface Options {
+  key?: string;
   storage: () => Backend | null;
   events?: Pick<Window, 'addEventListener' | 'removeEventListener'>;
   now?: () => number;
@@ -39,6 +40,9 @@ function mergeRecords(...groups: readonly (readonly CompletionRecord[])[]) {
   );
 }
 export class CompletionStore {
+  private get key() {
+    return this.options.key ?? COMPLETION_STORAGE_KEY;
+  }
   private snapshot: CompletionSnapshot;
   private listeners = new Set<() => void>();
   constructor(private options: Options) {
@@ -48,10 +52,21 @@ export class CompletionStore {
     try {
       const backend = this.options.storage();
       if (!backend) throw new Error('storage unavailable');
-      const value = backend.getItem(COMPLETION_STORAGE_KEY);
+      const value = backend.getItem(this.key);
       if (value === null)
         return { records: [], generation: '0', persistent: true, notice: null };
-      const envelope = envelopeSchema.safeParse(JSON.parse(value));
+      let json: unknown;
+      try {
+        json = JSON.parse(value);
+      } catch {
+        return {
+          records: [],
+          generation: '0',
+          persistent: true,
+          notice: '体验记录 JSON 已损坏，已安全忽略。',
+        };
+      }
+      const envelope = envelopeSchema.safeParse(json);
       if (!envelope.success)
         return {
           records: [],
@@ -97,12 +112,15 @@ export class CompletionStore {
     this.snapshot = next;
     for (const listener of this.listeners) listener();
   }
-  private persist(next: CompletionSnapshot) {
+  private persist(
+    next: CompletionSnapshot,
+    failureNotice = '本次体验已完成，但浏览器无法保存长期进度。',
+  ) {
     try {
       const backend = this.options.storage();
       if (!backend) throw new Error('storage unavailable');
       backend.setItem(
-        COMPLETION_STORAGE_KEY,
+        this.key,
         JSON.stringify({
           schemaVersion: 1,
           generation: next.generation,
@@ -114,7 +132,7 @@ export class CompletionStore {
       this.publish({
         ...next,
         persistent: false,
-        notice: '本次体验已完成，但浏览器无法保存长期进度。',
+        notice: failureNotice,
       });
     }
   }
@@ -145,15 +163,18 @@ export class CompletionStore {
   }
   clear() {
     this.publish(this.merged(this.read()));
-    this.persist({
-      records: [],
-      generation: this.nextGeneration(),
-      persistent: true,
-      notice: null,
-    });
+    this.persist(
+      {
+        records: [],
+        generation: this.nextGeneration(),
+        persistent: true,
+        notice: null,
+      },
+      '本次会话已清除记录，但浏览器拒绝更新长期记录，刷新后可能恢复。',
+    );
   }
   private onStorage = (event: StorageEvent) => {
-    if (event.key !== COMPLETION_STORAGE_KEY && event.key !== null) return;
+    if (event.key !== this.key && event.key !== null) return;
     if (event.storageArea) {
       try {
         if (event.storageArea !== this.options.storage()) return;
@@ -162,6 +183,14 @@ export class CompletionStore {
       }
     }
     if (event.newValue === null) {
+      const current = this.read();
+      if (
+        current.persistent &&
+        (current.generation !== '0' || current.records.length > 0)
+      ) {
+        this.refresh();
+        return;
+      }
       this.publish({
         ...this.read(),
         records: [],

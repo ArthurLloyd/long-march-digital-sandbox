@@ -179,6 +179,7 @@ export function ContractWorkbench() {
   return (
     <main>
       <h1>C0 隔离接口工作台</h1>
+      <a href="/__dev/contracts?flow=c1">打开 C1 调度与记忆工作台</a>
       <p role="note">
         <strong>{DEV_ONLY_MARKER}：所有条目均为非史实工程样本。</strong>
         本页不发布数据、不保存完成记录、不代替真实场景验收。

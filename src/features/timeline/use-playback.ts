@@ -6,9 +6,12 @@ type Action =
   | { type: 'select'; index: number }
   | { type: 'toggle' }
   | { type: 'tick'; count: number }
-  | { type: 'close' };
+  | { type: 'close' }
+  | { type: 'pause' };
+// Explicit pause is idempotent; it never clears selection or starts playback.
 
 function reducer(state: State, action: Action): State {
+  if (action.type === 'pause') return { ...state, playing: false };
   if (action.type === 'select')
     return { index: action.index, playing: false, closed: false };
   if (action.type === 'close')
@@ -30,6 +33,7 @@ export function usePlayback(events: readonly HistoryEvent[]) {
   const index = Math.max(0, Math.min(state.index, events.length - 1));
   const playing = state.playing && events.length > 1;
   const close = useCallback(() => dispatch({ type: 'close' }), []);
+  const pause = useCallback(() => dispatch({ type: 'pause' }), []);
   useEffect(() => {
     if (!playing) return;
     const interval = window.setInterval(
@@ -62,5 +66,6 @@ export function usePlayback(events: readonly HistoryEvent[]) {
       }
     },
     close,
+    pause,
   };
 }

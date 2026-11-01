@@ -15,6 +15,39 @@ import {
 import { simulatePublishedSample } from './fixtures/c1-sample';
 
 describe('C1 运行顺序与回调防护', () => {
+  it('重新开始产生的新实例拒绝上一次实际运行的回调', () => {
+    const old = startState();
+    const next = reduce(introState(), {
+      type: 'start',
+      runId: 'new-run',
+      mode: '3d',
+    });
+    expect(reduce(next, { type: 'ready', report: old.run! })).toBe(next);
+    expect(
+      reduce(next, {
+        type: 'terminal',
+        report: { ...old.run!, segmentId: 'fixture-s5' },
+      }),
+    ).toBe(next);
+  });
+  it('已暂停时取消退出仍能继续；确认退出期间 ready 不会丢失或自动播放', () => {
+    const paused = reduce(startState(), { type: 'pause' });
+    const back = reduce(reduce(paused, { type: 'request_exit' }), {
+      type: 'cancel_exit',
+    });
+    expect(reduce(back, { type: 'resume' }).status).toBe('playing');
+    const loading = reduce(introState(), {
+      type: 'start',
+      mode: '3d',
+      runId: 'loading-test',
+    });
+    let confirm = reduce(loading, { type: 'request_exit' });
+    confirm = reduce(confirm, { type: 'ready', report: loading.run! });
+    expect(confirm.status).toBe('exit_confirm');
+    const returned = reduce(confirm, { type: 'cancel_exit' });
+    expect(returned.status).toBe('paused');
+    expect(reduce(returned, { type: 'resume' }).status).toBe('playing');
+  });
   it.each(EXPERIENCE_IDS)('通用引擎支持 %s，终点仍须主动完成', (id) => {
     const state = reachTerminal(startState('3d', simulatePublishedSample(id)));
     expect(state.status).toBe('ready_to_complete');

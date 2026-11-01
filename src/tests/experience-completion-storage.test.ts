@@ -24,6 +24,27 @@ const make = () =>
   new CompletionStore({ storage: () => localStorage, events: window });
 beforeEach(() => localStorage.clear());
 describe('C1 版本化浏览器记忆', () => {
+  it('迟到的删除事件不能抹掉当前磁盘的新完成记录；开发键与正式键隔离', () => {
+    const store = make();
+    const off = store.subscribe(vi.fn());
+    store.save(record());
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: COMPLETION_STORAGE_KEY,
+        newValue: null,
+      }),
+    );
+    expect(store.getSnapshot().records).toHaveLength(1);
+    const dev = new CompletionStore({
+      key: 'development-only',
+      storage: () => localStorage,
+    });
+    dev.save(record(0));
+    expect(make().getSnapshot().records[0]?.experienceId).toBe(
+      record().experienceId,
+    );
+    off();
+  });
   it('六个体验独立持久化，刷新读取，不存全文', () => {
     const store = make();
     EXPERIENCE_IDS.forEach((_, index) => store.save(record(index)));

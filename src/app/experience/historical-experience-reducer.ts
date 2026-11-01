@@ -10,6 +10,8 @@ import {
   type InteractionId,
   type RendererRun,
   type SegmentReached,
+  type HistoricalDetail,
+  type SourceReference,
 } from '../../shared/contracts';
 import type {
   ExperienceBundle,
@@ -61,6 +63,7 @@ export interface HistoricalExperienceState {
   context: ExplorationContext | null;
   error: ExperienceError | null;
   completedRecord: CompletionRecord | null;
+  supplement: { detail: HistoricalDetail } | { source: SourceReference } | null;
 }
 export const initialHistoricalExperienceState: HistoricalExperienceState = {
   status: 'idle',
@@ -70,8 +73,15 @@ export const initialHistoricalExperienceState: HistoricalExperienceState = {
   context: null,
   error: null,
   completedRecord: null,
+  supplement: null,
 };
 export type HistoricalExperienceAction =
+  | {
+      type: 'supplement';
+      value: NonNullable<HistoricalExperienceState['supplement']>;
+    }
+  | { type: 'close_supplement' }
+  | { type: 'renderer_exit'; report: RendererRun }
   | {
       type: 'open';
       selection: HistoricalObjectSelection;
@@ -179,6 +189,11 @@ export function historicalExperienceReducer(
   state: HistoricalExperienceState,
   action: HistoricalExperienceAction,
 ): HistoricalExperienceState {
+  if (action.type === 'supplement') {
+    const paused = historicalExperienceReducer(state, { type: 'pause' });
+    return { ...paused, supplement: action.value };
+  }
+  if (action.type === 'close_supplement') return { ...state, supplement: null };
   if (action.type === 'open')
     return {
       ...initialHistoricalExperienceState,
@@ -197,7 +212,13 @@ export function historicalExperienceReducer(
   if (action.type === 'clear_selection')
     return { ...initialHistoricalExperienceState };
   if (action.type === 'exit' || action.type === 'close')
-    return { ...state, status: 'idle', run: null, error: null };
+    return {
+      ...state,
+      status: 'idle',
+      run: null,
+      error: null,
+      supplement: null,
+    };
   if (action.type === 'start') {
     if (
       !['intro', 'reading', 'error'].includes(state.status) ||
@@ -240,6 +261,19 @@ export function historicalExperienceReducer(
   if ('runId' in action && action.runId !== run.runId) return state;
   switch (action.type) {
     case 'ready':
+      if (
+        (state.status === 'exit_confirm' || state.status === 'paused') &&
+        !run.ready
+      )
+        return {
+          ...state,
+          run: {
+            ...run,
+            ready: true,
+            resumeStatus:
+              run.resumeStatus === 'loading' ? 'playing' : run.resumeStatus,
+          },
+        };
       return state.status === 'loading'
         ? {
             ...state,
@@ -296,6 +330,11 @@ export function historicalExperienceReducer(
         : { ...state, status: 'error', error: action.report.error };
     case 'bookmark': {
       const result = cameraBookmarkSchema.safeParse(action.report.bookmark);
+      if (
+        result.success &&
+        JSON.stringify(result.data) === JSON.stringify(run.bookmark)
+      )
+        return state;
       return result.success
         ? { ...state, run: { ...run, bookmark: result.data } }
         : state;
@@ -394,18 +433,29 @@ export function historicalExperienceReducer(
           }
         : state;
     case 'request_exit':
+    case 'renderer_exit':
       return state.status === 'exit_confirm'
         ? state
         : {
             ...state,
             status: 'exit_confirm',
-            run: { ...run, suspended: true, resumeStatus: state.status },
+            run: {
+              ...run,
+              suspended: true,
+              resumeStatus:
+                state.status === 'paused' ? run.resumeStatus : state.status,
+            },
           };
     case 'cancel_exit':
       return state.status === 'exit_confirm'
         ? {
             ...state,
-            status: run.ready ? 'paused' : 'loading',
+            status:
+              run.resumeStatus === 'error'
+                ? 'error'
+                : run.ready
+                  ? 'paused'
+                  : 'loading',
             run: { ...run, suspended: true },
           }
         : state;

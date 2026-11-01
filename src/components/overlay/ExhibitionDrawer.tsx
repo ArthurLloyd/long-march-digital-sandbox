@@ -2,6 +2,7 @@ import {
   useEffect,
   useId,
   useRef,
+  useLayoutEffect,
   type ReactNode,
   type RefObject,
 } from 'react';
@@ -11,15 +12,21 @@ export function ExhibitionDrawer({
   children,
   onClose,
   returnFocusRef,
+  className = '',
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   returnFocusRef: RefObject<HTMLElement | null>;
+  className?: string;
 }) {
   const titleId = useId();
   const panelRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const closeRef = useRef(onClose);
+  useLayoutEffect(() => {
+    closeRef.current = onClose;
+  }, [onClose]);
   useEffect(() => {
     const trigger = returnFocusRef.current;
     const previousOverflow = document.body.style.overflow;
@@ -28,7 +35,7 @@ export function ExhibitionDrawer({
     function onKey(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        closeRef.current();
       }
       if (event.key !== 'Tab') return;
       const focusable = [
@@ -64,7 +71,7 @@ export function ExhibitionDrawer({
       if (trigger instanceof HTMLElement && trigger.isConnected)
         trigger.focus();
     };
-  }, [onClose, returnFocusRef]);
+  }, [returnFocusRef]);
   return (
     <div className="drawer-layer">
       <button
@@ -74,7 +81,7 @@ export function ExhibitionDrawer({
         onClick={onClose}
       />
       <section
-        className="exhibition-drawer"
+        className={`exhibition-drawer ${className}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
