@@ -280,6 +280,17 @@ export function App({
               <span className="status-dot" />
               <span>{playback.activeEvent?.title ?? '长征历史总览'}</span>
               <span className="preview-label">开发预览</span>
+              {historical.state.selection && (
+                <button
+                  className="clear-selection"
+                  onClick={() => {
+                    historical.clearSelection();
+                    playback.close();
+                  }}
+                >
+                  取消当前选择
+                </button>
+              )}
             </div>
             <div className="exploration-tools">
               <button className="scene-tool" onClick={() => open('chapters')}>
@@ -324,17 +335,6 @@ export function App({
               }}
               onSelect={selectEvent}
             />
-            {historical.state.selection && (
-              <button
-                className="text-button"
-                onClick={() => {
-                  historical.clearSelection();
-                  playback.close();
-                }}
-              >
-                取消当前选择
-              </button>
-            )}
           </main>
         )}
       </div>

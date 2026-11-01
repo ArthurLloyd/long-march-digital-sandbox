@@ -87,6 +87,9 @@ async function finishRenderer(user: ReturnType<typeof userEvent.setup>) {
       );
       await user.click(screen.getByRole('button', { name: '确认已阅读解释' }));
       await user.click(screen.getByRole('button', { name: '继续主线' }));
+      expect(screen.getByRole('dialog')).toContainElement(
+        document.activeElement as HTMLElement,
+      );
     }
   }
   await user.click(screen.getByRole('button', { name: '工程：报告终点' }));
@@ -225,12 +228,16 @@ describe('C1 完整应用闭环（明确工程适配器）', () => {
     );
     await openEvent(user);
     await user.click(screen.getByRole('button', { name: '开始体验' }));
+    expect(screen.getByRole('dialog')).toContainElement(
+      document.activeElement as HTMLElement,
+    );
     await finishRenderer(user);
     expect(store.getSnapshot().records).toHaveLength(0);
     await user.click(
       screen.getByRole('button', { name: '完成体验，阅读资料' }),
     );
     expect(store.getSnapshot().records).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: '事件资料' })).toHaveFocus();
     expect(
       screen.getByRole('heading', { name: '工程正文（非史实）' }),
     ).toBeInTheDocument();

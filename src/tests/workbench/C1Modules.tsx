@@ -150,7 +150,7 @@ export function EngineeringMap(props: LongMarchSceneV2Props) {
   const { onSceneReady } = props;
   useEffect(() => onSceneReady(), [onSceneReady]);
   return (
-    <section aria-label="工程地图探针">
+    <section className="c1-map-probe" aria-label="工程地图探针">
       <p>工程控件，不代表真实地形或历史位置。</p>
       <button
         className="outlined-button"

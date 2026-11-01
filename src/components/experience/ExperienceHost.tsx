@@ -34,10 +34,18 @@ export function ExperienceHost({
     ? run?.responses[interaction.interactionId]
     : null;
   const bodyHeading = useRef<HTMLHeadingElement>(null);
+  const content = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const playCommand = c.rendererProps?.command.playback;
   useEffect(() => {
-    bodyHeading.current?.focus();
+    const dialog = content.current?.closest('[role="dialog"]');
+    if (bodyHeading.current && !bodyHeading.current.closest('[hidden]')) {
+      bodyHeading.current.focus();
+    } else if (dialog && !dialog.contains(document.activeElement)) {
+      // Starting, continuing, or completing can remove the focused button.
+      // Keep focus inside the existing drawer without resetting live controls.
+      dialog.querySelector<HTMLElement>('h2')?.focus();
+    }
   }, [state.status, run?.activeInteractionId]);
   useEffect(() => {
     if (playCommand !== 'playing')
@@ -109,7 +117,7 @@ export function ExperienceHost({
           </button>
         </section>
       )}
-      <div hidden={state.supplement !== null}>
+      <div ref={content} hidden={state.supplement !== null}>
         {state.status === 'unavailable' && (
           <section role="alert">
             <h3 ref={bodyHeading} tabIndex={-1}>

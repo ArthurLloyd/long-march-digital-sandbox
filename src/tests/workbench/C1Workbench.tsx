@@ -6,6 +6,7 @@ import { simulatePublishedSample } from '../fixtures/c1-sample';
 import { engineeringModules } from './c1-modules';
 import '../../styles/global.css';
 import '../../styles/ornaments.css';
+import './c1-workbench.css';
 
 export function C1Workbench() {
   const [id, setId] = useState<(typeof EXPERIENCE_IDS)[number]>(

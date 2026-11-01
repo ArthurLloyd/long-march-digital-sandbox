@@ -88,6 +88,6 @@ C0 过滤后撤回的 manifest 会消失，C1 因而保留经过结构验证的�
 
 运行 `npm run dev:contracts`，在终端实际端口打开 `/__dev/contracts?flow=c1`。C0 工作台也有链接。C1 使用真实 App/控制器及明确标注的工程适配器，审核结构仅在测试内存模拟，不代表成品视频或真人审核。
 
-开发键为 `long-march.development.c1-completion.v1`，不会解锁正式展馆。生产模块隔离插件保持开启。桌面手工步骤及工具错误见 [验收记录](phase-c1-desktop-qa.md)。
+开发键为 `long-march.development.c1-completion.v1`，不会解锁正式展馆。生产模块隔离插件保持开启。首次/完成/刷新/退出的 Chrome 实测、三种桌面尺寸、截图及后续专项见 [验收记录](phase-c1-desktop-qa.md)，其中保留初轮连接错误供追溯。
 
 C0 合并后由 C 重新检查 C1 base。若 squash 造成重复 C0 差异，用新分支选择性 cherry-pick C1 提交，不强推共享分支。A/B 只在各自分支提交本人工作并 merge 最新 origin/main；C1 仍为 Draft 时不宣称已进入 main。不得自动私信成员。

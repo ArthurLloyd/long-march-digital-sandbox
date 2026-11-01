@@ -1,0 +1,12 @@
+/* Keep synthetic map controls below the real navigation and selection row. */
+.c1-map-probe {
+  padding: 200px clamp(24px, 4vw, 80px) 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.c1-map-probe p,
+.c1-map-probe output {
+  font-size: 14px;
+}

@@ -1,6 +1,6 @@
 # Phase C1：沉浸体验调度与本地完成状态开发报告
 
-日期：2026-11-01。C1 调度与浏览器记忆已实现并通过本地完整检查，已创建独立 [Draft PR #6](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/6)。正式三维场景、历史内容和真实桌面视觉验收尚未完成，本报告不将工程探针称为六个历史专题成品。
+日期：2026-11-01。C1 调度与浏览器记忆已实现并通过本地完整检查，已创建独立 [Draft PR #6](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/6)。后续 Chrome 验收已跑通首次体验、完成解锁、刷新记忆及退出返回，并修复地图控件遮挡、取消选择定位和状态切换焦点丢失。正式三维场景、历史内容与媒体/GPU 性能仍待 A/B，本报告不将工程探针称为六个历史专题成品。
 
 ## 1. Git 状态
 
@@ -8,6 +8,7 @@
 - C0 PR #4 在开工和创建 C1 PR 前均通过 GitHub API 核对为 open、未合并，head 仍是 6f384d2b1765a7f4b8d6a7c38743cdf263ce8799；未向它追加 C1 提交。
 - C1 [PR #6](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/6) 是 Draft Stacked PR，base feat/app-shell，head feat/c1-experience-controller，差异只含 C1。
 - 代码、测试与接线文档基线为 5fb86bc0f9f27b5d147da402f81ce01192d33f79，已成功推送；报告自身随后单独提交，最终 head 见 PR 及交付消息。
+- 后续浏览器验收修复与截图在同一 C1 分支追加提交，本轮 lint/typecheck/format/data/build 及 187 项测试再次通过。沙箱 HTTP 测试 EACCES 后在宿主机重跑同一完整套件通过，未跳过用例；最新提交和 CI 见 PR #6。
 - main 与 PR #4 均未自动合并/改写；没有强推、reset、clean、删除或覆盖其他成员修改。阶段 A/B/C/D/E/F 分批提交并推送。
 
 | 提交    | 阶段                                |
@@ -58,7 +59,9 @@
 | src/tests/workbench/main.tsx                        | 按开发 query 独立加载 C0/C1 页面和样式                                    |
 | docs/architecture/phase-c1-design.md                | 实施前方案与兼容取舍                                                      |
 | docs/architecture/c1-integration-guide.md           | A/B 实际出口、回调顺序、联调与同步说明                                    |
-| docs/architecture/phase-c1-desktop-qa.md            | 浏览器错误、三种尺寸待验和人工步骤                                        |
+| src/tests/workbench/c1-workbench.css                | 仅开发工作台加载的工程地图控件布局                                        |
+| docs/architecture/evidence/c1/                      | 实际 Chrome 截图与三种视口 DOM 宽度测量                                   |
+| docs/architecture/phase-c1-desktop-qa.md            | 四条主流程、三种桌面尺寸、修复和证据边界，保留初轮连接错误                |
 | docs/architecture/phase-c1-report.md                | 本报告                                                                    |
 | docs/architecture/overview.md                       | C1 数据流及与旧阶段的边界                                                 |
 | docs/interface-contract.md                          | 运行补充及关闭资料新语义，未改变 C0 schema                                |
@@ -143,7 +146,7 @@ getPublishedDatasetV2 是所有显示内容及开放资格的来源。为防撤�
 
 旧四项资料集成测试保留，输入改为测试内存的合成发布结构，关闭断言按明确的 C1 产品要求改为保留选中；没有删除旧测试、关闭校验或将测试签署写入正式数据。
 
-真实浏览器未通过连接：Chrome 新标签 net::ERR_CONNECTION_TIMED_OUT，已有标签 Debugger is not attached；授权终端访问同服务两地址也超时。没有绕过策略。1920×1080、1440×900、1366×768 均待人工验收，详见 [桌面记录](phase-c1-desktop-qa.md)。jsdom 和临时 Vite HTTP 通过不称为真实浏览器/画质/GPU 验收。
+初轮 Chrome 连接失败保留在 [桌面记录](phase-c1-desktop-qa.md)。随后将仅 loopback 的 Vite 服务启动于宿主机，HTTP 与真实 Chrome 均成功。四条主流程及常规/等价两条完成路径实际跑通；1920×1080、1440×900、1366×768 各有对应状态截图、DOM 宽度测量，无所测状态的水平溢出。修复工程地图按钮被导航覆盖、取消选择按钮定位、开始/继续/完成丢失焦点；完整流程测试增加焦点断言，修复后在浏览器再完整重跑。9 张截图和 JSON 记录已保存，浏览器临时尺寸已恢复。此结论不覆盖正式历史内容、真实 WebGL、Web Audio/GPU、所有长文本或设备性能。
 
 ## 10. A/B 联调准备
 
@@ -157,6 +160,6 @@ getPublishedDatasetV2 是所有显示内容及开放资格的来源。为防撤�
 
 已实现并通过自动检查：统一路由、实例状态、五类响应、完成条件、存储、恢复、等价调度、当前发布保护及独立 PR。
 
-仅通过工程模拟：A 渲染回调、B 互动/阅读回调、完整 App 连接。待 A/B：六个真实三维场景、剧本、正文/等价内容、热点与真实操作 UI、媒体/GPU 清理。待真人：史实、空间、素材使用和双人复核。待人工浏览器：三种桌面尺寸、视觉/媒体/性能。
+仅通过工程模拟：A 渲染回调、B 互动/阅读回调、完整 App 连接；C1 四条主流程已有真实 Chrome 证据。待 A/B：六个真实三维场景、剧本、正文/等价内容、热点与真实操作 UI、媒体/GPU 清理。待真人：史实、空间、素材使用和双人复核。待专项：真实媒体/性能、长正文及其余浏览器故障/偏好场景，具体边界见桌面记录。
 
 没有改写历史、补路线/坐标、代签人类审核；未做手机精修、首页重做、应用封装、付费 AI、账号或云同步。本轮停止于 C1，不自动开展 C2/C3。C0 合并后先安全调整 C1 base，再由用户决定正式集成。

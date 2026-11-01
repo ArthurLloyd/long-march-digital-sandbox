@@ -1,3 +1,13 @@
+.exploration-topic {
+  flex-wrap: wrap;
+  max-width: calc(100% - 48px);
+}
+.clear-selection {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
 .exhibition-drawer.experience-drawer {
   width: min(1060px, 94vw);
 }
