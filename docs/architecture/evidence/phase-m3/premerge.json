@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-01",
+  "codeCommit": "0b092d0da137b6add6cf2320056f4fff6499e17f",
+  "baseMain": "ef96d81555cae8a4b3137c5781e1de33f4cdf0d0",
+  "a0Head": "918b79225df6a0477081154014136de9ac20bec9",
+  "environment": "Windows / Edge / Vite production preview 127.0.0.1:4173",
+  "viewport": { "innerWidth": 1912, "innerHeight": 994, "overrideSet": false },
+  "captures": [
+    {
+      "file": "0b092d0-01-premerge-scene.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994
+    },
+    {
+      "file": "0b092d0-02-premerge-top.jpg",
+      "imageWidth": 1912,
+      "imageHeight": 994
+    }
+  ],
+  "observations": {
+    "explicitEntryConfirmation": true,
+    "actualProceduralArtworkRendered": true,
+    "cameraTopChangedView": true,
+    "canvasCountBeforeExit": 1,
+    "canvasCountOnHome": 0,
+    "canvasCountAfterReentry": 1,
+    "sceneBusyAfterReentry": "false",
+    "pageErrorLogs": [],
+    "formalDataset": "empty; no historical nodes or routes fabricated"
+  },
+  "checks": {
+    "testFiles": 25,
+    "testsPassed": 232,
+    "lint": "passed",
+    "typecheck": "passed",
+    "formatCheck": "passed",
+    "validateData": "passed",
+    "build": "passed with existing scene chunk warning",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "Pre-merge verification of the new integration branch, not merged main.",
+    "No native-window control, hidden-page acceptance, FPS benchmark or long-term GPU memory certification was attempted.",
+    "The preview tab was closed and loopback preview process stopped before further npm ci operations."
+  ]
+}
