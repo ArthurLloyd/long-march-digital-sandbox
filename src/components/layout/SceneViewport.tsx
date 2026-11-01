@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import type { LongMarchSceneProps, SceneError } from '../../shared/contracts';
 import { HISTORY_EMPTY_MESSAGE } from '../../shared/constants/messages';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
@@ -13,8 +13,15 @@ interface Props extends LongMarchSceneProps {
   error: SceneError | null;
   onRetry: () => void;
   ready: boolean;
+  renderScene?: (props: LongMarchSceneProps) => ReactNode;
 }
-export function SceneViewport({ error, onRetry, ready, ...sceneProps }: Props) {
+export function SceneViewport({
+  error,
+  onRetry,
+  ready,
+  renderScene,
+  ...sceneProps
+}: Props) {
   const { onSceneError } = sceneProps;
   useEffect(() => {
     if (ready || error) return;
@@ -77,7 +84,11 @@ export function SceneViewport({ error, onRetry, ready, ...sceneProps }: Props) {
                 </div>
               }
             >
-              <LongMarchScene {...sceneProps} />
+              {renderScene ? (
+                renderScene(sceneProps)
+              ) : (
+                <LongMarchScene {...sceneProps} />
+              )}
             </Suspense>
           </ErrorBoundary>
         </div>

@@ -1,10 +1,20 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ContractWorkbench } from './ContractWorkbench';
-import './workbench.css';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ContractWorkbench />
-  </StrictMode>,
-);
+const root = createRoot(document.getElementById('root')!);
+if (new URLSearchParams(window.location.search).get('flow') === 'c1') {
+  const { C1Workbench } = await import('./C1Workbench');
+  root.render(
+    <StrictMode>
+      <C1Workbench />
+    </StrictMode>,
+  );
+} else {
+  const { ContractWorkbench } = await import('./ContractWorkbench');
+  await import('./workbench.css');
+  root.render(
+    <StrictMode>
+      <ContractWorkbench />
+    </StrictMode>,
+  );
+}
