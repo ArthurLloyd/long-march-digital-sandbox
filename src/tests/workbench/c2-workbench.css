@@ -1,0 +1,38 @@
+.c2-workbench-banner {
+  padding: 16px 32px;
+  background: #351820;
+}
+.c2-workbench-banner p {
+  margin-block: 12px;
+}
+.c2-map-probe {
+  position: absolute;
+  top: 275px;
+  left: clamp(24px, 4vw, 80px);
+  width: min(620px, 52vw) !important;
+  height: auto !important;
+  max-height: calc(100% - 390px);
+  overflow-y: auto;
+  font-size: 14px;
+}
+.c2-probe-actions {
+  display: flex;
+  gap: 12px;
+  margin-block: 8px;
+}
+.c2-probe-actions button {
+  padding: 10px 12px;
+}
+.c2-map-probe output {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.c2-map-probe-empty {
+  top: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  bottom: 16px;
+  width: min(320px, 28vw) !important;
+  max-height: 128px;
+}

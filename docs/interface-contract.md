@@ -1,5 +1,13 @@
 # 公共接口 v1 / v2（Phase 3 · C0）
 
+## C2 运行补充
+
+C2 沿用 C0 schema 和模块 props，不新增全局历史顺序。C 的 useHistoricalPhase 持有唯一 topicId/phaseId 和专题内宏观播放；来自发布视图的 Topic.phaseIds 与 HistoricalPhase.sequence 必须一致。专题 displayOrder 只用于目录和默认浏览入口，不用于跨专题自动播放；展示间隔不代表历史时长。
+
+App 传给 LongMarchSceneV2 的 dataset 为完整发布视图的当前阶段空间投影：events、places、people、forceSnapshots/forceTracks、routes 按当前阶段的显式关联筛选；不包含无坐标地图点，不推算缺失几何。topic/phase 等非空间元数据和公开来源保留，投影不保证整张引用图闭合，不能将它再作正式 JSON 校验或写回。完整目录及 C1 路由仍使用原始发布视图。A 依据 displayMode 清理旧图层，只绘制已有输入；没有 v2 出口时保持旧场景与资料可用，不假造部队图层。
+
+C1 内部上下文兼容增加可选 topicId；所有入口继续走同一发布/完成门槛。阶段或专题选择只改变探索；自动推进不调用体验。退出/完成恢复合法 topic/phase/书签，保持暂停。候选数据只增加“存在阶段声明”的拒绝降级标记，不展示候选内容或赋予发布资格；阶段撤回不能重新启用旧事件自动时钟。无阶段的旧数据继续走 usePlayback，其新增可选 enabled 控制默认 true，既有签名兼容。实际接线及证据见 C2 架构文档。
+
 ## C1 运行补充
 
 公共 schema 和 A/B props 保持 C0 不变。C 的 useHistoricalExperience/ExperienceHost 现提供独立运行状态机、唯一对象入口、runId 防护、五类响应、解释确认、显式完成、浏览器记忆和退出/重播/等价调度，见 [C1 接线说明](architecture/c1-integration-guide.md)。A/B 的正式三维成品与史料仍待交付和审核。

@@ -52,3 +52,9 @@ App 测试覆盖启动、空态、导航、全屏反馈；数据测试覆盖坐�
 单个 JSON 是目前唯一正式数据入口。若要数据分片，由 C 同步修改 loader、CLI、契约和测试，不能只新增未加载的 JSON。
 
 当前无正式历史内容或地图合规结论。公开展示须另完成人类史实与地图／素材审核。
+
+## C2 工程联动入口
+
+当前 C2 分支运行 npm run dev:contracts 后，在实际终端端口访问 /__dev/contracts?flow=c2。C0/C1 入口保留。C2 仅在内存使用两个虚构专题和工程阶段/部队，数据开关可测试合法空数据、撤回与非法顺序；不能复制模拟审核进正式 JSON。
+
+独立键 long-march.development.c2-completion.v1 不解锁正式展馆。唯一阶段时钟和 A/B 接线见 [C2 指南](architecture/c2-integration-guide.md)，[桌面验收](architecture/phase-c2-desktop-qa.md) 明确区分实测、自动化与未完成的真实后台隐藏/尺寸恢复。生产隔离插件不得关闭。

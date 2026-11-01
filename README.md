@@ -1,5 +1,7 @@
 # 长征·不灭的火种
 
+当前 C2 开发分支已提供专题内历史阶段时钟、专题/人物/地点导航、当前阶段态势筛选和 C1 体验联动，见 [C2 报告](docs/architecture/phase-c2-report.md)、[接线](docs/architecture/c2-integration-guide.md)与[验收](docs/architecture/phase-c2-desktop-qa.md)。[Draft PR #7](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/7) 依赖尚未合并的 C1 #6/C0 #4，并不代表 main 已具有这些功能。正式数据仍为空，真实 A/B v2 场景、史料与媒体/性能待接入。下方保留已有稳定界面说明。
+
 长征三维历史数字沙盘，面向 2026 年“赓续长征精神，智创青春新程”微程序大赛。
 
 当前已建立 **Phase 2：展馆首页与沙盘探索双场景应用壳**，作为 A/B 模块接入的共同开发基线。尚无正式三维地形、真实历史节点或开放的行军路线。探索空间显示：**历史数据正在核验，正式路线暂未开放展示。** 首页、进入确认、章节与资料抽屉已接入；验收记录见 `docs/design/phase-2-visual-qa.md`。

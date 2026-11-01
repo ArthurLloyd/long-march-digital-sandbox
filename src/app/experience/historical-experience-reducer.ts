@@ -36,6 +36,7 @@ export type ExperienceStatus =
   | 'unavailable'
   | 'exit_confirm';
 export interface ExplorationContext {
+  topicId?: string | null;
   selection: HistoricalObjectSelection | null;
   phaseId: string | null;
   bookmark: CameraBookmark | null;
