@@ -1,5 +1,11 @@
 # 开发与排错
 
+## C1 调度开发
+
+`npm run dev:contracts` 后打开实际本机端口的 `/__dev/contracts?flow=c1`，可用真实 App/控制器和明确标注的工程适配器验证完整流程。开发记录键为 long-march.development.c1-completion.v1，正式键为 long-march.experience-completion.v1，二者隔离。
+
+正式页面不导入工程样本；所有内容仍经发布过滤。缺少真实 A/B 组件时不假装成品已开放。具体协议见 [C1 接入](architecture/c1-integration-guide.md)，本轮浏览器工具错误和手工步骤见 [桌面验收](architecture/phase-c1-desktop-qa.md)。
+
 ## C0 接口开发
 
 执行 `npm run dev:contracts` 可打开仅开发环境的 `/__dev/contracts` 工作台。它使用未发布合成样本，只供 A/B 接线、JSON 验证和回调观察。正式页面没有该入口，生产构建实际引用 fixtures 或 tests 会失败。详见 [v2 接线说明](architecture/v2-integration-guide.md)。

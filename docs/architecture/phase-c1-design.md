@@ -28,7 +28,7 @@ idle、intro、loading、playing、paused、awaiting_interaction、equivalent_ex
 
 ## 存储与并发
 
-独立 CompletionStore 封装键 long-march.experience-completion.v1。版本化 envelope 内仅保存清除代际及最多六条 CompletionRecord；每条复用 C0 验证，并按 manifest 的规则版本核对。普通改字不失效。
+独立 CompletionStore 封装键 long-march.experience-completion.v1。版本化 envelope 内仅保存清除代际及六个产品 ID 的 CompletionRecord；每个 ID 保留最近两个规则版本，总计最多十二条，防止错误版本缓存阻塞重新完成当前规则。每条复用 C0 验证，并按 manifest 的规则版本核对。普通改字不失效。
 
 损坏项丢弃并提示，读写被拒绝时会话内仍可完成。保存前读盘合并；同体验保留较新规则/记录，不把未完成状态写回。storage 事件重新读取当前磁盘，防迟到事件覆盖。显式清除写入新代际，其他标签不能将旧缓存重新合并回来。localStorage 不具强事务，常见并发为尽力合并，不能承诺严格原子一致。
 

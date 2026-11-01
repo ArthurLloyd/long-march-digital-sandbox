@@ -1,5 +1,13 @@
 # 架构与初始化决策
 
+## Phase C1 更新
+
+新增独立历史体验 reducer、统一对象路由、模块适配、浏览器完成服务和 ExperienceHost；首页 landing/entering/exploring 保持独立。正式 App 仍从同一 verified/dataset.json 经 C0 门禁读取；产品关联索引仅用于防止撤回体验降级为普通阅读。
+
+普通关资料保留选中，显式 pause 替代 toggle 暂停。历史阶段、演绎进度和完成记录分开，退出/完成不自动恢复宏观播放。等价内容和必要互动仍由 B 提供，渲染/媒体与资源释放由 A 负责，C 用 runId 和当前发布状态约束回调。
+
+开发新增仅测试入口的 C1 工程闭环，记录使用独立键；生产模块图检查保持开启。详见 [C1 接线](c1-integration-guide.md) 和 [桌面证据边界](phase-c1-desktop-qa.md)。以下阶段说明保留其历史范围。
+
 ## Phase 3 · C0 更新
 
 公共契约现在支持 v1 和显式 schemaVersion: 2；正式 JSON 与现有 App、A/B 组件仍保留旧基线。v2 增加专题、阶段、人物、地点、部队、剧本、互动、等价内容和素材，统一进行关联与审核验证，再以依赖图计算发布闭合视图。具体字段见 [接口契约](../interface-contract.md)，接线见 [v2 接入说明](v2-integration-guide.md)。
