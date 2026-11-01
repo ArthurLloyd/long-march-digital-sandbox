@@ -1,0 +1,139 @@
+.root {
+  color: var(--text-primary, #eee6d7);
+  font: inherit;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.root h3 {
+  font-family: var(--font-serif, serif);
+  line-height: 1.45;
+  margin: 0 0 1rem;
+}
+.root h4 {
+  margin: 0.5rem 0;
+}
+.root button,
+.root select {
+  font: inherit;
+  color: inherit;
+  background: #19242b;
+  border: 1px solid #a58958;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  max-width: 100%;
+  white-space: normal;
+  cursor: pointer;
+}
+.root select option {
+  color: #f4ead8;
+  background: #19242b;
+}
+.root button:disabled,
+.root select:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.root :focus-visible {
+  outline: 3px solid #ead09b;
+  outline-offset: 3px;
+}
+.root a {
+  color: #e5c386;
+  text-decoration: underline;
+}
+.root fieldset {
+  border: 1px solid #766648;
+  padding: 1rem;
+}
+.root input {
+  accent-color: #d6b16c;
+  margin-right: 0.7rem;
+}
+.prose {
+  white-space: pre-wrap;
+}
+.note {
+  color: #c8c4b8;
+  font-size: 0.9em;
+}
+.materials {
+  display: grid;
+  gap: 0.8rem;
+}
+.card {
+  padding: 1rem;
+  border: 1px solid #766648;
+  border-radius: 6px;
+  margin-bottom: 0.8rem;
+  background: #ffffff04;
+}
+.choice {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.6rem 0;
+}
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+}
+.feedback {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border-left: 3px solid #d6b16c;
+  background: #d6b16c0c;
+}
+.metadata {
+  display: grid;
+  grid-template-columns: minmax(5rem, auto) 1fr;
+  gap: 0.3rem 0.8rem;
+}
+.metadata dd {
+  margin: 0;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+}
+.gallery figure {
+  margin: 0;
+}
+.gallery img {
+  width: 100%;
+  max-height: 22rem;
+  object-fit: contain;
+}
+.header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.root small {
+  display: block;
+}
+@media (max-width: 480px) {
+  .metadata {
+    grid-template-columns: 1fr;
+  }
+  .metadata dt {
+    color: #d6b16c;
+  }
+  .root select {
+    width: 100%;
+  }
+}
+.assetFigure {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #766648;
+  border-radius: 6px;
+  background: #ffffff03;
+}
+.assetFigure figcaption {
+  overflow-wrap: anywhere;
+}
