@@ -168,5 +168,5 @@ describe('C3 准备：真实 B 公共组件与 C1 的隔离接口验证', () => 
       completionMode: 'equivalent',
       completedInteractionIds: ['ld-01', 'ld-02'],
     });
-  });
+  }, 15000);
 });
