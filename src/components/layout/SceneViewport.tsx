@@ -14,12 +14,14 @@ interface Props extends LongMarchSceneProps {
   onRetry: () => void;
   ready: boolean;
   renderScene?: (props: LongMarchSceneProps) => ReactNode;
+  hasPublishedContent?: boolean;
 }
 export function SceneViewport({
   error,
   onRetry,
   ready,
   renderScene,
+  hasPublishedContent,
   ...sceneProps
 }: Props) {
   const { onSceneError } = sceneProps;
@@ -42,7 +44,7 @@ export function SceneViewport({
       aria-busy={!ready && !error}
     >
       <MountainArtwork compact />
-      {!sceneProps.events.length && (
+      {!(hasPublishedContent ?? sceneProps.events.length > 0) && (
         <div className="verification-message" role="status">
           <h1>
             山河之间，

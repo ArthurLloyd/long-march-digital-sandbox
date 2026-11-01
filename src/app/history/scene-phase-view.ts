@@ -14,6 +14,11 @@ export function selectScenePhaseView(
   const eventIds = new Set(phase?.eventIds ?? []);
   const dataset: HistoryDatasetV2 = {
     ...published,
+    people: published.people.filter(
+      (p) =>
+        p.relatedTopicIds.includes(phase?.topicId ?? '') ||
+        p.relatedEventIds.some((id) => eventIds.has(id)),
+    ),
     events: published.events.filter((e) => eventIds.has(e.id)),
     places: published.places.filter(
       (p) =>

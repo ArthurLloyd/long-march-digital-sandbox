@@ -24,16 +24,19 @@ function reducer(state: State, action: Action): State {
     : { index: next, playing: true, closed: false };
 }
 
-export function usePlayback(events: readonly HistoryEvent[]) {
+export function usePlayback(events: readonly HistoryEvent[], enabled = true) {
   const [state, dispatch] = useReducer(reducer, {
     index: 0,
     playing: false,
     closed: false,
   });
   const index = Math.max(0, Math.min(state.index, events.length - 1));
-  const playing = state.playing && events.length > 1;
+  const playing = enabled && state.playing && events.length > 1;
   const close = useCallback(() => dispatch({ type: 'close' }), []);
   const pause = useCallback(() => dispatch({ type: 'pause' }), []);
+  useEffect(() => {
+    if (!enabled) dispatch({ type: 'pause' });
+  }, [enabled]);
   useEffect(() => {
     if (!playing) return;
     const interval = window.setInterval(
@@ -59,7 +62,7 @@ export function usePlayback(events: readonly HistoryEvent[]) {
         index: Math.min(events.length - 1, index + 1),
       }),
     toggle: () => {
-      if (events.length > 1) {
+      if (enabled && events.length > 1) {
         if (!playing && index === events.length - 1)
           dispatch({ type: 'select', index: 0 });
         dispatch({ type: 'toggle' });

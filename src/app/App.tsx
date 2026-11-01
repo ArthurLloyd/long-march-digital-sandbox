@@ -1,7 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import candidateDataset from '../data/verified/dataset.json';
 import { HistoryEventPanel } from '../features/history';
-import { Timeline, usePlayback } from '../features/timeline';
+import {
+  Timeline,
+  PhaseTimeline,
+  usePlayback,
+  useHistoricalPhase,
+  phaseTimeText,
+} from '../features/timeline';
 import { SceneViewport } from '../components/layout/SceneViewport';
 import { ExhibitionLanding } from '../components/exhibition/ExhibitionLanding';
 import { ExhibitionHeader } from '../components/navigation/ExhibitionHeader';
@@ -38,6 +51,14 @@ import { restoreCameraBookmark } from './experience/experience-context';
 import { ExperienceHost } from '../components/experience/ExperienceHost';
 import { CompletionSettings } from '../components/experience/CompletionSettings';
 import { useReducedMotion } from '../hooks/use-reduced-motion';
+import { useVisibilityPause } from '../hooks/use-visibility-pause';
+import { HistoricalNavigation } from '../components/overlay/HistoricalNavigation';
+import { ForceLegend } from '../components/layout/ForceLegend';
+import {
+  selectScenePhaseView,
+  sceneSelection,
+} from './history/scene-phase-view';
+import '../styles/historical-orchestration.css';
 
 const titles: Record<Overlay, string> = {
   chapters: '历史专题',
@@ -58,43 +79,92 @@ export function App({
   const catalog = useMemo(() => createExperienceCatalog(input), [input]);
   const { events, routes, sources } = catalog.published;
   const [experience, dispatch] = useExperience();
-  const playback = usePlayback(events);
+  const phaseMode = catalog.phaseSystem;
+  const clock = useHistoricalPhase(
+    catalog.published,
+    experience.phase === 'exploring',
+  );
+  const phaseId = phaseMode ? clock.activePhaseId : null;
+  const playback = usePlayback(
+    events,
+    !phaseMode && experience.phase === 'exploring',
+  );
   const { pause: pausePlayback } = playback;
+  const { pause: pausePhase, restore: restorePhase } = clock;
+  const pauseMacro = useCallback(() => {
+    pausePlayback();
+    pausePhase();
+  }, [pausePlayback, pausePhase]);
+  useVisibilityPause(pauseMacro);
   const reducedMotion = useReducedMotion();
   const [modules, setModules] = useState<ExperienceModules>({
     LegacyDetails: HistoryEventPanel,
   });
-  const [phaseId, setPhaseId] = useState<string | null>(null);
   const [bookmark, setBookmark] = useState<CameraBookmark | null>(null);
+  const phaseRef = useRef(phaseId);
+  useLayoutEffect(() => {
+    phaseRef.current = phaseId;
+  }, [phaseId]);
+  const visibleBookmark = bookmark?.phaseId === phaseId ? bookmark : null;
+  const sceneView = useMemo(
+    () => selectScenePhaseView(catalog.published, phaseId),
+    [catalog.published, phaseId],
+  );
+  const sceneData = phaseMode ? sceneView.dataset : catalog.published;
+  const sceneDataRef = useRef(sceneData);
+  useLayoutEffect(() => {
+    sceneDataRef.current = sceneData;
+  }, [sceneData]);
   const context = useMemo<ExplorationContext>(
     () => ({
+      topicId: phaseMode ? clock.selectedTopicId : null,
       selection: playback.activeEvent
         ? { kind: 'event', id: playback.activeEvent.id }
         : null,
       phaseId,
-      bookmark,
+      bookmark: visibleBookmark,
     }),
-    [playback.activeEvent, phaseId, bookmark],
+    [
+      playback.activeEvent,
+      phaseId,
+      visibleBookmark,
+      phaseMode,
+      clock.selectedTopicId,
+    ],
   );
   const restoreContext = useCallback(
     (saved: ExplorationContext) => {
-      pausePlayback();
-      setPhaseId(saved.phaseId);
+      pauseMacro();
+      const topicId =
+        saved.topicId ??
+        catalog.published.phases.find((p) => p.phaseId === saved.phaseId)
+          ?.topicId ??
+        null;
+      const valid =
+        !phaseMode ||
+        catalog.published.topics.some(
+          (t) =>
+            t.topicId === topicId &&
+            (saved.phaseId === null || t.phaseIds.includes(saved.phaseId)),
+        );
+      if (phaseMode && valid) restorePhase(topicId, saved.phaseId);
       setBookmark(
-        restoreCameraBookmark(saved.bookmark, {
-          sceneId: bookmark?.sceneId ?? null,
-          phaseId: saved.phaseId,
-        }),
+        valid
+          ? restoreCameraBookmark(saved.bookmark, {
+              sceneId: bookmark?.sceneId ?? null,
+              phaseId: saved.phaseId,
+            })
+          : null,
       );
     },
-    [bookmark?.sceneId, pausePlayback],
+    [bookmark?.sceneId, pauseMacro, catalog.published, phaseMode, restorePhase],
   );
   const historical = useHistoricalExperience({
     catalog,
     modules: injectedModules ?? modules,
     store: completionStore,
     context,
-    pauseMacro: pausePlayback,
+    pauseMacro,
     restoreContext,
     reducedMotion,
     onSelect: (selection) => {
@@ -103,6 +173,23 @@ export function App({
       dispatch({ type: 'close' });
     },
   });
+  const { resetMacroSelection } = historical;
+  const previousPhase = useRef(phaseId);
+  useEffect(() => {
+    if (previousPhase.current !== phaseId) {
+      previousPhase.current = phaseId;
+      if (historical.state.status === 'idle') resetMacroSelection();
+      setBookmark((current) => (current?.phaseId === phaseId ? current : null));
+    }
+  }, [phaseId, historical.state.status, resetMacroSelection]);
+  const activeEvent = phaseMode
+    ? (events.find(
+        (e) =>
+          historical.state.selection?.kind === 'event' &&
+          e.id === historical.state.selection.id &&
+          clock.phase?.eventIds.includes(e.id),
+      ) ?? null)
+    : playback.activeEvent;
   useEffect(() => {
     if (injectedModules || experience.phase !== 'exploring') return;
     let active = true;
@@ -134,16 +221,16 @@ export function App({
     [dispatch],
   );
   const closeOverlay = useCallback(() => {
-    pausePlayback();
+    pauseMacro();
     dispatch({ type: 'close' });
-  }, [pausePlayback, dispatch]);
+  }, [pauseMacro, dispatch]);
   useEffect(() => {
     if (experience.phase === 'exploring') exploreRef.current?.focus();
   }, [experience.phase]);
   function home() {
     historical.clearSelection();
     setBookmark(null);
-    setPhaseId(null);
+    clock.reset();
     playback.close();
     dispatch({ type: 'home' });
     window.requestAnimationFrame(() =>
@@ -161,9 +248,10 @@ export function App({
   }
   function open(overlay: Overlay) {
     rememberOverlayTrigger();
-    pausePlayback();
-    if (overlay === 'history' && playback.activeEvent) {
-      selectEvent(playback.activeEvent.id);
+    pauseMacro();
+    const target = activeEvent ?? (phaseMode ? sceneData.events[0] : null);
+    if (overlay === 'history' && target) {
+      selectEvent(target.id);
       return;
     }
     dispatch({ type: 'open', overlay });
@@ -173,6 +261,39 @@ export function App({
   }
   function openHistoricalObject(selection: HistoricalObjectSelection) {
     historical.openHistoricalObject(selection);
+  }
+  function chooseTopic(id: string) {
+    if (!clock.model.topics.some((t) => t.topicId === id)) return;
+    historical.resetMacroSelection();
+    setBookmark(null);
+    clock.selectTopic(id);
+  }
+  function choosePhase(id: string) {
+    const phase = catalog.published.phases.find((p) => p.phaseId === id);
+    if (!phase) return;
+    historical.resetMacroSelection();
+    setBookmark(null);
+    clock.restore(phase.topicId, id);
+  }
+  function openEventAtPhase(id: string, topicId: string, nextPhaseId: string) {
+    const phase = catalog.published.phases.find(
+      (p) =>
+        p.phaseId === nextPhaseId &&
+        p.topicId === topicId &&
+        p.eventIds.includes(id),
+    );
+    if (!phase) return;
+    clock.restore(topicId, nextPhaseId);
+    historical.openHistoricalObject(
+      { kind: 'event', id },
+      {
+        ...context,
+        topicId,
+        phaseId: nextPhaseId,
+        bookmark:
+          visibleBookmark?.phaseId === nextPhaseId ? visibleBookmark : null,
+      },
+    );
   }
   return (
     <div className="museum-app" data-phase={experience.phase}>
@@ -225,18 +346,29 @@ export function App({
         {experience.phase !== 'landing' && (
           <main
             id="main-content"
-            className="exploration"
+            className={`exploration${phaseMode ? ' phase-exploration' : ''}`}
             ref={exploreRef}
             tabIndex={-1}
             aria-label="长征沙盘探索空间"
           >
             <SceneViewport
               key={sceneKey}
-              events={events}
-              routes={routes}
-              activeEventId={playback.activeEvent?.id ?? null}
-              playbackProgress={playback.progress}
-              onEventSelect={selectEvent}
+              events={sceneData.events}
+              routes={phaseMode ? sceneData.routes : routes}
+              activeEventId={
+                activeEvent &&
+                sceneData.events.some((e) => e.id === activeEvent.id)
+                  ? activeEvent.id
+                  : null
+              }
+              playbackProgress={phaseMode ? clock.progress : playback.progress}
+              hasPublishedContent={
+                phaseMode ? clock.phase !== null : events.length > 0
+              }
+              onEventSelect={(id) => {
+                if (sceneDataRef.current.events.some((e) => e.id === id))
+                  selectEvent(id);
+              }}
               onSceneReady={onSceneReady}
               onSceneError={onSceneError}
               ready={ready}
@@ -254,17 +386,23 @@ export function App({
                       return (
                         <Map
                           {...props}
-                          dataset={catalog.published}
+                          dataset={sceneData}
                           phaseId={phaseId}
-                          selection={historical.state.selection}
-                          cameraBookmark={bookmark}
-                          onObjectSelect={openHistoricalObject}
+                          selection={sceneSelection(
+                            sceneData,
+                            historical.state.selection,
+                          )}
+                          cameraBookmark={visibleBookmark}
+                          onObjectSelect={(selection) => {
+                            if (sceneSelection(sceneDataRef.current, selection))
+                              openHistoricalObject(selection);
+                          }}
                           onCameraBookmark={(value) => {
                             const result =
                               cameraBookmarkSchema.safeParse(value);
                             if (
                               result.success &&
-                              result.data.phaseId === phaseId &&
+                              result.data.phaseId === phaseRef.current &&
                               (!bookmark ||
                                 bookmark.sceneId === result.data.sceneId)
                             )
@@ -276,9 +414,24 @@ export function App({
                   : undefined
               }
             />
-            <div className="exploration-topic">
+            <div
+              className={`exploration-topic${phaseMode ? ' phase-overview' : ''}`}
+            >
               <span className="status-dot" />
-              <span>{playback.activeEvent?.title ?? '长征历史总览'}</span>
+              {phaseMode ? (
+                <div>
+                  <span>{clock.topic?.title ?? '历史专题正在核验'}</span>
+                  <h2>{clock.phase?.title ?? '暂无可发布历史阶段'}</h2>
+                  <p>
+                    {clock.phase
+                      ? phaseTimeText(clock.phase)
+                      : '史料核验中，正式内容暂未开放。'}
+                  </p>
+                  {activeEvent && <p>当前事件：{activeEvent.title}</p>}
+                </div>
+              ) : (
+                <span>{activeEvent?.title ?? '长征历史总览'}</span>
+              )}
               <span className="preview-label">开发预览</span>
               {historical.state.selection && (
                 <button
@@ -292,6 +445,24 @@ export function App({
                 </button>
               )}
             </div>
+            {phaseMode && (
+              <>
+                <ForceLegend
+                  state={sceneView.forces}
+                  hasV2Renderer={!!(injectedModules ?? modules).Map}
+                />
+                {sceneView.forces.schematic && (
+                  <p className="phase-schematic" role="note">
+                    宏观示意，非真实行军路线。
+                  </p>
+                )}
+                {clock.model.error && (
+                  <p className="fullscreen-message" role="alert">
+                    {clock.model.error}
+                  </p>
+                )}
+              </>
+            )}
             <div className="exploration-tools">
               <button className="scene-tool" onClick={() => open('chapters')}>
                 <OrnamentFrame />
@@ -312,29 +483,43 @@ export function App({
                 <span className="scene-tool-copy">
                   <strong>事件资料</strong>
                   <small>
-                    {playback.activeEvent ? '阅读当前事件' : '了解核验进度'}
+                    {activeEvent
+                      ? '阅读当前事件'
+                      : phaseMode && sceneData.events.length
+                        ? '阅读当前阶段事件'
+                        : '了解核验进度'}
                   </small>
                 </span>
                 <ForwardOrnament />
               </button>
             </div>
-            <Timeline
-              events={events}
-              activeEventId={playback.activeEvent?.id ?? null}
-              playing={playback.playing}
-              progress={playback.progress}
-              onToggle={playback.toggle}
-              onPrevious={() => {
-                const event = events[Math.max(0, playback.index - 1)];
-                if (event) selectEvent(event.id);
-              }}
-              onNext={() => {
-                const event =
-                  events[Math.min(events.length - 1, playback.index + 1)];
-                if (event) selectEvent(event.id);
-              }}
-              onSelect={selectEvent}
-            />
+            {phaseMode ? (
+              <PhaseTimeline
+                clock={clock}
+                events={sceneData.events}
+                activeEventId={activeEvent?.id ?? null}
+                onSelectPhase={choosePhase}
+                onSelectEvent={selectEvent}
+              />
+            ) : (
+              <Timeline
+                events={events}
+                activeEventId={activeEvent?.id ?? null}
+                playing={playback.playing}
+                progress={playback.progress}
+                onToggle={playback.toggle}
+                onPrevious={() => {
+                  const event = events[Math.max(0, playback.index - 1)];
+                  if (event) selectEvent(event.id);
+                }}
+                onNext={() => {
+                  const event =
+                    events[Math.min(events.length - 1, playback.index + 1)];
+                  if (event) selectEvent(event.id);
+                }}
+                onSelect={selectEvent}
+              />
+            )}
           </main>
         )}
       </div>
@@ -348,10 +533,21 @@ export function App({
           onClose={closeOverlay}
           returnFocusRef={overlayTriggerRef}
         >
-          {experience.overlay === 'chapters' && (
+          {experience.overlay === 'chapters' && phaseMode && (
+            <HistoricalNavigation
+              dataset={catalog.published}
+              topicId={clock.selectedTopicId}
+              phaseId={phaseId}
+              onTopic={chooseTopic}
+              onPhase={choosePhase}
+              onObjectSelect={openHistoricalObject}
+              onEventAtPhase={openEventAtPhase}
+            />
+          )}
+          {experience.overlay === 'chapters' && !phaseMode && (
             <ChapterContent
               events={events}
-              activeId={playback.activeEvent?.id ?? null}
+              activeId={activeEvent?.id ?? null}
               onSelect={selectEvent}
               dataset={catalog.published}
               onObjectSelect={openHistoricalObject}
@@ -360,14 +556,14 @@ export function App({
           {experience.overlay === 'history' && (
             <>
               <p className="drawer-introduction">
-                {playback.activeEvent
+                {activeEvent
                   ? '阅读事件与关联史料，留意日期及地点精度。'
                   : '历史资料正在核验，正式专题即将开放。'}
               </p>
               <HistoryEventPanel
-                event={playback.activeEvent}
+                event={activeEvent}
                 sources={sources.filter((source) =>
-                  playback.activeEvent?.sourceIds.includes(source.sourceId),
+                  activeEvent?.sourceIds.includes(source.sourceId),
                 )}
                 onClose={closeOverlay}
                 teachingState={{ mode: 'observe', stepId: null }}

@@ -1,4 +1,5 @@
 export { Timeline } from './Timeline';
+export { PhaseTimeline } from './PhaseTimeline';
 export { usePlayback } from './use-playback';
 export {
   useHistoricalPhase,

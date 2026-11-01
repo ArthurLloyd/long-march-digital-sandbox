@@ -52,3 +52,98 @@
   margin-bottom: 16px;
   font-family: var(--font-display);
 }
+.phase-exploration .scene-viewport {
+  bottom: 210px;
+}
+.phase-exploration .exploration-tools {
+  bottom: 245px;
+}
+.phase-overview {
+  align-items: flex-start;
+  max-width: 52%;
+  gap: 10px;
+}
+.phase-overview > .status-dot {
+  margin-top: 12px;
+}
+.phase-overview > div > span {
+  color: var(--gold-bright);
+}
+.phase-overview h2 {
+  font: 600 20px/1.6 var(--font-display);
+  margin-top: 8px;
+}
+.phase-overview p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+.phase-overview .clear-selection {
+  margin-top: 4px;
+}
+.phase-force-legend {
+  position: absolute;
+  top: 190px;
+  right: clamp(24px, 4vw, 80px);
+  width: min(320px, 28vw);
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  padding: 12px 16px;
+  font-size: 14px;
+  z-index: 2;
+}
+.phase-force-legend summary {
+  color: var(--gold-bright);
+  cursor: pointer;
+  min-height: 28px;
+}
+.phase-force-legend p {
+  color: var(--muted);
+  margin-top: 12px;
+}
+.phase-force-legend ul {
+  padding: 0;
+  list-style: none;
+}
+.phase-force-legend li {
+  margin-block: 16px;
+}
+.phase-force-legend li span {
+  display: block;
+  color: var(--muted);
+}
+.phase-schematic {
+  position: absolute;
+  bottom: 222px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-bright);
+  font-size: 14px;
+}
+.phase-timeline {
+  height: 210px;
+  grid-template-columns: 240px minmax(0, 1fr) 260px;
+  gap: 24px;
+  padding-block: 20px;
+}
+.phase-timeline .playback-controls {
+  gap: 8px;
+}
+.phase-timeline .timeline-current {
+  max-height: 170px;
+  overflow-y: auto;
+}
+.phase-timeline .timeline-current > span {
+  overflow-wrap: anywhere;
+}
+.phase-event-list {
+  max-height: 88px;
+  overflow-y: auto;
+}
+.phase-cadence {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}

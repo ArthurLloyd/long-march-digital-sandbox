@@ -6,6 +6,7 @@ import type { HistoricalDetail } from '../../shared/contracts';
 import type { HistoricalExperienceController } from '../../app/experience/use-historical-experience';
 import { completionForState } from '../../app/experience/historical-experience-reducer';
 import '../../styles/historical-experience.css';
+import { RelatedHistoryLinks } from './RelatedHistoryLinks';
 
 function detailTitle(detail: HistoricalDetail) {
   const record = detail.record;
@@ -206,6 +207,11 @@ export function ExperienceHost({
                 )}
               </Suspense>
             </ErrorBoundary>
+            <RelatedHistoryLinks
+              detail={route.detail}
+              dataset={c.catalog.published}
+              onNavigate={c.navigate}
+            />
             {route.bundle && (
               <button className="outlined-button" onClick={() => c.start()}>
                 重播体验
