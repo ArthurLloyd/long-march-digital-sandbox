@@ -1,6 +1,6 @@
 # 区域沙盘实际验收
 
-执行时间：2026-11-01 晚至 11-02 凌晨，Asia/Shanghai。实现与本地回归基于已合并 A0/C0/C1/C2 的 `78c315a`；提交前发现 main 新增 B 候选包和对应测试修订（`cbbc916`），没有覆盖这些提交。最终集成状态以 PR 的合并检查为准。
+执行时间：2026-11-01 晚至 11-02 凌晨，Asia/Shanghai。已合并 main `cbbc916`，保留 B 六专题候选与 C 测试修订；格式修复合并提交 `9afccd0` 的 GitHub CI 已通过。
 
 ## 实际检查
 
@@ -25,8 +25,8 @@
 
 - `npm run lint`：通过。
 - `npm run typecheck`：通过。
-- `npm run test`：26 文件、236 测试通过，含本轮 4 个位置／端点／细节迟滞／投影测试。
-- `npm run validate:data`：通过（通过 build 执行）；本地基线正式数据为空。GitHub 最新 main 已含 B 草稿，不能把这个基线结果写成最新 main 无内容。
+- `npm run test`：28 文件、262 测试通过，含本轮 4 个位置／端点／细节迟滞／投影测试。
+- `npm run validate:data`：通过（通过 build 执行）；B 候选已存在，尚未审核发布，正式投影仍为空。
 - `npm run build`：通过，保留 Three.js 场景 chunk 大于 500 kB 的提示，未改 C 的构建配置。
 - `npm run format:check`：通过。
 - 搜索构建 JS 中的 `demo-marching` / `demo-comparison` / `REGION STUDY`，没有匹配；演示编排入口未混入正式构建。
@@ -44,9 +44,20 @@ JSDOM 在既有 WebGL 失败分支测试打印 getContext 未实现提示，所�
 
 ## 未完成与后续
 
-- 未生成或调用 MiniMax Design 素材；本轮实现教程对应的地图与局部场景交互结构。
+- 已实际调用 MiniMax Design，三套环境预览接入完成。背面无缝验收未通过，进一步修复被现有积分不足阻挡，未充值。
 - 新区域地图是开发演示，不是已替换正式 App 的 LongMarchSceneV2；已有 v1 主组件保持兼容。
 - B 新候选已到仓库，可据其分镜准备后续重点体验；尚无可公开展示的真实部队几何，不能给演示单位套上历史身份。
 - 2–3 个正式沉浸重点内容、审核后的媒体、完整 C1/v2 正式接线尚待完成。
 - 未专项验证背景标签暂停、减少动态系统设置、WebGL context 丢失、长期 GPU 内存、真实手机；不以代码存在代替验收。
 - OSM 河流仅覆盖说明中的狭长查询区。人物为符号化白模，不是历史服饰考证；植被与河宽不对应实测。
+
+## MiniMax 环境预览实际检查
+
+- 三场景 3840×1920 WebP 在 Chrome 实际加载，正面和背面均做视觉检查；选用河谷修订版、雪山和草地原图。接缝缺陷记录在素材 manifest，没有把“修复版”名称当作验收通过。
+- 实际拖动全景，yaw 从 1.5708 变为 2.3808，pitch 变为 0.0300；方向键也改变视角，放大将 FOV 从 68 改为 62，初始视角可复位。
+- 从地图 50% 进入场景，经切换后 Esc 返回，地图仍为 50%、bearing=0.6499；退出后全景 canvas 数量为 0。目录返回流程已操作。
+- Chrome 390×844 桌面模拟视口：入口可见，雪山标题、工具与三场景切换完整显示；不是手机真机触摸验收。
+- 静态球面环境，非视频；默认不自动旋转，没有把雪山与草地标成大渡河谷内的真实位置。
+- 开发热更新期间出现一次白页，手动重载恢复；最终重载与场景进出正常。未据此声称全设备稳定。
+
+新增证据：[场景目录](evidence/immersive-gallery.jpg)、[河谷](evidence/river-panorama.jpg)、[雪山](evidence/snow-panorama.jpg)、[草地](evidence/grass-panorama.jpg)、[手机全景](evidence/immersive-mobile.jpg)。

@@ -7,6 +7,7 @@ import { createTerrainSpace } from './terrain';
 import type { Heightfield, RiverData } from './terrain';
 import type { UnitSpec } from './units';
 import type { Point3 } from './motion';
+import { createImmersiveGallery } from './immersive-gallery';
 
 if (!import.meta.env.DEV)
   throw new Error('The sandbox is a development-only presentation.');
@@ -28,9 +29,10 @@ const svg = (name: keyof typeof icons) =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 root.innerHTML = `<main class="atlas" aria-label="长征区域沙盘交互演示">
 <div class="scene-canvas" id="canvas-host"></div><div id="labels" class="map-labels"></div><div class="vignette" aria-hidden="true"></div>
-<header class="topbar"><a class="brand" href="/" aria-label="返回长征展馆"><span class="brand-mark">征</span><span>长征<span class="brand-sep"> / </span>不灭的火种<small>THE LONG MARCH · DIGITAL ATLAS</small></span></a><div class="top-actions"><span class="preview-badge">交互演示</span><button class="icon" id="about" aria-label="查看资料与演示说明">${svg('info')}</button><button class="icon" id="fullscreen" aria-label="全屏观看">${svg('expand')}</button></div></header>
+<header class="topbar"><a class="brand" href="/" aria-label="返回长征展馆"><span class="brand-mark">征</span><span>长征<span class="brand-sep"> / </span>不灭的火种<small>THE LONG MARCH · DIGITAL ATLAS</small></span></a><div class="top-actions"><button id="immersive-entry" class="landscape-launch">走进山河 ↗</button><span class="preview-badge">交互演示</span><button class="icon" id="about" aria-label="查看资料与演示说明">${svg('info')}</button><button class="icon" id="fullscreen" aria-label="全屏观看">${svg('expand')}</button></div></header>
 <section class="intro"><p class="eyebrow"><i></i> REGION STUDY / 01</p><h1>山河<span>行迹</span></h1><p class="region">大渡河谷 <span>·</span> 区域沙盘</p><p class="intro-line">循山势，观水脉。<br>让行进的轨迹，在眼前展开。</p><div class="region-rule"></div><span class="coordinate">101.96°—102.40° E<br>29.72°—30.12° N</span></section>
 <nav class="view-controls" aria-label="沙盘视角"><button id="overview" class="view-button active">${svg('reset')}<span>全览</span></button><button id="top" class="view-button">${svg('layers')}<span>俯瞰</span></button><button id="near" class="view-button">${svg('focus')}<span>近观队伍</span></button><span class="control-line"></span><button id="zoom-in" class="icon" aria-label="放大沙盘">${svg('plus')}</button><button id="zoom-out" class="icon" aria-label="缩小沙盘">${svg('minus')}</button></nav>
+<button class="landscape-teaser" id="landscape-teaser" aria-label="浏览三处沉浸环境"><img src="/assets/textures/immersive-landscapes/river-valley-cover.webp" alt=""/><span>走进山河<b>↗</b></span></button>
 <div class="compass" aria-hidden="true"><span>N</span><i></i><small>北</small></div>
 <aside class="map-key"><p><i class="unit-dot red"></i>行进队伍 <span id="detail-mode">远景标识</span></p><p><i class="unit-dot blue"></i>对照队伍</p><small>示意编队 · 不代表实际兵力</small></aside>
 <div class="map-tools"><label><input type="checkbox" id="contours"/>地形层次</label><label><input type="checkbox" id="routes" checked/>行进示意</label><label><input type="checkbox" id="follow"/>跟随队伍</label><button id="quality">精细画质</button></div>
@@ -139,6 +141,12 @@ $<HTMLDialogElement>('bridge-dialog').addEventListener('close', () => {
   $<HTMLDialogElement>('bridge-dialog').querySelector('iframe')!.src =
     'about:blank';
 });
+const immersiveGallery = createImmersiveGallery(root, {
+  onOpen: () => engine?.setSuspended(true),
+  onClose: () => engine?.setSuspended(false),
+});
+$('immersive-entry').addEventListener('click', () => immersiveGallery.open());
+$('landscape-teaser').addEventListener('click', () => immersiveGallery.open());
 $('retry').addEventListener('click', () => location.reload());
 function showError(message: string) {
   $('loading').hidden = true;
@@ -295,6 +303,7 @@ try {
 }
 function dispose() {
   disposed = true;
+  immersiveGallery.dispose();
   engine?.dispose();
   engine = null;
 }

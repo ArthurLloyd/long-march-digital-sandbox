@@ -1,0 +1,399 @@
+.landscape-launch {
+  border: 1px solid #bfa57670;
+  padding: 9px 15px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.landscape-teaser {
+  position: absolute;
+  z-index: 5;
+  right: 40px;
+  top: 310px;
+  width: 218px;
+  height: 122px;
+  border: 1px solid #bcab7960;
+  text-align: left;
+  overflow: hidden;
+  padding: 0;
+}
+.landscape-teaser img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.78;
+  transition: transform 0.6s;
+}
+.landscape-teaser:hover img {
+  transform: scale(1.06);
+}
+.landscape-teaser span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: end;
+  padding: 16px;
+  background: linear-gradient(transparent, #071b23d9);
+  font: 600 17px 'Noto Serif SC';
+  letter-spacing: 3px;
+}
+.landscape-teaser b {
+  margin-left: auto;
+  font-weight: 400;
+}
+dialog.landscape-dialog {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #102024;
+  color: #eee9dc;
+  overflow: auto;
+}
+.landscape-stage,
+.landscape-shade {
+  position: absolute;
+  inset: 0;
+}
+.landscape-stage canvas {
+  display: block;
+  touch-action: none;
+  cursor: grab;
+  width: 100%;
+  height: 100%;
+}
+.landscape-stage canvas:active {
+  cursor: grabbing;
+}
+.landscape-shade {
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0, #7d92732b, transparent 80%);
+}
+.is-viewing .landscape-shade {
+  background: linear-gradient(
+    #05121e75,
+    transparent 25%,
+    transparent 45%,
+    #081923dc
+  );
+}
+.landscape-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 36px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #d4c9ab24;
+}
+.landscape-header > span {
+  font-size: 10px;
+}
+.landscape-header i {
+  color: #d1b784;
+  margin: 0 12px;
+}
+.landscape-header small {
+  font-size: 10px;
+  padding: 5px 10px;
+  border: 1px solid #d0c6ae65;
+  background: #10202440;
+  white-space: nowrap;
+}
+.landscape-return {
+  padding: 9px 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.landscape-directory {
+  position: relative;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 32px 56px 24px;
+}
+.landscape-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+.landscape-heading .eyebrow {
+  width: 100%;
+  margin: 0;
+}
+.landscape-heading h2 {
+  font-size: clamp(30px, 3.2vw, 48px);
+  margin: 8px 0 24px;
+  letter-spacing: 7px;
+}
+.landscape-heading h2 span {
+  color: #d8c196;
+}
+.landscape-directory .landscape-heading > p:not(.eyebrow) {
+  color: #a8b9b4;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.landscape-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.landscape-card {
+  position: relative;
+  height: clamp(280px, 52vh, 530px);
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  border: 1px solid #b5baa034;
+}
+.landscape-card > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s;
+}
+.landscape-card:hover > img,
+.landscape-card:focus-visible > img {
+  transform: scale(1.035);
+}
+.landscape-card-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#04132225, transparent 30%, #06171be8);
+}
+.landscape-card-number {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+.landscape-card-copy {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 26px;
+  display: grid;
+  gap: 16px;
+}
+.landscape-card-copy small {
+  color: #e0d4b9;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.landscape-card-copy strong {
+  font: 600 clamp(25px, 2.3vw, 36px) 'Noto Serif SC';
+  letter-spacing: 5px;
+}
+.landscape-card-copy > span {
+  padding-top: 16px;
+  border-top: 1px solid #e0d4b94d;
+  font-size: 11px;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+}
+.landscape-card-copy b {
+  font-size: 20px;
+  font-weight: 400;
+}
+.landscape-directory .landscape-disclosure {
+  text-align: center;
+  font-size: 10px;
+  color: #90a7a4;
+  letter-spacing: 2px;
+  margin: 20px 0 0;
+}
+.landscape-view-ui {
+  pointer-events: none;
+}
+.landscape-view-ui button {
+  pointer-events: auto;
+}
+.landscape-caption {
+  position: absolute;
+  left: 56px;
+  bottom: 84px;
+  text-shadow: 0 2px 20px #061419;
+}
+.landscape-caption h2 {
+  font-size: clamp(32px, 4vw, 62px);
+  margin: 14px 0;
+  letter-spacing: 9px;
+}
+.landscape-caption .landscape-line {
+  color: #e9e4d6;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.landscape-switch {
+  position: absolute;
+  right: 48px;
+  bottom: 74px;
+  display: flex;
+  gap: 12px;
+}
+.landscape-switch button {
+  width: 116px;
+  padding: 3px;
+  border: 1px solid transparent;
+  background: #10212a80;
+}
+.landscape-switch button[aria-pressed='true'] {
+  border-color: #e2c68f;
+  color: #ffe3ad;
+}
+.landscape-switch img {
+  display: block;
+  width: 100%;
+  height: 62px;
+  object-fit: cover;
+}
+.landscape-switch span {
+  display: block;
+  font-size: 11px;
+  padding: 9px 3px;
+  letter-spacing: 2px;
+}
+.landscape-view-tools {
+  position: absolute;
+  right: 36px;
+  top: 112px;
+  display: flex;
+  gap: 2px;
+  background: #0c1f28b0;
+  backdrop-filter: blur(8px);
+  border: 1px solid #d4c9ab40;
+}
+.landscape-view-tools button {
+  font-size: 11px;
+  padding: 12px 14px;
+}
+dialog .landscape-gesture {
+  position: absolute;
+  bottom: 21px;
+  left: 56px;
+  font-size: 10px;
+  color: #b9c7c1;
+  letter-spacing: 2px;
+}
+.landscape-seam {
+  position: absolute;
+  bottom: 26px;
+  right: 48px;
+  font-size: 10px;
+  color: #b9c7c1;
+}
+.landscape-loading {
+  position: absolute;
+  inset: 90px 0 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  background: #102024ed;
+  z-index: 5;
+}
+.landscape-loading button {
+  border-bottom: 1px solid #ddc594;
+  padding: 10px;
+}
+@media (max-width: 1000px) {
+  .landscape-teaser {
+    display: none;
+  }
+  .landscape-switch button {
+    width: 88px;
+  }
+  .landscape-caption {
+    left: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .landscape-launch {
+    font-size: 10px;
+    padding: 8px;
+    letter-spacing: 0;
+  }
+  .landscape-header {
+    padding: 16px 20px;
+    gap: 12px;
+  }
+  .landscape-header > span {
+    display: none;
+  }
+  .landscape-directory {
+    padding: 24px;
+  }
+  .landscape-heading {
+    gap: 0;
+  }
+  .landscape-heading h2 {
+    margin: 12px 0 0;
+  }
+  .landscape-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .landscape-card {
+    height: 230px;
+  }
+  .landscape-card-copy {
+    gap: 10px;
+    left: 22px;
+    bottom: 20px;
+  }
+  .landscape-caption {
+    left: 24px;
+    bottom: 190px;
+  }
+  .landscape-caption h2 {
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+  .landscape-caption .landscape-line {
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .landscape-switch {
+    left: 24px;
+    right: 24px;
+    bottom: 68px;
+    gap: 8px;
+  }
+  .landscape-switch button {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+  .landscape-view-tools {
+    right: 20px;
+    top: 86px;
+  }
+  .landscape-view-tools button {
+    padding: 10px 12px;
+  }
+  dialog .landscape-gesture {
+    left: 24px;
+    bottom: 20px;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .landscape-seam {
+    right: 24px;
+    bottom: 27px;
+    font-size: 9px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landscape-card > img,
+  .landscape-teaser img {
+    transition: none;
+  }
+}
