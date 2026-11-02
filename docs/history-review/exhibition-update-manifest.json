@@ -1,0 +1,226 @@
+{
+  "baseline": "ab7e438296c1ba571211efa7f5227a001cc1f3d9",
+  "source_archive_sha256": "43935de7cd6e9806b92afb2a2f679ab67ed38d9a70e80dabb6be762c9777a255",
+  "date": "2026-11-02",
+  "display": "complete-exhibition",
+  "note": "同步队友19项更新后的补丁；保留原始历史数据与审核记录；清单自身不递归计算哈希。",
+  "files": [
+    {
+      "path": "README.md",
+      "action": "modify",
+      "original_sha256": "3127a99e73fdddf47f909026d942c880ee58ea263ecf2ff88086420cb77c7ad8",
+      "sha256": "f07f4e8fd4e2a5bfc7b08dba1d2f58cd7bb66e3f7da606bc7811cbaef3354049",
+      "bytes": 4439
+    },
+    {
+      "path": "docs/architecture/full-content-exhibition.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "08460d9c1add9b8032302047444faebdbbe21f5947577853e713e45866b62b14",
+      "bytes": 3361
+    },
+    {
+      "path": "docs/history-review/B-CHECKS.md",
+      "action": "modify",
+      "original_sha256": "f4f4d60b9cbf7155c068bd902d3d95f6f8ea5845a2612eed97c496643fffc5d0",
+      "sha256": "ad9e56060d5711159900e4233ba02936155d0dca9685cb36b6516e5931abb7e0",
+      "bytes": 524
+    },
+    {
+      "path": "docs/history-review/B-DELIVERY.md",
+      "action": "modify",
+      "original_sha256": "422040bd4763fbb4052bf7f6d8c1d8262c3db9478e4c769977def2167732cbaa",
+      "sha256": "45b5e50f92607cec89f81248881f23883c346abef55c832c429bb4ddc6692b65",
+      "bytes": 7158
+    },
+    {
+      "path": "docs/history-review/B-INSTALL.md",
+      "action": "modify",
+      "original_sha256": "1cd2734e087888bfbd1f0c7f074cd9417d8fa497200c646480bf630538a5daf1",
+      "sha256": "dc4d7b3151723e20d2a10db257b8408bb2363bf175ded2452834f34787d3f887",
+      "bytes": 5133
+    },
+    {
+      "path": "docs/history-review/B-PORTRAIT-ASSETS.md",
+      "action": "modify",
+      "original_sha256": "3ec061c3f17c9c6d768af47a70f6491d7fec7135bd6b2154b5c4e69aa425d646",
+      "sha256": "d0411f99514624f790cc881ee3095cb1733e2ba95c002fd528986ecf14618d55",
+      "bytes": 4041
+    },
+    {
+      "path": "docs/history-review/B-START-HERE.md",
+      "action": "modify",
+      "original_sha256": "3dba54921df367d0af46d7cba1a0a65204deaa480c1dcae89dfa49cbec035420",
+      "sha256": "1eea204a282aec5e31f80f9ad686f9dda237bfccbcff48dd05eb36bd508bbe06",
+      "bytes": 819
+    },
+    {
+      "path": "docs/history-review/C-TEST-HANDOFF.md",
+      "action": "modify",
+      "original_sha256": "cc6cc83037628c565b1751945776e04e253c967ec5315ea638cfeaf1a51d18ac",
+      "sha256": "e8fe22cc349c6c3ceb5eb3b80f091584834d79b85a1c807bd2317727eb8401ed",
+      "bytes": 2048
+    },
+    {
+      "path": "docs/history-review/EXHIBITION-SYNC-NOTES.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "2bb172323d9e22bf95b669ad2474681ded87837d3fe62497ce9ca14a1e1db746",
+      "bytes": 2603
+    },
+    {
+      "path": "docs/history-review/exhibition-integration-report.md",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "b06b91fe9d0f974d93a399785f9afe956d65b568e02cf710c23dc88761c366ed",
+      "bytes": 5204
+    },
+    {
+      "path": "docs/history-review/exhibition-update-files.txt",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "10adad8919b8d2fa17a172c3a6467c63d2ac9a27fba93db628c7b6c6853fc9e4",
+      "bytes": 1184
+    },
+    {
+      "path": "docs/interface-contract.md",
+      "action": "modify",
+      "original_sha256": "e1c21dc85e14239d2afd050b1cda3829b46c302f480c8caf3d37454acfe8a0d3",
+      "sha256": "b8dd6e86963073915a9a45fbc399b9f585d2302f1f6a61c3a242067829fcbff3",
+      "bytes": 23377
+    },
+    {
+      "path": "scripts/history-release.ts",
+      "action": "modify",
+      "original_sha256": "7704f9d27f5ca877c2510855e53dde20c6ccf2875aa8e01723ae9fc735de6a49",
+      "sha256": "0f1e054b8ad95cbd3b2322707cf03492efe503a8406732703cef4d3278d49b8c",
+      "bytes": 12920
+    },
+    {
+      "path": "src/app/App.tsx",
+      "action": "modify",
+      "original_sha256": "a9ed5aa0fa17a1b56a34990abbdcb153d182ae09ff4d2c207186eb75e1707e76",
+      "sha256": "19835fe06c023c9aeaf48a14c9d07f15743745a0f9377188d74157ca64bd3763",
+      "bytes": 26762
+    },
+    {
+      "path": "src/app/experience/historical-experience-routing.ts",
+      "action": "modify",
+      "original_sha256": "27343743ecbfc922f0f161c84cd3cb4ff8cb4b89713badeff531dd55b60dcc48",
+      "sha256": "906c709f25b4f9b985356319de24d1f540e81e06e70d26ce76cb18004d117bf0",
+      "bytes": 5326
+    },
+    {
+      "path": "src/app/history/exhibition-catalog.ts",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "4e94bd7762f5f8362f24bd6473642b020fb5b1e973b06a6c9a88fb6abdd5c291",
+      "bytes": 1339
+    },
+    {
+      "path": "src/app/landscape/ExhibitionPanorama.tsx",
+      "action": "modify",
+      "original_sha256": "f2ba3b7d8162afd2d08a0163b07eb6dde2919034f31db2cf789054538c2fc41a",
+      "sha256": "f36f2881bf283a29aa57490533260dc37241cb58c2c24a9d6e50482644f57d55",
+      "bytes": 23329
+    },
+    {
+      "path": "src/components/experience/ExperienceHost.tsx",
+      "action": "modify",
+      "original_sha256": "0d70b693c5f3d787506f6295fc00a6a3f3746ef0203127b9c82ca72e99f9f348",
+      "sha256": "bfd57414b023d5c795f55cbfab19f9bf52ea8758003c9912d89f164071c1d6d8",
+      "bytes": 19780
+    },
+    {
+      "path": "src/components/overlay/ExhibitionContent.tsx",
+      "action": "modify",
+      "original_sha256": "2ce220cd6bcf0748bf8c49fe5ac642a6a067a4e07cc804894eb368480ace25ea",
+      "sha256": "c0a2e481264c207e76f31f4cd277b11d0dcd04a7bf4aabf6095cd7ee6d92226d",
+      "bytes": 9981
+    },
+    {
+      "path": "src/components/overlay/HistoricalNavigation.tsx",
+      "action": "modify",
+      "original_sha256": "b0fc1a0adf4ca570d33c5ef1ff581542afb07a38e7060122ed03d96001aa1516",
+      "sha256": "265a5ef3dd0d9973e0c56f6c32f19ca595d7d44aa2e07256e588e972f52dfc7b",
+      "bytes": 10077
+    },
+    {
+      "path": "src/features/history/HistoricalDetailPanel.tsx",
+      "action": "modify",
+      "original_sha256": "7e103f0cf2c98e776ddf90ce58b490edf2285b874234248e5d02223f4285e528",
+      "sha256": "dfc518a706ff478548c3558ccfd7854163ea2bc710fda6974d3c79573e368504",
+      "bytes": 8408
+    },
+    {
+      "path": "src/features/history/HistoryDisplayContext.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "25172abe18deeffaefc9134c3bb7cec923e745585c3eb251e0413c1a4b427543",
+      "bytes": 206
+    },
+    {
+      "path": "src/features/history/README.md",
+      "action": "modify",
+      "original_sha256": "ebfa0b5274c4b17676686afb67e72028a41a9f59678a895c2f1fc0bc8e31670b",
+      "sha256": "0b8150aedfbc2fc27d959d9d45f03cdd6297df1038e3aa503f05c9086d78bb33",
+      "bytes": 1218
+    },
+    {
+      "path": "src/features/history/index.ts",
+      "action": "modify",
+      "original_sha256": "b13e5589d01e95c4dbcb139a2d3e307736d10050d5608c4b0db6d26bd0addba6",
+      "sha256": "437ffc0138e93ac7efb757de7a6523dc8968bbce5928c5c98fc83cc23a0d314f",
+      "bytes": 311
+    },
+    {
+      "path": "src/styles/historical-orchestration.css",
+      "action": "modify",
+      "original_sha256": "0660cfee36a22a2f648e7ca687f0a99071bfdea96308cca0fb4664198cb817f7",
+      "sha256": "5599e382a9f91e679c7fe856c529515c13897cf632d975c73a5427612e1461f9",
+      "bytes": 3783
+    },
+    {
+      "path": "src/tests/App.test.tsx",
+      "action": "modify",
+      "original_sha256": "a23924e7111fa71cf294ace13aed29a2b1dfec9d69e23af002088f3ced65bbdc",
+      "sha256": "d64406593d0c75007d8606cd1aa8ab744a4b25f8798c3355fb56e08b2f10122b",
+      "bytes": 8782
+    },
+    {
+      "path": "src/tests/exhibition-panorama.test.tsx",
+      "action": "modify",
+      "original_sha256": "313ffcaad4d82a77fa60ed4461758a55981bc6c5fc9399b720fbb75ad95f6bab",
+      "sha256": "61a9fd2e0d9fdf19e750299bafbb11cef7f5813c7024ac6dec1f32f87c7e951d",
+      "bytes": 18046
+    },
+    {
+      "path": "src/tests/experience-recovery.test.tsx",
+      "action": "modify",
+      "original_sha256": "b3c0ef44361c7b2c3f6084ae3e6f99cd08e6f6f64dc33d4a8cd32f57dd852ebe",
+      "sha256": "64cf081a24e0512b7172de7fdb36503e91fa9a34632294a608a894bebba39fad",
+      "bytes": 2861
+    },
+    {
+      "path": "src/tests/full-exhibition.test.tsx",
+      "action": "add",
+      "original_sha256": null,
+      "sha256": "9c2c88205e0d4e0fa7887cfd0e12fe7c54601d8b20dacb1f399ca359f91166a7",
+      "bytes": 10509
+    },
+    {
+      "path": "src/tests/release-build.test.ts",
+      "action": "modify",
+      "original_sha256": "4774422842efc67f03c3773d4a8ae21b75f2b12fea8cc62f9b63a448dbdf81de",
+      "sha256": "1dc1f10cda38afb666b46d04ff0c3ab7c5d3d5df4d6c5090482383a587e67c05",
+      "bytes": 9677
+    },
+    {
+      "path": "vite.config.ts",
+      "action": "modify",
+      "original_sha256": "946af60d6501a74d326d640539ab778c1dbd9f59221de69d5ee65a0f7bbac15c",
+      "sha256": "b6d262e4cdd543d268e4ee00d7c392d3b96e226dc0c748df88f8115a64508e92",
+      "bytes": 881
+    }
+  ]
+}

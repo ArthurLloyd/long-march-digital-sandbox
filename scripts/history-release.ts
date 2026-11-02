@@ -149,7 +149,18 @@ async function readOutput(
   prefix = '',
 ): Promise<Map<string, Uint8Array>> {
   const files = new Map<string, Uint8Array>();
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
+  let entries;
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if (
+      (error as NodeJS.ErrnoException).code === 'ENOENT' &&
+      directory.split(/[\\/]/).includes('.rsync-tmp')
+    )
+      return files;
+    throw error;
+  }
+  for (const entry of entries) {
     const name = `${prefix}${entry.name}`;
     if (entry.isDirectory()) {
       for (const item of await readOutput(
@@ -157,14 +168,28 @@ async function readOutput(
         `${name}/`,
       ))
         files.set(...item);
-    } else files.set(name, await readFile(resolve(directory, entry.name)));
+    } else {
+      try {
+        files.set(name, await readFile(resolve(directory, entry.name)));
+      } catch (error) {
+        // A temporary copy file can disappear between listing and reading. Existing files are still checked.
+        if (
+          (error as NodeJS.ErrnoException).code !== 'ENOENT' ||
+          !name.split('/').includes('.rsync-tmp')
+        )
+          throw error;
+      }
+    }
   }
   return files;
 }
 
-/** Source records stay untouched. Only a derived, deny-preserving view reaches App. */
+/** Source records stay untouched. The host explicitly chooses strict release or full exhibition. */
 export function historyReleasePlugin(
-  options: { artAssets?: readonly ArtExhibitAsset[] } = {},
+  options: {
+    artAssets?: readonly ArtExhibitAsset[];
+    exhibition?: boolean;
+  } = {},
 ): Plugin {
   const artAssets = options.artAssets ?? [];
   let config: ResolvedConfig;
@@ -177,6 +202,7 @@ export function historyReleasePlugin(
       validateDataset(JSON.parse(await readFile(sourcePath, 'utf8'))),
     );
     snapshot = createReleaseSnapshot(candidate);
+    if (options.exhibition) snapshot = { ...snapshot, dataset: candidate };
     return snapshot;
   }
   return {
@@ -226,10 +252,11 @@ export function historyReleasePlugin(
               `艺术展陈资源字节与审核清单不符：${asset.filePath}`,
             );
         }
-        await validatePublishedAssets(
-          pathToFileURL(`${resolve(config.root, 'public')}/`),
-          snapshot.dataset.assets,
-        );
+        if (!options.exhibition)
+          await validatePublishedAssets(
+            pathToFileURL(`${resolve(config.root, 'public')}/`),
+            snapshot.dataset.assets,
+          );
         const allowed = new Set(releaseAssetFiles(snapshot.dataset, artAssets));
         const approvedHashes = new Set<string>();
         blockedHashes = new Set();

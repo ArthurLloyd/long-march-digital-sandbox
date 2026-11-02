@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { assetPathSchema } from '../../shared/contracts';
 import type {
   AssetReference,
@@ -6,6 +6,7 @@ import type {
   HistoricalObjectSelection,
 } from '../../shared/contracts';
 import styles from './history.module.css';
+import { HistoryDisplayContext } from './HistoryDisplayContext';
 
 const precision = {
   exact: '精确',
@@ -19,11 +20,12 @@ const contentTypes = {
   artistic_recreation: '艺术再现',
   teaching_simulation: '教学模拟',
 };
-function usable(a: AssetReference) {
+function usable(a: AssetReference, exhibit: boolean) {
   return (
-    a.releaseStatus === 'published' &&
-    a.reviewStatus === 'reviewed' &&
-    a.rightsStatus === 'cleared' &&
+    (exhibit ||
+      (a.releaseStatus === 'published' &&
+        a.reviewStatus === 'reviewed' &&
+        a.rightsStatus === 'cleared')) &&
     assetPathSchema.safeParse(a.filePath).success
   );
 }
@@ -75,6 +77,7 @@ export function HistoricalDetailPanel({
   onNavigate,
   onClose,
 }: HistoricalDetailProps) {
+  const exhibit = useContext(HistoryDisplayContext);
   const r = detail.record;
   const title =
     detail.kind === 'person'
@@ -110,7 +113,7 @@ export function HistoricalDetailPanel({
             detail.kind === 'event' &&
             a.relatedEventIds.includes(detail.record.id),
         )
-  ).filter(usable);
+  ).filter((a) => usable(a, exhibit));
   const images = candidates.filter((a) =>
     [
       'historical_photo',
@@ -142,7 +145,7 @@ export function HistoricalDetailPanel({
           关闭
         </button>
       </header>
-      {r.releaseStatus !== 'published' && (
+      {!exhibit && r.releaseStatus !== 'published' && (
         <p className={styles.note}>
           候选资料，尚未发布；当前展示用于隔离审阅。
         </p>
@@ -186,7 +189,9 @@ export function HistoricalDetailPanel({
       <div className={styles.prose}>{body}</div>
       {detail.kind === 'person' && !hasPhoto && (
         <p className={styles.note}>
-          当前没有经审核可用的真实照片，先提供文字资料。
+          {exhibit
+            ? '暂未取得可用的真实照片，先提供文字资料。'
+            : '当前没有经审核可用的真实照片，先提供文字资料。'}
         </p>
       )}
       {shown.length > 0 && (

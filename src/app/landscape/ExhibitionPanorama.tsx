@@ -45,7 +45,14 @@ const RegionalObservation = lazy(() =>
 );
 
 /** C-owned geographical view. C1 owns experience completion; C2 owns phases. */
-export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
+export function ExhibitionPanorama(
+  props: LongMarchSceneV2Props & {
+    onRegionHistory?: (region: string) => void;
+    historyRegions?: readonly string[];
+    observationRequest?: RegionId | null;
+    onObservationClosed?: () => void;
+  },
+) {
   const host = useRef<HTMLDivElement>(null),
     api = useRef<PanoramaMapAdapter | null>(null);
   const latest = useRef(props),
@@ -64,7 +71,6 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       (props.cameraBookmark?.sceneId === RUIJIN_SCENE &&
         props.cameraBookmark.phaseId === props.phaseId) ||
       (!props.cameraBookmark &&
-        !props.phaseId &&
         !props.activeEventId &&
         !props.events.some(
           (event) =>
@@ -81,7 +87,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
     PanoramaMapAdapter['bookmark']
   > | null>(null);
   const observationPhase = useRef<string | null>(null);
-  const openObservation = (id: RegionId) => {
+  const openObservation = useCallback((id: RegionId) => {
     observationTrigger.current =
       document.activeElement instanceof HTMLElement
         ? document.activeElement
@@ -90,9 +96,16 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
     observationPhase.current = latest.current.phaseId;
     api.current?.suspend(true);
     setObservation(id);
-  };
+  }, []);
+  useEffect(() => {
+    const region = props.observationRequest;
+    if (!region) return;
+    const frame = requestAnimationFrame(() => openObservation(region));
+    return () => cancelAnimationFrame(frame);
+  }, [props.observationRequest, openObservation]);
   const closeObservation = () => {
     setObservation(null);
+    props.onObservationClosed?.();
     api.current?.suspend(false);
     if (
       observationBookmark.current &&
@@ -243,7 +256,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             kind: 'force',
             prominent: false,
           }
-        : !props.phaseId && focusedView === 'ruijin'
+        : focusedView === 'ruijin' && (entry || !props.phaseId)
           ? {
               coordinates: regionCenter(REGIONS.ruijin),
               kind: 'origin',
@@ -435,6 +448,17 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             </span>
             <ArrowUpRight size={20} />
           </button>
+          {props.historyRegions?.includes(focusedView) && (
+            <button
+              className="outlined-button"
+              onClick={() => props.onRegionHistory?.(focusedView)}
+            >
+              <MapControlFrame />
+              <ToolEmblem kind="history" />
+              <span>阅读本区域历史</span>
+              <ArrowUpRight size={20} />
+            </button>
+          )}
         </div>
       )}
       <details className="museum-map-layers">

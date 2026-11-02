@@ -19,8 +19,10 @@ function detailTitle(detail: HistoricalDetail) {
 export function ExperienceHost({
   controller: c,
   returnFocusRef,
+  onVisualExperience,
 }: {
   controller: HistoricalExperienceController;
+  onVisualExperience?: (topicId: string) => void;
   returnFocusRef: RefObject<HTMLElement | null>;
 }) {
   const { state, modules } = c;
@@ -85,6 +87,19 @@ export function ExperienceHost({
       ...(run?.mode === 'equivalent' ? run.bundle.fallback.sourceIds : []),
     ]),
   ];
+  const visualTopicId =
+    route?.detail.kind === 'topic'
+      ? route.detail.record.topicId
+      : route?.detail.kind === 'event'
+        ? c.catalog.published.topics.find((topic) =>
+            topic.eventIds.includes(
+              route.detail.kind === 'event' ? route.detail.record.id : '',
+            ),
+          )?.topicId
+        : undefined;
+  const hasVisualStory =
+    visualTopicId &&
+    ['topic-ld', 'topic-zy', 'topic-sn'].includes(visualTopicId);
   const title = route ? detailTitle(route.detail) : '历史体验';
   const canFinish =
     completionForState(state, new Date().toISOString()) !== null;
@@ -107,7 +122,10 @@ export function ExperienceHost({
       {state.supplement && (
         <section className="experience-supplement">
           {'source' in state.supplement ? (
-            <SourceContent sources={[state.supplement.source]} />
+            <SourceContent
+              sources={[state.supplement.source]}
+              fullExhibition={c.catalog.audience === 'exhibition'}
+            />
           ) : (
             <>
               <h3>{detailTitle(state.supplement.detail)}</h3>
@@ -218,9 +236,37 @@ export function ExperienceHost({
               onNavigate={c.navigate}
             />
             {route.bundle && (
-              <button className="outlined-button" onClick={() => c.start()}>
-                重播体验
-              </button>
+              <div className="experience-actions">
+                {hasVisualStory && onVisualExperience && (
+                  <button
+                    className="outlined-button"
+                    onClick={() => onVisualExperience(visualTopicId)}
+                  >
+                    观看场景演绎
+                  </button>
+                )}
+                {(modules.Renderer || c.catalog.audience !== 'exhibition') && (
+                  <button className="outlined-button" onClick={() => c.start()}>
+                    {c.catalog.audience === 'exhibition'
+                      ? '进入沉浸体验'
+                      : '重播体验'}
+                  </button>
+                )}
+                <button
+                  className="outlined-button"
+                  disabled={!modules.Teaching || !modules.Equivalent}
+                  onClick={() => c.start('equivalent')}
+                >
+                  {c.catalog.audience === 'exhibition'
+                    ? '开始图文互动'
+                    : '重播图文体验'}
+                </button>
+                {!modules.Renderer && (
+                  <p className="integrity-note">
+                    互动脚本已接入下方图文流程；区域艺术场景可在地图中观看。
+                  </p>
+                )}
+              </div>
             )}
           </section>
         )}

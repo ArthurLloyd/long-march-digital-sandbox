@@ -7,6 +7,7 @@ import '../../styles/historical-orchestration.css';
 
 interface Props {
   dataset: HistoryDatasetV2;
+  fullExhibition?: boolean;
   topicId: string | null;
   phaseId: string | null;
   onTopic: (id: string) => void;
@@ -18,6 +19,7 @@ interface Props {
 /** Receives the complete published catalog. Scene projections never feed this directory. */
 export function HistoricalNavigation({
   dataset,
+  fullExhibition = false,
   topicId,
   phaseId,
   onTopic,
@@ -56,6 +58,48 @@ export function HistoricalNavigation({
       <p className="drawer-introduction">
         选择专题与阶段探索山河；主动打开事件时，再进入资料或体验。
       </p>
+      {fullExhibition && (
+        <section className="history-collection" aria-label="六主题历史目录">
+          <p className="history-collection-count">六个专题 · 从史料走进长征</p>
+          <h3>选择一段历史，开始探索。</h3>
+          <div className="history-collection-grid">
+            {model.topics.map((topic) => {
+              const event = dataset.events.find(
+                (e) => e.id === topic.eventIds[0],
+              );
+              const phase = dataset.phases.find(
+                (p) => p.phaseId === topic.phaseIds[0],
+              );
+              return event && phase ? (
+                <article
+                  key={topic.topicId}
+                  className="history-collection-card"
+                >
+                  <small>
+                    {['topic-ld', 'topic-zy', 'topic-sn'].includes(
+                      topic.topicId,
+                    )
+                      ? '重点故事'
+                      : '历史专题'}{' '}
+                    · {event.dateText}
+                  </small>
+                  <h4>{topic.title}</h4>
+                  <p>{topic.summary}</p>
+                  <button
+                    className="outlined-button"
+                    onClick={() =>
+                      onEventAtPhase(event.id, topic.topicId, phase.phaseId)
+                    }
+                  >
+                    阅读{topic.title}
+                  </button>
+                </article>
+              ) : null;
+            })}
+          </div>
+          <p>阅读正文后可开始图文互动，也可沿下方阶段目录继续探索。</p>
+        </section>
+      )}
       {model.error && <p role="alert">{model.error}</p>}
       {!model.topics.length && <p>历史专题正在核验，正式内容暂未开放。</p>}
       {model.topics.map((topic) => (
@@ -67,7 +111,7 @@ export function HistoricalNavigation({
           <summary>
             <strong>{topic.title}</strong>
             <span>
-              {model.orders.get(topic.topicId)?.length ?? 0} 个开放阶段
+              {model.orders.get(topic.topicId)?.length ?? 0} 个历史阶段
               {topic.topicId === topicId ? ' · 当前专题' : ''}
             </span>
           </summary>
@@ -169,11 +213,58 @@ export function HistoricalNavigation({
           <p>人物与地点资料正在核验。</p>
         )}
       </details>
+      {fullExhibition && dataset.forceTracks.length > 0 && (
+        <details className="history-entities">
+          <summary>双方部队与阶段资料</summary>
+          {dataset.forceTracks.map((track) => (
+            <article key={track.trackId} className="history-force-record">
+              <h4>{track.name}</h4>
+              <p>
+                阵营：
+                {track.camp === 'red_army'
+                  ? '红军'
+                  : track.camp === 'nationalist_army'
+                    ? '国民党军'
+                    : '其他'}
+              </p>
+              <ul>
+                {dataset.forceSnapshots
+                  .filter((s) => s.trackId === track.trackId)
+                  .map((snapshot) => {
+                    const phase = dataset.phases.find(
+                      (p) => p.phaseId === snapshot.phaseId,
+                    );
+                    return (
+                      <li key={snapshot.snapshotId}>
+                        {phase?.title} · {phase?.timeRange.label}。
+                        {snapshot.coordinates === null
+                          ? '具体位置未定，保留阶段关联与文字资料。'
+                          : '位置精度：' + snapshot.coordinatePrecision}
+                      </li>
+                    );
+                  })}
+              </ul>
+              <p>
+                依据：
+                {track.sourceIds
+                  .map(
+                    (id) =>
+                      dataset.sources.find((s) => s.sourceId === id)?.title ??
+                      id,
+                  )
+                  .join('；')}
+              </p>
+            </article>
+          ))}
+        </details>
+      )}
       {dataset.events.some(
         (e) => !dataset.topics.some((t) => t.eventIds.includes(e.id)),
       ) && (
         <details className="history-entities">
-          <summary>其他已发布事件</summary>
+          <summary>
+            {fullExhibition ? '补充历史事件' : '其他已发布事件'}
+          </summary>
           {dataset.events
             .filter(
               (e) => !dataset.topics.some((t) => t.eventIds.includes(e.id)),

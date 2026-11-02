@@ -99,7 +99,7 @@ describe('实际产物的数据与资源发布边界', () => {
       ),
     ).toThrow('未获发布许可');
   });
-  it('完整 App 构建的 dist 不携带候选、图片、工作台或模拟审核', async () => {
+  it('完整展馆构建包含正文和十张配对图片，仍排除开发页与测试样本', async () => {
     const directory = await temporary();
     try {
       const outDir = join(directory, 'dist');
@@ -111,17 +111,22 @@ describe('实际产物的数据与资源发布边界', () => {
       const files = await filesIn(outDir);
       expect(files.has('index.html')).toBe(true);
       expect(files.has('assets/fonts/zhi-mang-xing-display.woff2')).toBe(true);
-      expect(
-        [...files.keys()].some(
-          (n) =>
-            n.includes('/archive/') ||
-            (n.includes('/textures/') &&
-              !artExhibits.files.some((asset) => asset.filePath === n)) ||
-            n.includes('/terrain/') ||
-            n.includes('/review/'),
-        ),
-      ).toBe(false);
-      const snapshot = createReleaseSnapshot(raw);
+      const exhibit = normalizeDataset(validateDataset(raw));
+      for (const asset of exhibit.assets) {
+        expect(files.has(asset.filePath.slice(1)), asset.filePath).toBe(true);
+        const original = await readFile(
+          resolve('public', asset.filePath.slice(1)),
+        );
+        expect(
+          createHash('sha256')
+            .update(files.get(asset.filePath.slice(1))!)
+            .digest('hex'),
+        ).toBe(createHash('sha256').update(original).digest('hex'));
+      }
+      expect([...files.keys()].some((n) => /^(?:src|__dev)\//.test(n))).toBe(
+        false,
+      );
+      const snapshot = { dataset: exhibit };
       expect(() =>
         assertReleaseFiles(
           files,
@@ -135,8 +140,8 @@ describe('实际产物的数据与资源发布边界', () => {
         .filter(([name]) => name.endsWith('.js'))
         .map(([, bytes]) => new TextDecoder().decode(bytes))
         .join('');
-      expect(js).not.toContain('ld-hotspot-banks');
-      expect(js).not.toContain('两份记载均将铁索');
+      expect(js).toContain('ld-hotspot-banks');
+      expect(js).toContain('两份记载均将铁索');
       expect(js).not.toContain('simulation-only-a');
       expect(js).not.toContain('createCandidateReviewCatalog');
       expect(js.includes('preview-label')).toBe(false);
@@ -154,10 +159,14 @@ describe('实际产物的数据与资源发布边界', () => {
         const home = await fetch(base + '/');
         expect(home.status).toBe(200);
         expect(await home.text()).toContain('<div id="root">');
+        const portrait = await fetch(
+          base + '/assets/archive/portraits/zhou-photo.jpg',
+        );
+        expect(portrait.status).toBe(200);
+        expect((await portrait.arrayBuffer()).byteLength).toBeGreaterThan(1000);
         for (const path of [
           '/__dev/contracts?flow=c3',
           '/src/features/history/review/index.html',
-          '/assets/archive/portraits/zhou-photo.jpg',
         ]) {
           const response = await fetch(base + path);
           await response.text();
@@ -172,65 +181,41 @@ describe('实际产物的数据与资源发布边界', () => {
       await rm(directory, { recursive: true, force: true });
     }
   }, 30000);
-  it('实际写入候选脚本或未许可静态文件会使构建失败', async () => {
+  it('完整展出仍拒绝未登记归档文件与测试模块泄露', async () => {
     const directory = await temporary();
     try {
-      await expect(
-        build({
-          root: fileURLToPath(new URL('../../', import.meta.url)),
-          logLevel: 'silent',
-          plugins: [
-            {
-              name: 'deliberate-candidate-leak',
-              generateBundle() {
-                this.emitFile({
-                  type: 'asset',
-                  fileName: 'leaked.js',
-                  source: 'console.log("ld-hotspot-banks")',
-                });
+      for (const [fileName, source, message] of [
+        [
+          'assets/archive/unregistered.jpg',
+          'unregistered image',
+          '未获发布许可',
+        ],
+        [
+          'leaked.js',
+          'console.log("/src/data/fixtures/not-for-exhibition.json")',
+          '开发或模拟审核',
+        ],
+      ]) {
+        await expect(
+          build({
+            root: fileURLToPath(new URL('../../', import.meta.url)),
+            logLevel: 'silent',
+            plugins: [
+              {
+                name: 'deliberate-unregistered-output',
+                generateBundle() {
+                  this.emitFile({
+                    type: 'asset',
+                    fileName: fileName!,
+                    source: source!,
+                  });
+                },
               },
-            },
-          ],
-          build: { outDir: join(directory, 'dist'), emptyOutDir: true },
-        }),
-      ).rejects.toThrow('生产包含候选内容');
-      const snapshot = createReleaseSnapshot(raw);
-      expect(() =>
-        assertReleaseFiles(
-          new Map([
-            ['assets/archive/portraits/zhou-photo.jpg', new Uint8Array()],
-          ]),
-          normalizeDataset(validateDataset(raw)),
-          snapshot.dataset,
-        ),
-      ).toThrow('未获发布许可');
-      const image = await readFile(
-        fileURLToPath(
-          new URL(
-            '../../public/assets/archive/portraits/zhou-photo.jpg',
-            import.meta.url,
-          ),
-        ),
-      );
-      await expect(
-        build({
-          root: fileURLToPath(new URL('../../', import.meta.url)),
-          logLevel: 'silent',
-          plugins: [
-            {
-              name: 'renamed-unpublished-image',
-              generateBundle() {
-                this.emitFile({
-                  type: 'asset',
-                  fileName: 'assets/renamed-image.jpg',
-                  source: image,
-                });
-              },
-            },
-          ],
-          build: { outDir: join(directory, 'renamed'), emptyOutDir: true },
-        }),
-      ).rejects.toThrow('生产包含未发布资源字节');
+            ],
+            build: { outDir: join(directory, 'dist'), emptyOutDir: true },
+          }),
+        ).rejects.toThrow(message);
+      }
     } finally {
       await rm(directory, { recursive: true, force: true });
     }

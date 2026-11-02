@@ -13,7 +13,7 @@ export default defineConfig({
     ? 'node_modules/.vite-verification'
     : 'node_modules/.vite-app',
   plugins: [
-    historyReleasePlugin({ artAssets: artExhibits.files }),
+    historyReleasePlugin({ artAssets: artExhibits.files, exhibition: true }),
     react(),
     contractWorkbenchPlugin(),
     panoramaWorkbenchPlugin(),
