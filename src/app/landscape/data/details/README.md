@@ -9,7 +9,7 @@
 `provenance.json` 保存源文件下载 URL、字节数、SHA-256 和各输出哈希。准备脚本：
 
 ```powershell
-python scripts/prepare-panorama-details.py --cache D:/Project/miniprogram/artifacts/browser/panorama-detail-cache --out src/app/panorama/data/details --acquired-at 2026-11-02
+python scripts/prepare-panorama-details.py --cache D:/Project/miniprogram/artifacts/browser/panorama-detail-cache --out src/app/landscape/data/details --acquired-at 2026-11-02
 ```
 
 地图本地读取细节，无运行时地图 API、账号、商业 SDK 或外部地理请求。

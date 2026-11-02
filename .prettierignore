@@ -6,6 +6,6 @@ package-lock.json
 .impeccable/seeds
 artifacts
 # Deterministic generated geography; SHA-256 is recorded in its provenance.
-src/app/panorama/data/modern-geography.json
+src/app/landscape/data/modern-geography.json
 
-src/app/panorama/data/details/*.json
+src/app/landscape/data/details/*.json

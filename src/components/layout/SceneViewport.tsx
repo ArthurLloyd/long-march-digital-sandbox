@@ -100,7 +100,9 @@ export function SceneViewport({
         {error
           ? '场景异常 · 文字资料可继续阅读'
           : ready
-            ? '预览已就绪'
+            ? import.meta.env.DEV && import.meta.env.MODE !== 'production'
+              ? '预览已就绪'
+              : '地图已就绪'
             : '场景准备中'}
       </p>
     </section>

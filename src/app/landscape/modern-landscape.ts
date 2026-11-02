@@ -19,12 +19,23 @@ import {
   createRiverChannel,
   type RiverPoint,
 } from './river-mesh';
-import type { RegionId } from './navigation';
+import type { RegionId } from './map-regions';
+import { disposeLandscapeRoot } from './resource-lifecycle';
 
-const loaders = import.meta.glob<ModernHeightfield>('./data/details/*.json', {
-  import: 'default',
-});
+const loaders = import.meta.glob<ModernHeightfield>(
+  './data/details/{ruijin,zunyi,chishui,jinsha,luding,snow,grass,reunion}.json',
+  {
+    import: 'default',
+  },
+);
 const cache = new Map<RegionId, Promise<ModernHeightfield>>();
+type FocusPivot = {
+  x: number;
+  z: number;
+  viewDirection?: { x: number; z: number };
+  waterLevel?: number;
+  riverCandidates?: { x: number; z: number; level: number }[];
+};
 const point = (coordinates: readonly number[]): RiverPoint => {
   const [x, z] = projectGeo([coordinates[0]!, coordinates[1]!]);
   return { x, z };
@@ -60,6 +71,7 @@ export function createModernLandscape(
     disposed = false,
     revision = 0;
   let visibleRivers = true;
+  let focusedPivot: FocusPivot | null = null;
   let activeLines: RiverPoint[][] = modernLines.map((line) => line.points);
   let halfWidth = 0.018;
   let carve = channelCarver(activeLines, halfWidth);
@@ -216,6 +228,7 @@ export function createModernLandscape(
     heightAt: surface,
     async focus(id: RegionId) {
       const ticket = ++revision;
+      if (region === id && focusedPivot) return focusedPivot;
       try {
         const loader = loaders[`./data/details/${id}.json`];
         if (!loader) return null;
@@ -227,6 +240,7 @@ export function createModernLandscape(
         const data = await pending;
         if (disposed || ticket !== revision) return null;
         region = id;
+        focusedPivot = null;
         detailField = createTerrainField(data);
         activeLines = localLines(id, detailField);
         halfWidth = 0.0065;
@@ -286,10 +300,10 @@ export function createModernLandscape(
                 ),
               )
               .map((p) => ({ x: p.x, z: p.z, level: p.level }));
-            return { ...nearest, riverCandidates };
+            return (focusedPivot = { ...nearest, riverCandidates });
           }
         }
-        return center;
+        return (focusedPivot = center);
       } catch {
         cache.delete(id);
         return null;
@@ -298,6 +312,7 @@ export function createModernLandscape(
     overview() {
       revision++;
       region = null;
+      focusedPivot = null;
       detailField = null;
       channel = null;
       activeLines = modernLines.map((line) => line.points);
@@ -310,6 +325,7 @@ export function createModernLandscape(
     setExaggeration(value: number) {
       if (value === gain) return;
       gain = value;
+      focusedPivot = null;
       if (region)
         channel = createRiverChannel(
           activeLines,
@@ -346,9 +362,11 @@ export function createModernLandscape(
       return detailField?.worldBounds ?? globalField.worldBounds;
     },
     dispose() {
+      if (disposed) return;
       disposed = true;
       scene.environment = null;
       environment.dispose();
+      disposeLandscapeRoot(root, [landMaterial, water.material, bankMaterial]);
       revision++;
     },
   };

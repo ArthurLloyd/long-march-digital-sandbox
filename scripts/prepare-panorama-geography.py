@@ -100,11 +100,11 @@ def main():
             height = (sample(ix, iy) * (1-dx) + sample(ix+1, iy) * dx) * (1-dy) + (sample(ix, iy+1) * (1-dx) + sample(ix+1, iy+1) * dx) * dy
             heights.append(round(height))
     output = {'kind': 'modern-geography-reference', 'bounds': BOUNDS, 'projection': 'EPSG:3857', 'inputCoordinates': 'WGS84 [longitude, latitude]', 'cols': COLS, 'rows': ROWS, 'heightUnit': 'metre', 'sourceZoom': ZOOM, 'verticalExaggeration': 12, 'heights': heights, 'rivers': rivers}
-    (args.out / 'modern-geography.json').write_text(json.dumps(output, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+    (args.out / 'modern-geography.json').write_bytes((json.dumps(output, ensure_ascii=False, separators=(',', ':')) + '\n').encode('utf-8'))
     record = {'acquiredAt': args.acquired_at, 'bounds': BOUNDS, 'naturalEarthRevision': revision, 'terrainAttribution': 'Mapzen / Tilezen Terrain Tiles; global GMTED2010 / SRTM courtesy USGS; global ETOPO1 NOAA', 'riverLicense': 'Natural Earth public domain', 'processing': 'Terrarium z6, bilinear sample to 385x321, round metres. Rivers retain original vertices and consecutive in-bounds segments; no smoothing, inferred watercourses or historical routes.', 'limitations': 'Modern generalized geography. Approximately kilometre-scale terrain; vertical exaggeration 12x for continental-scale readability, not physical vertical scale. Not 1935 terrain or complete hydrology. No administrative or national boundaries.', 'sources': sorted(provenance, key=lambda item: item['url']), 'outputs': []}
     payload = (args.out / 'modern-geography.json').read_bytes()
     record['outputs'].append({'file': 'modern-geography.json', 'bytes': len(payload), 'sha256': hashlib.sha256(payload).hexdigest()})
-    (args.out / 'provenance.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    (args.out / 'provenance.json').write_bytes((json.dumps(record, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
     print(json.dumps({'tiles': len(tiles), 'grid': [COLS, ROWS], 'rivers': len(rivers), 'names': sorted(set(r['name'] for r in rivers)), 'range': [min(heights), max(heights)], 'bytes': len(payload)}, ensure_ascii=False))
 
 

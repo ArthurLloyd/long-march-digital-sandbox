@@ -1,0 +1,42 @@
+{
+  "snapshot": {
+    "canvas": 1,
+    "geographicWindows": 8,
+    "horizontalOverflow": false,
+    "phaseButtons": [
+      {
+        "disabled": true,
+        "label": "上一历史阶段"
+      },
+      {
+        "disabled": true,
+        "label": "播放专题阶段"
+      },
+      {
+        "disabled": true,
+        "label": "下一历史阶段"
+      },
+      {
+        "disabled": true,
+        "label": "重播当前专题"
+      }
+    ],
+    "previewLabels": 0,
+    "publishedEventMarkers": 0,
+    "ready": "地图已就绪",
+    "url": "http://127.0.0.1:4176/",
+    "viewport": [1366, 768]
+  },
+  "observedActions": [
+    "original landing → intro → enter → actual WebGL ready",
+    "geographic marker → cinematic camera → calligraphy",
+    "calligraphy click and Escape restore original UI and summary focus",
+    "modern river toggle unchecked/checked; relief 12→6→12",
+    "overview / zoom in / zoom out controls",
+    "original sources drawer opens and closes",
+    "exit canvas count 0; reenter canvas count 1"
+  ],
+  "productionOriginErrors": [],
+  "excludedLogScope": "Earlier development HMR and unrelated browser extensions are not production-origin errors",
+  "nativeHidden": "skipped-unverified"
+}

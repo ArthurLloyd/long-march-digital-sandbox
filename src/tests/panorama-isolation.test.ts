@@ -60,7 +60,7 @@ describe('全景开发原型的实际入口与生产隔离', () => {
       await server.close();
     }
   });
-  it('生产真实构建一旦引入全景候选地理模块即失败', async () => {
+  it('通过开发原型兼容出口绕入地图内核仍被生产隔离', async () => {
     await expect(
       build({
         configFile: false,
@@ -77,6 +77,35 @@ describe('全景开发原型的实际入口与生产隔离', () => {
         },
       }),
     ).rejects.toThrow('生产构建包含隔离测试模块');
+  }, 15000);
+  it('现代地理内核直接出口可以构建，且不放宽候选与 fixtures 隔离', async () => {
+    const result = await build({
+      configFile: false,
+      plugins: [productionIsolationPlugin()],
+      logLevel: 'silent',
+      build: {
+        write: false,
+        lib: {
+          entry: fileURLToPath(
+            new URL('../app/landscape/geography.ts', import.meta.url),
+          ),
+          formats: ['es'],
+        },
+      },
+    });
+    const outputs = Array.isArray(result) ? result : [result];
+    const chunks = outputs.flatMap((output) =>
+      'output' in output
+        ? output.output.filter((file) => file.type === 'chunk')
+        : [],
+    );
+    expect(
+      chunks.some(
+        (chunk) =>
+          chunk.exports.includes('projectGeo') &&
+          chunk.exports.includes('geography'),
+      ),
+    ).toBe(true);
   }, 15000);
   it('真实生产预览首页正常、全景开发路由为 404', async () => {
     const directory = await mkdtemp(

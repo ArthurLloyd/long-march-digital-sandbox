@@ -13,6 +13,8 @@
 | `MapCanvas.tsx`     | 真实 WebGL 创建、首帧反馈、重试、标签和卸载                     |
 | `data/`             | 离线现代地理，带原始来源、处理方式和哈希                        |
 
+现代地图内核、数据和授权素材已安全提取到 `src/app/landscape/`，正式 App 从该目录接线。此目录的 `geography.ts`、`map-renderer.ts` 等仅为开发兼容出口，仍被生产隔离；上表的地理数据职责现由 `../landscape/data/` 承担。候选详情、十一段浏览与四渡工程板继续只在本地开发入口存在。
+
 原型只读 B 的原始候选正文，使用不含审核字段的导航模型；不会伪造 reviewed/published、C1 ready/终点或正式完成记录。`src/tests/panorama/main.tsx` 是隔离开发入口。正式构建一旦导入 `src/app/panorama/` 立即失败，直到后续通过正式接线审核再明确调整。
 
 详见 `docs/architecture/panorama-framework-design.md`、`panorama-a-handoff.md` 和 `panorama-framework-report.md`。

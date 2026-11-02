@@ -6,7 +6,7 @@
 
 来源：[AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/)，Mapzen / Tilezen 集合；全球 SRTM / GMTED2010 归属 USGS，全球 ETOPO1 归属 NOAA。格式按 [Terrarium 官方说明](https://github.com/tilezen/joerd/blob/master/docs/formats.md)：`R*256+G+B/256-32768` 米。源数据与处理软件许可不同，不能把数据统称 MIT。
 
-16 张 z6 瓦片，双线性采样为 385×321、米级整数高程。该“米”是存储单位，不是精度承诺；栅格实际为数公里级的概化。显示高度提供 1×/6×/12×/24×，默认 12× 艺术增强，页面持续标注；已进行 Web Mercator 本地纬度尺度补偿，不能将它用于量测或声称历史地势严格等比例。河流宽度为屏幕增强，不是实测河宽。
+16 张 z6 瓦片，双线性采样为 385×321、米级整数高程。该“米”是存储单位，不是精度承诺；栅格实际为数公里级的概化。地势提供原始／层峦／雄浑／磅礴四档艺术表现，全景内部强度为 1/6/12/24，近景起伏自适配，页面持续标注；已进行 Web Mercator 本地纬度尺度补偿，不能将它用于量测或声称历史地势严格等比例。河流宽度为屏幕增强，不是实测河宽。
 
 本范围解码高程为 -38 至 6138 米；低于零的部分只在渲染时截为零，原数据保留。没有添加程序噪声、虚构山体、虚构河道或历史路线。色带是艺术表达，不代表土地覆盖分类或历史植被。
 
@@ -21,7 +21,7 @@
 ## 重建与追溯
 
 ```powershell
-python scripts/prepare-panorama-geography.py --cache D:/Project/miniprogram/artifacts/browser/panorama-geography-cache --out src/app/panorama/data --acquired-at 2026-11-02
+python scripts/prepare-panorama-geography.py --cache D:/Project/miniprogram/artifacts/browser/panorama-geography-cache --out src/app/landscape/data --acquired-at 2026-11-02
 ```
 
 Python 3 与 Pillow 12 已在本机存在，本轮没有安装新依赖。下载只发生在这个显式准备步骤；运行网页不请求外部地理服务。`provenance.json` 记录每个原始 URL、字节数、SHA-256、处理说明及输出校验。缓存文件名与 URL 哈希绑定，避免不同上游版本错误复用。

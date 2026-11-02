@@ -21,7 +21,8 @@ export function PhaseTimeline({
   onSelectPhase: (id: string) => void;
   onSelectEvent: (id: string) => void;
 }) {
-  const final = clock.index === clock.phases.length - 1;
+  const final =
+    clock.phases.length > 0 && clock.index === clock.phases.length - 1;
   return (
     <section className="timeline phase-timeline" aria-label="历史时间轴">
       <EmberCrest className="timeline-crest" />

@@ -22,9 +22,7 @@ export function MapCanvas({
   concealMarkers: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const labels = useRef<Partial<Record<RegionId, HTMLButtonElement | null>>>(
-    {},
-  );
+  const labels = useRef<Record<string, HTMLButtonElement | null>>({});
   const api = useRef<PanoramaMapAdapter | null>(null);
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);

@@ -3,7 +3,7 @@ import type { Plugin } from 'vite';
 export const CONTRACT_WORKBENCH_PATH = '/__dev/contracts';
 export function assertProductionModules(moduleIds: readonly string[]) {
   const forbidden = moduleIds.filter((id) =>
-    /\/src\/(?:data\/fixtures|tests|app\/panorama)\//.test(
+    /\/src\/(?:data\/fixtures|tests|app\/panorama|features\/history\/review)\//.test(
       id.replaceAll('\\', '/'),
     ),
   );

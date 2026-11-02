@@ -96,8 +96,8 @@
   "outputs": [
     {
       "file": "modern-geography.json",
-      "bytes": 820601,
-      "sha256": "8109d3a38c8db4d402de970ae7f34243e30da258873182955900a28010c07057"
+      "bytes": 820600,
+      "sha256": "dd646a1bc10f52af132a66461e14ea98d4b30fcb45057aea11f5169ad0875ca3"
     }
   ]
 }

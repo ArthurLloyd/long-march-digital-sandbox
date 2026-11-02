@@ -17,6 +17,9 @@ vi.mock('../features/scene', () => ({
     return <div>场景接口测试</div>;
   },
 }));
+vi.mock('../app/landscape/ExhibitionPanorama', async () => ({
+  ExhibitionPanorama: (await import('../features/scene')).LongMarchScene,
+}));
 
 afterEach(() => {
   vi.useRealTimers();
