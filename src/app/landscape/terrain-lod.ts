@@ -73,7 +73,10 @@ export function createTerrainLod(
     now = performance.now(),
   ) => {
     if (distance > 1.8) {
-      if (close) clearClose();
+      if (close) {
+        clearClose();
+        return true;
+      }
       return false;
     }
     const parent = regional?.tile.contains(x, z) ? regional : base;

@@ -84,9 +84,11 @@ describe('连续地形近景与共享高度', () => {
       () => 0,
     );
     const original = lod.meshes[0]!.geometry.index!.count;
+    const baseIndex = lod.meshes[0]!.geometry.index;
     lod.setRegion([0.5, 0.5, 2.5, 2.5]);
     lod.refine(1, 1, 0.1);
     expect(lod.meshes).toHaveLength(3);
+    expect(lod.meshes[0]!.geometry.index).toBe(baseIndex);
     const firstHeight = lod.heightAt(1.01, 1.02);
     lod.advance(performance.now() + 350);
     expect(Number.isFinite(lod.heightAt(1.01, 1.02))).toBe(true);
@@ -105,6 +107,7 @@ describe('连续地形近景与共享高度', () => {
     lod.setRegion(null);
     expect(lod.meshes).toHaveLength(1);
     expect(lod.meshes[0]!.geometry.index!.count).toBe(original);
+    expect(lod.meshes[0]!.geometry.index).toBe(baseIndex);
     expect(
       Array.from(lod.meshes[0]!.geometry.getAttribute('normal').array).every(
         Number.isFinite,

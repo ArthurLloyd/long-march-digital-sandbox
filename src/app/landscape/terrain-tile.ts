@@ -101,18 +101,21 @@ export function createTerrainTile(
       : typeof child[0] === 'number'
         ? [child as GeoBounds]
         : (child as readonly GeoBounds[]);
-    const indices: number[] = [];
+    const index = geometry.index!;
+    index.array.set(originalIndex);
     for (let i = 0; i < originalIndex.length; i += 3) {
       const a = originalIndex[i]!,
         b = originalIndex[i + 1]!,
         c = originalIndex[i + 2]!;
       const x = (positions.getX(a) + positions.getX(b) + positions.getX(c)) / 3;
       const z = (positions.getZ(a) + positions.getZ(b) + positions.getZ(c)) / 3;
-      if (holes.some((b) => x > b[0] && x < b[2] && z > b[1] && z < b[3]))
-        continue;
-      indices.push(a, b, c);
+      if (holes.some((b) => x > b[0] && x < b[2] && z > b[1] && z < b[3])) {
+        index.setX(i + 1, a);
+        index.setX(i + 2, a);
+      }
     }
-    geometry.setIndex(indices);
+    // Reuse the uploaded index buffer; no abandoned GL buffer per LOD switch.
+    index.needsUpdate = true;
     // Keep pre-cut normals at the joint rather than a dark artificial cliff.
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
