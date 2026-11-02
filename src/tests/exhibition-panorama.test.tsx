@@ -18,6 +18,7 @@ const renderer = vi.hoisted(() => ({
   fail: false,
   creates: 0,
   api: {
+    setJourneyMarker: vi.fn(),
     entry: vi.fn(),
     focus: vi.fn(),
     focusGeo: vi.fn(),
@@ -91,6 +92,37 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('原展馆的现代全景与正式历史边界', () => {
+  it('空态启程火炬与真实阶段态势分离，撤回或未知位置清除火炬', async () => {
+    const user = userEvent.setup();
+    const view = render(<ExhibitionPanorama {...properties()} />);
+    expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith({
+      coordinates: [115.75, 25.9],
+      kind: 'origin',
+      prominent: true,
+    });
+    expect(screen.getByText('从瑞金启程，重温长征之路。')).toBeInTheDocument();
+    expect(screen.queryByText('现代地理 · 艺术表现')).not.toBeInTheDocument();
+    expect(screen.queryByText(/成员 A 艺术空间/)).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '全景' }));
+    expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
+    const data = simulatePublishedC2();
+    data.forceSnapshots.find((s) => s.snapshotId === 'c2-red-a1')!.coordinates =
+      [106, 28];
+    view.rerender(<ExhibitionPanorama {...properties(data, 'c2-a1')} />);
+    expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith({
+      coordinates: [106, 28],
+      kind: 'force',
+      prominent: false,
+    });
+    view.rerender(<ExhibitionPanorama {...properties(data, 'c2-a2')} />);
+    expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
+    const withdrawn = structuredClone(data);
+    withdrawn.forceSnapshots.find(
+      (s) => s.snapshotId === 'c2-red-a1',
+    )!.releaseStatus = 'unpublished';
+    view.rerender(<ExhibitionPanorama {...properties(withdrawn, 'c2-a1')} />);
+    expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
+  });
   it('进入 A 区域观察暂停背景，退出恢复本阶段书签，不恢复跨阶段旧书签或完成历史', async () => {
     const props = properties(),
       user = userEvent.setup();
@@ -172,7 +204,10 @@ describe('原展馆的现代全景与正式历史边界', () => {
     expect(
       screen.queryByRole('heading', { name: '瑞金' }),
     ).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '瑞金定位' }));
+    expect(
+      screen.queryByRole('button', { name: '瑞金定位' }),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '取景赣南丘陵区域' }));
     expect(renderer.api.focus).toHaveBeenCalledTimes(2);
     expect(renderer.creates).toBe(1);
     expect(renderer.api.entry).not.toHaveBeenCalled();
