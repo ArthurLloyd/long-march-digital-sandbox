@@ -36,6 +36,15 @@
 
 A 的艺术空间、公用环境出口及资源释放保留。B 的六主题、十二项互动与正文未改；C1/C2 原有用例与断言保留，只给 UI 测试增加真实“展开工具”操作。当前源数据为 12 事件、0 历史路线、23 来源；既有 draft/unpublished 审核字段未改，未知位置仍为空，不因地形或相机改进新增历史点。
 
+## 修改文件
+
+- `src/app/landscape/terrain-tile.ts`、`terrain-lod.ts`、`terrain-requests.ts`：连续地表、局部细化、请求生命周期与资源复用。
+- `src/app/landscape/terrain-navigation.ts`、`map-renderer.ts`、`terrain-diagnostics.ts`：真实拾取、鼠标锚点缩放、统一安全约束及可关闭的只读测量。
+- `src/app/landscape/modern-landscape.ts`、`terrain-field.ts`、`river-mesh.ts`、`terrain-materials.ts`：共享高度、水系与地貌表现。
+- `src/app/landscape/ExhibitionPanorama.tsx`、`src/app/App.tsx`、`src/styles/exhibition-map-toolbox.css`、`exhibition-map-controls.css`：收纳侧栏、态势组件及桌面布局。
+- `src/tests/terrain-closeup.test.ts`、`terrain-map-input.test.ts`、`exhibition-panorama.test.tsx`：新增行为回归，保留既有断言。
+- `src/app/landscape/README.md`、本报告和 `docs/architecture/evidence/terrain-02/`：模块交接、实拍和测量记录。
+
 ## 工程验证
 
 npm ci、lint、typecheck、format:check、test、validate:data、build、git diff --check 已执行。最终测试 **49 文件、368 项通过**。新增覆盖真实三角面高度、接边／法线／索引恢复、LOD 滞回与缓存失效、末次请求／退出、输入隔离、鼠标锚点屏幕投影、相机安全与书签、工具收纳和同 Canvas 生命周期。
