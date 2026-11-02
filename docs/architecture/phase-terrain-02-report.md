@@ -105,4 +105,6 @@ Edge 156 / Windows 桌面，本地生产构建 `http://127.0.0.1:4184/`，只读
 
 ## PR 与 CI
 
-独立Draft PR将在本轮上传后关联；在GitHub返回真实结果前不提前记CI通过。main不在本轮自动合并范围。
+独立 [Draft PR #23](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/23)，目标 main。包含完整实现、验收证据的提交 `46908ea3f2491ee9e2329dcd49a7bf65d27e1175` 已通过 [GitHub CI #60](https://github.com/ArthurLloyd/long-march-digital-sandbox/actions/runs/41510750458)：npm ci、typecheck、lint、format:check、test、validate:data、build 全部成功（Quality checks 3分12秒）。
+
+本段台账为后续文档提交；更新后仍等待其实际最新 head 的 CI，最终状态及对应 SHA 记录在 PR 描述，避免报告自引用提交哈希。main 仍为 `10e9ce7240816f51840902e4cba4936666d02a81`，没有合并本轮改动。
