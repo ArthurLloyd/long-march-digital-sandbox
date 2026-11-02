@@ -1,0 +1,417 @@
+@font-face {
+  font-family: AtlasCalligraphy;
+  src: url('../atlas/assets/panorama-cinematic.woff2') format('woff2');
+  font-display: swap;
+}
+.atlas-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #17343a;
+  color: #f2eee8;
+  isolation: isolate;
+}
+.atlas-canvas,
+.atlas-canvas canvas,
+.atlas-object-labels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.atlas-object-labels {
+  pointer-events: none;
+}
+.atlas-object-labels button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  background: #122729e8;
+  color: #f4e5c8;
+  border: 1px solid #d7bc8166;
+  padding: 8px 12px;
+}
+.atlas-controls,
+.atlas-tuning {
+  position: absolute;
+  z-index: 2;
+  left: clamp(24px, 4vw, 80px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #102629dc;
+  border: 1px solid #d6bc804d;
+  backdrop-filter: blur(12px);
+}
+.atlas-controls {
+  top: 260px;
+  padding: 7px 9px;
+}
+.atlas-controls > span {
+  padding: 0 10px;
+  color: #d6bd89;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+.atlas-controls button,
+.atlas-controls select,
+.atlas-tuning select {
+  background: transparent;
+  border: 0;
+  color: #efe9da;
+  min-height: 38px;
+  padding: 5px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.atlas-controls button:hover,
+.atlas-controls button:focus-visible {
+  background: #d5b98028;
+}
+.atlas-controls button:disabled {
+  opacity: 0.35;
+}
+.atlas-controls option,
+.atlas-tuning option {
+  background: #153037;
+}
+.atlas-tuning {
+  top: 322px;
+  padding: 6px 12px;
+  gap: 18px;
+  font-size: 12px;
+  color: #c1d2cd;
+}
+.atlas-tuning label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.atlas-tuning span {
+  color: #d8c397;
+}
+.atlas-tuning input {
+  accent-color: #c5a46d;
+}
+.atlas-region-title {
+  position: absolute;
+  top: 125px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 3px 30px #09201f;
+}
+.atlas-region-title small {
+  letter-spacing: 0.25em;
+  color: #dcc79c;
+  font-size: 10px;
+}
+.atlas-region-title h2 {
+  font:
+    400 clamp(36px, 4vw, 62px)/1.35 AtlasCalligraphy,
+    serif;
+  margin: 7px 0;
+}
+.atlas-region-title p {
+  font-size: 12px;
+  color: #dae2d8;
+  margin-top: 4px;
+}
+.atlas-region-title button {
+  pointer-events: auto;
+  background: #173c3edb;
+  color: #efdfbb;
+  border: 1px solid #cfb47b80;
+  padding: 12px 18px;
+  margin-top: 18px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.atlas-attribution {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 10px;
+  color: #c8d6cf;
+  max-width: 60%;
+  text-shadow: 0 1px 4px #000;
+}
+.atlas-attribution span {
+  display: block;
+  color: #b6c9bf;
+  margin-top: 2px;
+}
+.atlas-operation {
+  position: absolute;
+  bottom: 15px;
+  right: 4vw;
+  font-size: 11px;
+  color: #d6e1d5;
+  letter-spacing: 0.1em;
+}
+.atlas-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.scene-viewport:has(.atlas-root) .verification-message {
+  top: auto;
+  bottom: 98px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 520px;
+  text-align: center;
+  z-index: 2;
+}
+.scene-viewport:has(.atlas-root) .verification-message h1 {
+  display: none;
+}
+.scene-viewport:has(.atlas-root) .verification-message p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+  color: #d7dfd5;
+  text-shadow: 0 1px 8px #000;
+}
+.scene-viewport:has(.atlas-root) .scene-status {
+  display: none;
+}
+.atlas-observation {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #183133;
+  color: #f4ead9;
+  overflow: hidden;
+}
+.atlas-observation::backdrop {
+  background: #071417;
+}
+.atlas-observation-canvas {
+  position: absolute;
+  inset: 0;
+}
+.atlas-observation-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.atlas-observation header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 36px;
+  border-bottom: 1px solid #d4bb8233;
+  background: linear-gradient(#0a252699, transparent);
+  font-size: 13px;
+}
+.atlas-observation header small {
+  color: #ded6c2;
+}
+.atlas-observation button {
+  background: #163335d9;
+  border: 1px solid #d5ba8066;
+  color: #f0e4cb;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+.atlas-observation button:hover {
+  background: #345550;
+}
+.atlas-observation-title {
+  position: absolute;
+  top: 140px;
+  left: 4vw;
+  pointer-events: none;
+  text-shadow: 0 2px 20px #163535;
+}
+.atlas-observation-title small {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+}
+.atlas-observation-title h2 {
+  font:
+    400 72px/1.4 AtlasCalligraphy,
+    serif;
+  margin: 16px 0;
+}
+.atlas-observation-title p {
+  font-size: 14px;
+  letter-spacing: 0.15em;
+}
+.atlas-observation nav {
+  position: absolute;
+  right: 36px;
+  top: 130px;
+  display: grid;
+  gap: 8px;
+}
+.atlas-observation-note {
+  position: absolute;
+  left: 4vw;
+  bottom: 24px;
+  font-size: 12px;
+  color: #e0dfcf;
+  background: #113333a8;
+  padding: 10px 14px;
+}
+.atlas-error {
+  position: absolute;
+  inset: 40%;
+  background: #132929;
+  padding: 30px;
+  min-width: 300px;
+}
+.integrated-immersive {
+  position: relative;
+  background: #163336;
+  border: 1px solid #beaa7b55;
+  overflow: hidden;
+}
+.integrated-immersive-canvas {
+  height: clamp(340px, 46vh, 560px);
+}
+.integrated-immersive-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.integrated-immersive-caption {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  max-width: 65%;
+  pointer-events: none;
+  text-shadow: 0 2px 14px #173333;
+}
+.integrated-immersive-caption small {
+  font-size: 10px;
+  color: #f1dfb8;
+  letter-spacing: 0.14em;
+}
+.integrated-immersive-caption h3 {
+  font:
+    400 32px/1.5 AtlasCalligraphy,
+    serif;
+  margin-top: 8px;
+}
+.integrated-immersive-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: #102628;
+}
+.integrated-immersive-actions button {
+  padding: 10px 16px;
+  border: 1px solid #c7b08080;
+  background: #25433e;
+  color: #f2e8d3;
+  cursor: pointer;
+}
+.integrated-immersive-actions button:disabled {
+  opacity: 0.4;
+}
+.integrated-immersive-actions small {
+  color: #b9c9c1;
+  font-size: 11px;
+}
+@media (max-height: 820px) {
+  .atlas-controls {
+    top: 240px;
+  }
+  .atlas-tuning {
+    top: 295px;
+  }
+  .atlas-region-title {
+    top: 120px;
+  }
+  .atlas-region-title h2 {
+    font-size: 40px;
+  }
+  .atlas-region-title button {
+    margin-top: 10px;
+    padding: 9px 12px;
+  }
+  .atlas-region-title p {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-root * {
+    scroll-behavior: auto;
+  }
+}
+
+.atlas-region-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.atlas-region-markers button {
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  padding: 0;
+  visibility: hidden;
+  background: transparent;
+  color: #f2e5c5;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.atlas-region-markers i {
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #ebd6a8;
+  border-radius: 50%;
+  background: #294f46;
+  box-shadow: 0 0 0 4px #173a3480;
+}
+.atlas-region-markers span {
+  position: absolute;
+  bottom: -15px;
+  white-space: nowrap;
+  padding: 6px 9px;
+  border: 1px solid #d9bf7e77;
+  background: #153032eb;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.atlas-region-markers [data-side='left'] span {
+  right: 12px;
+}
+.atlas-region-markers [data-side='right'] span {
+  left: 18px;
+}
+.atlas-region-markers button:hover span,
+.atlas-region-markers button:focus-visible span {
+  background: #55513a;
+  border-color: #e1c78f;
+}

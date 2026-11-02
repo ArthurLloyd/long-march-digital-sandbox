@@ -12,10 +12,14 @@ export function createAtmosphere() {
     new THREE.ShaderMaterial({
       side: THREE.BackSide,
       depthWrite: false,
-      uniforms: { time },
+      uniforms: {
+        time,
+        landscapeSky: { value: null },
+        landscapeMix: { value: 0 },
+      },
       vertexShader:
         'varying vec3 direction;void main(){direction=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader: `varying vec3 direction;uniform float time;${noise}
+      fragmentShader: `varying vec3 direction;uniform float time;uniform sampler2D landscapeSky;uniform float landscapeMix;${noise}
       void main(){vec3 d=normalize(direction);float h=smoothstep(-.05,.65,d.y);
         vec3 sun=normalize(vec3(-.30,.13,-1.));float alignment=max(0.,dot(d,sun));
         vec3 color=mix(vec3(.43,.55,.59),vec3(.035,.12,.22),h);
@@ -23,6 +27,10 @@ export function createAtmosphere() {
         vec2 cloudUv=d.xz/max(.12,d.y+.19)*1.8+vec2(time*.003,0.);
         float cloud=smoothstep(.49,.73,fbm(cloudUv));float horizon=smoothstep(.02,.22,d.y)*(1.-smoothstep(.6,.95,d.y));
         color=mix(color,mix(vec3(.29,.37,.38),vec3(.82,.72,.51),pow(alignment,8.)),cloud*horizon*.43);
+        vec2 skyUv=vec2(.5+atan(d.x,-d.z)/6.2831853,.76+clamp(d.y,0.,1.)*.22);
+        vec3 photographedClouds=texture2D(landscapeSky,skyUv).rgb;
+        float skyBlend=landscapeMix*smoothstep(.12,.45,d.y)*(1.-smoothstep(.85,.99,d.y));
+        color=mix(color,photographedClouds,skyBlend);
         gl_FragColor=vec4(color,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

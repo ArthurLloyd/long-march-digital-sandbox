@@ -5,7 +5,10 @@ import { describe, expect, it } from 'vitest';
 
 describe('现代地理源文件与哈希', () => {
   it('八个高程细节与独立 OSM 水系均匹配采集清单，不含历史审核字段', async () => {
-    const base = new URL('../app/panorama/data/details/', import.meta.url);
+    const base = new URL(
+      '../features/scene/atlas/data/details/',
+      import.meta.url,
+    );
     const provenance = JSON.parse(
       await readFile(new URL('provenance.json', base), 'utf8'),
     );
@@ -39,7 +42,10 @@ describe('现代地理源文件与哈希', () => {
     ).toBe(49);
   });
   it('通用岩石素材保留独立 CC0 来源、像素来源哈希及最终文件哈希', async () => {
-    const base = new URL('../app/panorama/assets/rock/', import.meta.url);
+    const base = new URL(
+      '../features/scene/atlas/assets/rock/',
+      import.meta.url,
+    );
     const provenance = JSON.parse(
       await readFile(new URL('provenance.json', base), 'utf8'),
     );
