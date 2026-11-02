@@ -3,16 +3,39 @@
   position: absolute;
   inset: 0;
 }
+/* The full-width header must not intercept the map's source control beneath
+   its empty lower edge. Its actual navigation buttons remain interactive. */
+body:has(.panorama-exploration) .exhibition-header {
+  pointer-events: none;
+}
+body:has(.panorama-exploration) .exhibition-header button {
+  pointer-events: auto;
+}
 .museum-panorama {
   color: var(--text);
   font: 14px/1.7 var(--font-body);
-  background: #10292f;
+  background: var(--background);
 }
 .museum-map-canvas canvas {
   display: block;
   width: 100%;
   height: 100%;
   touch-action: none;
+}
+.museum-map-canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #080c1166, transparent 33%),
+    linear-gradient(
+      180deg,
+      #080c11b0,
+      transparent 24%,
+      transparent 72%,
+      #080c11bd
+    );
 }
 .museum-map-toolbar {
   position: absolute;
@@ -25,21 +48,25 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  min-height: 40px;
+  min-height: 44px;
   min-width: 40px;
   padding: 8px 12px;
-  background: #10292ff0;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   border: 1px solid var(--line-strong);
   border-radius: 3px;
+  color: var(--gold-bright);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease;
 }
 .museum-map-toolbar button:hover {
-  background: #284249;
+  background: color-mix(in srgb, var(--gold) 14%, var(--surface));
 }
 .museum-geographic-views,
 .museum-map-layers {
   position: absolute;
   z-index: 3;
-  background: #10292ff2;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
   border: 1px solid var(--line-strong);
   width: 205px;
   padding: 12px 16px;
@@ -88,9 +115,10 @@
 }
 .museum-geographic-views button[aria-pressed='true'] {
   color: var(--gold-bright);
+  background: color-mix(in srgb, var(--red-muted) 38%, var(--surface));
 }
 .museum-geographic-views button:hover {
-  background: #29464b;
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
 }
 .museum-geographic-views p,
 .museum-map-layers p {
@@ -118,7 +146,7 @@
 .museum-map-layers select {
   font: inherit;
   color: var(--text);
-  background: #173238;
+  background: var(--surface);
   border: 1px solid var(--line-strong);
   padding: 4px;
 }
@@ -134,7 +162,7 @@
   left: 0;
   visibility: hidden;
   pointer-events: auto;
-  background: #10292ff0;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   border: 1px solid var(--gold);
   padding: 9px 14px;
   font-family: var(--font-display);
@@ -149,20 +177,39 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #10292fe8;
-  color: #e6dec4;
-  border: 1px solid #b9a87a80;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
   padding: 7px 10px;
-  font: 13px/1.5 var(--font-display);
+  font: 14px/1.5 var(--font-display);
   white-space: nowrap;
-  box-shadow: 0 4px 12px #071b2045;
+  text-shadow: 0 2px 8px #080c11;
 }
 .museum-geographic-marker small {
-  font: 11px/1.5 var(--font-body);
-  color: #bdc7b6;
+  font: 12px/1.5 var(--font-body);
+  color: var(--muted);
+}
+.museum-geographic-marker::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  height: 10px;
+  border-left: 1px solid var(--gold);
+}
+.museum-geographic-marker[aria-pressed='true'] {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+}
+.museum-panorama button:active {
+  translate: 0 1px;
+}
+.museum-panorama :is(button, summary, select):focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 4px;
 }
 .museum-geographic-marker:hover {
-  background: #34463e;
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
 }
 .museum-force-marker {
   position: absolute;
@@ -173,7 +220,7 @@
   align-items: center;
   gap: 7px;
   padding: 5px 8px;
-  background: #10292fe8;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
   white-space: nowrap;
   color: #ead19a;
   font-size: 12px;
@@ -199,7 +246,7 @@
   bottom: 105px;
   right: clamp(24px, 4vw, 80px);
   width: 280px;
-  background: #10292ff2;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
   padding: 22px;
   border: 1px solid var(--line-strong);
 }
@@ -216,13 +263,41 @@
   right: 280px;
   top: 90px;
   max-width: calc(100% - 360px);
-  color: #e0e6db;
-  background: #10292fe8;
-  padding: 5px 9px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 0 10px;
   font-size: 11px;
   line-height: 1.6;
   text-align: right;
   z-index: 7;
+}
+.museum-map-credit summary,
+.museum-map-credit > a {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.museum-map-credit summary {
+  cursor: pointer;
+  list-style: none;
+  color: var(--gold-bright);
+}
+.museum-map-credit details > div {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  text-align: left;
+  padding: 18px 20px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 13px;
+}
+.museum-map-credit details p + p {
+  margin-top: 10px;
 }
 .museum-map-credit a {
   color: inherit;
@@ -234,13 +309,83 @@
   bottom: 150px;
   left: clamp(24px, 4vw, 80px);
   max-width: 380px;
-  background: linear-gradient(90deg, #10292ff0, #10292fa3);
-  padding: 18px 22px;
+  background: none;
+  padding: 18px 0;
+}
+.panorama-history-empty .scene-viewport {
+  bottom: 144px;
+}
+.panorama-history-empty .exploration-topic,
+.panorama-history-empty .phase-force-legend {
+  display: none;
+}
+.panorama-history-empty .museum-geographic-views {
+  top: 135px;
+}
+.panorama-history-empty .museum-geographic-views > div {
+  max-height: min(300px, calc(100dvh - 410px));
+}
+.panorama-history-empty .exploration-tools {
+  bottom: 174px;
+}
+.panorama-history-empty .scene-tool {
+  min-width: 220px;
+  padding: 14px 20px;
+  gap: 12px;
+}
+.panorama-history-empty .scene-tool .tool-emblem {
+  width: 36px;
+  height: 44px;
+}
+.panorama-history-empty .scene-tool small {
+  display: none;
+}
+.panorama-history-empty .scene-tool strong {
+  font-size: 27px;
+}
+.panorama-exploration.panorama-history-empty .verification-message {
+  bottom: 150px;
+  left: clamp(24px, 4vw, 80px);
+  max-width: 370px;
+  text-shadow: 0 2px 12px #080c11;
+  background: linear-gradient(90deg, #080c11c2, #080c1182 68%, transparent);
+  padding: 12px 18px;
+}
+.panorama-exploration.panorama-history-empty .verification-message p {
+  color: var(--text);
+}
+.panorama-exploration.panorama-history-empty .verification-message h1 {
+  font-size: 34px;
+  line-height: 1.4;
+}
+.panorama-history-empty .phase-timeline {
+  height: 144px;
+  grid-template-columns: 220px minmax(0, 1fr) 170px;
+  padding-block: 16px;
+}
+.panorama-exploration.panorama-history-empty .timeline-current {
+  min-width: 0;
+  max-height: none;
+  overflow: visible;
+  padding-left: 20px;
+  align-self: center;
+}
+.panorama-exploration.panorama-history-empty .timeline-current strong {
+  font-size: 24px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+.panorama-history-empty .phase-cadence {
+  font-size: 12px;
+}
+.panorama-history-empty .timeline-progress {
+  opacity: 0.55;
 }
 .panorama-exploration .scene-status {
   top: 90px;
   pointer-events: none;
-  background: #10292ff0;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   padding: 3px 7px;
   font-size: 12px;
   line-height: 1.6;
@@ -265,12 +410,12 @@
 }
 .panorama-exploration .exploration-topic {
   padding: 14px 18px;
-  background: #10292fe8;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
   border: 1px solid var(--line);
   max-width: 390px;
 }
 .panorama-exploration .phase-timeline {
-  background: linear-gradient(110deg, #101e25, #0b171e);
+  background: linear-gradient(180deg, #161c23fa, var(--background) 75%);
 }
 .panorama-exploration .timeline-current strong {
   font-family: 'Panorama Cinematic', var(--font-display);
@@ -285,6 +430,13 @@
   pointer-events: none;
 }
 @media (max-width: 1450px) {
+  .panorama-history-empty .museum-geographic-views {
+    top: 118px;
+  }
+  .panorama-history-empty .phase-timeline {
+    grid-template-columns: 210px minmax(0, 1fr) 150px;
+    gap: 20px;
+  }
   .museum-panorama.is-cinematic .museum-geographic-views {
     top: 118px;
   }

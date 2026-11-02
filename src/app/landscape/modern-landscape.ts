@@ -21,6 +21,10 @@ import {
 } from './river-mesh';
 import type { RegionId } from './map-regions';
 import { disposeLandscapeRoot } from './resource-lifecycle';
+import {
+  createExhibitionAtmosphere,
+  EXHIBITION_LIGHT,
+} from './exhibition-atmosphere';
 
 const loaders = import.meta.glob<ModernHeightfield>(
   './data/details/{ruijin,zunyi,chishui,jinsha,luding,snow,grass,reunion}.json',
@@ -55,13 +59,14 @@ export function createModernLandscape(
   const root = new THREE.Group();
   const environment = skyEnvironment(renderer);
   scene.environment = environment.texture;
-  scene.environmentIntensity = 0.55;
+  scene.environmentIntensity = 0.5;
   scene.add(root);
   const globalField = createTerrainField(geography);
-  const landMaterial = terrainMaterial(),
-    water = waterMaterial();
+  const atmosphere = createExhibitionAtmosphere(globalField.worldBounds);
+  const landMaterial = terrainMaterial(atmosphere),
+    water = waterMaterial(atmosphere, environment.texture);
   const bankMaterial = new THREE.MeshStandardMaterial({
-    color: '#8f9277',
+    color: '#777c7b',
     roughness: 0.94,
     side: THREE.DoubleSide,
   });
@@ -148,14 +153,18 @@ export function createModernLandscape(
   buildWater();
   const sky = createAtmosphere();
   root.add(sky);
-  const fog = new THREE.Fog('#72958d', 27, 80);
+  const fog = new THREE.Fog(EXHIBITION_LIGHT.fog, 27, 80);
   scene.fog = fog;
   const [left, top, right, bottom] = globalField.worldBounds;
   const plinth = new THREE.Mesh(
     new THREE.BoxGeometry(right - left, 0.18, bottom - top),
-    new THREE.MeshStandardMaterial({ color: '#1d4647', roughness: 1 }),
+    new THREE.MeshStandardMaterial({
+      color: EXHIBITION_LIGHT.background,
+      roughness: 1,
+    }),
   );
   plinth.position.y = -0.095;
+  plinth.visible = false;
   root.add(plinth);
   const stitch = () => {
     globalIndex.array.set(originalIndex);
@@ -251,13 +260,19 @@ export function createModernLandscape(
           0.0035,
         );
         updateTerrain();
-        fog.near = id === 'chishui' ? 0.18 : 0.7;
-        fog.far = id === 'chishui' ? 1.5 : 5;
+        fog.near = id === 'chishui' ? 0.4 : 0.7;
+        fog.far = id === 'chishui' ? 2.6 : 5;
         const bounds = detailField.worldBounds;
         const center = {
           x: (bounds[0] + bounds[2]) / 2,
           z: (bounds[1] + bounds[3]) / 2,
         };
+        atmosphere.origin.value.set(
+          center.x,
+          landHeight(center.x, center.z),
+          center.z,
+        );
+        atmosphere.local.value = 1;
         const osm = modernWater.regions.find((item) => item.regionId === id);
         if (osm) {
           const nearest = osm.lines
@@ -290,6 +305,11 @@ export function createModernLandscape(
                 Math.hypot(b.x - center.x, b.z - center.z),
             )[0];
           if (nearest) {
+            atmosphere.origin.value.set(
+              nearest.x,
+              nearest.waterLevel,
+              nearest.z,
+            );
             const riverCandidates = channel!.paths
               .flatMap((line) =>
                 line.filter(
@@ -310,6 +330,7 @@ export function createModernLandscape(
       }
     },
     overview() {
+      atmosphere.local.value = 0;
       revision++;
       region = null;
       focusedPivot = null;
@@ -339,6 +360,12 @@ export function createModernLandscape(
         region ? 0.0018 * gain : 0.0028,
       );
       updateTerrain();
+      if (region) {
+        const origin = atmosphere.origin.value;
+        origin.y =
+          channel?.at(origin.x, origin.z)?.level ??
+          landHeight(origin.x, origin.z);
+      }
     },
     setRivers(value: boolean) {
       visibleRivers = value;

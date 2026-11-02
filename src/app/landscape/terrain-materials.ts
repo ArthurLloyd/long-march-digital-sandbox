@@ -1,13 +1,21 @@
 import * as THREE from 'three';
 import rockAlbedoUrl from './assets/rock/albedo.jpg';
 import rockHeightUrl from './assets/rock/height.jpg';
+import {
+  EXHIBITION_LIGHT,
+  atmosphereDeclarations,
+  exhibitionAerialPerspective,
+  exhibitionEdgeFade,
+  exhibitionSky,
+  type ExhibitionAtmosphere,
+} from './exhibition-atmosphere';
 
 const noise = `
 float panHash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 float panNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(panHash(i),panHash(i+vec2(1.,0.)),f.x),mix(panHash(i+vec2(0.,1.)),panHash(i+vec2(1.)),f.x),f.y);}
 float panFbm(vec2 p){return .55*panNoise(p)+.28*panNoise(p*2.04)+.17*panNoise(p*4.13);}
 `;
-export function terrainMaterial() {
+export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
   const loader = new THREE.TextureLoader(),
     ready = { value: 0 };
   let loaded = 0,
@@ -27,8 +35,8 @@ export function terrainMaterial() {
     texture.anisotropy = 8;
   }
   const material = new THREE.MeshStandardMaterial({
-    color: '#65916b',
-    roughness: 0.91,
+    color: EXHIBITION_LIGHT.foliage,
+    roughness: 0.88,
     metalness: 0.02,
   });
   material.addEventListener('dispose', () => {
@@ -40,6 +48,20 @@ export function terrainMaterial() {
     shader.uniforms.panRockAlbedo = { value: albedo };
     shader.uniforms.panRockHeight = { value: relief };
     shader.uniforms.panRockReady = ready;
+    shader.uniforms.panMapBounds = atmosphere.bounds;
+    shader.uniforms.panMistOrigin = atmosphere.origin;
+    shader.uniforms.panLocalMist = atmosphere.local;
+    shader.uniforms.panHazeColor = atmosphere.haze;
+    shader.uniforms.panInkShadow = {
+      value: new THREE.Color(EXHIBITION_LIGHT.shadow),
+    };
+    shader.uniforms.panFoliage = {
+      value: new THREE.Color(EXHIBITION_LIGHT.foliage),
+    };
+    shader.uniforms.panStone = {
+      value: new THREE.Color(EXHIBITION_LIGHT.stone),
+    };
+    shader.uniforms.panSnow = { value: new THREE.Color(EXHIBITION_LIGHT.snow) };
     shader.vertexShader =
       'attribute float panElevation; varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
       shader.vertexShader;
@@ -48,8 +70,10 @@ export function terrainMaterial() {
       '#include <begin_vertex>\npanWorld=(modelMatrix*vec4(transformed,1.)).xyz;panTerrainNormal=normalize(mat3(modelMatrix)*normal);panMetres=panElevation;panSlope=1.-abs(normalize(normal).y);',
     );
     shader.fragmentShader =
-      'uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
+      'uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;uniform vec3 panInkShadow;uniform vec3 panFoliage;uniform vec3 panStone;uniform vec3 panSnow;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
+      atmosphereDeclarations +
       noise +
+      exhibitionSky +
       shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <color_fragment>',
@@ -64,15 +88,16 @@ export function terrainMaterial() {
       fracture=mix(.5,fracture,detail);
       vec3 scannedRock=texture2D(panRockAlbedo,panWorld.zy*45.).rgb*weights.x+texture2D(panRockAlbedo,panWorld.xz*45.).rgb*weights.y+texture2D(panRockAlbedo,panWorld.xy*45.).rgb*weights.z;
       float surfaceLight=clamp(dot(scannedRock,vec3(.3,.55,.15))*1.5,.18,1.3);
-      vec3 forest=mix(vec3(.014,.047,.025),vec3(.052,.103,.041),broad);
-      forest*=mix(1.,.65+surfaceLight*.75,panRockReady*detail);
+      vec3 forest=mix(panInkShadow,panFoliage,broad);
+      forest*=mix(1.,.72+surfaceLight*.52,panRockReady*detail);
       float earth=smoothstep(.54,.8,panFbm(panWorld.xz*110.));
-      forest=mix(forest,vec3(.07,.058,.029)*(.7+surfaceLight),earth*detail*.34);
-      vec3 rock=mix(vec3(.055,.068,.052),vec3(.20,.19,.14),grain)*(.72+.5*fracture);
-      rock=mix(rock,scannedRock*.64*(.85+.2*broad),panRockReady*.9);
+      forest=mix(forest,panStone*.45*(.7+surfaceLight),earth*detail*.18);
+      float rockLuminance=dot(scannedRock,vec3(.2126,.7152,.0722));
+      vec3 rock=panStone*(.48+.6*grain)*(.72+.5*fracture);
+      rock*=mix(1.,.58+rockLuminance*1.35,panRockReady*.85);
       float exposed=clamp(smoothstep(2100.,4400.,panMetres)*.55+smoothstep(.15,.65,panSlope)*.82,0.,.91);
       vec3 ground=mix(forest,rock,exposed);
-      ground=mix(ground,vec3(.80,.84,.79),smoothstep(4400.,5700.,panMetres)*.82);
+      ground=mix(ground,panSnow,smoothstep(4400.,5700.,panMetres)*.82);
       diffuseColor.rgb=ground*(.92+.15*grain);
     `,
     );
@@ -90,18 +115,33 @@ export function terrainMaterial() {
       normal=normalize(abs(panDet)*normal-sign(panDet)*(dFdx(panBump)*panR1+dFdy(panBump)*panR2)*.4);
     `,
     );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <opaque_fragment>',
+      exhibitionAerialPerspective('panWorld') + '\n#include <opaque_fragment>',
+    );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <fog_fragment>',
+      '#include <fog_fragment>\n' + exhibitionEdgeFade('panWorld'),
+    );
   };
-  material.customProgramCacheKey = () => 'panorama-modern-land-v6';
+  material.customProgramCacheKey = () => 'panorama-exhibition-land-v8';
   return material;
 }
-export function waterMaterial() {
+export function waterMaterial(
+  atmosphere: ExhibitionAtmosphere,
+  environment: THREE.Texture,
+) {
   const time = { value: 0 };
   const material = new THREE.MeshPhysicalMaterial({
-    color: '#2c8790',
-    roughness: 0.28,
-    metalness: 0.08,
-    clearcoat: 0.7,
-    clearcoatRoughness: 0.18,
+    color: '#445d6b',
+    roughness: 0.18,
+    metalness: 0.24,
+    // Explicit map: Three otherwise substitutes scene.environmentIntensity,
+    // which is intentionally lower for the terrain than for the water.
+    envMap: environment,
+    envMapIntensity: 1.45,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.14,
     side: THREE.DoubleSide,
     transparent: true,
     opacity: 0.94,
@@ -109,6 +149,10 @@ export function waterMaterial() {
   });
   material.onBeforeCompile = (shader) => {
     shader.uniforms.panTime = time;
+    shader.uniforms.panMapBounds = atmosphere.bounds;
+    shader.uniforms.panMistOrigin = atmosphere.origin;
+    shader.uniforms.panLocalMist = atmosphere.local;
+    shader.uniforms.panHazeColor = atmosphere.haze;
     shader.vertexShader =
       'varying vec3 panWaterWorld;varying vec2 panWaterUv;\n' +
       shader.vertexShader;
@@ -118,15 +162,18 @@ export function waterMaterial() {
     );
     shader.fragmentShader =
       'uniform float panTime;varying vec3 panWaterWorld;varying vec2 panWaterUv;\n' +
+      atmosphereDeclarations +
       noise +
+      exhibitionSky +
       shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <color_fragment>',
       `#include <color_fragment>
       float bank=pow(abs(panWaterUv.x*2.-1.),2.2);
       float ripple=sin(panWaterUv.y*620.-panTime*1.3+panWaterUv.x*5.)*sin(panWaterUv.y*290.+panWaterUv.x*9.-panTime*.8);
-      vec3 deep=vec3(.012,.083,.10),shallow=vec3(.12,.30,.23);
-      diffuseColor.rgb=mix(deep,shallow,bank*.85)+vec3(.009,.018,.017)*ripple;
+      vec3 deep=vec3(.045,.072,.095),shallow=vec3(.16,.21,.21);
+      float silver=pow(max(0.,ripple),7.);
+      diffuseColor.rgb=mix(deep,shallow,bank*.65)+vec3(.065,.052,.03)*silver;
       diffuseColor.a*=mix(1.,.80,smoothstep(.8,1.,bank));
     `,
     );
@@ -136,8 +183,17 @@ export function waterMaterial() {
       normal=normalize(normal+vec3(sin(panWaterUv.y*540.-panTime)*.028,0.,cos(panWaterUv.y*310.-panTime*.7)*.022));
     `,
     );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <opaque_fragment>',
+      exhibitionAerialPerspective('panWaterWorld') +
+        '\n#include <opaque_fragment>',
+    );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <fog_fragment>',
+      '#include <fog_fragment>\n' + exhibitionEdgeFade('panWaterWorld'),
+    );
   };
-  material.customProgramCacheKey = () => 'panorama-modern-water-v3';
+  material.customProgramCacheKey = () => 'panorama-exhibition-water-v5';
   return { material, time };
 }
 export function createAtmosphere() {
@@ -147,8 +203,8 @@ export function createAtmosphere() {
     fog: false,
     vertexShader:
       'varying vec3 skyDirection;void main(){skyDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-    fragmentShader: `varying vec3 skyDirection;${noise}
-      void main(){vec3 d=normalize(skyDirection);float t=smoothstep(-.2,.65,d.y);vec3 color=mix(vec3(.045,.11,.12),vec3(.10,.25,.31),t);float horizon=exp(-abs(d.y)*7.);color=mix(color,vec3(.46,.58,.51),horizon*.8);float cloud=panFbm(d.xz*5.+d.y*3.);color+=vec3(.06,.07,.05)*smoothstep(.52,.85,cloud)*horizon;gl_FragColor=vec4(color,1.);}
+    fragmentShader: `varying vec3 skyDirection;${noise}${exhibitionSky}
+      void main(){gl_FragColor=vec4(panExhibitionSky(skyDirection),1.);}
     `,
   });
   const sky = new THREE.Mesh(new THREE.SphereGeometry(100, 32, 16), material);
@@ -161,10 +217,10 @@ export function skyEnvironment(renderer: THREE.WebGLRenderer) {
   const width = 512,
     height = 256,
     data = new Uint8Array(width * height * 4);
-  const top = new THREE.Color('#7199a4'),
-    horizon = new THREE.Color('#d2d8bd'),
-    bottom = new THREE.Color('#1d4032'),
-    sun = new THREE.Color('#fff0c6');
+  const top = new THREE.Color('#526d86'),
+    horizon = new THREE.Color('#d8c7a7'),
+    bottom = new THREE.Color('#1b2a37'),
+    sun = new THREE.Color('#ffcf86');
   for (let row = 0; row < height; row++)
     for (let col = 0; col < width; col++) {
       const v = row / (height - 1),
@@ -174,7 +230,7 @@ export function skyEnvironment(renderer: THREE.WebGLRenderer) {
           ? top.clone().lerp(horizon, Math.pow(v / 0.55, 0.75))
           : horizon.clone().lerp(bottom, (v - 0.55) / 0.45);
       color
-        .lerp(sun, Math.exp(-((u - 0.13) ** 2 + (v - 0.29) ** 2) / 0.006) * 0.8)
+        .lerp(sun, Math.exp(-((u - 0.4) ** 2 + (v - 0.32) ** 2) / 0.006) * 0.8)
         .convertLinearToSRGB();
       const index = (row * width + col) * 4;
       data[index] = Math.round(color.r * 255);

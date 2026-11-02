@@ -369,7 +369,7 @@ export function App({
         {experience.phase !== 'landing' && (
           <main
             id="main-content"
-            className={`exploration${phaseMode ? ' phase-exploration' : ''}${panoramic ? ' panorama-exploration' : ''}`}
+            className={`exploration${phaseMode ? ' phase-exploration' : ''}${panoramic ? ' panorama-exploration' : ''}${panoramic && phaseMode && !clock.phases.length ? ' panorama-history-empty' : ''}`}
             ref={exploreRef}
             tabIndex={-1}
             aria-label="长征沙盘探索空间"

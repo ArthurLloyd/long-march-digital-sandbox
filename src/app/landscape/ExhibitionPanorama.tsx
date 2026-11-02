@@ -354,6 +354,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
               labels.current[`view:${item.id}`] = element;
             }}
             className="museum-geographic-marker"
+            aria-pressed={view === item.id}
             aria-label={`取景${item.title}区域`}
             title="现代地理取景区，不是历史事件发生点"
             onClick={() => chooseView(item.id)}
@@ -427,9 +428,14 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         />
       )}
       <div className="museum-map-credit">
-        现代地形参考 · 地势、河宽与深度为艺术表达
-        {' · '}
-        USGS / Mapzen · Natural Earth ·{' '}
+        <details>
+          <summary>现代地理 · 艺术表现</summary>
+          <div>
+            <p>地势、河宽与深度为艺术显示，不用于历史或地理量测。</p>
+            <p>现代高程：USGS / Mapzen；全景河流：Natural Earth。</p>
+            <p>局部现代水系：OpenStreetMap contributors · ODbL。</p>
+          </div>
+        </details>
         <a
           href="https://www.openstreetmap.org/copyright"
           target="_blank"
