@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 import releaseSnapshot from 'virtual:history-release';
+import { isPanoramaSceneId } from './landscape/panorama-bookmark';
 import { HistoryEventPanel } from '../features/history';
 import {
   Timeline,
@@ -429,7 +430,10 @@ export function App({
                               result.success &&
                               result.data.phaseId === phaseRef.current &&
                               (!bookmark ||
-                                bookmark.sceneId === result.data.sceneId)
+                                bookmark.sceneId === result.data.sceneId ||
+                                (panoramic &&
+                                  isPanoramaSceneId(bookmark.sceneId) &&
+                                  isPanoramaSceneId(result.data.sceneId)))
                             ) {
                               bookmarkRef.current = result.data;
                               setBookmark(result.data);

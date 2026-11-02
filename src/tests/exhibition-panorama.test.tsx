@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExhibitionPanorama } from '../app/landscape/ExhibitionPanorama';
@@ -17,6 +17,7 @@ const renderer = vi.hoisted(() => ({
   options: null as RendererOptions | null,
   fail: false,
   api: {
+    entry: vi.fn(),
     focus: vi.fn(),
     focusGeo: vi.fn(),
     overview: vi.fn(),
@@ -79,6 +80,79 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('原展馆的现代全景与正式历史边界', () => {
+  it('区域内事件只列当前输入中已发布且有位置的事件，撤回后显示核验空态', async () => {
+    const data = simulatePublishedSample();
+    const point = data.events[0]!;
+    point.coordinates = [106, 28];
+    point.coordinatePrecision = 'schematic';
+    const user = userEvent.setup(),
+      props = properties(data);
+    const view = render(<ExhibitionPanorama {...props} />);
+    await user.click(screen.getByText('山河取景'));
+    await user.click(screen.getByRole('button', { name: '赤水河谷' }));
+    await user.keyboard('{Escape}');
+    const list = screen.getByText('查看区域内事件').closest('details')!;
+    expect(
+      within(list).getByRole('button', { name: point.title }),
+    ).toBeInTheDocument();
+    expect(props.onEventSelect).not.toHaveBeenCalled();
+    const withdrawn = structuredClone(data);
+    withdrawn.events[0]!.releaseStatus = 'unpublished';
+    view.rerender(<ExhibitionPanorama {...properties(withdrawn)} />);
+    expect(
+      within(list).queryByRole('button', { name: point.title }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(list).getByText('当前区域暂无可发布事件。历史资料仍在核验中。'),
+    ).toBeInTheDocument();
+  });
+  it('首次无历史选择从瑞金展陈进入，全景与返回瑞金不改变历史状态', async () => {
+    const props = properties(),
+      user = userEvent.setup();
+    render(<ExhibitionPanorama {...props} />);
+    expect(renderer.options!.entryView).toBe(true);
+    expect(screen.getByRole('heading', { name: '瑞金' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '全景' }));
+    expect(renderer.api.overview).toHaveBeenCalled();
+    expect(
+      screen.queryByRole('heading', { name: '瑞金' }),
+    ).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '瑞金' }));
+    expect(renderer.api.entry).toHaveBeenCalled();
+    expect(props.onEventSelect).not.toHaveBeenCalled();
+    expect(props.onObjectSelect).not.toHaveBeenCalled();
+  });
+  it('已保存的瑞金视角恢复其展陈模式，其他阶段书签不能覆盖初始状态', () => {
+    const props = properties();
+    const saved = {
+      sceneId: 'long-march-ruijin-relief',
+      coordinateSystem: 'scene-local' as const,
+      zoom: 1,
+      phaseId: null,
+      position: [8, 2, 10] as [number, number, number],
+      target: [7, 0, 7] as [number, number, number],
+    };
+    const view = render(
+      <ExhibitionPanorama {...props} cameraBookmark={saved} />,
+    );
+    expect(renderer.options!.entryView).toBe(true);
+    expect(renderer.options!.initialBookmark).toEqual(saved);
+    act(() => renderer.options!.onReady());
+    expect(renderer.api.restore).toHaveBeenCalledWith(saved);
+    view.unmount();
+    renderer.api.restore.mockClear();
+    render(
+      <ExhibitionPanorama
+        {...props}
+        phaseId="different"
+        cameraBookmark={saved}
+      />,
+    );
+    expect(renderer.options!.entryView).toBe(false);
+    expect(renderer.options!.initialBookmark).toBeUndefined();
+    act(() => renderer.options!.onReady());
+    expect(renderer.api.restore).not.toHaveBeenCalled();
+  });
   it('真实渲染器回调前不报告就绪，退出仅释放一次', () => {
     const props = properties(),
       view = render(<ExhibitionPanorama {...props} />);

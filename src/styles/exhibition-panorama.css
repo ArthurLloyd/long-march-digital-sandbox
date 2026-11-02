@@ -37,6 +37,123 @@ body:has(.panorama-exploration) .exhibition-header button {
       #080c11bd
     );
 }
+.museum-panorama.is-entry .museum-map-canvas::after {
+  background:
+    linear-gradient(
+      90deg,
+      #080e15 1%,
+      #080e15ee 21%,
+      #080e1570 40%,
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      #080c1190,
+      transparent 25%,
+      transparent 80%,
+      #080c1170
+    );
+}
+.museum-entry-place {
+  position: absolute;
+  left: 10%;
+  top: 22%;
+  pointer-events: none;
+  color: var(--gold-bright);
+  text-shadow: 0 8px 24px #080c11;
+}
+.museum-entry-place h2 {
+  font:
+    400 clamp(88px, 8vw, 148px)/1.1 'Panorama Cinematic',
+    var(--font-display);
+  letter-spacing: 0.1em;
+}
+.museum-entry-place p {
+  margin-top: 10px;
+  font: 14px/1.8 var(--font-display);
+  letter-spacing: 0.12em;
+}
+.panorama-exploration:has(.museum-panorama.is-entry) .verification-message {
+  top: 46%;
+  bottom: auto;
+  left: 10%;
+  max-width: 48%;
+  padding: 0;
+  background: none;
+}
+.panorama-exploration:has(.museum-panorama.is-entry) .verification-message h1 {
+  font-size: clamp(44px, 3.7vw, 72px);
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+}
+.panorama-exploration:has(.museum-panorama.is-entry) .verification-message p {
+  margin-top: 24px;
+  font-size: 14px;
+}
+.museum-panorama.is-entry .museum-map-events {
+  display: none;
+}
+.museum-region-events {
+  position: absolute;
+  right: clamp(24px, 4vw, 80px);
+  bottom: 160px;
+  width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  padding: 12px 18px;
+  max-height: min(300px, calc(100dvh - 430px));
+  overflow-y: auto;
+}
+.museum-region-events summary {
+  cursor: pointer;
+  color: var(--gold-bright);
+}
+.museum-region-events p {
+  font-size: 13px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+.museum-region-events button {
+  display: block;
+  text-align: left;
+  padding-block: 10px;
+  color: var(--gold-bright);
+}
+@media (max-width: 1450px) {
+  .museum-entry-place {
+    left: 8%;
+    top: 23%;
+  }
+  .panorama-exploration:has(.museum-panorama.is-entry) .verification-message {
+    left: 8%;
+    top: 46%;
+  }
+  .panorama-exploration:has(.museum-panorama.is-entry)
+    .verification-message
+    h1 {
+    font-size: clamp(40px, 3.7vw, 54px);
+  }
+  .panorama-exploration:has(.museum-panorama.is-entry) .verification-message p {
+    margin-top: 16px;
+    font-size: 13px;
+  }
+}
+@media (max-height: 820px) {
+  .museum-entry-place {
+    top: 174px;
+  }
+  .museum-entry-place h2 {
+    font-size: 80px;
+  }
+  .panorama-exploration:has(.museum-panorama.is-entry) .verification-message {
+    top: 48%;
+  }
+  .panorama-exploration:has(.museum-panorama.is-entry)
+    .verification-message
+    h1 {
+    font-size: 46px;
+  }
+}
 .museum-map-toolbar {
   position: absolute;
   top: 135px;
