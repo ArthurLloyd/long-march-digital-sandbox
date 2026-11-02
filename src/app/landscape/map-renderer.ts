@@ -11,6 +11,13 @@ import type { ForcePhaseState } from '../history/force-state';
 import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
 import { composeReliefEntry, composeRegionalView } from './relief-block';
 import { createJourneyTorch, type JourneyMarker } from './journey-torch';
+import { createTerrainDiagnostics } from './terrain-diagnostics';
+import {
+  constrainTerrainCamera,
+  createSurfaceGesture,
+  localTerrainPose,
+  TERRAIN_NAVIGATION,
+} from './terrain-navigation';
 import {
   PANORAMA_SCENE,
   RUIJIN_SCENE,
@@ -79,6 +86,8 @@ export function createPanoramaMap(
   renderer.setClearColor(EXHIBITION_LIGHT.background);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   let shaderProblem = false;
   renderer.debug.onShaderError = () => {
     shaderProblem = true;
@@ -86,16 +95,17 @@ export function createPanoramaMap(
   };
   renderer.domElement.setAttribute(
     'aria-label',
-    '长征涉及区域现代三维地理参考。方向键可环顾，地图按钮提供区域定位。',
+    '长征涉及区域现代三维地理参考。双击山坡或河面聚焦，滚轮继续靠近；方向键环顾，Home 返回全景。',
   );
   renderer.domElement.setAttribute('role', 'img');
   renderer.domElement.tabIndex = 0;
   host.append(renderer.domElement);
+  const measure = createTerrainDiagnostics(renderer.domElement);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
-  controls.minDistance = 0.18;
-  controls.maxDistance = 58;
+  controls.minDistance = TERRAIN_NAVIGATION.minDistance;
+  controls.maxDistance = TERRAIN_NAVIGATION.maxDistance;
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.minPolarAngle = 0.12;
   controls.enablePan = true;
@@ -119,6 +129,13 @@ export function createPanoramaMap(
   scene.add(ambient, sun, sun.target);
 
   const landscape = createModernLandscape(scene, renderer);
+  const constrain = () =>
+    constrainTerrainCamera(
+      camera,
+      controls.target,
+      landscape.navigationHeightAt,
+      landscape.worldBounds,
+    );
   const journeyTorch = createJourneyTorch();
   scene.add(journeyTorch.root);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
@@ -199,6 +216,7 @@ export function createPanoramaMap(
     if (options.reducedMotion) {
       camera.position.copy(position);
       controls.target.copy(target);
+      constrain();
       controls.update();
       flight = null;
       viewChanged();
@@ -225,12 +243,40 @@ export function createPanoramaMap(
     landscape.cancelPending();
   };
   controls.addEventListener('start', cancel);
+  const gesture = createSurfaceGesture(renderer.domElement);
+  const ray = new THREE.Raycaster();
+  const focusSurface = (event: MouseEvent) => {
+    if (!gesture.accept(event)) return;
+    const rect = renderer.domElement.getBoundingClientRect();
+    camera.updateMatrixWorld();
+    scene.updateMatrixWorld(true);
+    ray.setFromCamera(
+      new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        (-(event.clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      camera,
+    );
+    const hit = landscape.pick(ray);
+    if (!hit) return;
+    const pose = localTerrainPose(camera.position, controls.target, hit);
+    if (!pose) return;
+    cancel();
+    travel(pose.position, pose.target);
+  };
+  renderer.domElement.addEventListener('pointerdown', gesture.down);
+  renderer.domElement.addEventListener('pointermove', gesture.move);
+  renderer.domElement.addEventListener('pointerup', gesture.up);
+  renderer.domElement.addEventListener('dblclick', focusSurface);
   const bookmark = (): PanoramaBookmark => ({
     sceneId: entryFraming ? RUIJIN_SCENE : PANORAMA_SCENE,
     position: camera.position.toArray(),
     target: controls.target.toArray(),
   });
-  const viewChanged = () => options.onViewChange?.(bookmark());
+  const viewChanged = () => {
+    constrain();
+    options.onViewChange?.(bookmark());
+  };
   controls.addEventListener('end', viewChanged);
   const overview = (top = false) => {
     entryFraming = false;
@@ -245,6 +291,7 @@ export function createPanoramaMap(
     sun.shadow.camera.top = 16;
     sun.shadow.camera.bottom = -16;
     sun.shadow.camera.updateProjectionMatrix();
+    renderer.shadowMap.needsUpdate = true;
     travel(
       new THREE.Vector3(0, top ? 31 : 23, top ? 0.1 : 23),
       new THREE.Vector3(0, top ? 0 : -0.6, 0),
@@ -269,6 +316,7 @@ export function createPanoramaMap(
       camera.position.fromArray(pose.position);
       controls.target.fromArray(pose.target);
       controls.update();
+      constrain();
     }
   };
   const observer = new ResizeObserver(resize);
@@ -296,6 +344,7 @@ export function createPanoramaMap(
       sun.shadow.camera.top = 5;
       sun.shadow.camera.bottom = -5;
       sun.shadow.camera.updateProjectionMatrix();
+      renderer.shadowMap.needsUpdate = true;
       drape();
       if (initial) {
         camera.position.fromArray(pose.position);
@@ -333,13 +382,19 @@ export function createPanoramaMap(
         new THREE.Vector3(0, 1, 0),
         event.key === 'ArrowLeft' ? 0.12 : -0.12,
       );
-    else
-      offset.y = Math.max(
-        0.5,
-        offset.y + (event.key === 'ArrowUp' ? 0.5 : -0.5),
+    else {
+      const spherical = new THREE.Spherical().setFromVector3(offset);
+      spherical.phi = THREE.MathUtils.clamp(
+        spherical.phi + (event.key === 'ArrowUp' ? -0.08 : 0.08),
+        controls.minPolarAngle,
+        controls.maxPolarAngle,
       );
+      offset.setFromSpherical(spherical);
+    }
+    offset.clampLength(controls.minDistance, controls.maxDistance);
     camera.position.copy(controls.target).add(offset);
     controls.update();
+    constrain();
     viewChanged();
   };
   const contextLost = (event: Event) => {
@@ -349,6 +404,9 @@ export function createPanoramaMap(
   };
   renderer.domElement.addEventListener('keydown', key);
   renderer.domElement.addEventListener('webglcontextlost', contextLost);
+  let drawnHeightVersion = -1;
+  let shadowDistance = 0;
+  const shadowTarget = new THREE.Vector3(Infinity, Infinity, Infinity);
   const draw = (now: number) => {
     if (disposed) return;
     frame = requestAnimationFrame(draw);
@@ -366,21 +424,57 @@ export function createPanoramaMap(
       );
       camera.position.fromArray(pose.position);
       controls.target.fromArray(pose.target);
-      camera.position.y = Math.max(
-        camera.position.y,
-        heightAt(camera.position.x, camera.position.z) + 0.015,
-      );
       if (t === 1) {
         flight = null;
         flightFinished = true;
       }
     }
     controls.update();
+    constrain();
     if (flightFinished) viewChanged();
     landscape.update(
       options.reducedMotion ? 0 : now / 1000,
       camera.position.distanceTo(controls.target),
+      camera.position,
     );
+    controls.zoomSpeed = THREE.MathUtils.clamp(
+      camera.position.distanceTo(controls.target) * 0.8,
+      0.32,
+      1,
+    );
+    if (!flight)
+      landscape.observe(
+        controls.target.x,
+        controls.target.z,
+        camera.position.distanceTo(controls.target),
+        now,
+      );
+    if (landscape.heightVersion !== drawnHeightVersion) {
+      drawnHeightVersion = landscape.heightVersion;
+      drape();
+      renderer.shadowMap.needsUpdate = true;
+    }
+    constrain();
+    const viewDistance = camera.position.distanceTo(controls.target);
+    if (
+      viewDistance < 0.7 &&
+      (Math.abs(Math.log(viewDistance / Math.max(0.001, shadowDistance))) >
+        0.25 ||
+        shadowTarget.distanceTo(controls.target) > viewDistance * 0.3)
+    ) {
+      shadowTarget.copy(controls.target);
+      shadowDistance = viewDistance;
+      sun.target.position.copy(controls.target);
+      sun.position.copy(controls.target).add(new THREE.Vector3(7, 8, -6));
+      const span = Math.max(0.025, viewDistance * 2.5);
+      sun.shadow.camera.left = -span;
+      sun.shadow.camera.right = span;
+      sun.shadow.camera.top = span;
+      sun.shadow.camera.bottom = -span;
+      sun.shadow.camera.updateProjectionMatrix();
+      renderer.shadowMap.needsUpdate = true;
+      renderer.shadowMap.needsUpdate = true;
+    }
     journeyTorch.update(
       now / 1000,
       camera.position.distanceTo(controls.target),
@@ -389,6 +483,18 @@ export function createPanoramaMap(
     );
     try {
       renderer.render(scene, camera);
+      measure(now, renderer, camera, controls.target, () => ({
+        ...landscape.diagnostics,
+        targetGround: heightAt(controls.target.x, controls.target.z),
+        targetWater: landscape.waterHeightAt(
+          controls.target.x,
+          controls.target.z,
+        ),
+        cameraFloor: landscape.navigationHeightAt(
+          camera.position.x,
+          camera.position.z,
+        ),
+      }));
       if (shaderProblem) {
         suspended = true;
         return;
@@ -542,6 +648,7 @@ export function createPanoramaMap(
         sun.shadow.camera.top = 3;
         sun.shadow.camera.bottom = -3;
         sun.shadow.camera.updateProjectionMatrix();
+        renderer.shadowMap.needsUpdate = true;
         travel(position, target);
       };
       if (id) void landscape.focus(id).then(complete);
@@ -583,7 +690,22 @@ export function createPanoramaMap(
       if (bookmark.sceneId === RUIJIN_SCENE && landscape.region !== 'ruijin')
         void landscape.focus('ruijin', true).then(complete);
       else {
-        complete();
+        const point = new THREE.Vector3(...bookmark.target);
+        const region = (
+          Object.entries(REGIONS) as [RegionId, GeoBounds][]
+        ).find(([, b]) => {
+          const a = projectGeo([b[0], b[3]]),
+            c = projectGeo([b[2], b[1]]);
+          return (
+            point.x >= a[0] &&
+            point.x <= c[0] &&
+            point.z >= a[1] &&
+            point.z <= c[1]
+          );
+        })?.[0];
+        if (region && landscape.region !== region)
+          void landscape.focus(region).then(complete);
+        else complete();
       }
     },
     setRoutes(routes, camps) {
@@ -649,10 +771,7 @@ export function createPanoramaMap(
       const delta = heightAt(controls.target.x, controls.target.z) - previous;
       controls.target.y += delta;
       camera.position.y += delta;
-      camera.position.y = Math.max(
-        camera.position.y,
-        heightAt(camera.position.x, camera.position.z) + 0.25,
-      );
+      constrain();
       drape();
     },
     suspend: (value) => {
@@ -668,6 +787,10 @@ export function createPanoramaMap(
       controls.removeEventListener('start', cancel);
       controls.removeEventListener('end', viewChanged);
       controls.dispose();
+      renderer.domElement.removeEventListener('pointerdown', gesture.down);
+      renderer.domElement.removeEventListener('pointermove', gesture.move);
+      renderer.domElement.removeEventListener('pointerup', gesture.up);
+      renderer.domElement.removeEventListener('dblclick', focusSurface);
       renderer.domElement.removeEventListener('keydown', key);
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
       const geometries = new Set<THREE.BufferGeometry>(),

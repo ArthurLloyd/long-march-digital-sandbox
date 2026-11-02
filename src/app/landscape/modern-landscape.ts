@@ -14,35 +14,21 @@ import {
   createAtmosphere,
   skyEnvironment,
 } from './terrain-materials';
-import {
-  riverRibbon,
-  channelCarver,
-  createRiverChannel,
-  type RiverPoint,
-} from './river-mesh';
-import type { RegionId } from './map-regions';
+import { riverRibbon, createRiverChannel, type RiverPoint } from './river-mesh';
+import { REGIONS, type RegionId } from './map-regions';
 import { disposeLandscapeRoot } from './resource-lifecycle';
 import { reliefBlockGeometry, reliefBlockMaterial } from './relief-block';
 import {
   createExhibitionAtmosphere,
   EXHIBITION_LIGHT,
 } from './exhibition-atmosphere';
+import { createTerrainLod } from './terrain-lod';
+import { createTerrainRequests } from './terrain-requests';
 
 const loaders = import.meta.glob<ModernHeightfield>(
   './data/details/{ruijin,zunyi,chishui,jinsha,luding,snow,grass,reunion}.json',
-  {
-    import: 'default',
-  },
+  { import: 'default' },
 );
-const cache = new Map<RegionId, Promise<ModernHeightfield>>();
-const exhibitionBase = -2.8;
-type FocusPivot = {
-  x: number;
-  z: number;
-  viewDirection?: { x: number; z: number };
-  waterLevel?: number;
-  riverCandidates?: { x: number; z: number; level: number }[];
-};
 const point = (coordinates: readonly number[]): RiverPoint => {
   const [x, z] = projectGeo([coordinates[0]!, coordinates[1]!]);
   return { x, z };
@@ -53,105 +39,159 @@ const modernLines = geography.rivers.flatMap((river) =>
     points: line.map(point),
   })),
 );
+// Modern OSM takes precedence only inside its acquired envelope. Clip the
+// Natural Earth reference there, retaining its original centreline elsewhere.
+const osmDadu =
+  modernWater.regions
+    .find((r) => r.regionId === 'luding')
+    ?.lines.flatMap((l) => l.coordinates.map(point)) ?? [];
+const daduBox: GeoBounds = [
+  Math.min(...osmDadu.map((p) => p.x)),
+  Math.min(...osmDadu.map((p) => p.z)),
+  Math.max(...osmDadu.map((p) => p.x)),
+  Math.max(...osmDadu.map((p) => p.z)),
+];
+function outsideWater(points: RiverPoint[], b: GeoBounds) {
+  const result: RiverPoint[][] = [];
+  let run: RiverPoint[] = [];
+  const flush = () => {
+    if (run.length > 1) result.push(run);
+    run = [];
+  };
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1]!,
+      p = points[i]!,
+      dx = p.x - a.x,
+      dz = p.z - a.z;
+    let lo = 0,
+      hi = 1,
+      hit = true;
+    for (const [v, q] of [
+      [-dx, a.x - b[0]],
+      [dx, b[2] - a.x],
+      [-dz, a.z - b[1]],
+      [dz, b[3] - a.z],
+    ]) {
+      if (v === 0) {
+        if (q! < 0) hit = false;
+        continue;
+      }
+      const t = q! / v!;
+      if (v! < 0) lo = Math.max(lo, t);
+      else hi = Math.min(hi, t);
+    }
+    const at = (t: number) => ({ x: a.x + dx * t, z: a.z + dz * t });
+    if (!hit || lo > hi) {
+      if (!run.length) run.push(a);
+      run.push(p);
+      continue;
+    }
+    if (lo > 0) {
+      if (!run.length) run.push(a);
+      run.push(at(lo));
+    }
+    flush();
+    if (hi < 1) run.push(at(hi), p);
+  }
+  flush();
+  return result;
+}
+const referenceWater: RiverPoint[][] = [
+  ...modernLines.flatMap((line) => {
+    const width =
+      line.name === 'Yangtze' || line.name === 'Yellow'
+        ? 0.011
+        : line.name === 'Dadu'
+          ? 0.007
+          : 0.005;
+    const paths =
+      line.name === 'Dadu' && osmDadu.length
+        ? outsideWater(line.points, daduBox)
+        : [line.points];
+    return paths.map((path) => path.map((p) => ({ ...p, width })));
+  }),
+  ...modernWater.regions.flatMap((r) =>
+    r.lines.map((l) =>
+      l.coordinates.map((c) => ({
+        ...point(c),
+        width: r.regionId === 'chishui' ? 0.0048 : 0.0068,
+      })),
+    ),
+  ),
+];
+type FocusPivot = {
+  x: number;
+  z: number;
+  viewDirection?: { x: number; z: number };
+  waterLevel?: number;
+  riverCandidates?: { x: number; z: number; level: number }[];
+};
 
-/** Modern land and water visual layer; no historical routes or timeline state. */
+/** One modern land/water surface. No historical geometry or additional clock. */
 export function createModernLandscape(
   scene: THREE.Scene,
   renderer: THREE.WebGLRenderer,
 ) {
   const root = new THREE.Group();
+  scene.add(root);
   const environment = skyEnvironment(renderer);
   scene.environment = environment.texture;
   scene.environmentIntensity = 0.5;
-  scene.add(root);
   const aEnvironment = createEnvironmentDetails();
   root.add(aEnvironment.root);
   const globalField = createTerrainField(geography);
   const atmosphere = createExhibitionAtmosphere(globalField.worldBounds);
   const landMaterial = terrainMaterial(atmosphere),
     water = waterMaterial(atmosphere, environment.texture);
-  const bankMaterial = new THREE.MeshStandardMaterial({
-    color: '#777c7b',
-    roughness: 0.94,
-    side: THREE.DoubleSide,
-  });
   let gain = 12,
     detailField: TerrainField | null = null,
     region: RegionId | null = null,
-    disposed = false,
-    revision = 0;
-  let visibleRivers = true;
-  let focusedPivot: FocusPivot | null = null;
-  let activeLines: RiverPoint[][] = modernLines.map((line) => line.points);
-  let halfWidth = 0.018;
-  let carve = channelCarver(activeLines, halfWidth);
+    disposed = false;
+  let focusedPivot: FocusPivot | null = null,
+    visibleRivers = true;
   const landHeight = (x: number, z: number) =>
     detailField
       ? blendDetailHeight(detailField, x, z, gain, globalField.height)
       : globalField.height(x, z, gain);
-  let channel: ReturnType<typeof createRiverChannel> | null = null;
-  const surface = (x: number, z: number) =>
-    channel ? channel.surface(x, z) : landHeight(x, z) - carve(x, z);
-  const buildTerrain = (field: TerrainField, cols: number, rows: number) => {
-    const [left, top, right, bottom] = field.worldBounds;
-    const geometry = new THREE.PlaneGeometry(
-      right - left,
-      bottom - top,
-      cols - 1,
-      rows - 1,
-    );
-    geometry.rotateX(-Math.PI / 2);
-    geometry.translate((left + right) / 2, 0, (top + bottom) / 2);
-    const positions = geometry.getAttribute('position'),
-      elevation = new Float32Array(positions.count);
-    for (let i = 0; i < positions.count; i++) {
-      const x = positions.getX(i),
-        z = positions.getZ(i);
-      positions.setY(i, surface(x, z));
-      elevation[i] = field.metres(x, z);
-    }
-    geometry.setAttribute(
-      'panElevation',
-      new THREE.BufferAttribute(elevation, 1),
-    );
-    geometry.computeVertexNormals();
-    const mesh = new THREE.Mesh(geometry, landMaterial);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    return mesh;
+  const metres = (x: number, z: number) =>
+    detailField?.contains(x, z)
+      ? detailField.metres(x, z)
+      : globalField.metres(x, z);
+  // The same bounded channel is used for terrain vertices, riverbanks and water.
+  let channel = createRiverChannel(referenceWater, landHeight, 0.0068, 0.0038);
+  const analyticalSurface = (x: number, z: number) => channel.surface(x, z);
+  const bank = (x: number, z: number) => {
+    const p = channel.at(x, z);
+    if (!p) return 0;
+    const u = p.distance / p.width;
+    return Math.max(0, 1 - Math.abs(u - 1.25) / 1.2);
   };
-  const globe = buildTerrain(globalField, geography.cols, geography.rows);
-  root.add(globe);
-  const globalIndex = globe.geometry.index!;
-  const originalIndex = new Uint32Array(globalIndex.array);
-  let detailMesh: THREE.Mesh<
-    THREE.PlaneGeometry,
-    THREE.MeshStandardMaterial
-  > | null = null;
+  const lod = createTerrainLod(
+    root,
+    landMaterial,
+    globalField.worldBounds,
+    geography.cols,
+    geography.rows,
+    analyticalSurface,
+    metres,
+    bank,
+  );
   const waterGroup = new THREE.Group();
   root.add(waterGroup);
-  const clearWater = () => {
-    for (const object of [...waterGroup.children])
-      if (object instanceof THREE.Mesh) {
-        object.geometry.dispose();
-        waterGroup.remove(object);
-      }
-  };
   const buildWater = () => {
-    clearWater();
-    for (const points of channel?.paths ?? activeLines) {
-      if (points.length < 2) continue;
-      const bed = new THREE.Mesh(
-        riverRibbon(points, surface, halfWidth, true, 0.0035),
-        bankMaterial,
-      );
-      const top = new THREE.Mesh(
-        riverRibbon(points, landHeight, halfWidth),
+    for (const child of [...waterGroup.children])
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        waterGroup.remove(child);
+      }
+    for (const path of channel.paths) {
+      if (path.length < 2) continue;
+      const mesh = new THREE.Mesh(
+        riverRibbon(path, landHeight, 0.0068),
         water.material,
       );
-      bed.receiveShadow = true;
-      top.receiveShadow = true;
-      waterGroup.add(bed, top);
+      mesh.receiveShadow = true;
+      waterGroup.add(mesh);
     }
     waterGroup.visible = visibleRivers;
   };
@@ -160,282 +200,264 @@ export function createModernLandscape(
   root.add(sky);
   const fog = new THREE.Fog(EXHIBITION_LIGHT.fog, 27, 80);
   scene.fog = fog;
-  const [left, top, right, bottom] = globalField.worldBounds;
   const plinth = new THREE.Mesh(
-    reliefBlockGeometry([left, top, right, bottom], surface, exhibitionBase),
+    reliefBlockGeometry(globalField.worldBounds, lod.heightAt, -2.8),
     reliefBlockMaterial(),
   );
   plinth.receiveShadow = true;
   plinth.castShadow = true;
   root.add(plinth);
-  const stitch = () => {
-    globalIndex.array.set(originalIndex);
-    if (detailField) {
-      const p = globe.geometry.getAttribute('position');
-      for (let i = 0; i < originalIndex.length; i += 3) {
-        const a = originalIndex[i]!,
-          b = originalIndex[i + 1]!,
-          c = originalIndex[i + 2]!;
-        if (
-          [a, b, c].every((index) =>
-            detailField!.contains(p.getX(index), p.getZ(index)),
-          )
-        ) {
-          globalIndex.setX(i + 1, a);
-          globalIndex.setX(i + 2, a);
-        }
-      }
+  const refreshEnvironment = () => {
+    if (!region || !detailField) {
+      aEnvironment.clear();
+      return;
     }
-    globalIndex.needsUpdate = true;
+    const b = detailField.worldBounds;
+    aEnvironment.populate(
+      region,
+      focusedPivot ?? { x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2 },
+      lod.heightAt,
+      (x, z) => {
+        const p = channel.at(x, z);
+        return (
+          detailField!.contains(x, z) && (!p || p.distance > p.width * 2.2)
+        );
+      },
+    );
   };
+  let heightVersion = 0;
   const updateTerrain = () => {
-    const p = globe.geometry.getAttribute('position');
-    for (let i = 0; i < p.count; i++)
-      p.setY(
-        i,
-        globalField.height(p.getX(i), p.getZ(i), gain) -
-          (detailField ? 0 : carve(p.getX(i), p.getZ(i))),
-      );
-    p.needsUpdate = true;
-    globe.geometry.computeBoundingSphere();
-    if (detailMesh) {
-      root.remove(detailMesh);
-      detailMesh.geometry.dispose();
-      detailMesh = null;
-    }
-    if (detailField) {
-      detailMesh = buildTerrain(detailField, 769, 641);
-      root.add(detailMesh);
-    }
+    channel = createRiverChannel(referenceWater, landHeight, 0.0068, 0.0038);
+    lod.setRegion(detailField?.worldBounds ?? null);
     plinth.geometry.dispose();
     plinth.geometry = reliefBlockGeometry(
       globalField.worldBounds,
-      surface,
-      exhibitionBase,
+      lod.heightAt,
+      -2.8,
     );
-    stitch();
-    // Restored overview triangles need their normals recomputed AFTER indices.
-    // Degenerate detail cut-outs otherwise leave a black rectangle on return.
-    globe.geometry.computeVertexNormals();
     buildWater();
-    if (region && detailField) {
-      const b = detailField.worldBounds;
-      aEnvironment.populate(
-        region,
-        focusedPivot ?? { x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2 },
-        surface,
-        (x, z) => {
-          const water = channel?.at(x, z);
-          return (
-            detailField!.contains(x, z) &&
-            (!water || water.distance > water.width * 1.8)
-          );
-        },
-      );
-    }
+    refreshEnvironment();
+    heightVersion++;
   };
-  const localLines = (id: RegionId, field: TerrainField) => {
-    const osm = modernWater.regions.find((item) => item.regionId === id);
-    const candidates = [
-      ...modernLines
-        .filter((line) => !(id === 'luding' && osm && line.name === 'Dadu'))
-        .map((line) => line.points),
-      ...(osm?.lines.map((line) => line.coordinates.map(point)) ?? []),
-    ];
-    const output: RiverPoint[][] = [];
-    for (const points of candidates) {
-      let segment: RiverPoint[] = [];
-      for (const point of points) {
-        if (field.contains(point.x, point.z)) segment.push(point);
-        else {
-          if (segment.length > 1) output.push(segment);
-          segment = [];
-        }
-      }
-      if (segment.length > 1) output.push(segment);
-    }
-    return output;
+  const commit = (field: TerrainField, id: string) => {
+    detailField = field;
+    region = id as RegionId;
+    focusedPivot = null;
+    const b = field.worldBounds,
+      mood = REGION_MOOD[region];
+    atmosphere.regionActive.value = 1;
+    atmosphere.regionBounds.value.set(...b);
+    atmosphere.regionForest.value.set(mood.forest);
+    atmosphere.regionGround.value.set(mood.ground);
+    atmosphere.regionRock.value.set(mood.rock);
+    const center = { x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2 };
+    atmosphere.origin.value.set(
+      center.x,
+      landHeight(center.x, center.z),
+      center.z,
+    );
+    atmosphere.local.value = 0.18;
+    updateTerrain();
+  };
+  const requests = createTerrainRequests<TerrainField>(async (id) => {
+    const loader = loaders[`./data/details/${id}.json`];
+    if (!loader) throw new Error('无区域高程');
+    return createTerrainField(await loader());
+  }, commit);
+  let observerKey = '',
+    pendingObservation: {
+      x: number;
+      z: number;
+      distance: number;
+      since: number;
+    } | null = null;
+  let retryAfter = 0;
+  const wantedRegion = (x: number, z: number) => {
+    if (detailField?.contains(x, z)) return region;
+    return (
+      (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(([, b]) => {
+        const a = projectGeo([b[0], b[3]]),
+          c = projectGeo([b[2], b[1]]);
+        return x >= a[0] && x <= c[0] && z >= a[1] && z <= c[1];
+      })?.[0] ?? null
+    );
+  };
+  const waterAt = (x: number, z: number) => {
+    const p = channel.at(x, z);
+    return p && p.distance <= p.width ? p.level : null;
   };
   return {
-    heightAt: surface,
-    async focus(id: RegionId, entryComposition = false) {
-      const ticket = ++revision;
-      if (region === id && focusedPivot) return focusedPivot;
-      try {
-        const loader = loaders[`./data/details/${id}.json`];
-        if (!loader) return null;
-        let pending = cache.get(id);
-        if (!pending) {
-          pending = loader();
-          cache.set(id, pending);
-        }
-        const data = await pending;
-        if (disposed || ticket !== revision) return null;
-        region = id;
-        focusedPivot = null;
-        detailField = createTerrainField(data);
-        const mood = REGION_MOOD[id];
-        atmosphere.regionActive.value = 1;
-        atmosphere.regionBounds.value.set(...detailField.worldBounds);
-        atmosphere.regionForest.value.set(mood.forest);
-        atmosphere.regionGround.value.set(mood.ground);
-        atmosphere.regionRock.value.set(mood.rock);
-        activeLines = localLines(id, detailField);
-        halfWidth = 0.0065;
-        channel = createRiverChannel(
-          activeLines,
-          landHeight,
-          halfWidth,
-          0.0035,
-        );
-        updateTerrain();
-        fog.near = entryComposition ? 10 : 5;
-        fog.far = entryComposition ? 36 : 22;
-        const bounds = detailField.worldBounds;
-        const center = {
-          x: (bounds[0] + bounds[2]) / 2,
-          z: (bounds[1] + bounds[3]) / 2,
-        };
-        atmosphere.origin.value.set(
-          center.x,
-          landHeight(center.x, center.z),
-          center.z,
-        );
-        atmosphere.local.value = entryComposition ? 0.15 : 0.3;
-        atmosphere.bounds.value.set(...globalField.worldBounds);
-        const osm = modernWater.regions.find((item) => item.regionId === id);
-        if (osm) {
-          const nearest = osm.lines
-            .flatMap((line) =>
-              line.coordinates.map((coordinates, index) => {
-                const p = point(coordinates),
-                  a = point(line.coordinates[Math.max(0, index - 1)]!),
-                  b = point(
-                    line.coordinates[
-                      Math.min(line.coordinates.length - 1, index + 1)
-                    ]!,
-                  );
-                const length = Math.hypot(b.x - a.x, b.z - a.z) || 1;
-                return {
-                  ...p,
-                  viewDirection: {
-                    x: (b.x - a.x) / length,
-                    z: (b.z - a.z) / length,
-                  },
-                  waterLevel:
-                    channel!.at(p.x, p.z)?.level ??
-                    landHeight(p.x, p.z) + 0.0007,
-                };
-              }),
-            )
-            .filter((p) => detailField!.contains(p.x, p.z))
-            .sort(
-              (a, b) =>
-                Math.hypot(a.x - center.x, a.z - center.z) -
-                Math.hypot(b.x - center.x, b.z - center.z),
-            )[0];
-          if (nearest) {
-            atmosphere.origin.value.set(
-              nearest.x,
-              nearest.waterLevel,
-              nearest.z,
-            );
-            const riverCandidates = channel!.paths
-              .flatMap((line) =>
-                line.filter(
-                  (p, index) =>
-                    index % 4 === 0 &&
-                    Math.hypot(p.x - nearest.x, p.z - nearest.z) > 0.02 &&
-                    Math.hypot(p.x - nearest.x, p.z - nearest.z) < 0.7,
-                ),
-              )
-              .map((p) => ({ x: p.x, z: p.z, level: p.level }));
-            return (focusedPivot = { ...nearest, riverCandidates });
-          }
-        }
-        return (focusedPivot = center);
-      } catch {
-        cache.delete(id);
-        return null;
+    heightAt: lod.heightAt,
+    waterHeightAt: waterAt,
+    navigationHeightAt: (x: number, z: number) =>
+      Math.max(lod.heightAt(x, z), waterAt(x, z) ?? -Infinity),
+    get worldBounds() {
+      return globalField.worldBounds;
+    },
+    async focus(
+      id: RegionId,
+      entryComposition = false,
+    ): Promise<FocusPivot | null> {
+      pendingObservation = null;
+      atmosphere.local.value = entryComposition ? 0.12 : 0.18;
+      observerKey = '';
+      retryAfter = 0;
+      requests.cancel();
+      if (region !== id || !focusedPivot) {
+        if (region !== id && !(await requests.request(id))) return null;
+        const b = detailField!.worldBounds,
+          center = { x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2 };
+        const paths = channel.paths
+          .flatMap((p) => p)
+          .filter((p) => detailField!.contains(p.x, p.z));
+        const nearest = paths.sort(
+          (a, b) =>
+            Math.hypot(a.x - center.x, a.z - center.z) -
+            Math.hypot(b.x - center.x, b.z - center.z),
+        )[0];
+        focusedPivot = nearest
+          ? { ...nearest, waterLevel: nearest.level }
+          : center;
+        refreshEnvironment();
       }
+      return focusedPivot;
     },
     overview() {
-      atmosphere.local.value = 0;
-      revision++;
+      requests.cancel();
+      pendingObservation = null;
+      observerKey = '';
+      retryAfter = 0;
       region = null;
-      aEnvironment.clear();
-      atmosphere.regionActive.value = 0;
-      atmosphere.bounds.value.set(...globalField.worldBounds);
-      focusedPivot = null;
       detailField = null;
-      channel = null;
-      activeLines = modernLines.map((line) => line.points);
-      halfWidth = 0.018;
-      carve = channelCarver(activeLines, halfWidth);
+      focusedPivot = null;
+      atmosphere.regionActive.value = 0;
+      atmosphere.local.value = 0;
       updateTerrain();
-      fog.near = 27;
-      fog.far = 80;
+    },
+    observe(x: number, z: number, distance: number, now: number) {
+      if (disposed) return;
+      if (lod.advance(now)) {
+        heightVersion++;
+        if (!lod.details.morphing) refreshEnvironment();
+      }
+      const p = pendingObservation;
+      if (
+        !p ||
+        Math.hypot(x - p.x, z - p.z) > Math.max(0.008, distance * 0.12) ||
+        Math.abs(Math.log(distance / p.distance)) > 0.22
+      ) {
+        pendingObservation = { x, z, distance, since: now };
+        return;
+      }
+      if (now - p.since < 220) return;
+      pendingObservation = null;
+      const id = distance < 4.2 ? wantedRegion(x, z) : null;
+      const key = id ?? 'base';
+      if (
+        distance < 4.2 &&
+        key !== observerKey &&
+        id !== region &&
+        now >= retryAfter
+      ) {
+        observerKey = key;
+        if (id)
+          void requests.request(id).then((result) => {
+            if (!result && !disposed && observerKey === key) {
+              observerKey = '';
+              retryAfter = performance.now() + 1500;
+            }
+          });
+        else {
+          requests.cancel();
+          region = null;
+          detailField = null;
+          focusedPivot = null;
+          atmosphere.regionActive.value = 0;
+          updateTerrain();
+        }
+      }
+      if (lod.refine(x, z, distance, now)) {
+        refreshEnvironment();
+        heightVersion++;
+      }
+    },
+    pick(ray: THREE.Raycaster) {
+      const hits = ray.intersectObjects(
+        [...lod.meshes, ...(visibleRivers ? waterGroup.children : [])],
+        false,
+      );
+      const hit = hits[0];
+      return hit ? hit.point.clone() : null;
     },
     setExaggeration(value: number) {
       if (value === gain) return;
       gain = value;
       focusedPivot = null;
-      if (region)
-        channel = createRiverChannel(
-          activeLines,
-          landHeight,
-          halfWidth,
-          0.0035,
-        );
-      carve = channelCarver(
-        activeLines,
-        halfWidth,
-        region ? 0.0018 * gain : 0.0028,
-      );
       updateTerrain();
-      if (region) {
-        const origin = atmosphere.origin.value;
-        origin.y =
-          channel?.at(origin.x, origin.z)?.level ??
-          landHeight(origin.x, origin.z);
-      }
+      const o = atmosphere.origin.value;
+      o.y = landHeight(o.x, o.z);
     },
     setRivers(value: boolean) {
       visibleRivers = value;
       waterGroup.visible = value;
     },
     cancelPending() {
-      revision++;
+      requests.cancel();
+      pendingObservation = null;
+      observerKey = '';
     },
-    update(seconds: number, viewDistance: number) {
+    update(seconds: number, viewDistance: number, position?: THREE.Vector3) {
       water.time.value = seconds;
       aEnvironment.update(seconds);
-      // Pulling back keeps the same terrain and camera. Move the fog envelope
-      // with the viewer so a regional view never dissolves into opaque haze.
-      if (region) {
-        fog.near = Math.max(10, viewDistance * 0.8);
-        fog.far = Math.max(36, viewDistance * 3 + 12);
+      aEnvironment.root.visible = viewDistance < 6;
+      fog.near = Math.max(0.035, viewDistance * 0.95);
+      fog.far = Math.max(0.8, viewDistance * 4 + 2);
+      if (position) {
+        sky.position.copy(position);
+        sky.scale.setScalar(
+          Math.max(12, Math.min(160, viewDistance * 4 + 4)) * 0.006,
+        );
       }
     },
     get region() {
       return region;
     },
-    get modernWaterSource() {
-      return modernWater.regions.some((item) => item.regionId === region)
-        ? 'OSM + Natural Earth'
-        : 'Natural Earth';
-    },
     get bounds(): GeoBounds {
       return detailField?.worldBounds ?? globalField.worldBounds;
+    },
+    get heightVersion() {
+      return heightVersion;
+    },
+    get diagnostics() {
+      const materials = new Set<THREE.Material>();
+      root.traverse((object) => {
+        if (object instanceof THREE.Mesh)
+          (Array.isArray(object.material)
+            ? object.material
+            : [object.material]
+          ).forEach((m) => materials.add(m));
+      });
+      return {
+        ...lod.details,
+        region,
+        heightVersion,
+        fieldCache: requests.size,
+        exaggeration: gain,
+        materials: materials.size,
+      };
+    },
+    get modernWaterSource() {
+      return 'OSM + Natural Earth';
     },
     dispose() {
       if (disposed) return;
       disposed = true;
+      requests.dispose();
       scene.environment = null;
       aEnvironment.dispose();
+      lod.dispose();
       environment.dispose();
-      disposeLandscapeRoot(root, [landMaterial, water.material, bankMaterial]);
-      revision++;
+      disposeLandscapeRoot(root, [landMaterial, water.material]);
     },
   };
 }

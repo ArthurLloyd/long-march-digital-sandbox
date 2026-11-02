@@ -80,8 +80,12 @@ export function createRiverChannel(
         samples.push({
           x: a.x + ((b.x - a.x) * j) / count,
           z: a.z + ((b.z - a.z) * j) / count,
+          width:
+            (a.width ?? halfWidth) +
+            (((b.width ?? halfWidth) - (a.width ?? halfWidth)) * j) / count,
         });
     }
+    const heights = samples.map((p) => height(p.x, p.z));
     let along = 0;
     return samples.map((p, i) => {
       if (i)
@@ -96,14 +100,16 @@ export function createRiverChannel(
         const other = samples[j]!,
           d = Math.hypot(other.x - p.x, other.z - p.z);
         const weight = Math.exp((-d * d) / 0.0005);
-        sum += height(other.x, other.z) * weight;
+        sum += heights[j]! * weight;
         weights += weight;
       }
       return {
         ...p,
-        level: sum / weights + 0.0007,
+        level:
+          (i === 0 || i === samples.length - 1 ? heights[i]! : sum / weights) +
+          0.0007,
         width:
-          halfWidth *
+          p.width! *
           (1 + 0.12 * Math.sin(along * 31) + 0.07 * Math.sin(along * 73)),
       };
     });
@@ -118,7 +124,7 @@ export function createRiverChannel(
     for (let i = 1; i < line.length; i++) {
       const a = line[i - 1]!,
         b = line[i]!,
-        reach = halfWidth * 3;
+        reach = Math.max(a.width, b.width) * 3;
       for (
         let x = Math.floor((Math.min(a.x, b.x) - reach) / cell);
         x <= Math.floor((Math.max(a.x, b.x) + reach) / cell);

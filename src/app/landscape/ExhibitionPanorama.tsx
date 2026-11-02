@@ -349,6 +349,7 @@ export function ExhibitionPanorama(
       }}
     >
       <div ref={host} className="museum-map-canvas" />
+      <p className="museum-terrain-hint">双击山坡或河面聚焦 · 滚轮继续靠近</p>
       {focusedView && (
         <button
           className={`museum-region-anchor${focusedView === 'ruijin' ? ' is-ruijin-anchor' : ''}`}
@@ -417,18 +418,20 @@ export function ExhibitionPanorama(
           <MapControlFrame />
           山河取景<span>现代地理</span>
         </summary>
-        <div>
-          {GEOGRAPHIC_VIEWS.map((item) => (
-            <button
-              key={item.id}
-              aria-pressed={view === item.id}
-              onClick={() => chooseView(item.id)}
-            >
-              {item.title}
-            </button>
-          ))}
+        <div className="museum-geographic-menu">
+          <div>
+            {GEOGRAPHIC_VIEWS.map((item) => (
+              <button
+                key={item.id}
+                aria-pressed={view === item.id}
+                onClick={() => chooseView(item.id)}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+          <p>区域取景入口，不是历史事件坐标。</p>
         </div>
-        <p>区域取景入口，不是历史事件坐标。</p>
       </details>
       {focusedView && !visibleCinematic && (
         <div className="museum-art-entry">
