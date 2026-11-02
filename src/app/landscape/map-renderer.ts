@@ -9,7 +9,7 @@ import { REGIONS, type RegionId } from './map-regions';
 import type { PublishedMapRoute } from './map-objects';
 import type { ForcePhaseState } from '../history/force-state';
 import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
-import { composeReliefEntry } from './relief-block';
+import { composeReliefEntry, composeRegionalView } from './relief-block';
 import {
   PANORAMA_SCENE,
   RUIJIN_SCENE,
@@ -30,7 +30,7 @@ export interface MarkerProjection {
 }
 export interface PanoramaMapAdapter {
   entry(): void;
-  focus(bounds: GeoBounds): void;
+  focus(bounds: GeoBounds, framing?: 'place'): void;
   focusGeo(point: GeoPoint): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -222,7 +222,7 @@ export function createPanoramaMap(
   };
   controls.addEventListener('start', cancel);
   const bookmark = (): PanoramaBookmark => ({
-    sceneId: landscape.exhibit ? RUIJIN_SCENE : PANORAMA_SCENE,
+    sceneId: entryFraming ? RUIJIN_SCENE : PANORAMA_SCENE,
     position: camera.position.toArray(),
     target: controls.target.toArray(),
   });
@@ -242,8 +242,8 @@ export function createPanoramaMap(
     sun.shadow.camera.bottom = -16;
     sun.shadow.camera.updateProjectionMatrix();
     travel(
-      new THREE.Vector3(0, top ? 31 : 20, top ? 0.1 : 19),
-      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, top ? 31 : 23, top ? 0.1 : 23),
+      new THREE.Vector3(0, top ? 0 : -0.6, 0),
     );
   };
   camera.position.set(0, 20, 19);
@@ -373,7 +373,10 @@ export function createPanoramaMap(
     }
     controls.update();
     if (flightFinished) viewChanged();
-    landscape.update(options.reducedMotion ? 0 : now / 1000);
+    landscape.update(
+      options.reducedMotion ? 0 : now / 1000,
+      camera.position.distanceTo(controls.target),
+    );
     try {
       renderer.render(scene, camera);
       if (shaderProblem) {
@@ -492,7 +495,7 @@ export function createPanoramaMap(
       if (region) void landscape.focus(region).then(complete);
       else complete();
     },
-    focus(bounds) {
+    focus(bounds, framing) {
       entryFraming = false;
       preparingEntry = false;
       const revision = ++focusRevision;
@@ -513,12 +516,11 @@ export function createPanoramaMap(
         const fallback = projectGeo(regionCenter(bounds));
         const x = pivot?.x ?? fallback[0],
           z = pivot?.z ?? fallback[1];
-        const direction = pivot?.viewDirection ?? { x: 0.15, z: 1 };
-        const pose = composeTerrainView(
-          { x, z, y: pivot?.waterLevel ?? heightAt(x, z) },
-          direction,
+        const pose = composeRegionalView(
+          landscape.bounds,
+          { x, z },
           heightAt,
-          pivot?.riverCandidates,
+          framing === 'place' ? 0.68 : 1,
         );
         const target = new THREE.Vector3(...pose.target);
         const position = new THREE.Vector3(...pose.position);
@@ -555,8 +557,7 @@ export function createPanoramaMap(
         camera.position.distanceTo(new THREE.Vector3(...bookmark.position)) <
           0.00001 &&
         controls.target.distanceTo(new THREE.Vector3(...bookmark.target)) <
-          0.00001 &&
-        (bookmark.sceneId === RUIJIN_SCENE) === landscape.exhibit
+          0.00001
       )
         return;
       cancel();
@@ -568,13 +569,9 @@ export function createPanoramaMap(
           new THREE.Vector3(...bookmark.target),
         );
       };
-      if (bookmark.sceneId === RUIJIN_SCENE && !landscape.exhibit)
+      if (bookmark.sceneId === RUIJIN_SCENE && landscape.region !== 'ruijin')
         void landscape.focus('ruijin', true).then(complete);
       else {
-        if (bookmark.sceneId === PANORAMA_SCENE && landscape.exhibit) {
-          landscape.overview();
-          drape();
-        }
         complete();
       }
     },

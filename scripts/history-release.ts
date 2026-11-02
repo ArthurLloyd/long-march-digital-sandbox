@@ -19,12 +19,21 @@ export const SHELL_FILES = [
   'licenses/Zhi-Mang-Xing-OFL.txt',
   'licenses/title-calligraphy-SOURCE.txt',
   'licenses/OFL-1.1.txt',
+  'licenses/Ma-Shan-Zheng-OFL.txt',
 ] as const;
 
-export function releaseAssetFiles(published: HistoryDatasetV2) {
+export interface ArtExhibitAsset {
+  filePath: string;
+  sha256: string;
+}
+export function releaseAssetFiles(
+  published: HistoryDatasetV2,
+  artAssets: readonly ArtExhibitAsset[] = [],
+) {
   return [
     ...new Set<string>([
       ...SHELL_FILES,
+      ...artAssets.map((asset) => asset.filePath),
       ...published.assets.map((a) => a.filePath.slice(1)),
     ]),
   ];
@@ -79,13 +88,22 @@ export function assertReleaseFiles(
   candidate: HistoryDatasetV2,
   published: HistoryDatasetV2,
   blockedHashes: ReadonlySet<string> = new Set(),
+  artAssets: readonly ArtExhibitAsset[] = [],
 ) {
-  const allowed = new Set(releaseAssetFiles(published));
+  const allowed = new Set(releaseAssetFiles(published, artAssets));
+  const artHashes = new Map(
+    artAssets.map((asset) => [asset.filePath, asset.sha256]),
+  );
   const tokens = sensitiveTokens(candidate, published);
   for (const [rawName, bytes] of files) {
     if (blockedHashes.has(createHash('sha256').update(bytes).digest('hex')))
       throw new Error(`生产包含未发布资源字节：${rawName}`);
     const name = rawName.replaceAll('\\', '/');
+    if (
+      artHashes.has(name) &&
+      createHash('sha256').update(bytes).digest('hex') !== artHashes.get(name)
+    )
+      throw new Error(`艺术展陈资源字节与审核清单不符：${name}`);
     if (
       /^(?:src\/|__dev\/)|(?:^|\/)(?:fixtures|workbench)\//.test(name) ||
       (/^assets\/(?:archive|terrain|textures)\//.test(name) &&
@@ -145,7 +163,10 @@ async function readOutput(
 }
 
 /** Source records stay untouched. Only a derived, deny-preserving view reaches App. */
-export function historyReleasePlugin(): Plugin {
+export function historyReleasePlugin(
+  options: { artAssets?: readonly ArtExhibitAsset[] } = {},
+): Plugin {
+  const artAssets = options.artAssets ?? [];
   let config: ResolvedConfig;
   let candidate: HistoryDatasetV2;
   let snapshot: ReturnType<typeof createReleaseSnapshot>;
@@ -188,16 +209,49 @@ export function historyReleasePlugin(): Plugin {
     async buildStart() {
       await loadSource();
       if (config.command === 'build') {
+        for (const asset of artAssets) {
+          if (
+            !/^assets\/textures\/(?:scene-cinematics\/(?:v2|v2-repair)\/[a-z]+-intro\.(?:mp4|jpg)|immersive-landscapes\/[a-z-]+\.webp)$/.test(
+              asset.filePath,
+            ) ||
+            !/^[a-f0-9]{64}$/.test(asset.sha256)
+          )
+            throw new Error(`艺术展陈清单路径或哈希不合法：${asset.filePath}`);
+          const bytes = await readAllowedFile(
+            resolve(config.root, 'public'),
+            asset.filePath,
+          );
+          if (createHash('sha256').update(bytes).digest('hex') !== asset.sha256)
+            throw new Error(
+              `艺术展陈资源字节与审核清单不符：${asset.filePath}`,
+            );
+        }
         await validatePublishedAssets(
           pathToFileURL(`${resolve(config.root, 'public')}/`),
           snapshot.dataset.assets,
         );
-        const allowed = new Set(releaseAssetFiles(snapshot.dataset));
+        const allowed = new Set(releaseAssetFiles(snapshot.dataset, artAssets));
         const approvedHashes = new Set<string>();
         blockedHashes = new Set();
-        for (const [name, bytes] of await readOutput(
-          resolve(config.root, 'public'),
-        )) {
+        const publicFiles = await readOutput(resolve(config.root, 'public'));
+        const publishedAssetIds = new Set(
+          snapshot.dataset.assets.map((asset) => asset.assetId),
+        );
+        for (const asset of candidate.assets) {
+          if (publishedAssetIds.has(asset.assetId)) continue;
+          const bytes = publicFiles.get(asset.filePath.slice(1));
+          if (
+            bytes &&
+            artAssets.some(
+              (art) =>
+                art.sha256 === createHash('sha256').update(bytes).digest('hex'),
+            )
+          )
+            throw new Error(
+              `未发布历史素材不能借艺术清单进入生产：${asset.filePath}`,
+            );
+        }
+        for (const [name, bytes] of publicFiles) {
           const hash = createHash('sha256').update(bytes).digest('hex');
           (allowed.has(name) ? approvedHashes : blockedHashes).add(hash);
         }
@@ -206,7 +260,7 @@ export function historyReleasePlugin(): Plugin {
     },
     async generateBundle(_options, bundle) {
       if (config.command !== 'build') return;
-      for (const name of releaseAssetFiles(snapshot.dataset))
+      for (const name of releaseAssetFiles(snapshot.dataset, artAssets))
         this.emitFile({
           type: 'asset',
           fileName: name,
@@ -231,14 +285,20 @@ export function historyReleasePlugin(): Plugin {
             if (
               !path.startsWith('../') &&
               !isAbsolute(path) &&
-              !releaseAssetFiles(snapshot.dataset).includes(path)
+              !releaseAssetFiles(snapshot.dataset, artAssets).includes(path)
             )
               throw new Error(`生产导入未许可 public 素材：${output.fileName}`);
           }
           files.set(output.fileName, output.source);
         }
       }
-      assertReleaseFiles(files, candidate, snapshot.dataset, blockedHashes);
+      assertReleaseFiles(
+        files,
+        candidate,
+        snapshot.dataset,
+        blockedHashes,
+        artAssets,
+      );
     },
     async closeBundle() {
       if (config.command === 'build' && config.build.write)
@@ -247,6 +307,7 @@ export function historyReleasePlugin(): Plugin {
           candidate,
           snapshot.dataset,
           blockedHashes,
+          artAssets,
         );
     },
     transformIndexHtml(html, context) {
@@ -268,7 +329,9 @@ export function historyReleasePlugin(): Plugin {
       return html;
     },
     async configurePreviewServer(server) {
-      const allowed = new Set(releaseAssetFiles((await loadSource()).dataset));
+      const allowed = new Set(
+        releaseAssetFiles((await loadSource()).dataset, artAssets),
+      );
       server.middlewares.use((request, response, next) => {
         const path = new URL(request.url ?? '/', 'http://localhost').pathname;
         if (

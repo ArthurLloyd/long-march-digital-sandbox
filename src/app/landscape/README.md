@@ -21,4 +21,4 @@
 
 首页与地图的光色、材质和空态衔接见[展馆视觉修正记录](../../../docs/design/panorama-exhibition-refinement.md)。
 
-瑞金默认入场、厚切面、书签显示模式及三种桌面证据见[瑞金展台记录](../../../docs/design/ruijin-entry-relief.md)。
+连续总图的默认瑞金取景、同画布区域／内层定位与 A 八区公共模块接入见[新版集成记录](../../../docs/architecture/continuous-panorama-a-integration.md)。旧[瑞金展台记录](../../../docs/design/ruijin-entry-relief.md)仅保留被用户否决的独立切块审计，不再代表当前效果。

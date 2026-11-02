@@ -62,6 +62,11 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       value: new THREE.Color(EXHIBITION_LIGHT.stone),
     };
     shader.uniforms.panSnow = { value: new THREE.Color(EXHIBITION_LIGHT.snow) };
+    shader.uniforms.panRegionBounds = atmosphere.regionBounds;
+    shader.uniforms.panRegionActive = atmosphere.regionActive;
+    shader.uniforms.panRegionForest = atmosphere.regionForest;
+    shader.uniforms.panRegionGround = atmosphere.regionGround;
+    shader.uniforms.panRegionRock = atmosphere.regionRock;
     shader.vertexShader =
       'attribute float panElevation; varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
       shader.vertexShader;
@@ -70,7 +75,7 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       '#include <begin_vertex>\npanWorld=(modelMatrix*vec4(transformed,1.)).xyz;panTerrainNormal=normalize(mat3(modelMatrix)*normal);panMetres=panElevation;panSlope=1.-abs(normalize(normal).y);',
     );
     shader.fragmentShader =
-      'uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;uniform vec3 panInkShadow;uniform vec3 panFoliage;uniform vec3 panStone;uniform vec3 panSnow;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
+      'uniform vec4 panRegionBounds; uniform float panRegionActive; uniform vec3 panRegionForest; uniform vec3 panRegionGround; uniform vec3 panRegionRock; uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;uniform vec3 panInkShadow;uniform vec3 panFoliage;uniform vec3 panStone;uniform vec3 panSnow;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
       atmosphereDeclarations +
       noise +
       exhibitionSky +
@@ -101,6 +106,12 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       vec3 hill=mix(vec3(.16,.27,.19),vec3(.39,.43,.25),smoothstep(120.,850.,panMetres));
       hill=mix(hill,vec3(.57,.47,.31),smoothstep(650.,1600.,panMetres)*.72);
       ground=mix(ground,hill,.48*(1.-smoothstep(1800.,2800.,panMetres)));
+      vec2 regionSpan=panRegionBounds.zw-panRegionBounds.xy;
+      vec2 regionEdge=min((panWorld.xz-panRegionBounds.xy)/regionSpan,(panRegionBounds.zw-panWorld.xz)/regionSpan);
+      float regionMix=smoothstep(0.,.12,min(regionEdge.x,regionEdge.y))*panRegionActive;
+      vec3 regional=mix(panRegionForest,panRegionGround,clamp(broad*.65+panSlope*.3,0.,1.));
+      regional=mix(regional,panRegionRock,exposed*.8);
+      ground=mix(ground,regional,regionMix*.72);
       ground=mix(ground,panSnow,smoothstep(4400.,5700.,panMetres)*.82);
       diffuseColor.rgb=ground*(.92+.15*grain);
     `,
@@ -128,7 +139,7 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       '#include <fog_fragment>\n' + exhibitionEdgeFade('panWorld'),
     );
   };
-  material.customProgramCacheKey = () => 'panorama-exhibition-land-v9';
+  material.customProgramCacheKey = () => 'panorama-exhibition-land-v10';
   return material;
 }
 export function waterMaterial(

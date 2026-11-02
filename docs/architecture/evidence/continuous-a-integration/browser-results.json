@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-02",
+  "preview": "http://127.0.0.1:4176/",
+  "aSourceCommit": "0a17abdb7ce760826730b6d08580ecafc292bdde",
+  "actualBrowser": "Windows Edge",
+  "entryViewportSizes": [
+    [1920, 1080],
+    [1440, 900],
+    [1366, 768]
+  ],
+  "sameCanvasRuijinFocus": {
+    "beforeBackendNodeId": 533,
+    "afterBackendNodeId": 533
+  },
+  "aRegionsObservedReady": [
+    "ruijin",
+    "zunyi",
+    "chishui",
+    "jinsha",
+    "luding",
+    "snow",
+    "grass",
+    "reunion"
+  ],
+  "ruijinObservation": "three observations and thinking feedback operated",
+  "jinshaExit": {
+    "backgroundBeforeBackendNodeId": 533,
+    "backgroundAfterBackendNodeId": 533,
+    "remainingCanvases": 1,
+    "remainingVideos": 0
+  },
+  "review": {
+    "initial": "fix: zoom-out fog and overview wall visibility",
+    "confirmation": "ship: both bounded fixes resolved",
+    "userVisualAcceptance": "pending"
+  },
+  "publishedHistoricalEvents": 0,
+  "publishedHistoricalRoutes": 0,
+  "notVerified": [
+    "native background-hidden pause",
+    "sustained GPU performance",
+    "mobile",
+    "full audio listening",
+    "complete animation certification"
+  ],
+  "notes": "Stable dedicated QA tab used for final proofs; earlier user-interrupted states are excluded. This record is feature-preview verification; merged main SHA and fresh checks are recorded in the integration PR ledger."
+}

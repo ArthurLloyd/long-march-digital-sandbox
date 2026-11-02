@@ -21,7 +21,11 @@ export function CinematicTitle({
         aria-label={`收起${title}电影题字`}
         onClick={onDismiss}
       >
-        <span key={title} className="pan-cinema-name" aria-hidden="true">
+        <span
+          key={title}
+          className={`pan-cinema-name${title === '瑞金' ? ' is-ruijin' : ''}`}
+          aria-hidden="true"
+        >
           {title}
         </span>
         <span className="pan-cinema-hint">{hint}</span>

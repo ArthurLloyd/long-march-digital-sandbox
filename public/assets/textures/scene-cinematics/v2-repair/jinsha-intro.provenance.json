@@ -1,0 +1,158 @@
+{
+  "region": "jinsha",
+  "version": 2,
+  "edition": "v2-repair",
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "MiniMax H3",
+  "actualGenerationCostCredits": 420,
+  "costEvidence": "2026-11-02 MiniMax manual video panel confirmed one completed Jinsha repair: H3, 768P, 16:9, 6 seconds, native sound on, quantity 1, 420 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T07:03:48.547Z",
+  "source": {
+    "path": "assets/红军渡金沙江.mp4",
+    "preservedCopy": "artifacts/media-v2/v2-repair/jinsha/2026-11-02T07-03-47.734Z-fe6e6e21/source-original.mp4",
+    "bytes": 3232991,
+    "sha256": "db7310dc4f751175737f703c4c1070e43991b858621220e7e3b358ff79bfc84e",
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/jinsha-intro.mp4",
+    "bytes": 3334720,
+    "sha256": "21cbe4fe8b78ccc3780571c4464d1016714b56e64bf75419e43cafcf1628b4ac",
+    "fastStart": true,
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/jinsha-intro.jpg",
+    "selectedTimeSeconds": 5.4,
+    "bytes": 155244,
+    "sha256": "e37f4c206ba213ef84b2e5a587a8485383916410353c98e022860db4d63267b8",
+    "selection": "Frame at 5.4s; environment-and-people composition requires visual review, not inferred by this script."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "91d9454184cb3f27be286a091a83200a67a0cff03e5c5fd871a0b6d059250bd2",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 6.183332999999999,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "dynamic",
+      "pass1": {
+        "input_i": "-36.98",
+        "input_tp": "-15.44",
+        "input_lra": "3.90",
+        "input_thresh": "-47.03",
+        "output_i": "-18.78",
+        "output_tp": "-2.00",
+        "output_lra": "1.90",
+        "output_thresh": "-28.84",
+        "normalization_type": "dynamic",
+        "target_offset": "0.78"
+      },
+      "pass2": {
+        "input_i": "-36.98",
+        "input_tp": "-15.44",
+        "input_lra": "3.90",
+        "input_thresh": "-47.02",
+        "output_i": "-18.02",
+        "output_tp": "-2.00",
+        "output_lra": "1.90",
+        "output_thresh": "-28.09",
+        "normalization_type": "dynamic",
+        "target_offset": "0.02"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-38.5",
+      "max_volume": "-15.9"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.60",
+      "input_tp": "-2.06",
+      "input_lra": "4.00",
+      "input_thresh": "-28.64",
+      "output_i": "-18.61",
+      "output_tp": "-2.01",
+      "output_lra": "2.10",
+      "output_thresh": "-28.67",
+      "normalization_type": "dynamic",
+      "target_offset": "0.61"
+    },
+    "deliveredAudioIntegratedLufs": -18.6,
+    "deliveredAudioTruePeakDbTP": -2.06,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/jinsha-contact.jpg",
+    "contactNominalTimesSeconds": [0, 2, 4, 6.2],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/v2-repair/jinsha/2026-11-02T07-03-47.734Z-fe6e6e21",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}

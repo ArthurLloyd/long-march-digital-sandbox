@@ -1,0 +1,10 @@
+{
+  "source": "https://github.com/googlefonts/mashanzheng",
+  "commit": "72c50ec001cea63d223d35562eeb2ba42f0fe67a",
+  "license": "SIL OFL 1.1",
+  "licenseFile": "public/licenses/Ma-Shan-Zheng-OFL.txt",
+  "originalSha256": "6d2546bb189c732a8ca29af9e22457b152387d158aa459e4ac2ce1e51788b7fb",
+  "processing": "FontTools subset U+745E/U+91D1; original outlines unchanged, subset family renamed Ruijin Exhibit; self-hosted WOFF2",
+  "subsetSha256": "9debae3780aa735853daef2a02ca670cc0fc0c990905533553e14df8180777aa",
+  "bytes": 1636
+}

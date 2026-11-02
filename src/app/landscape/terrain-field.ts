@@ -108,7 +108,7 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
       // Continental height enhancement cannot be applied literally to every
       // local hill: it turns a valley into a vertical slot. Keep the regional
       // datum aligned, but adapt local relief to the cinematic viewing scale.
-      const relief = data.id ? (gain === 6 ? 8 : gain === 12 ? 18 : 30) : gain;
+      const relief = gain;
       const visual =
         gain === 1
           ? raw
@@ -140,7 +140,7 @@ export function blendDetailHeight(
     (z - top) / (bottom - top),
     (bottom - z) / (bottom - top),
   );
-  const t = Math.min(1, Math.max(0, edge / 0.12));
+  const t = Math.min(1, Math.max(0, edge / 0.28));
   if (t === 1) return field.height(x, z, gain);
   const mix = t * t * (3 - 2 * t);
   return base(x, z, gain) * (1 - mix) + field.height(x, z, gain) * mix;

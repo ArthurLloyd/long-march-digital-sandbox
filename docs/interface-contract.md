@@ -1,5 +1,11 @@
 # 公共接口 v1 / v2（Phase 3 · C0）
 
+## 现代地图与艺术观察的附加出口
+
+共享 `ModernGeoBounds` 仅为现代取景窗口的只读四元组类型，不改变历史 schema、审核字段或坐标精度语义。C 的投影仍是唯一宏观坐标转换。
+
+A 的模块 `index.ts` 增加环境布置出口 `createEnvironmentDetails / REGION_MOOD / scatterEnvironment` 和懒加载 `loadRegionalObservation()`。C 通过公共出口注入 `heightAt`、可放置区域与水槽避让；A 环境提供 populate、update、clear、dispose。区域观察接受 regionId、onExit、onRegionChange；它是艺术空间入口，不是 C1 正式完成接口。C 打开时暂停背景绘制，退出仅恢复有效同阶段书签。资源仍走固定文件／字节白名单，不改变 B 的史料发布门槛。
+
 ## C2 运行补充
 
 C2 沿用 C0 schema 和模块 props，不新增全局历史顺序。C 的 useHistoricalPhase 持有唯一 topicId/phaseId 和专题内宏观播放；来自发布视图的 Topic.phaseIds 与 HistoricalPhase.sequence 必须一致。专题 displayOrder 只用于目录和默认浏览入口，不用于跨专题自动播放；展示间隔不代表历史时长。

@@ -5,7 +5,10 @@ import {
   useMemo,
   useRef,
   useState,
+  lazy,
+  Suspense,
 } from 'react';
+import { loadRegionalObservation } from '../../features/scene';
 import { Expand, Layers, Map, Mountain, ZoomIn, ZoomOut } from 'lucide-react';
 import type { LongMarchSceneV2Props } from '../../shared/contracts';
 import { CinematicTitle } from '../../components/exhibition/CinematicTitle';
@@ -23,6 +26,11 @@ const geographicMarkers = GEOGRAPHIC_VIEWS.map((view) => ({
   id: `view:${view.id}`,
   coordinates: regionCenter(REGIONS[view.id]),
 }));
+const RegionalObservation = lazy(() =>
+  loadRegionalObservation().then((module) => ({
+    default: module.RegionalObservation,
+  })),
+);
 
 /** C-owned geographical view. C1 owns experience completion; C2 owns phases. */
 export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
@@ -54,6 +62,33 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         )),
   );
   const initialEntry = useRef(entry);
+  const focusedView = entry ? 'ruijin' : view;
+  const [observation, setObservation] = useState<RegionId | null>(null);
+  const observationTrigger = useRef<HTMLElement | null>(null);
+  const observationBookmark = useRef<ReturnType<
+    PanoramaMapAdapter['bookmark']
+  > | null>(null);
+  const observationPhase = useRef<string | null>(null);
+  const openObservation = (id: RegionId) => {
+    observationTrigger.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    observationBookmark.current = api.current?.bookmark() ?? null;
+    observationPhase.current = latest.current.phaseId;
+    api.current?.suspend(true);
+    setObservation(id);
+  };
+  const closeObservation = () => {
+    setObservation(null);
+    api.current?.suspend(false);
+    if (
+      observationBookmark.current &&
+      observationPhase.current === latest.current.phaseId
+    )
+      api.current?.restore(observationBookmark.current);
+    requestAnimationFrame(() => observationTrigger.current?.focus());
+  };
   const [camps, setCamps] = useState(['red_army', 'nationalist_army', 'other']);
   useLayoutEffect(() => {
     latest.current = props;
@@ -227,13 +262,14 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         ? document.activeElement
         : null;
   };
-  const chooseView = (id: RegionId) => {
+  const chooseView = (id: RegionId, titleOverride?: string) => {
     remember();
     setEntry(false);
     setFollow(false);
     setEventId(null);
     setView(id);
-    const title = GEOGRAPHIC_VIEWS.find((item) => item.id === id)!.title;
+    const title =
+      titleOverride ?? GEOGRAPHIC_VIEWS.find((item) => item.id === id)!.title;
     if (view === id && visibleCinematic === title) {
       setCinematic(null);
       if (views.current) views.current.open = false;
@@ -242,7 +278,9 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       return;
     }
     setCinematic((current) => (current === title ? null : title));
-    api.current?.focus(REGIONS[id]);
+    if (id === 'ruijin' && titleOverride)
+      api.current?.focus(REGIONS[id], 'place');
+    else api.current?.focus(REGIONS[id]);
     if (views.current) views.current.open = false;
     trigger.current = views.current?.querySelector('summary') ?? null;
   };
@@ -263,6 +301,27 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       }}
     >
       <div ref={host} className="museum-map-canvas" />
+      {focusedView && (
+        <button
+          className="museum-region-anchor"
+          ref={(element) => {
+            labels.current[`view:${focusedView}`] = element;
+          }}
+          aria-label={`${focusedView === 'ruijin' ? '瑞金' : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!.title}区域定位，现代取景中心参考，不是历史事件坐标`}
+          onClick={() =>
+            chooseView(
+              focusedView,
+              focusedView === 'ruijin' ? '瑞金' : undefined,
+            )
+          }
+        >
+          <span aria-hidden="true" />
+          {focusedView === 'ruijin'
+            ? '瑞金 · 赣南丘陵'
+            : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!.title}
+          <small>取景区域</small>
+        </button>
+      )}
       {entry && (
         <div className="museum-entry-place">
           <h2>瑞金</h2>
@@ -273,15 +332,10 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         {!entry && (
           <button
             onClick={() => {
-              setEntry(true);
-              setView('ruijin');
-              setEventId(null);
-              setCinematic(null);
-              setFollow(false);
-              api.current?.entry();
+              chooseView('ruijin', '瑞金');
             }}
           >
-            瑞金
+            瑞金定位
           </button>
         )}
         <button
@@ -332,6 +386,21 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         </div>
         <p>区域取景入口，不是历史事件坐标。</p>
       </details>
+      {focusedView && !visibleCinematic && (
+        <div className="museum-art-entry">
+          <button
+            className="outlined-button"
+            onClick={() => openObservation(focusedView)}
+          >
+            走进
+            {focusedView === 'ruijin'
+              ? '瑞金'
+              : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!.title}
+            艺术场景
+          </button>
+          <small>成员 A 艺术空间 · 不计历史体验完成</small>
+        </div>
+      )}
       <details className="museum-map-layers">
         <summary>
           <Layers size={16} />
@@ -399,22 +468,24 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         inert={Boolean(visibleCinematic)}
         aria-hidden={Boolean(visibleCinematic)}
       >
-        {GEOGRAPHIC_VIEWS.map((item) => (
-          <button
-            key={`view:${item.id}`}
-            ref={(element) => {
-              labels.current[`view:${item.id}`] = element;
-            }}
-            className="museum-geographic-marker"
-            aria-pressed={view === item.id}
-            aria-label={`取景${item.title}区域`}
-            title="现代地理取景区，不是历史事件发生点"
-            onClick={() => chooseView(item.id)}
-          >
-            {item.title}
-            <small>区域</small>
-          </button>
-        ))}
+        {GEOGRAPHIC_VIEWS.filter((item) => item.id !== focusedView).map(
+          (item) => (
+            <button
+              key={`view:${item.id}`}
+              ref={(element) => {
+                labels.current[`view:${item.id}`] = element;
+              }}
+              className="museum-geographic-marker"
+              aria-pressed={view === item.id}
+              aria-label={`取景${item.title}区域`}
+              title="现代地理取景区，不是历史事件发生点"
+              onClick={() => chooseView(item.id)}
+            >
+              {item.title}
+              <small>区域</small>
+            </button>
+          ),
+        )}
         {forcePoints.map(({ track, snapshot }) => (
           <span
             key={snapshot.snapshotId}
@@ -525,6 +596,10 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             <p>
               地势、河宽与深度为艺术显示，不用于历史或地理量测。厚切面为展陈造型，不代表真实地下地层。
             </p>
+            <p>
+              区域配色、植被与岩石接入成员 A
+              的程序艺术布景，不代表历史植被分布。
+            </p>
             <p>现代高程：USGS / Mapzen；全景河流：Natural Earth。</p>
             <p>局部现代水系：OpenStreetMap contributors · ODbL。</p>
           </div>
@@ -537,6 +612,24 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
           © OpenStreetMap contributors · ODbL
         </a>
       </div>
+      {observation && (
+        <Suspense
+          fallback={
+            <div className="scene-state" role="status">
+              <p>正在准备区域艺术空间</p>
+              <button className="outlined-button" onClick={closeObservation}>
+                返回总地图
+              </button>
+            </div>
+          }
+        >
+          <RegionalObservation
+            regionId={observation}
+            onExit={closeObservation}
+            onRegionChange={setObservation}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

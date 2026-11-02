@@ -1,7 +1,8 @@
 import raw from './data/modern-geography.json';
+import type { ModernGeoBounds } from '../../shared/contracts';
 
 export type GeoPoint = readonly [number, number];
-export type GeoBounds = readonly [number, number, number, number];
+export type GeoBounds = ModernGeoBounds;
 export const geography = raw;
 export const COVERAGE = raw.bounds as unknown as GeoBounds;
 export const METRES_PER_WORLD_UNIT = 100_000;
