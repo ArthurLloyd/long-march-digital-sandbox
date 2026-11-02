@@ -6,3 +6,6 @@ export {
   PHASE_DISPLAY_INTERVAL_MS,
 } from './use-historical-phase';
 export { createPhaseModel, phaseTimeText } from './historical-phase-selectors';
+
+export { usePhaseClock } from './use-phase-clock';
+export type { PhaseClockModel, ClockPhase } from './phase-clock-model';

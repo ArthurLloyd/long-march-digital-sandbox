@@ -16,6 +16,9 @@ vi.mock('../features/scene', async () => {
     },
   };
 });
+vi.mock('../app/landscape/ExhibitionPanorama', async () => ({
+  ExhibitionPanorama: (await import('../features/scene')).LongMarchScene,
+}));
 
 // Inject synthetic published-review structures in test memory only; no formal data or real approvals.
 const mockData = vi.hoisted(

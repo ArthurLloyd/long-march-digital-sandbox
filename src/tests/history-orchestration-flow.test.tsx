@@ -20,6 +20,9 @@ vi.mock('../features/scene', async () => {
     },
   };
 });
+vi.mock('../app/landscape/ExhibitionPanorama', async () => ({
+  ExhibitionPanorama: (await import('../features/scene')).LongMarchScene,
+}));
 
 beforeEach(() => {
   localStorage.clear();

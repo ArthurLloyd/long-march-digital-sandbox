@@ -14,6 +14,10 @@ import {
   getPublishedDatasetV2,
   validateDataset,
 } from '../../shared/utils/validate-dataset';
+import {
+  releaseRestrictionsSchema,
+  type ReleaseRestrictions,
+} from '../../shared/utils/release-snapshot';
 
 export interface ExperienceBundle {
   manifest: ExperienceManifest;
@@ -32,7 +36,10 @@ export interface ExperienceCatalog {
 export function selectionKey(selection: HistoricalObjectSelection) {
   return `${selection.kind}:${selection.id}`;
 }
-export function createExperienceCatalog(input: unknown): ExperienceCatalog {
+export function createExperienceCatalog(
+  input: unknown,
+  restrictions?: ReleaseRestrictions,
+): ExperienceCatalog {
   try {
     const published = getPublishedDatasetV2(input);
     // A withdrawn manifest must not turn a previously gated event into ordinary reading.
@@ -46,11 +53,18 @@ export function createExperienceCatalog(input: unknown): ExperienceCatalog {
         manifest.experienceId,
       );
     }
+    const denied = restrictions
+      ? releaseRestrictionsSchema.parse(restrictions)
+      : null;
+    for (const [kind, id, experienceId] of denied?.gates ?? []) {
+      const key = selectionKey({ kind, id });
+      if (!gates.has(key)) gates.set(key, experienceId);
+    }
     return {
       published,
       gates,
       error: null,
-      phaseSystem: candidate.phases.length > 0,
+      phaseSystem: candidate.phases.length > 0 || Boolean(denied?.phaseSystem),
     };
   } catch {
     return {

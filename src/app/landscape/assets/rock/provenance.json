@@ -1,0 +1,29 @@
+{
+  "origin": "https://polyhaven.com/a/rock_boulder_dry",
+  "purpose": "Generic artistic rock surface; no historical or geological location claim",
+  "license": "CC0-1.0",
+  "asset": "rock_boulder_dry",
+  "files": [
+    {
+      "sha256": "32b60cb5f41ef079dc5d62447c79f8bfcde8043b3f2a21e58fa0a6dc7d196bdf",
+      "sourceMd5": "da794cd9be3db91e3160cf081109f322",
+      "file": "albedo.jpg",
+      "bytes": 859494,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_boulder_dry/rock_boulder_dry_diff_1k.jpg",
+      "sourceSha256": "20f653a42fb24f42aa40641663070d578678da49af18cc1049dbdd4ed8679f3c",
+      "sourceBytes": 859211
+    },
+    {
+      "sha256": "8621b67c1bc0c9e6b62c69dc8461b4df500632d08e76cb8167b03e131e8e2a5f",
+      "sourceMd5": "a1d49d14ad2948ccdeb692d53b0664a8",
+      "file": "height.jpg",
+      "bytes": 246515,
+      "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_boulder_dry/rock_boulder_dry_disp_1k.jpg",
+      "sourceSha256": "072b971e9f9e829cb616819f1de8a33484c01f3fb47bcdc6afee8b90dccc707c",
+      "sourceBytes": 246228
+    }
+  ],
+  "authors": ["Dimitrios Savva", "Rico Cilliers"],
+  "licenseUrl": "https://polyhaven.com/license",
+  "acquiredAt": "2026-11-02"
+}

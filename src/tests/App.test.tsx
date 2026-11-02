@@ -15,6 +15,10 @@ vi.mock('../features/scene', async () => {
     },
   };
 });
+// Mock only the GPU boundary; retain every App/C1/C2 assertion.
+vi.mock('../app/landscape/ExhibitionPanorama', async () => ({
+  ExhibitionPanorama: (await import('../features/scene')).LongMarchScene,
+}));
 
 function mockMotion(reduced = true) {
   vi.stubGlobal('matchMedia', (query: string) => ({

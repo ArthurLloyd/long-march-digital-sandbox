@@ -1,4 +1,4 @@
-import type { PhaseModel } from './historical-phase-selectors';
+import type { PhaseClockModel as PhaseModel } from './phase-clock-model';
 
 export interface HistoricalPhaseState {
   selectedTopicId: string | null;

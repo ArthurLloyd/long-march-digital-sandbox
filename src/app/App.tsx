@@ -1,4 +1,5 @@
 import {
+  lazy,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -6,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import candidateDataset from '../data/verified/dataset.json';
+import releaseSnapshot from 'virtual:history-release';
 import { HistoryEventPanel } from '../features/history';
 import {
   Timeline,
@@ -60,6 +61,12 @@ import {
 } from './history/scene-phase-view';
 import '../styles/historical-orchestration.css';
 
+const ExhibitionPanorama = lazy(() =>
+  import('./landscape/ExhibitionPanorama').then((module) => ({
+    default: module.ExhibitionPanorama,
+  })),
+);
+
 const titles: Record<Overlay, string> = {
   chapters: '历史专题',
   history: '事件资料',
@@ -68,7 +75,7 @@ const titles: Record<Overlay, string> = {
   about: '关于展馆',
 };
 export function App({
-  input = candidateDataset,
+  input,
   modules: injectedModules,
   completionStore,
 }: {
@@ -76,7 +83,14 @@ export function App({
   modules?: ExperienceModules;
   completionStore?: CompletionStore;
 } = {}) {
-  const catalog = useMemo(() => createExperienceCatalog(input), [input]);
+  const catalog = useMemo(
+    () =>
+      createExperienceCatalog(
+        input === undefined ? releaseSnapshot.dataset : input,
+        input === undefined ? releaseSnapshot.restrictions : undefined,
+      ),
+    [input],
+  );
   const { events, routes, sources } = catalog.published;
   const [experience, dispatch] = useExperience();
   const phaseMode = catalog.phaseSystem;
@@ -100,7 +114,12 @@ export function App({
   const [modules, setModules] = useState<ExperienceModules>({
     LegacyDetails: HistoryEventPanel,
   });
+  const panoramic = !injectedModules;
   const [bookmark, setBookmark] = useState<CameraBookmark | null>(null);
+  const bookmarkRef = useRef<CameraBookmark | null>(null);
+  useLayoutEffect(() => {
+    bookmarkRef.current = bookmark;
+  }, [bookmark]);
   const phaseRef = useRef(phaseId);
   useLayoutEffect(() => {
     phaseRef.current = phaseId;
@@ -260,7 +279,11 @@ export function App({
     openHistoricalObject({ kind: 'event', id });
   }
   function openHistoricalObject(selection: HistoricalObjectSelection) {
-    historical.openHistoricalObject(selection);
+    const current = bookmarkRef.current;
+    historical.openHistoricalObject(selection, {
+      ...context,
+      bookmark: current?.phaseId === phaseRef.current ? current : null,
+    });
   }
   function chooseTopic(id: string) {
     if (!clock.model.topics.some((t) => t.topicId === id)) return;
@@ -346,7 +369,7 @@ export function App({
         {experience.phase !== 'landing' && (
           <main
             id="main-content"
-            className={`exploration${phaseMode ? ' phase-exploration' : ''}`}
+            className={`exploration${phaseMode ? ' phase-exploration' : ''}${panoramic ? ' panorama-exploration' : ''}`}
             ref={exploreRef}
             tabIndex={-1}
             aria-label="长征沙盘探索空间"
@@ -380,9 +403,11 @@ export function App({
                 setSceneKey((key) => key + 1);
               }}
               renderScene={
-                (injectedModules ?? modules).Map
+                (injectedModules ?? modules).Map || panoramic
                   ? (props) => {
-                      const Map = (injectedModules ?? modules).Map!;
+                      const Map = injectedModules
+                        ? injectedModules.Map!
+                        : ExhibitionPanorama;
                       return (
                         <Map
                           {...props}
@@ -405,8 +430,10 @@ export function App({
                               result.data.phaseId === phaseRef.current &&
                               (!bookmark ||
                                 bookmark.sceneId === result.data.sceneId)
-                            )
+                            ) {
+                              bookmarkRef.current = result.data;
                               setBookmark(result.data);
+                            }
                           }}
                         />
                       );
@@ -432,7 +459,9 @@ export function App({
               ) : (
                 <span>{activeEvent?.title ?? '长征历史总览'}</span>
               )}
-              <span className="preview-label">开发预览</span>
+              {import.meta.env.DEV && import.meta.env.MODE !== 'production' && (
+                <span className="preview-label">开发预览</span>
+              )}
               {historical.state.selection && (
                 <button
                   className="clear-selection"
@@ -449,7 +478,9 @@ export function App({
               <>
                 <ForceLegend
                   state={sceneView.forces}
-                  hasV2Renderer={!!(injectedModules ?? modules).Map}
+                  hasV2Renderer={
+                    !!(injectedModules ?? modules).Map || panoramic
+                  }
                 />
                 {sceneView.forces.schematic && (
                   <p className="phase-schematic" role="note">

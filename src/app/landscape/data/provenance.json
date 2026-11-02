@@ -1,0 +1,103 @@
+{
+  "acquiredAt": "2026-11-02",
+  "bounds": [96, 23, 118, 39],
+  "naturalEarthRevision": "ca96624a56bd078437bca8184e78163e5039ad19",
+  "terrainAttribution": "Mapzen / Tilezen Terrain Tiles; global GMTED2010 / SRTM courtesy USGS; global ETOPO1 NOAA",
+  "riverLicense": "Natural Earth public domain",
+  "processing": "Terrarium z6, bilinear sample to 385x321, round metres. Rivers retain original vertices and consecutive in-bounds segments; no smoothing, inferred watercourses or historical routes.",
+  "limitations": "Modern generalized geography. Approximately kilometre-scale terrain; vertical exaggeration 12x for continental-scale readability, not physical vertical scale. Not 1935 terrain or complete hydrology. No administrative or national boundaries.",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_rivers_lake_centerlines.geojson",
+      "bytes": 7307743,
+      "sha256": "bb854a900ecbd3b408df46d5e16e3e0f974ba55993f9d8b5c26e855273c0905a"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/49/24.png",
+      "bytes": 83833,
+      "sha256": "b90338707ffb37f0f91fbef027fde2ef0760177cccbb2c3dac100903bb12d1cd"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/49/25.png",
+      "bytes": 94934,
+      "sha256": "b0dbc49fb46222f969a371accea9ee0267b5bc31aaa057b7ed953bb6ff882d04"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/49/26.png",
+      "bytes": 107171,
+      "sha256": "999ccbbcf671dcf9af389fa6ae09c9287073d24366f11bc0478334bc7f06fd04"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/49/27.png",
+      "bytes": 99578,
+      "sha256": "f0d3de81dae844c0431c0a2ba3cbdc7e514f58b26f2e5e7b4d894a47abc27f60"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/50/24.png",
+      "bytes": 71804,
+      "sha256": "da736096b3157bcba82259919f58196aa741d3e27b9f9ea85cb9216204c14798"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/50/25.png",
+      "bytes": 97308,
+      "sha256": "b5ed862ec4a1f77241ebd6c15b329be353db4e12d4e3a05eaf7f598f4db3ae99"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/50/26.png",
+      "bytes": 96708,
+      "sha256": "2a4a52380f278339389de84b5d2bea3db79813d8b458c05c6dc33d09128d4ed2"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/50/27.png",
+      "bytes": 98656,
+      "sha256": "f02f13ca3f43da3a5987fa2c80f38bfd4130d97556cb54f53f273f4a91f01c88"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/51/24.png",
+      "bytes": 75235,
+      "sha256": "0fe2addc73347e97e8f9274d1b0dc6e2561a7eec4f401bbbf9cdf433910bf1fd"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/51/25.png",
+      "bytes": 91177,
+      "sha256": "432a98c7541e7b34f197768ce36a1ad1d9b7dcde7e7aa51bed120ae154c00523"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/51/26.png",
+      "bytes": 94315,
+      "sha256": "9e91b6c7c5594fe8d7fa328d7d70eb98d104530fd954735a499b8885e7c0172f"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/51/27.png",
+      "bytes": 90519,
+      "sha256": "183bb18b94b05dc0ca5a9e083925b016a7bd11828ecd88baf578fb3781054f23"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/52/24.png",
+      "bytes": 65939,
+      "sha256": "51799399bda0877934159a1cbc8037796415047892843b01a1be41785816e2f9"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/52/25.png",
+      "bytes": 51253,
+      "sha256": "3d435e1cb3c9ddd54b553d6ab44bde06ae416ef5ac4c72b3863b202591078cd2"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/52/26.png",
+      "bytes": 77654,
+      "sha256": "0c7dbc54cb94ce0467140c43bab2b5e72d92e83732bacb8825f388dddba4cd45"
+    },
+    {
+      "url": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/6/52/27.png",
+      "bytes": 84503,
+      "sha256": "243ca657a77dcc441c32481ef801548e785f08d2e75e5d4780727dcc989c5a2d"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "modern-geography.json",
+      "bytes": 820600,
+      "sha256": "dd646a1bc10f52af132a66461e14ea98d4b30fcb45057aea11f5169ad0875ca3"
+    }
+  ]
+}

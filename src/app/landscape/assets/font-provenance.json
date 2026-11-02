@@ -1,0 +1,28 @@
+{
+  "acquiredAt": "2026-11-02",
+  "font": "Zhi Mang Xing",
+  "creator": "Wei Zhimang",
+  "license": "SIL OFL 1.1",
+  "purpose": "C-owned exhibition cinematic event and contemporary geographic-view titles",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zhimangxing/ZhiMangXing-Regular.ttf",
+      "file": "ZhiMangXing-Regular.ttf",
+      "sha256": "644e0cae9b40f0b10ab729a01bd32032e3973bac22be3dccae01bf6ae7fde969",
+      "bytes": 4063532
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/zhimangxing/OFL.txt",
+      "file": "OFL.txt",
+      "sha256": "10947328199e369a3e6b4a67e8e5507ed99d5bbb264a1f156415aa9b665e4d15",
+      "bytes": 4397
+    }
+  ],
+  "subset": {
+    "file": "panorama-cinematic.woff2",
+    "bytes": 19024,
+    "sha256": "60e4bb6d83c12640de5ccb7900ed67ecb82076fce4df7ce4406eb0002e7c88e2",
+    "processing": "Existing FontTools; previous title glyphs retained and modern geographic-view lettering added; WOFF2, no outline modification."
+  },
+  "licenseCopyProcessing": "SIL OFL wording preserved; repository LF line endings and trailing line whitespace removed. Source hash records the original download."
+}

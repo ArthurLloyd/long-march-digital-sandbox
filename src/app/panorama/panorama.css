@@ -1,0 +1,1008 @@
+.panorama-shell {
+  --pan-bg: #0e292e;
+  --pan-surface: #173238;
+  --pan-ink: #f0ebdb;
+  --pan-muted: #c0c7b9;
+  --pan-line: #d3c49d38;
+  background: var(--pan-bg);
+  color: var(--pan-ink);
+  height: 100dvh;
+  min-height: 680px;
+  display: grid;
+  grid-template-columns: 216px minmax(0, 1fr) 310px;
+  grid-template-rows: 76px minmax(0, 1fr) 144px;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+.panorama-shell * {
+  box-sizing: border-box;
+}
+.panorama-shell button,
+.panorama-shell summary,
+.panorama-shell a {
+  -webkit-tap-highlight-color: transparent;
+}
+.panorama-shell button {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--pan-line);
+  border-radius: 3px;
+  transition:
+    background 0.18s,
+    color 0.18s;
+}
+.panorama-shell button:hover:not(:disabled) {
+  background: #d3c49d20;
+}
+.panorama-shell button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.panorama-shell :focus-visible {
+  outline: 2px solid #f2d69d;
+  outline-offset: 3px;
+}
+.panorama-shell ::selection {
+  background: #87533e;
+  color: #fff3de;
+}
+.panorama-shell {
+  scrollbar-color: #879786 #173238;
+  scrollbar-width: thin;
+}
+.panorama-shell p {
+  line-height: 1.8;
+  margin: 0 0 16px;
+}
+.panorama-shell h1,
+.panorama-shell h2,
+.panorama-shell h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  margin: 0;
+}
+.panorama-shell h2 {
+  font-size: 18px;
+}
+.panorama-shell h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.pan-header {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--pan-line);
+  background: #10292f;
+}
+.pan-brand {
+  color: var(--pan-ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+.pan-brand small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--pan-muted);
+  margin-top: 4px;
+}
+.pan-header > p {
+  margin: 0;
+  color: var(--pan-muted);
+  font-size: 12px;
+}
+.pan-candidate-label {
+  font-size: 12px;
+  color: #e7c89a;
+  margin-left: auto;
+}
+.pan-navigation {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 25px 15px 15px 22px;
+  overflow: auto;
+  border-right: 1px solid var(--pan-line);
+}
+.pan-navigation h1 {
+  font-size: 23px;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.pan-navigation > p {
+  font-size: 12px;
+  color: var(--pan-muted);
+  margin-bottom: 20px;
+}
+.pan-navigation nav {
+  display: grid;
+  gap: 2px;
+}
+.pan-navigation nav button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-align: left;
+  border: 0;
+  min-height: 48px;
+  padding: 8px 8px;
+}
+.pan-navigation nav button[aria-current] {
+  color: #f4d6a1;
+  background: #d3c49d13;
+}
+.pan-nav-number {
+  font-size: 11px;
+  color: var(--pan-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pan-navigation nav small {
+  display: block;
+  font-size: 11px;
+  color: var(--pan-muted);
+  margin-top: 3px;
+}
+.pan-layer-controls {
+  margin-top: 23px;
+  padding-top: 18px;
+  border-top: 1px solid var(--pan-line);
+}
+.pan-layer-controls h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 13px;
+}
+.pan-layer-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  min-height: 32px;
+}
+.pan-layer-controls p {
+  font-size: 11px;
+  color: var(--pan-muted);
+  margin: 12px 0 0;
+}
+.panorama-shell input[type='checkbox'] {
+  accent-color: #c6b27e;
+  width: 14px;
+  height: 14px;
+}
+.pan-swatch {
+  width: 15px;
+  border-top: 2px dashed #d66155;
+}
+.pan-swatch.nationalist_army {
+  border-color: #75b6da;
+  border-top-style: dotted;
+}
+.pan-main {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  background: #17343a;
+}
+.pan-map-viewport,
+.pan-map-stage,
+.pan-map-canvas {
+  position: absolute;
+  inset: 0;
+}
+.pan-map-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+.pan-map-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.panorama-shell .pan-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  pointer-events: auto;
+  font-size: 12px;
+  border: 1px solid #e9dfbc60;
+  padding: 6px 8px;
+  background: #123038f0;
+  text-shadow: 0 1px 2px #10282b;
+}
+.panorama-shell .pan-marker:disabled {
+  opacity: 0.65;
+  pointer-events: none;
+  background: #183237d9;
+}
+.pan-marker small {
+  font-size: 9px;
+  opacity: 0.8;
+}
+.pan-marker-dot {
+  width: 7px;
+  height: 7px;
+  border: 1px dashed #d9c393;
+  border-radius: 50%;
+}
+.panorama-shell .pan-marker.is-active {
+  background: #4b3f2d;
+  color: #fff0ce;
+  border-color: #e4c999;
+  z-index: 2;
+}
+.pan-marker.is-active .pan-marker-dot {
+  background: #e0b376;
+}
+.pan-map-range {
+  position: absolute;
+  inset: 14px 16px auto;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  font-size: 11px;
+  color: #f0ebdb;
+  z-index: 2;
+  background: #10292fe8;
+  padding: 6px 8px;
+  font-variant-numeric: tabular-nums;
+}
+.pan-map-status {
+  position: absolute;
+  bottom: 31px;
+  left: 16px;
+  font-size: 11px;
+  color: #f0ebdb;
+  background: #10292ff0;
+  padding: 3px 6px;
+  pointer-events: none;
+}
+.pan-map-toolbar {
+  position: absolute;
+  top: 47px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  z-index: 3;
+}
+.panorama-shell .pan-map-toolbar button {
+  min-height: 34px;
+  min-width: 34px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #173238e8;
+  font-size: 12px;
+}
+.pan-map-caption {
+  position: absolute;
+  bottom: 62px;
+  left: 20px;
+  right: 20px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-shadow: 0 2px 4px #122f32;
+  z-index: 2;
+  padding: 18px 14px 14px;
+  background: linear-gradient(90deg, #10292ff0, #10292f9c 58%, #10292f00);
+}
+.pan-map-caption strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 26px;
+}
+.pan-map-caption span {
+  font-size: 11px;
+  color: #e0e1d4;
+}
+.pan-map-message {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 38%;
+  padding: 25px;
+  background: #10292fed;
+  color: var(--pan-ink);
+  text-align: center;
+}
+.pan-map-message button {
+  padding: 9px 15px;
+  margin-bottom: 14px;
+}
+.pan-detail {
+  grid-column: 3;
+  grid-row: 2;
+  overflow: auto;
+  border-left: 1px solid var(--pan-line);
+  padding: 26px 23px;
+  background: #173238;
+}
+.pan-section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.pan-section-heading > span {
+  color: var(--pan-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.pan-time-label {
+  font-size: 12px;
+  color: #e4c999;
+}
+.pan-data-note {
+  font-size: 11px;
+  color: var(--pan-muted);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--pan-line);
+}
+.pan-detail > p,
+.pan-detail details p {
+  font-size: 13px;
+}
+.pan-detail details {
+  padding: 14px 0;
+  border-top: 1px solid var(--pan-line);
+}
+.pan-detail summary {
+  cursor: pointer;
+  line-height: 1.7;
+  font-size: 12px;
+}
+.pan-detail details p {
+  margin: 14px 0 0;
+}
+.pan-detail li {
+  line-height: 1.7;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.pan-detail li small {
+  display: block;
+  color: var(--pan-muted);
+}
+.pan-detail ul {
+  padding-left: 17px;
+}
+.pan-history-text {
+  white-space: pre-line;
+}
+.panorama-shell .pan-enter-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 26px;
+  border-color: #bba576;
+  color: #f0d9aa;
+}
+.pan-crossings {
+  margin-bottom: 24px;
+}
+.pan-crossings h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.pan-crossings .pan-section-heading {
+  align-items: flex-start;
+}
+.pan-crossings .pan-section-heading button {
+  font-size: 10px;
+  min-height: 29px;
+  padding: 5px;
+  flex-shrink: 0;
+}
+.pan-crossings > p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--pan-muted);
+}
+.pan-crossings svg {
+  width: 100%;
+  max-height: 220px;
+  aspect-ratio: 1.5;
+  background: #102a30;
+  border: 1px solid var(--pan-line);
+  display: block;
+  overflow: hidden;
+}
+.pan-crossing-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin: 9px 0 12px;
+}
+.pan-crossing-tabs button {
+  font-size: 11px;
+  padding: 7px 0;
+}
+.pan-crossing-tabs button span {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  margin-bottom: 3px;
+}
+.pan-crossing-tabs small {
+  display: block;
+  font-size: 9px;
+  color: var(--pan-muted);
+  margin-top: 4px;
+}
+.pan-crossing-tabs button[aria-current] {
+  background: #5a4931;
+  color: #ffe3b6;
+  border-color: #cab37f;
+}
+.pan-timeline {
+  grid-column: 1/-1;
+  grid-row: 3;
+  position: relative;
+  z-index: 3;
+  border-top: 1px solid var(--pan-line);
+  padding: 17px 27px;
+  background: #10292f;
+}
+.pan-timeline-heading {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.pan-timeline-heading h2 {
+  font-size: 17px;
+}
+.pan-timeline-heading p {
+  font-size: 11px;
+  color: var(--pan-muted);
+  margin: 4px 0 0;
+}
+.pan-timeline-heading > label {
+  margin-left: auto;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+}
+.pan-playback {
+  display: flex;
+  gap: 7px;
+}
+.pan-playback button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+}
+.pan-phase-track {
+  margin-top: 17px;
+  display: flex;
+  width: 100%;
+}
+.pan-phase-track button {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px;
+}
+.pan-phase-track button::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  height: 1px;
+  background: #b9bd9b52;
+  left: 0;
+  right: 0;
+}
+.pan-phase-track button > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #59746e;
+  position: relative;
+}
+.pan-phase-track button > span.is-reached {
+  background: #c6b078;
+}
+.pan-phase-track button[aria-current] > span {
+  outline: 1px solid #e9c68e;
+  outline-offset: 3px;
+}
+.pan-phase-track button small {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.pan-phase-track button[aria-current] small {
+  color: #f4d29a;
+}
+.pan-immersive-slot {
+  position: absolute;
+  inset: 22px;
+  z-index: 20;
+  background: #173238;
+  border: 1px solid var(--pan-line);
+  padding: clamp(24px, 4vw, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: auto;
+}
+.pan-immersive-slot > p {
+  font-size: 13px;
+  max-width: 54ch;
+}
+.pan-immersive-slot h2 {
+  font-family: var(--font-art);
+  font-size: 46px;
+  margin: 0 0 16px;
+}
+.pan-slot-outline {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border-block: 1px solid var(--pan-line);
+  padding: 25px 0;
+  margin-bottom: 24px;
+  width: 100%;
+  color: #d0c19a;
+}
+.pan-slot-outline p {
+  margin: 0;
+}
+.pan-immersive-slot dl {
+  font-size: 11px;
+  color: var(--pan-muted);
+  margin: 0 0 20px;
+}
+.pan-immersive-slot dt {
+  margin-top: 8px;
+}
+.pan-immersive-slot dd {
+  margin: 4px 0 0;
+  word-break: break-word;
+}
+.pan-immersive-slot > button {
+  padding: 12px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pan-slot-scrim {
+  position: fixed;
+  inset: 0;
+  background: #07191c8c;
+  z-index: 10;
+  pointer-events: auto;
+}
+.pan-main:has(.pan-immersive-slot) {
+  z-index: 15;
+}
+@media (max-width: 1450px) {
+  .panorama-shell {
+    grid-template-columns: 194px minmax(0, 1fr) 280px;
+  }
+  .pan-navigation {
+    padding-left: 16px;
+  }
+  .pan-detail {
+    padding: 22px 18px;
+  }
+  .pan-header {
+    gap: 20px;
+  }
+}
+@media (max-height: 820px) {
+  .panorama-shell {
+    grid-template-rows: 66px minmax(0, 1fr) 130px;
+  }
+  .pan-navigation {
+    padding-top: 18px;
+  }
+  .pan-navigation nav button {
+    min-height: 43px;
+  }
+  .pan-layer-controls {
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+  .pan-timeline {
+    padding-top: 12px;
+  }
+  .pan-detail {
+    padding-top: 19px;
+  }
+}
+@media (max-width: 1100px) {
+  .panorama-shell {
+    grid-template-columns: 172px minmax(0, 1fr) 250px;
+  }
+  .pan-header > p {
+    display: none;
+  }
+  .pan-map-toolbar {
+    top: 42px;
+    right: 9px;
+    gap: 2px;
+  }
+  .panorama-shell .pan-map-toolbar button {
+    font-size: 10px;
+    padding: 5px;
+  }
+  .pan-map-caption strong {
+    font-size: 22px;
+  }
+  .pan-crossings .pan-section-heading {
+    display: block;
+  }
+}
+@media (max-width: 800px) {
+  .panorama-shell {
+    height: auto;
+    min-height: 100dvh;
+    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-rows: 76px 60dvh auto auto;
+  }
+  .pan-header {
+    padding: 0 14px;
+  }
+  .pan-brand {
+    font-size: 14px;
+  }
+  .pan-candidate-label {
+    font-size: 10px;
+    max-width: 110px;
+  }
+  .pan-navigation {
+    grid-row: 2/4;
+    padding: 14px 8px;
+  }
+  .pan-navigation h1 {
+    font-size: 18px;
+  }
+  .pan-navigation nav button {
+    gap: 7px;
+    font-size: 12px;
+    padding: 7px 3px;
+  }
+  .pan-navigation nav small {
+    font-size: 10px;
+  }
+  .pan-main {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .pan-detail {
+    grid-column: 2;
+    grid-row: 3;
+    border-top: 1px solid var(--pan-line);
+    overflow: visible;
+  }
+  .pan-timeline {
+    grid-row: 4;
+    overflow: auto;
+  }
+  .pan-timeline-heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pan-timeline-heading > label {
+    margin-left: 0;
+  }
+  .pan-phase-track {
+    min-width: 730px;
+  }
+  .pan-immersive-slot {
+    inset: 8px;
+    padding: 16px;
+  }
+  .pan-immersive-slot h2 {
+    font-size: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panorama-shell * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Keep evidence-sensitive layer controls visible on every desktop viewport. */
+@media (min-width: 801px) {
+  .pan-navigation {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .pan-navigation > h1,
+  .pan-navigation > p,
+  .pan-layer-controls {
+    flex-shrink: 0;
+  }
+  .pan-navigation nav {
+    overflow: auto;
+    min-height: 0;
+    flex: 1;
+    scrollbar-width: thin;
+  }
+  .pan-layer-controls {
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+}
+@media (max-height: 820px) {
+  .pan-crossings svg {
+    max-height: 140px;
+  }
+  .pan-crossings > p {
+    margin-bottom: 10px;
+  }
+  .pan-navigation > p {
+    margin-bottom: 12px;
+  }
+}
+
+.pan-height-control {
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+.pan-height-control select {
+  color: var(--pan-ink);
+  background: #173238;
+  border: 1px solid var(--pan-line);
+  padding: 5px 3px;
+  border-radius: 3px;
+  font: inherit;
+  max-width: 132px;
+}
+
+@font-face {
+  font-family: 'Panorama Cinematic';
+  src: url('../landscape/assets/panorama-cinematic.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 400;
+}
+.pan-cinema {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  animation: pan-film-in 1.15s var(--ease-out) both;
+}
+.pan-cinema-letterbox::before,
+.pan-cinema-letterbox::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: #071b20e8;
+  height: 4%;
+}
+.pan-cinema-letterbox::before {
+  top: 0;
+}
+.pan-cinema-letterbox::after {
+  bottom: 0;
+}
+.panorama-shell .pan-cinema-title {
+  position: absolute;
+  left: 6%;
+  bottom: 18%;
+  max-width: 88%;
+  border: 0;
+  padding: 12px 0;
+  background: none;
+  text-align: left;
+  pointer-events: auto;
+  text-shadow: 0 3px 18px #0c2529;
+}
+.panorama-shell .pan-cinema-title:hover {
+  background: none;
+  color: #fff0d1;
+}
+.pan-cinema-name {
+  display: block;
+  font-family: 'Panorama Cinematic', 'Noto Serif SC', serif;
+  font-size: clamp(52px, 6.8vw, 112px);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.055em;
+  color: #f8edcf;
+  animation: pan-title-in 1.35s var(--ease-out) both;
+}
+.pan-cinema-hint {
+  display: block;
+  font-size: 11px;
+  color: #e3dcc9;
+  margin-top: 12px;
+  letter-spacing: 0.08em;
+}
+.panorama-shell .pan-event-title-trigger {
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+  color: #edd7a8;
+  text-underline-offset: 6px;
+}
+.panorama-shell .pan-event-title-trigger:hover {
+  background: none;
+  text-decoration: underline;
+}
+@keyframes pan-film-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pan-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pan-cinema,
+  .pan-cinema-name {
+    animation: none;
+  }
+}
+
+.pan-map-markers.is-concealed {
+  display: none;
+}
+.panorama-shell.is-cinematic .pan-main {
+  grid-column: 2/-1;
+}
+.panorama-shell.is-cinematic .pan-detail {
+  visibility: hidden;
+  pointer-events: none;
+}
+.pan-detail {
+  background: linear-gradient(145deg, #203d42, #173238 65%);
+}
+.pan-detail > .pan-section-heading h2 {
+  font-family: 'Panorama Cinematic', 'Noto Serif SC', serif;
+  font-size: 34px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.panorama-shell .pan-marker {
+  padding: 8px 11px;
+  background: linear-gradient(145deg, #244348ed, #0e292eed);
+  border-color: #c6b38475;
+  box-shadow: 0 5px 16px #061f2555;
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+.panorama-shell .pan-marker.is-active {
+  background: linear-gradient(140deg, #5b4d34ed, #2e3529ed);
+  color: #fff0c9;
+}
+.pan-marker small {
+  font-family: var(--font-body);
+  color: #d5c69d;
+}
+@media (max-width: 800px) {
+  .panorama-shell.is-cinematic .pan-main {
+    grid-column: 2;
+  }
+}
+
+.panorama-shell.is-cinematic .pan-map-caption {
+  visibility: hidden;
+}
+.pan-map-status {
+  z-index: 7;
+}
+.pan-cinema-hint {
+  font-size: 12px;
+}
+
+.panorama-shell .pan-height-control {
+  display: block;
+}
+.pan-height-control select {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin-top: 6px;
+}
+
+.pan-map-attribution {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  z-index: 7;
+  color: #dce4d5;
+  font-size: 11px;
+  line-height: 1.5;
+  background: #153438b8;
+  padding: 2px 4px;
+}
+.pan-map-attribution a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pan-layer-controls summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 3px 0 10px;
+  list-style: none;
+  color: #ead7b3;
+}
+.pan-layer-controls summary > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pan-layer-controls summary::-webkit-details-marker {
+  display: none;
+}
+.pan-layer-controls[open] summary > svg {
+  transform: rotate(180deg);
+}
+.pan-timeline-heading h2 {
+  font-family: 'Panorama Cinematic', var(--font-display);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ecd6aa;
+}
+.pan-playback button:nth-child(3) {
+  width: 40px;
+  height: 40px;
+  background: #87383c;
+  border-color: #ba8b6b;
+  color: #f5e5c8;
+}
+.pan-playback button:nth-child(3):hover:not(:disabled) {
+  background: #a34847;
+}
+.pan-timeline {
+  background: linear-gradient(110deg, #122f35, #10292f);
+}
