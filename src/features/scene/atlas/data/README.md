@@ -21,7 +21,7 @@
 ## 重建与追溯
 
 ```powershell
-python scripts/prepare-panorama-geography.py --cache D:/Project/miniprogram/artifacts/browser/panorama-geography-cache --out src/app/panorama/data --acquired-at 2026-11-02
+python scripts/prepare-panorama-geography.py --cache D:/Project/miniprogram/artifacts/browser/panorama-geography-cache --out src/features/scene/atlas/data --acquired-at 2026-11-02
 ```
 
 Python 3 与 Pillow 12 已在本机存在，本轮没有安装新依赖。下载只发生在这个显式准备步骤；运行网页不请求外部地理服务。`provenance.json` 记录每个原始 URL、字节数、SHA-256、处理说明及输出校验。缓存文件名与 URL 哈希绑定，避免不同上游版本错误复用。

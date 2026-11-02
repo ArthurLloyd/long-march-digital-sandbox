@@ -8,6 +8,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { createBridgeMaterials } from './bridge-materials';
 import { createCanyon } from './bridge-landscape';
 import { createAtmosphere } from './bridge-atmosphere';
+import { bridgeDeckHeight, createMarchingCompany } from './marching-company';
 
 export interface StudyMetrics {
   fps: number;
@@ -24,6 +25,10 @@ export interface StudyHotspot {
   visible: boolean;
 }
 export interface BridgeStudyOptions {
+  onReady?: () => void;
+  onRendered?: () => void;
+  showCompany?: boolean;
+  backdropUrl?: string;
   reduced: boolean;
   onFrame: (delta: number) => void;
   onMetrics: (metrics: StudyMetrics) => void;
@@ -43,6 +48,7 @@ export function createBridgeStudy(
     antialias: true,
     powerPreference: 'high-performance',
   });
+  let didRender = false;
   let low = window.innerWidth < 700;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, low ? 1 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -100,8 +106,33 @@ export function createBridgeStudy(
   const { rock, stone, wood, iron } = materials;
   const atmosphere = createAtmosphere();
   scene.add(atmosphere.group);
+  let backdrop: THREE.Texture | null = null;
+  let released = false;
+  if (options.backdropUrl)
+    new THREE.TextureLoader().load(
+      options.backdropUrl,
+      (texture) => {
+        if (released) {
+          texture.dispose();
+          return;
+        }
+        texture.colorSpace = THREE.SRGBColorSpace;
+        backdrop = texture;
+        atmosphere.sky.material.uniforms.landscapeSky!.value = texture;
+        atmosphere.sky.material.uniforms.landscapeMix!.value = 0.28;
+      },
+      undefined,
+      () => {
+        /* The existing procedural sky remains available. */
+      },
+    );
   const canyon = createCanyon(materials.noise, rock);
   scene.add(canyon.group);
+  const company = options.showCompany
+    ? createMarchingCompany(bridgeDeckHeight, true)
+    : null;
+  if (company) scene.add(company.group);
+  let followingCompany = false;
   const pmrem = new THREE.PMREMGenerator(renderer);
   const envScene = new THREE.Scene();
   envScene.add(atmosphere.sky.clone());
@@ -379,6 +410,7 @@ export function createBridgeStudy(
     options.onCameraMode?.(guided ? 'guided' : 'free');
   }
   function pose(index: number) {
+    followingCompany = false;
     const p = poses[index];
     if (!p) return;
     options.onExplore?.();
@@ -389,6 +421,7 @@ export function createBridgeStudy(
   controls.update();
   options.onCameraMode?.(auto ? 'guided' : 'free');
   function manual() {
+    followingCompany = false;
     auto = false;
     transition = null;
     options.onExplore?.();
@@ -497,6 +530,12 @@ export function createBridgeStudy(
     last = now;
     if (resizePending) resize();
     options.onFrame(dt);
+    company?.update(elapsed / 60, !paused && !options.reduced);
+    if (company) {
+      host.dataset.companyProgress = String(elapsed / 60);
+      host.dataset.companyPositions = JSON.stringify(company.positions());
+      host.dataset.companyCount = '18';
+    }
     if (!paused && !options.reduced) visualTime += dt;
     if (transition) {
       if (transition.guided) {
@@ -523,6 +562,11 @@ export function createBridgeStudy(
       camera.position.copy(p.position);
       controls.target.copy(p.target);
     }
+    if (followingCompany && company && !transition) {
+      const destination = company.center();
+      camera.position.add(destination.clone().sub(controls.target));
+      controls.target.copy(destination);
+    }
     atmosphere.update(options.reduced ? 0 : visualTime, camera);
     if (!options.reduced && !paused) {
       const p = ribbon.geometry.attributes.position!;
@@ -542,6 +586,11 @@ export function createBridgeStudy(
       renderer.info.reset();
       if (low) renderer.render(scene, camera);
       else composer.render(dt);
+      if (!didRender) {
+        didRender = true;
+        options.onReady?.();
+      }
+      if (!transition) options.onRendered?.();
     } catch {
       active = false;
       cancelAnimationFrame(raf);
@@ -566,6 +615,36 @@ export function createBridgeStudy(
   atmosphere.setLow(low);
   raf = requestAnimationFrame(frame);
   return {
+    bookmark() {
+      return {
+        position: camera.position.toArray(),
+        target: controls.target.toArray(),
+        zoom: camera.zoom,
+      };
+    },
+    restore(value: {
+      position: readonly number[];
+      target: readonly number[];
+      zoom: number;
+    }) {
+      if (
+        value.position.length !== 3 ||
+        value.target.length !== 3 ||
+        ![...value.position, ...value.target, value.zoom].every(
+          Number.isFinite,
+        ) ||
+        value.zoom <= 0
+      )
+        return;
+      auto = false;
+      transition = null;
+      followingCompany = false;
+      camera.position.fromArray(value.position);
+      controls.target.fromArray(value.target);
+      camera.zoom = value.zoom;
+      camera.updateProjectionMatrix();
+      controls.update();
+    },
     setTime(value: number) {
       elapsed = THREE.MathUtils.clamp(
         Number.isFinite(value) ? value : 0,
@@ -577,6 +656,12 @@ export function createBridgeStudy(
       paused = value;
     },
     pose,
+    focusCompany() {
+      if (!company) return;
+      const target = company.center();
+      moveTo(target.clone().add(new THREE.Vector3(-7, 3.2, 9)), target);
+      followingCompany = true;
+    },
     getHotspots,
     focusSpot(id: 'bridge' | 'banks') {
       pose(id === 'bridge' ? 1 : 2);
@@ -599,6 +684,8 @@ export function createBridgeStudy(
       resizePending = true;
     },
     dispose() {
+      released = true;
+      backdrop?.dispose();
       active = false;
       cancelAnimationFrame(raf);
       observer.disconnect();
