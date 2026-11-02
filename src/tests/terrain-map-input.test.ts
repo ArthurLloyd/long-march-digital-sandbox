@@ -104,10 +104,24 @@ const setup = (reducedMotion = true) => {
     onMarkers: vi.fn(),
     technicalMarkers: false,
   });
+  const canvas = host.querySelector('canvas')!;
+  vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue({
+    x: 0,
+    y: 0,
+    width: 1024,
+    height: 768,
+    left: 0,
+    top: 0,
+    right: 1024,
+    bottom: 768,
+    toJSON() {
+      return {};
+    },
+  });
   return {
     api,
     host,
-    canvas: host.querySelector('canvas')!,
+    canvas,
     onViewChange,
     onReady,
   };
@@ -122,6 +136,42 @@ const dbl = (canvas: HTMLCanvasElement) =>
     }),
   );
 describe('真实地图输入接线（只模拟GPU边界）', () => {
+  it('画布滚轮取得鼠标下地表锚点；空白与工具滚轮不改动视角，退出移除监听', () => {
+    const { api, canvas, host } = setup();
+    boundary.pick.mockReturnValue(new THREE.Vector3(0.8, 0.1, 0.6));
+    canvas.dispatchEvent(
+      new WheelEvent('wheel', {
+        clientX: 800,
+        clientY: 400,
+        deltaY: -120,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    expect(boundary.pick).toHaveBeenCalled();
+    expect(api.bookmark().target[0]).toBeGreaterThan(0);
+    const before = api.bookmark();
+    boundary.pick.mockReturnValue(null);
+    canvas.dispatchEvent(
+      new WheelEvent('wheel', {
+        clientX: 800,
+        clientY: 400,
+        deltaY: -120,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    expect(api.bookmark()).toEqual(before);
+    const ui = document.createElement('button');
+    host.append(ui);
+    const n = boundary.pick.mock.calls.length;
+    ui.dispatchEvent(new WheelEvent('wheel', { deltaY: -120, bubbles: true }));
+    expect(boundary.pick).toHaveBeenCalledTimes(n);
+    api.dispose();
+    canvas.dispatchEvent(new WheelEvent('wheel', { deltaY: -120 }));
+    expect(boundary.pick).toHaveBeenCalledTimes(n);
+    host.remove();
+  });
   it('最后一次地表命中成为目标；失败和UI点击不覆盖；操作不重挂画布', () => {
     const { api, host, canvas, onViewChange } = setup();
     boundary.pick.mockReturnValue(new THREE.Vector3(0.2, 0.1, 0.3));

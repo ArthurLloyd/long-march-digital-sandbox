@@ -1,0 +1,240 @@
+/* One discoverable handle. Opening the non-modal drawer never remounts Canvas. */
+.museum-map-toolbox {
+  position: absolute;
+  top: 82px;
+  right: calc(clamp(24px, 4vw, 80px) + 110px);
+  z-index: 5;
+  width: 156px;
+  color: var(--gold-bright);
+}
+.museum-map-toolbox > summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 14px;
+  list-style: none;
+  cursor: pointer;
+  background: #101b25f5;
+  font: 15px/1.5 var(--font-display);
+}
+.museum-map-toolbox > summary::-webkit-details-marker {
+  display: none;
+}
+.museum-map-toolbox > summary .map-disclosure-chevron {
+  margin-left: 0;
+}
+.museum-map-toolbox > summary:hover {
+  background: #452d2d;
+}
+.museum-map-toolbox > summary:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 4px;
+}
+.museum-map-toolbox[open] > summary .map-disclosure-chevron {
+  rotate: 180deg;
+}
+.museum-map-tool-panel {
+  position: fixed;
+  right: clamp(24px, 4vw, 80px);
+  top: 134px;
+  width: min(344px, calc(100vw - 48px));
+  max-height: calc(100dvh - 370px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 20px;
+  background: #101b25fa;
+  border: 1px solid var(--line-strong);
+  box-shadow: -12px 16px 40px #03080d66;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.museum-tool-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-strong);
+}
+.museum-tool-panel-heading > span {
+  font: 17px/1.5 var(--font-display);
+}
+.museum-tool-panel-heading > button {
+  min-height: 36px;
+  padding: 6px 10px;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line-strong);
+  font: 13px/1.5 var(--font-body);
+}
+.museum-map-toolbox
+  :is(
+    .museum-map-toolbar,
+    .museum-geographic-views,
+    .museum-map-layers,
+    .museum-art-entry,
+    .museum-region-events,
+    .phase-force-legend
+  ) {
+  position: static;
+  inset: auto;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+}
+.museum-map-toolbox .museum-map-toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.museum-map-toolbox .museum-map-toolbar button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 6px;
+  gap: 5px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.museum-map-toolbox .museum-geographic-views > summary,
+.museum-map-toolbox .museum-map-layers > summary,
+.museum-map-toolbox .museum-region-events > summary {
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 15px;
+}
+.panorama-exploration
+  .museum-panorama
+  .museum-map-toolbox
+  .museum-geographic-views {
+  width: auto;
+}
+.panorama-exploration .museum-map-toolbox .phase-force-legend {
+  visibility: visible;
+  pointer-events: auto;
+}
+.panorama-exploration:has(.museum-map-toolbox .museum-geographic-views[open])
+  .exploration-tools {
+  visibility: visible;
+  pointer-events: auto;
+}
+.panorama-exploration:has(.museum-map-toolbox[open])
+  .exploration-tools
+  > button:last-child {
+  visibility: hidden;
+}
+.museum-map-toolbox .museum-geographic-views > .museum-geographic-menu {
+  position: static;
+  display: block;
+  inset: auto;
+  width: auto;
+  max-height: none;
+  margin: 0;
+  padding: 10px 0 0;
+  overflow: visible;
+  background: none;
+  box-shadow: none;
+}
+.museum-map-toolbox .museum-geographic-menu > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.museum-map-toolbox .museum-geographic-menu button {
+  min-height: 40px;
+  padding: 8px 6px;
+  font-size: 14px;
+}
+.museum-map-toolbox .museum-geographic-menu > p,
+.museum-map-toolbox .museum-map-layers p,
+.museum-map-toolbox .museum-region-events p {
+  margin: 10px 0 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.museum-map-toolbox .museum-map-layers > label {
+  margin: 12px 0;
+  font-size: 14px;
+}
+.museum-map-toolbox .phase-force-legend {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+}
+.museum-map-toolbox .phase-force-legend > p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+.museum-map-toolbox .museum-art-entry {
+  display: grid;
+  gap: 8px;
+  justify-items: stretch;
+}
+.museum-map-toolbox .museum-art-entry > button {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  font-size: 16px;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.museum-map-toolbox .museum-art-entry .tool-emblem {
+  width: 24px;
+  height: 26px;
+}
+.museum-map-toolbox .museum-art-entry > button > svg:last-child {
+  margin-left: auto;
+  width: 16px;
+}
+.museum-map-toolbox .museum-region-events > button {
+  margin: 8px 0;
+}
+.museum-panorama:has(.museum-map-toolbox) .museum-art-entry {
+  bottom: auto;
+}
+.museum-map-toolbox .museum-geographic-views[open],
+.museum-map-toolbox .museum-map-layers[open],
+.museum-map-toolbox .museum-region-events[open] {
+  background: none;
+  box-shadow: none;
+}
+.museum-panorama.is-cinematic .museum-map-toolbox {
+  visibility: hidden;
+  pointer-events: none;
+}
+.panorama-exploration:has(.museum-map-toolbox[open])
+  .exploration-tools
+  > button:last-child {
+  visibility: hidden;
+}
+@media (max-height: 820px) {
+  .museum-map-tool-panel {
+    max-height: calc(100dvh - 350px);
+    padding: 16px;
+    gap: 14px;
+  }
+}
+@media (max-width: 800px) {
+  .museum-map-toolbox {
+    right: 110px;
+    top: 88px;
+  }
+  .museum-map-tool-panel {
+    right: 16px;
+    top: 138px;
+    max-height: calc(100dvh - 330px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .museum-map-toolbox .map-disclosure-chevron {
+    transition: none;
+  }
+}

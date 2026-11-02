@@ -17,8 +17,10 @@ import {
   Map,
   ZoomIn,
   ZoomOut,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { MapControlFrame } from '../../components/exhibition/MapControlFrame';
+import { ForceLegend } from '../../components/layout/ForceLegend';
 import { ToolEmblem } from '../../components/exhibition/ExhibitionOrnaments';
 import type { LongMarchSceneV2Props } from '../../shared/contracts';
 import { CinematicTitle } from '../../components/exhibition/CinematicTitle';
@@ -33,6 +35,7 @@ import {
 } from '../history/force-state';
 import '../../styles/exhibition-panorama.css';
 import '../../styles/exhibition-map-controls.css';
+import '../../styles/exhibition-map-toolbox.css';
 import '../../styles/exhibition-art-notebook.css';
 const geographicMarkers = GEOGRAPHIC_VIEWS.map((view) => ({
   id: `view:${view.id}`,
@@ -58,7 +61,8 @@ export function ExhibitionPanorama(
   const latest = useRef(props),
     labels = useRef<Record<string, HTMLElement | null>>({});
   const trigger = useRef<HTMLElement | null>(null),
-    views = useRef<HTMLDetailsElement>(null);
+    views = useRef<HTMLDetailsElement>(null),
+    toolbox = useRef<HTMLDetailsElement>(null);
   const [epoch, setEpoch] = useState(0),
     [cinematic, setCinematic] = useState<string | null>(null);
   const [view, setView] = useState<RegionId | null>(null),
@@ -345,11 +349,15 @@ export function ExhibitionPanorama(
         if (e.key === 'Escape' && visibleCinematic) {
           e.preventDefault();
           dismiss();
+        } else if (e.key === 'Escape' && toolbox.current?.open) {
+          e.preventDefault();
+          toolbox.current.open = false;
+          toolbox.current.querySelector('summary')?.focus();
         }
       }}
     >
       <div ref={host} className="museum-map-canvas" />
-      <p className="museum-terrain-hint">双击山坡或河面聚焦 · 滚轮继续靠近</p>
+      <p className="museum-terrain-hint">滚轮随鼠标取景 · 双击山坡或河面聚焦</p>
       {focusedView && (
         <button
           className={`museum-region-anchor${focusedView === 'ruijin' ? ' is-ruijin-anchor' : ''}`}
@@ -378,155 +386,222 @@ export function ExhibitionPanorama(
           <p className="museum-departure-line">从瑞金启程，重温长征之路。</p>
         </div>
       )}
-      <nav className="museum-map-toolbar" aria-label="全景地图视角">
-        <button
-          onClick={() => {
-            setEntry(false);
-            setCinematic(null);
-            setView(null);
-            setEventId(null);
-            api.current?.overview();
-          }}
-        >
-          <MapControlFrame />
-          <Expand size={16} />
-          全景
-        </button>
-        <button
-          onClick={() => {
-            setEntry(false);
-            setView(null);
-            setCinematic(null);
-            api.current?.overview(true);
-          }}
-        >
-          <MapControlFrame />
-          <Map size={16} />
-          俯瞰
-        </button>
-        <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
-          <MapControlFrame />
-          <ZoomIn size={18} />
-        </button>
-        <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
-          <MapControlFrame />
-          <ZoomOut size={18} />
-        </button>
-      </nav>
-      <details ref={views} className="museum-geographic-views">
+      <details className="museum-map-toolbox" ref={toolbox}>
         <summary>
           <MapControlFrame />
-          山河取景<span>现代地理</span>
-        </summary>
-        <div className="museum-geographic-menu">
-          <div>
-            {GEOGRAPHIC_VIEWS.map((item) => (
-              <button
-                key={item.id}
-                aria-pressed={view === item.id}
-                onClick={() => chooseView(item.id)}
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
-          <p>区域取景入口，不是历史事件坐标。</p>
-        </div>
-      </details>
-      {focusedView && !visibleCinematic && (
-        <div className="museum-art-entry">
-          <button
-            className="outlined-button"
-            onClick={() => openObservation(focusedView)}
-          >
-            <MapControlFrame />
-            <ToolEmblem kind="chapters" />
-            <span>
-              走进
-              {focusedView === 'ruijin'
-                ? '瑞金'
-                : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!
-                    .title}
-              艺术场景
-            </span>
-            <ArrowUpRight size={20} />
-          </button>
-          {props.historyRegions?.includes(focusedView) && (
-            <button
-              className="outlined-button"
-              onClick={() => props.onRegionHistory?.(focusedView)}
-            >
-              <MapControlFrame />
-              <ToolEmblem kind="history" />
-              <span>阅读本区域历史</span>
-              <ArrowUpRight size={20} />
-            </button>
-          )}
-        </div>
-      )}
-      <details className="museum-map-layers">
-        <summary>
-          <MapControlFrame />
-          <Layers size={16} />
-          地图图层
+          <SlidersHorizontal size={16} />
+          <span>地图工具</span>
           <ChevronDown size={14} className="map-disclosure-chevron" />
         </summary>
-        <label title="仅跟随已发布的事件坐标，未知位置保持当前视野">
-          <input
-            type="checkbox"
-            checked={follow}
-            onChange={(e) => {
-              setFollow(e.target.checked);
-              const selected =
-                points.find((point) => point.id === props.activeEventId) ??
-                points[0];
-              if (e.target.checked && selected?.coordinates)
-                api.current?.focusGeo(selected.coordinates);
-            }}
-          />
-          随阶段取景
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={rivers}
-            onChange={(e) => setRivers(e.target.checked)}
-          />
-          现代河流
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={camps.includes('red_army')}
-            onChange={() => toggleCamp('red_army')}
-          />
-          红军图层
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={camps.includes('nationalist_army')}
-            onChange={() => toggleCamp('nationalist_army')}
-          />
-          国军图层
-        </label>
-        <label>
-          地势表现
-          <select
-            aria-label="地势表现强度"
-            value={gain}
-            onChange={(e) => {
-              const n = Number(e.target.value);
-              if (n === 1 || n === 6 || n === 12 || n === 24) setGain(n);
-            }}
-          >
-            <option value="1">原始地势</option>
-            <option value="6">层峦</option>
-            <option value="12">雄浑</option>
-            <option value="24">磅礴</option>
-          </select>
-        </label>
-        {!routes.length && <p>当前阶段暂无可发布的行军路线。</p>}
+        <aside className="museum-map-tool-panel" aria-label="地图工具面板">
+          <div className="museum-tool-panel-heading">
+            <span>山河取景与观察</span>
+            <button
+              aria-label="收起地图工具"
+              onClick={() => {
+                if (toolbox.current) {
+                  toolbox.current.open = false;
+                  toolbox.current.querySelector('summary')?.focus();
+                }
+              }}
+            >
+              收起
+            </button>
+          </div>
+          <nav className="museum-map-toolbar" aria-label="全景地图视角">
+            <button
+              onClick={() => {
+                setEntry(false);
+                setCinematic(null);
+                setView(null);
+                setEventId(null);
+                api.current?.overview();
+              }}
+            >
+              <MapControlFrame />
+              <Expand size={16} />
+              全景
+            </button>
+            <button
+              onClick={() => {
+                setEntry(false);
+                setView(null);
+                setCinematic(null);
+                api.current?.overview(true);
+              }}
+            >
+              <MapControlFrame />
+              <Map size={16} />
+              俯瞰
+            </button>
+            <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
+              <MapControlFrame />
+              <ZoomIn size={18} />
+            </button>
+            <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
+              <MapControlFrame />
+              <ZoomOut size={18} />
+            </button>
+          </nav>
+          <details ref={views} className="museum-geographic-views">
+            <summary>
+              <MapControlFrame />
+              山河取景<span>现代地理</span>
+            </summary>
+            <div className="museum-geographic-menu">
+              <div>
+                {GEOGRAPHIC_VIEWS.map((item) => (
+                  <button
+                    key={item.id}
+                    aria-pressed={view === item.id}
+                    onClick={() => chooseView(item.id)}
+                  >
+                    {item.title}
+                  </button>
+                ))}
+              </div>
+              <p>区域取景入口，不是历史事件坐标。</p>
+            </div>
+          </details>
+          <details className="museum-map-layers">
+            <summary>
+              <MapControlFrame />
+              <Layers size={16} />
+              地图图层
+              <ChevronDown size={14} className="map-disclosure-chevron" />
+            </summary>
+            <label title="仅跟随已发布的事件坐标，未知位置保持当前视野">
+              <input
+                type="checkbox"
+                checked={follow}
+                onChange={(e) => {
+                  setFollow(e.target.checked);
+                  const selected =
+                    points.find((point) => point.id === props.activeEventId) ??
+                    points[0];
+                  if (e.target.checked && selected?.coordinates)
+                    api.current?.focusGeo(selected.coordinates);
+                }}
+              />
+              随阶段取景
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={rivers}
+                onChange={(e) => setRivers(e.target.checked)}
+              />
+              现代河流
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={camps.includes('red_army')}
+                onChange={() => toggleCamp('red_army')}
+              />
+              红军图层
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={camps.includes('nationalist_army')}
+                onChange={() => toggleCamp('nationalist_army')}
+              />
+              国军图层
+            </label>
+            <label>
+              地势表现
+              <select
+                aria-label="地势表现强度"
+                value={gain}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (n === 1 || n === 6 || n === 12 || n === 24) setGain(n);
+                }}
+              >
+                <option value="1">原始地势</option>
+                <option value="6">层峦</option>
+                <option value="12">雄浑</option>
+                <option value="24">磅礴</option>
+              </select>
+            </label>
+            {!routes.length && <p>当前阶段暂无可发布的行军路线。</p>}
+          </details>
+          <ForceLegend state={forceState} hasV2Renderer />
+          {focusedView && !visibleCinematic && (
+            <div className="museum-art-entry">
+              <button
+                className="outlined-button"
+                onClick={() => openObservation(focusedView)}
+              >
+                <MapControlFrame />
+                <ToolEmblem kind="chapters" />
+                <span>
+                  走进
+                  {focusedView === 'ruijin'
+                    ? '瑞金'
+                    : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!
+                        .title}
+                  艺术场景
+                </span>
+                <ArrowUpRight size={20} />
+              </button>
+              {props.historyRegions?.includes(focusedView) && (
+                <button
+                  className="outlined-button"
+                  onClick={() => props.onRegionHistory?.(focusedView)}
+                >
+                  <MapControlFrame />
+                  <ToolEmblem kind="history" />
+                  <span>阅读本区域历史</span>
+                  <ArrowUpRight size={20} />
+                </button>
+              )}
+            </div>
+          )}
+          {view && !visibleCinematic && !entry && (
+            <details className="museum-region-events">
+              <summary>
+                <MapControlFrame />
+                查看区域内事件
+                <ChevronDown size={14} className="map-disclosure-chevron" />
+              </summary>
+              <p>仅显示当前历史阶段已发布且位置可用的事件。</p>
+              {points
+                .filter((point) => {
+                  const [west, south, east, north] = REGIONS[view];
+                  return (
+                    point.coordinates![0] >= west &&
+                    point.coordinates![0] <= east &&
+                    point.coordinates![1] >= south &&
+                    point.coordinates![1] <= north
+                  );
+                })
+                .map((point) => (
+                  <button
+                    key={point.id}
+                    onClick={() => {
+                      remember();
+                      setEventId(point.id);
+                      setCinematic(point.title);
+                      api.current?.focusGeo(point.coordinates!);
+                    }}
+                  >
+                    {point.title}
+                  </button>
+                ))}
+              {!points.some((point) => {
+                const [west, south, east, north] = REGIONS[view];
+                return (
+                  point.coordinates![0] >= west &&
+                  point.coordinates![0] <= east &&
+                  point.coordinates![1] >= south &&
+                  point.coordinates![1] <= north
+                );
+              }) && <p>当前区域暂无可发布事件。历史资料仍在核验中。</p>}
+            </details>
+          )}
+        </aside>
       </details>
       <div
         className="museum-map-events"
@@ -609,48 +684,6 @@ export function ExhibitionPanorama(
             阅读事件
           </button>
         </aside>
-      )}
-      {view && !visibleCinematic && !entry && (
-        <details className="museum-region-events">
-          <summary>
-            <MapControlFrame />
-            查看区域内事件
-            <ChevronDown size={14} className="map-disclosure-chevron" />
-          </summary>
-          <p>仅显示当前历史阶段已发布且位置可用的事件。</p>
-          {points
-            .filter((point) => {
-              const [west, south, east, north] = REGIONS[view];
-              return (
-                point.coordinates![0] >= west &&
-                point.coordinates![0] <= east &&
-                point.coordinates![1] >= south &&
-                point.coordinates![1] <= north
-              );
-            })
-            .map((point) => (
-              <button
-                key={point.id}
-                onClick={() => {
-                  remember();
-                  setEventId(point.id);
-                  setCinematic(point.title);
-                  api.current?.focusGeo(point.coordinates!);
-                }}
-              >
-                {point.title}
-              </button>
-            ))}
-          {!points.some((point) => {
-            const [west, south, east, north] = REGIONS[view];
-            return (
-              point.coordinates![0] >= west &&
-              point.coordinates![0] <= east &&
-              point.coordinates![1] >= south &&
-              point.coordinates![1] <= north
-            );
-          }) && <p>当前区域暂无可发布事件。历史资料仍在核验中。</p>}
-        </details>
       )}
       {visibleCinematic && (
         <CinematicTitle

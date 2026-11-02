@@ -429,7 +429,6 @@
 }
 @media (max-height: 820px) {
   .museum-terrain-hint {
-    bottom: 22px;
     font-size: 12px;
   }
 }

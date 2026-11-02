@@ -16,6 +16,7 @@ import {
   constrainTerrainCamera,
   createSurfaceGesture,
   localTerrainPose,
+  cursorTerrainZoom,
   TERRAIN_NAVIGATION,
 } from './terrain-navigation';
 import {
@@ -245,19 +246,52 @@ export function createPanoramaMap(
   controls.addEventListener('start', cancel);
   const gesture = createSurfaceGesture(renderer.domElement);
   const ray = new THREE.Raycaster();
-  const focusSurface = (event: MouseEvent) => {
-    if (!gesture.accept(event)) return;
+  const pickSurface = (clientX: number, clientY: number) => {
     const rect = renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
     camera.updateMatrixWorld();
     scene.updateMatrixWorld(true);
     ray.setFromCamera(
       new THREE.Vector2(
-        ((event.clientX - rect.left) / rect.width) * 2 - 1,
-        (-(event.clientY - rect.top) / rect.height) * 2 + 1,
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        (-(clientY - rect.top) / rect.height) * 2 + 1,
       ),
       camera,
     );
-    const hit = landscape.pick(ray);
+    return landscape.pick(ray);
+  };
+  const wheelSurface = (event: WheelEvent) => {
+    if (event.target !== renderer.domElement || suspended || preparingEntry)
+      return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const hit = pickSurface(event.clientX, event.clientY);
+    const delta =
+      event.deltaY *
+      (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? height : 1) *
+      (event.ctrlKey ? 4 : 1);
+    const pose = cursorTerrainZoom(
+      camera.position,
+      controls.target,
+      hit,
+      delta,
+      THREE.MathUtils.clamp(
+        camera.position.distanceTo(controls.target) * 0.6,
+        0.45,
+        1,
+      ),
+    );
+    cancel();
+    if (!pose) return;
+    camera.position.copy(pose.position);
+    controls.target.copy(pose.target);
+    controls.update();
+    constrain();
+    viewChanged();
+  };
+  const focusSurface = (event: MouseEvent) => {
+    if (!gesture.accept(event)) return;
+    const hit = pickSurface(event.clientX, event.clientY);
     if (!hit) return;
     const pose = localTerrainPose(camera.position, controls.target, hit);
     if (!pose) return;
@@ -268,6 +302,10 @@ export function createPanoramaMap(
   renderer.domElement.addEventListener('pointermove', gesture.move);
   renderer.domElement.addEventListener('pointerup', gesture.up);
   renderer.domElement.addEventListener('dblclick', focusSurface);
+  renderer.domElement.addEventListener('wheel', wheelSurface, {
+    passive: false,
+    capture: true,
+  });
   const bookmark = (): PanoramaBookmark => ({
     sceneId: entryFraming ? RUIJIN_SCENE : PANORAMA_SCENE,
     position: camera.position.toArray(),
@@ -791,6 +829,7 @@ export function createPanoramaMap(
       renderer.domElement.removeEventListener('pointermove', gesture.move);
       renderer.domElement.removeEventListener('pointerup', gesture.up);
       renderer.domElement.removeEventListener('dblclick', focusSurface);
+      renderer.domElement.removeEventListener('wheel', wheelSurface, true);
       renderer.domElement.removeEventListener('keydown', key);
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
       const geometries = new Set<THREE.BufferGeometry>(),

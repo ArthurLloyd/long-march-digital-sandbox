@@ -79,6 +79,30 @@ export function localTerrainPose(
   return { position: next.clone().add(offset), target: next };
 }
 
+/** Scale the camera and orbit target about the hit point. Its screen position
+ * stays fixed, unlike dollying about the screen centre or an arbitrary plane. */
+export function cursorTerrainZoom(
+  position: THREE.Vector3,
+  target: THREE.Vector3,
+  hit: THREE.Vector3 | null,
+  delta: number,
+  speed: number,
+) {
+  if (!hit || ![...hit.toArray(), delta, speed].every(Number.isFinite))
+    return null;
+  const distance = position.distanceTo(target);
+  if (distance < 1e-9) return null;
+  const factor = THREE.MathUtils.clamp(
+    Math.exp(THREE.MathUtils.clamp(delta, -600, 600) * speed * 0.0015),
+    TERRAIN_NAVIGATION.minDistance / distance,
+    TERRAIN_NAVIGATION.maxDistance / distance,
+  );
+  return {
+    position: position.clone().sub(hit).multiplyScalar(factor).add(hit),
+    target: target.clone().sub(hit).multiplyScalar(factor).add(hit),
+  };
+}
+
 /** Canvas-only gesture gate, so UI clicks and drags cannot select terrain. */
 export function createSurfaceGesture(canvas: HTMLCanvasElement) {
   let down: { x: number; y: number } | null = null,

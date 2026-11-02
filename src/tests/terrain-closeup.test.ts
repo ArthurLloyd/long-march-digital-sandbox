@@ -10,6 +10,7 @@ import {
   constrainTerrainCamera,
   localTerrainPose,
   createSurfaceGesture,
+  cursorTerrainZoom,
 } from '../app/landscape/terrain-navigation';
 import { createTerrainField } from '../app/landscape/terrain-field';
 
@@ -136,6 +137,29 @@ describe('连续地形近景与共享高度', () => {
   });
 });
 describe('局部观察输入与安全相机', () => {
+  it('滚轮以偏离屏幕中心的实际命中点为锚，拉近拉远均保持屏幕坐标，空白不跳转', () => {
+    const camera = new THREE.PerspectiveCamera(43, 1920 / 1080, 0.0001, 160),
+      target = new THREE.Vector3();
+    camera.position.set(0, 1, 2);
+    camera.lookAt(target);
+    camera.updateMatrixWorld();
+    const hit = new THREE.Vector3(0.6, 0, 0.2),
+      before = hit.clone().project(camera);
+    for (const delta of [-120, 120]) {
+      const pose = cursorTerrainZoom(camera.position, target, hit, delta, 1)!;
+      const next = new THREE.PerspectiveCamera(43, 1920 / 1080, 0.0001, 160);
+      next.position.copy(pose.position);
+      next.lookAt(pose.target);
+      next.updateMatrixWorld();
+      const after = hit.clone().project(next);
+      expect(after.x).toBeCloseTo(before.x, 7);
+      expect(after.y).toBeCloseTo(before.y, 7);
+      expect(pose.target.x).not.toBe(target.x);
+    }
+    expect(
+      cursorTerrainZoom(camera.position, target, null, -120, 1),
+    ).toBeNull();
+  });
   it('聚焦更新到命中位置，实际靠近且无效命中保持视角', () => {
     const position = new THREE.Vector3(0, 1, 2),
       target = new THREE.Vector3(),

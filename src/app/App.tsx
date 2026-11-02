@@ -549,12 +549,14 @@ export function App({
               </div>
               {phaseMode && (
                 <>
-                  <ForceLegend
-                    state={sceneView.forces}
-                    hasV2Renderer={
-                      !!(injectedModules ?? modules).Map || panoramic
-                    }
-                  />
+                  {(!panoramic || sceneError) && (
+                    <ForceLegend
+                      state={sceneView.forces}
+                      hasV2Renderer={
+                        !!(injectedModules ?? modules).Map || panoramic
+                      }
+                    />
+                  )}
                   {sceneView.forces.schematic && (
                     <p className="phase-schematic" role="note">
                       宏观示意，非真实行军路线。

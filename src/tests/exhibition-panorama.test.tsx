@@ -93,6 +93,10 @@ beforeEach(() => {
   }));
 });
 afterEach(() => vi.unstubAllGlobals());
+async function openMapTools(user: ReturnType<typeof userEvent.setup>) {
+  const summary = screen.getByText('地图工具').closest('summary')!;
+  if (!summary.parentElement!.hasAttribute('open')) await user.click(summary);
+}
 
 it('B故事的外部演绎请求复用A观察路径，并在退出时通知宿主和恢复地图', async () => {
   const props = properties();
@@ -130,11 +134,30 @@ it('文字专题已有阶段但没有历史定位时，仍保留瑞金启程意�
   expect(dataset.events.every((event) => event.coordinates === null)).toBe(
     true,
   );
+  await openMapTools(user);
   await user.click(screen.getByRole('button', { name: '全景' }));
   expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
 });
 
 describe('原展馆的现代全景与正式历史边界', () => {
+  it('工具默认收纳，展开后原操作可用；收起与Esc不重挂地图或改变历史状态', async () => {
+    const props = properties(),
+      user = userEvent.setup();
+    render(<ExhibitionPanorama {...props} />);
+    expect(
+      screen.getByRole('navigation', { name: '全景地图视角' }),
+    ).not.toBeVisible();
+    await openMapTools(user);
+    expect(screen.getByRole('button', { name: /^全景$/ })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '收起地图工具' }));
+    expect(screen.getByRole('button', { name: /^全景$/ })).not.toBeVisible();
+    await openMapTools(user);
+    await user.keyboard('{Escape}');
+    expect(screen.getByText('地图工具').closest('summary')).toHaveFocus();
+    expect(renderer.creates).toBe(1);
+    expect(props.onEventSelect).not.toHaveBeenCalled();
+    expect(props.onObjectSelect).not.toHaveBeenCalled();
+  });
   it('空态启程火炬与真实阶段态势分离，撤回或未知位置清除火炬', async () => {
     const user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...properties()} />);
@@ -146,6 +169,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     expect(screen.getByText('从瑞金启程，重温长征之路。')).toBeInTheDocument();
     expect(screen.queryByText('现代地理 · 艺术表现')).not.toBeInTheDocument();
     expect(screen.queryByText(/成员 A 艺术空间/)).not.toBeInTheDocument();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '全景' }));
     expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
     const data = simulatePublishedC2();
@@ -170,6 +194,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const props = properties(),
       user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
     expect(renderer.api.suspend).toHaveBeenLastCalledWith(true);
     await user.click(
@@ -180,6 +205,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
       renderer.api.bookmark.mock.results[0]!.value,
     );
     renderer.api.restore.mockClear();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
     view.rerender(<ExhibitionPanorama {...props} phaseId="different" />);
     await user.click(
@@ -197,6 +223,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const user = userEvent.setup(),
       props = properties(data);
     const view = render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     await user.keyboard('{Escape}');
@@ -242,6 +269,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     expect(renderer.api.focus).toHaveBeenCalledTimes(1);
     expect(renderer.api.focus.mock.lastCall?.[1]).toBe('place');
     expect(renderer.api.entry).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '全景' }));
     expect(renderer.api.overview).toHaveBeenCalled();
     expect(
@@ -317,6 +345,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const props = properties(),
       user = userEvent.setup();
     render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     expect(renderer.api.focus).toHaveBeenCalledTimes(1);
@@ -325,6 +354,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     ).toBeInTheDocument();
     expect(props.onEventSelect).not.toHaveBeenCalled();
     expect(props.onObjectSelect).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '大渡河谷' }));
     expect(
@@ -421,12 +451,14 @@ describe('原展馆的现代全景与正式历史边界', () => {
       user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...props} />);
     expect(renderer.api.focusGeo).toHaveBeenLastCalledWith([106, 28]);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     await user.keyboard('{Escape}');
     renderer.api.focusGeo.mockClear();
     view.rerender(<ExhibitionPanorama {...props} phaseId="another-phase" />);
     expect(renderer.api.focusGeo).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByText('地图图层'));
     await user.click(screen.getByRole('checkbox', { name: '随阶段取景' }));
     expect(renderer.api.focusGeo).toHaveBeenLastCalledWith([106, 28]);
