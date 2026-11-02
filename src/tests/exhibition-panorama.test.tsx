@@ -16,6 +16,7 @@ type RendererOptions = Parameters<typeof createPanoramaMap>[1];
 const renderer = vi.hoisted(() => ({
   options: null as RendererOptions | null,
   fail: false,
+  creates: 0,
   api: {
     entry: vi.fn(),
     focus: vi.fn(),
@@ -37,10 +38,19 @@ const renderer = vi.hoisted(() => ({
 // the renderer callback, and cannot be included in a production build.
 vi.mock('../app/landscape/map-renderer', () => ({
   createPanoramaMap: (_host: HTMLElement, options: RendererOptions) => {
+    renderer.creates++;
     if (renderer.fail) throw new Error('WebGL unavailable');
     renderer.options = options;
     return renderer.api;
   },
+}));
+// Lazy component boundary only; A's real module has its original tests and UI QA.
+vi.mock('../features/scene', () => ({
+  loadRegionalObservation: async () => ({
+    RegionalObservation: ({ onExit }: { onExit: () => void }) => (
+      <button onClick={onExit}>返回艺术观察地图</button>
+    ),
+  }),
 }));
 function properties(
   dataset: HistoryDatasetV2 = emptyV2(),
@@ -66,6 +76,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   renderer.options = null;
   renderer.fail = false;
+  renderer.creates = 0;
   renderer.api.bookmark.mockReturnValue({
     sceneId: 'long-march-modern-panorama',
     position: [0, 4, 6],
@@ -80,6 +91,29 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('原展馆的现代全景与正式历史边界', () => {
+  it('进入 A 区域观察暂停背景，退出恢复本阶段书签，不恢复跨阶段旧书签或完成历史', async () => {
+    const props = properties(),
+      user = userEvent.setup();
+    const view = render(<ExhibitionPanorama {...props} />);
+    await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
+    expect(renderer.api.suspend).toHaveBeenLastCalledWith(true);
+    await user.click(
+      await screen.findByRole('button', { name: '返回艺术观察地图' }),
+    );
+    expect(renderer.api.suspend).toHaveBeenLastCalledWith(false);
+    expect(renderer.api.restore).toHaveBeenCalledWith(
+      renderer.api.bookmark.mock.results[0]!.value,
+    );
+    renderer.api.restore.mockClear();
+    await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
+    view.rerender(<ExhibitionPanorama {...props} phaseId="different" />);
+    await user.click(
+      await screen.findByRole('button', { name: '返回艺术观察地图' }),
+    );
+    expect(renderer.api.restore).not.toHaveBeenCalled();
+    expect(props.onEventSelect).not.toHaveBeenCalled();
+    expect(props.onObjectSelect).not.toHaveBeenCalled();
+  });
   it('区域内事件只列当前输入中已发布且有位置的事件，撤回后显示核验空态', async () => {
     const data = simulatePublishedSample();
     const point = data.events[0]!;
@@ -111,14 +145,37 @@ describe('原展馆的现代全景与正式历史边界', () => {
       user = userEvent.setup();
     render(<ExhibitionPanorama {...props} />);
     expect(renderer.options!.entryView).toBe(true);
+    expect(
+      screen.getByRole('button', {
+        name: '瑞金区域定位，现代取景中心参考，不是历史事件坐标',
+      }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '拉远地图' }));
+    expect(renderer.api.zoom).toHaveBeenCalledWith(-1);
+    expect(
+      screen.getByRole('button', {
+        name: '瑞金区域定位，现代取景中心参考，不是历史事件坐标',
+      }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '瑞金' })).toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', {
+        name: '瑞金区域定位，现代取景中心参考，不是历史事件坐标',
+      }),
+    );
+    expect(renderer.creates).toBe(1);
+    expect(renderer.api.focus).toHaveBeenCalledTimes(1);
+    expect(renderer.api.focus.mock.lastCall?.[1]).toBe('place');
+    expect(renderer.api.entry).not.toHaveBeenCalled();
     await user.click(screen.getByRole('button', { name: '全景' }));
     expect(renderer.api.overview).toHaveBeenCalled();
     expect(
       screen.queryByRole('heading', { name: '瑞金' }),
     ).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: '瑞金' }));
-    expect(renderer.api.entry).toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: '瑞金定位' }));
+    expect(renderer.api.focus).toHaveBeenCalledTimes(2);
+    expect(renderer.creates).toBe(1);
+    expect(renderer.api.entry).not.toHaveBeenCalled();
     expect(props.onEventSelect).not.toHaveBeenCalled();
     expect(props.onObjectSelect).not.toHaveBeenCalled();
   });

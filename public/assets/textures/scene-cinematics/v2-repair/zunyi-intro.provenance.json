@@ -1,0 +1,158 @@
+{
+  "region": "zunyi",
+  "version": 2,
+  "edition": "v2-repair",
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "MiniMax H3",
+  "actualGenerationCostCredits": 420,
+  "costEvidence": "2026-11-02 MiniMax manual video panel confirmed one completed Zunyi repair: H3, 768P, 16:9, 6 seconds, native sound on, quantity 1, 420 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T07:21:15.623Z",
+  "source": {
+    "path": "assets/雨夜红军行军.mp4",
+    "preservedCopy": "artifacts/media-v2/v2-repair/zunyi/2026-11-02T07-21-14.995Z-12960e46/source-original.mp4",
+    "bytes": 1912793,
+    "sha256": "3a9883edbea6ec77ef477dee1be45d811a79e92b18d61b7822324a49a6c6908c",
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/zunyi-intro.mp4",
+    "bytes": 2016062,
+    "sha256": "6ec4f7cf01b7f305f1b789dfcbe818c007a057d9d25bb2d2650e570e9dd0b9e6",
+    "fastStart": true,
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/zunyi-intro.jpg",
+    "selectedTimeSeconds": 5.4,
+    "bytes": 106048,
+    "sha256": "f216d6f26f4fb2d507af91c927f9b38f80348539b08782ac89066aa9404ddceb",
+    "selection": "Frame at 5.4s; environment-and-people composition requires visual review, not inferred by this script."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "7bebf106e0681ea9f492ea12330d4863822fffafded429efdbb1b584d24f7cdb",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 6.183332999999999,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "linear",
+      "pass1": {
+        "input_i": "-37.41",
+        "input_tp": "-24.20",
+        "input_lra": "1.80",
+        "input_thresh": "-47.41",
+        "output_i": "-18.46",
+        "output_tp": "-5.81",
+        "output_lra": "1.40",
+        "output_thresh": "-28.46",
+        "normalization_type": "dynamic",
+        "target_offset": "0.46"
+      },
+      "pass2": {
+        "input_i": "-37.03",
+        "input_tp": "-24.30",
+        "input_lra": "1.60",
+        "input_thresh": "-47.03",
+        "output_i": "-17.62",
+        "output_tp": "-4.89",
+        "output_lra": "1.50",
+        "output_thresh": "-27.62",
+        "normalization_type": "linear",
+        "target_offset": "-0.38"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-40.1",
+      "max_volume": "-24.1"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.08",
+      "input_tp": "-4.89",
+      "input_lra": "1.80",
+      "input_thresh": "-28.08",
+      "output_i": "-18.48",
+      "output_tp": "-5.86",
+      "output_lra": "1.40",
+      "output_thresh": "-28.48",
+      "normalization_type": "dynamic",
+      "target_offset": "0.48"
+    },
+    "deliveredAudioIntegratedLufs": -18.08,
+    "deliveredAudioTruePeakDbTP": -4.89,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/zunyi-contact.jpg",
+    "contactNominalTimesSeconds": [0, 2, 4, 6.2],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/v2-repair/zunyi/2026-11-02T07-21-14.995Z-12960e46",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}

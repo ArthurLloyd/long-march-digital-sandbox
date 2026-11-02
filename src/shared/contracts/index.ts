@@ -1,4 +1,5 @@
 export * from './data';
+export type { ModernGeoBounds } from './modern-geography';
 export * from './dataset';
 export * from './experience-catalog';
 export * from './topics';

@@ -1,0 +1,94 @@
+{
+  "sourceCommit": "0a17abdb7ce760826730b6d08580ecafc292bdde",
+  "disclosure": "A 程序与 AI 艺术展陈资源，不是正式历史资料或真人复核；仅限本清单精确文件与字节",
+  "files": [
+    {
+      "filePath": "assets/textures/scene-cinematics/v2/ruijin-intro.mp4",
+      "sha256": "60b974c1bbe544efe7aa8d81c863aa514351ca10682d7722300f7806bf46ff5d"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2/ruijin-intro.jpg",
+      "sha256": "24e832b9722f74480496b0bf206477125c92494c6c4c7e11130f215e6342243b"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2/grass-intro.mp4",
+      "sha256": "fb951087fa40e800253a6f10cbf3d1cf235ca0bfe5f271a4c89b1348a11c4444"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2/grass-intro.jpg",
+      "sha256": "a6bdea051e5ee953194237303167c60dd1152a9fda25425934e6f5feb95f7fd6"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/zunyi-intro.mp4",
+      "sha256": "6ec4f7cf01b7f305f1b789dfcbe818c007a057d9d25bb2d2650e570e9dd0b9e6"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/zunyi-intro.jpg",
+      "sha256": "f216d6f26f4fb2d507af91c927f9b38f80348539b08782ac89066aa9404ddceb"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/chishui-intro.mp4",
+      "sha256": "abc67ceea8bfdf3e5ce1ae4e8caac9616b9001e8bdd47f28d2966df887cbf33d"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/chishui-intro.jpg",
+      "sha256": "28422997b07d04f306e6ba1cd15112ffae7ee395d501da18f82e3fb274ded6fb"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/jinsha-intro.mp4",
+      "sha256": "21cbe4fe8b78ccc3780571c4464d1016714b56e64bf75419e43cafcf1628b4ac"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/jinsha-intro.jpg",
+      "sha256": "e37f4c206ba213ef84b2e5a587a8485383916410353c98e022860db4d63267b8"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/luding-intro.mp4",
+      "sha256": "9eafbb19302e2da17d0c5d8ed6fbb207e3304d8669922174effa11096381fcbd"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/luding-intro.jpg",
+      "sha256": "a148973df612eaebd414b3e8c8ad11b6822044c2b7f5602b58a50107f321a7cf"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/snow-intro.mp4",
+      "sha256": "af47837794839c10c3b474a4f3699e77c684a365e237cb52a16c09abc98d2f6c"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/snow-intro.jpg",
+      "sha256": "12934ff038d18b443ed969c9e281361dd7cf25ddd5a92fcf72082eebac8af29d"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/reunion-intro.mp4",
+      "sha256": "e85e4c9217621690794ac84a97c2fcf521abffeaa140b7c500f7178e015974ad"
+    },
+    {
+      "filePath": "assets/textures/scene-cinematics/v2-repair/reunion-intro.jpg",
+      "sha256": "235b7a0ccb320229eccaa4e42b25b217c91c5bce8db680828eabfcaffed8e20d"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/snow-pass.webp",
+      "sha256": "ec3c26d7b9004b59a34ada9b8363c07c3809802d6115d43112f6113a2ccc47fb"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/grassland.webp",
+      "sha256": "70b12d4f346546db2a29921787ab10995869e039c61d24637d2f65e99bfd4878"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/river-valley.webp",
+      "sha256": "f60594edbd04160a337339a314701220395562060747f5d3979a73f03edfca86"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/river-valley-cover.webp",
+      "sha256": "f8c5e6e6a5f5c5c23831ee61b31603a8e94b4d62b016a1855bce68bf9bca3c3c"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/snow-pass-cover.webp",
+      "sha256": "e35fbb8cfb0c95ed94098b629548f4ebcc063b0a759423292e2a88790fbe6c79"
+    },
+    {
+      "filePath": "assets/textures/immersive-landscapes/grassland-cover.webp",
+      "sha256": "2f815f17b18d57dc74e675d6cc010dc23b7ecf57ae5274f39f51eadabae64c70"
+    }
+  ]
+}

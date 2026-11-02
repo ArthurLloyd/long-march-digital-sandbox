@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import artExhibits from './scripts/a-art-assets.json';
 import { historyReleasePlugin } from './scripts/history-release';
 import { panoramaWorkbenchPlugin } from './scripts/panorama-workbench.ts';
 import {
@@ -12,7 +13,7 @@ export default defineConfig({
     ? 'node_modules/.vite-verification'
     : 'node_modules/.vite-app',
   plugins: [
-    historyReleasePlugin(),
+    historyReleasePlugin({ artAssets: artExhibits.files }),
     react(),
     contractWorkbenchPlugin(),
     panoramaWorkbenchPlugin(),

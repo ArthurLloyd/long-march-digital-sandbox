@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { build, preview } from 'vite';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import {
   mkdtemp,
@@ -23,6 +24,7 @@ import { normalizeDataset } from '../shared/contracts';
 import { validateDataset } from '../shared/utils/validate-dataset';
 import { simulatePublishedSample } from './fixtures/c1-sample';
 import { draftAsset } from './fixtures/v2-dataset';
+import artExhibits from '../../scripts/a-art-assets.json';
 
 async function filesIn(
   directory: string,
@@ -53,6 +55,50 @@ async function temporary() {
   return directory;
 }
 describe('实际产物的数据与资源发布边界', () => {
+  it('艺术资源只允许固定路径和字节，不能绕过未发布内容字节封锁', () => {
+    const bytes = new TextEncoder().encode('isolated engineering art sample');
+    const hash = createHash('sha256').update(bytes).digest('hex');
+    const path = 'assets/textures/scene-cinematics/v2/ruijin-intro.mp4';
+    const snapshot = createReleaseSnapshot(raw);
+    const candidate = normalizeDataset(validateDataset(raw));
+    const allow = [{ filePath: path, sha256: hash }];
+    expect(() =>
+      assertReleaseFiles(
+        new Map([[path, bytes]]),
+        candidate,
+        snapshot.dataset,
+        undefined,
+        allow,
+      ),
+    ).not.toThrow();
+    expect(() =>
+      assertReleaseFiles(
+        new Map([[path, new Uint8Array([1])]]),
+        candidate,
+        snapshot.dataset,
+        undefined,
+        allow,
+      ),
+    ).toThrow('艺术展陈资源字节');
+    expect(() =>
+      assertReleaseFiles(
+        new Map([[path, bytes]]),
+        candidate,
+        snapshot.dataset,
+        new Set([hash]),
+        allow,
+      ),
+    ).toThrow('未发布资源字节');
+    expect(() =>
+      assertReleaseFiles(
+        new Map([['assets/textures/unknown.jpg', bytes]]),
+        candidate,
+        snapshot.dataset,
+        undefined,
+        allow,
+      ),
+    ).toThrow('未获发布许可');
+  });
   it('完整 App 构建的 dist 不携带候选、图片、工作台或模拟审核', async () => {
     const directory = await temporary();
     try {
@@ -69,7 +115,8 @@ describe('实际产物的数据与资源发布边界', () => {
         [...files.keys()].some(
           (n) =>
             n.includes('/archive/') ||
-            n.includes('/textures/') ||
+            (n.includes('/textures/') &&
+              !artExhibits.files.some((asset) => asset.filePath === n)) ||
             n.includes('/terrain/') ||
             n.includes('/review/'),
         ),
@@ -80,6 +127,8 @@ describe('实际产物的数据与资源发布边界', () => {
           files,
           normalizeDataset(validateDataset(raw)),
           snapshot.dataset,
+          undefined,
+          artExhibits.files,
         ),
       ).not.toThrow();
       const js = [...files]

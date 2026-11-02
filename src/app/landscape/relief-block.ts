@@ -5,6 +5,8 @@ import type { CameraPose } from './camera-flight';
 export function reliefBlockMaterial() {
   const material = new THREE.MeshStandardMaterial({
     color: '#7a7463',
+    emissive: '#64563f',
+    emissiveIntensity: 0.24,
     roughness: 0.95,
     side: THREE.DoubleSide,
   });
@@ -22,7 +24,7 @@ export function reliefBlockMaterial() {
       float cutRough=sin(blockWorld.x*124.)*sin(blockWorld.z*143.)*.5+.5;
       float seam=sin(blockWorld.y*72.+sin(blockWorld.x*8.+blockWorld.z*12.)*.6);
       float fine=sin(blockWorld.y*510.+blockWorld.x*43.+blockWorld.z*58.)*.5+.5;
-      vec3 slate=mix(vec3(.10,.15,.15),vec3(.33,.31,.24),smoothstep(-.44,.1,blockWorld.y));
+      vec3 slate=mix(vec3(.26,.30,.27),vec3(.43,.39,.29),smoothstep(-1.8,.1,blockWorld.y));
       vec3 sediment=mix(slate,vec3(.43,.35,.23),smoothstep(.2,.85,seam)*.55);
       diffuseColor.rgb=sediment*(.8+.22*cutRough+.13*fine);
     `,
@@ -104,7 +106,7 @@ export function reliefBlockGeometry(
   return geometry;
 }
 
-/** Frame a real modern region as a right-hand exhibit, independent of history. */
+/** Frame a continuous panorama around this modern region, never an isolated tile. */
 export function composeReliefEntry(
   bounds: GeoBounds,
   height: (x: number, z: number) => number,
@@ -124,7 +126,7 @@ export function composeReliefEntry(
           top + ((bottom - top) * r) / 16,
         ),
       );
-  const distance = span * (aspect < 1.5 ? 2.05 : 1.78);
+  const distance = span * (aspect < 1.5 ? 1.05 : 0.82);
   const bearing = 0.22,
     rise = distance * 0.43;
   const rightVector = [Math.cos(bearing), -Math.sin(bearing)];
@@ -142,4 +144,34 @@ export function composeReliefEntry(
       target[2] + Math.cos(bearing) * distance,
     ],
   };
+}
+
+/** Region-scale stop, rather than the old point/river close-up. */
+export function composeRegionalView(
+  bounds: GeoBounds,
+  anchor: { x: number; z: number },
+  height: (x: number, z: number) => number,
+  distanceScale = 1,
+): CameraPose {
+  const span = Math.max(bounds[2] - bounds[0], bounds[3] - bounds[1]);
+  const radius = Math.max(1.1, Math.min(3.4, span * 0.65)) * distanceScale;
+  const target: [number, number, number] = [
+    anchor.x,
+    height(anchor.x, anchor.z) + 0.09,
+    anchor.z,
+  ];
+  const x = anchor.x + radius * 0.3,
+    z = anchor.z + radius;
+  let y = target[1] + radius * 0.65;
+  for (let i = 1; i <= 48; i++) {
+    const t = i / 48;
+    y = Math.max(
+      y,
+      (height(anchor.x + (x - anchor.x) * t, anchor.z + (z - anchor.z) * t) +
+        0.025 -
+        target[1] * (1 - t)) /
+        t,
+    );
+  }
+  return { target, position: [x, y, z] };
 }

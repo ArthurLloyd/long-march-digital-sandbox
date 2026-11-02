@@ -1,0 +1,158 @@
+{
+  "region": "reunion",
+  "version": 2,
+  "edition": "v2-repair",
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "MiniMax H3",
+  "actualGenerationCostCredits": 420,
+  "costEvidence": "2026-11-02 MiniMax manual video panel confirmed one completed reunion repair: H3, 768P, 16:9, 6 seconds, native sound on, quantity 1, 420 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T07:24:56.814Z",
+  "source": {
+    "path": "assets/红军负重行军.mp4",
+    "preservedCopy": "artifacts/media-v2/v2-repair/reunion/2026-11-02T07-24-56.162Z-220cc303/source-original.mp4",
+    "bytes": 2361269,
+    "sha256": "8399d6193648086c651dd61ecf0a33aeb024d3484d22c086bf2234e9612080f2",
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/reunion-intro.mp4",
+    "bytes": 2461709,
+    "sha256": "e85e4c9217621690794ac84a97c2fcf521abffeaa140b7c500f7178e015974ad",
+    "fastStart": true,
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/reunion-intro.jpg",
+    "selectedTimeSeconds": 5.4,
+    "bytes": 100197,
+    "sha256": "235b7a0ccb320229eccaa4e42b25b217c91c5bce8db680828eabfcaffed8e20d",
+    "selection": "Frame at 5.4s; environment-and-people composition requires visual review, not inferred by this script."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "267ed920ad9ba3a533ff97721737487a8bf75a8913e5af5218feda3961e8b8cd",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 6.183332999999999,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "linear",
+      "pass1": {
+        "input_i": "-26.71",
+        "input_tp": "-14.95",
+        "input_lra": "5.00",
+        "input_thresh": "-37.50",
+        "output_i": "-14.99",
+        "output_tp": "-2.70",
+        "output_lra": "6.40",
+        "output_thresh": "-26.04",
+        "normalization_type": "dynamic",
+        "target_offset": "-3.01"
+      },
+      "pass2": {
+        "input_i": "-26.96",
+        "input_tp": "-14.97",
+        "input_lra": "6.10",
+        "input_thresh": "-38.09",
+        "output_i": "-18.25",
+        "output_tp": "-6.26",
+        "output_lra": "6.00",
+        "output_thresh": "-29.38",
+        "normalization_type": "linear",
+        "target_offset": "0.25"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-30.0",
+      "max_volume": "-14.3"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.00",
+      "input_tp": "-6.25",
+      "input_lra": "5.00",
+      "input_thresh": "-28.79",
+      "output_i": "-14.99",
+      "output_tp": "-2.70",
+      "output_lra": "6.40",
+      "output_thresh": "-26.03",
+      "normalization_type": "dynamic",
+      "target_offset": "-3.01"
+    },
+    "deliveredAudioIntegratedLufs": -18,
+    "deliveredAudioTruePeakDbTP": -6.25,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/reunion-contact.jpg",
+    "contactNominalTimesSeconds": [0, 2, 4, 6.2],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/v2-repair/reunion/2026-11-02T07-24-56.162Z-220cc303",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}

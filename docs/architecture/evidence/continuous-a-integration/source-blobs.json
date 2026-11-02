@@ -1,0 +1,73 @@
+{
+  "sourceCommit": "0a17abdb7ce760826730b6d08580ecafc292bdde",
+  "unchanged": [
+    {
+      "path": "src/features/scene/atlas/environment-details.ts",
+      "blob": "630fa7d23fddbe38fd61ac3485e8e56695bd8845"
+    },
+    {
+      "path": "src/features/scene/atlas/environment-details.test.ts",
+      "blob": "0007777bb29f9949f2406a29d64635028ec0b4e8"
+    },
+    {
+      "path": "src/features/scene/integration/RegionalObservation.tsx",
+      "blob": "97ac4839116e646392f21404fbb6cac0f22d4daa"
+    },
+    {
+      "path": "src/features/scene/integration/RegionalObservation.test.tsx",
+      "blob": "b9c66d6a7058646b2c2c65811d6d94d5d4f0cb98"
+    },
+    {
+      "path": "src/features/scene/integration/regional-world.ts",
+      "blob": "19f29e947b2912f5938ea9fbdb5afa02bac8cd59"
+    },
+    {
+      "path": "src/features/scene/integration/regional-world.test.ts",
+      "blob": "797c373c70c6eb5997e09aae4e0433e3faedc971"
+    },
+    {
+      "path": "src/features/scene/integration/region-stories.ts",
+      "blob": "7b7622424a851bc45adb8dba32203cae1368c045"
+    },
+    {
+      "path": "src/features/scene/integration/CinematicIntro.tsx",
+      "blob": "5840d75f7da9064f840f29758890f71d2f9107d6"
+    },
+    {
+      "path": "src/features/scene/integration/CinematicIntro.test.tsx",
+      "blob": "3d0d2c61e3ea1769705a996dddd52fabcebeca32"
+    },
+    {
+      "path": "src/features/scene/integration/cinematic-config.ts",
+      "blob": "29322e1462c9cf9df893882a95e5742fe7e4e6b8"
+    },
+    {
+      "path": "src/features/scene/integration/regional-observation.css",
+      "blob": "823b705b38ddc55efd05614c1be59d899e48b32c"
+    },
+    {
+      "path": "src/features/scene/integration/cinematic-intro.css",
+      "blob": "19564d4499cbcc9c0dad7d839bde8340d9dfdf88"
+    },
+    {
+      "path": "src/features/scene/prototype/bridge-renderer.ts",
+      "blob": "3a9cf3908f2dad8dae6bc306b58a482f2b1a336e"
+    },
+    {
+      "path": "src/features/scene/prototype/bridge-atmosphere.ts",
+      "blob": "edf69c56bccb647db4dc76f5ccc484c6c6fa1c36"
+    },
+    {
+      "path": "src/features/scene/prototype/marching-company.ts",
+      "blob": "bd48146cad6f4cac9ef64367fc8f3a6ac3744f0d"
+    },
+    {
+      "path": "src/features/scene/prototype/marching-company.test.ts",
+      "blob": "0eb7dece92fda26f9f6cb1a0047ec8e209853728"
+    }
+  ],
+  "bridges": [
+    "A index adds lazy public export",
+    "regions type import points to shared ModernGeoBounds; data unchanged"
+  ]
+}

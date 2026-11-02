@@ -34,7 +34,7 @@ body:has(.panorama-exploration) .exhibition-header button {
       #080c11b0,
       transparent 24%,
       transparent 72%,
-      #080c11bd
+      #080c1150
     );
 }
 .museum-panorama.is-entry .museum-map-canvas::after {
@@ -64,9 +64,12 @@ body:has(.panorama-exploration) .exhibition-header button {
 }
 .museum-entry-place h2 {
   font:
-    400 clamp(88px, 8vw, 148px)/1.1 'Panorama Cinematic',
+    400 clamp(88px, 8vw, 148px)/1.18 'Ruijin Exhibit',
     var(--font-display);
   letter-spacing: 0.1em;
+  overflow: visible;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
 }
 .museum-entry-place p {
   margin-top: 10px;
@@ -93,6 +96,51 @@ body:has(.panorama-exploration) .exhibition-header button {
 .museum-panorama.is-entry .museum-map-events {
   display: none;
 }
+.museum-region-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--gold-bright);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid var(--gold);
+  font: 16px/1.5 var(--font-display);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+@font-face {
+  font-family: 'Ruijin Exhibit';
+  src: url('../app/landscape/assets/ruijin-display.woff2') format('woff2');
+  font-display: swap;
+}
+.pan-cinema-name.is-ruijin {
+  font-family: 'Ruijin Exhibit', var(--font-display);
+  line-height: 1.5;
+  padding-block: 0.08em;
+}
+.museum-region-anchor > span {
+  width: 8px;
+  height: 8px;
+  background: var(--gold-bright);
+  rotate: 45deg;
+}
+.museum-region-anchor small {
+  color: var(--muted);
+  font: 12px/1.5 var(--font-body);
+}
+.museum-region-anchor::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  height: 18px;
+  border-left: 1px solid var(--gold);
+}
 .museum-region-events {
   position: absolute;
   right: clamp(24px, 4vw, 80px);
@@ -103,6 +151,26 @@ body:has(.panorama-exploration) .exhibition-header button {
   padding: 12px 18px;
   max-height: min(300px, calc(100dvh - 430px));
   overflow-y: auto;
+}
+.museum-art-entry {
+  position: absolute;
+  right: clamp(24px, 4vw, 80px);
+  bottom: 220px;
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+}
+.museum-art-entry button {
+  background: var(--surface);
+  padding: 12px 18px;
+}
+.museum-art-entry small {
+  font-size: 12px;
+  color: var(--text);
+  text-shadow: 0 2px 8px #080c11;
+}
+.museum-panorama:has(.museum-region-events[open]) .museum-art-entry {
+  visibility: hidden;
 }
 .museum-region-events summary {
   cursor: pointer;

@@ -1,0 +1,157 @@
+{
+  "region": "ruijin",
+  "version": 2,
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "H3",
+  "actualGenerationCostCredits": 700,
+  "costEvidence": "2026-11-02 MiniMax UI batch confirmation: 8 H3 jobs x 700 credits = 5600 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T06:32:09.288Z",
+  "source": {
+    "path": "assets/V2-01-ruijin.mp4",
+    "preservedCopy": "artifacts/media-v2/ruijin/2026-11-02T06-32-07.666Z-c97266cb/source-original.mp4",
+    "bytes": 3287065,
+    "sha256": "93d81b261415ee21d94c67af4af21093c4702a999c6d7f8ef312f197f12b2a5b",
+    "durationSeconds": 10.125,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 243
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2/ruijin-intro.mp4",
+    "bytes": 3445171,
+    "sha256": "60b974c1bbe544efe7aa8d81c863aa514351ca10682d7722300f7806bf46ff5d",
+    "fastStart": true,
+    "durationSeconds": 10.125,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 243
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2/ruijin-intro.jpg",
+    "selectedTimeSeconds": 7,
+    "bytes": 125704,
+    "sha256": "24e832b9722f74480496b0bf206477125c92494c6c4c7e11130f215e6342243b",
+    "selection": "Frame near 7s; environment-and-people composition requires visual review, not inferred by this script."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "a43e2ea6949b05af8c4c4df08ea9b74b19f84ab7888209e695f276149237691d",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 9.725,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "dynamic",
+      "pass1": {
+        "input_i": "-34.59",
+        "input_tp": "-18.39",
+        "input_lra": "4.10",
+        "input_thresh": "-44.59",
+        "output_i": "-19.31",
+        "output_tp": "-4.40",
+        "output_lra": "2.30",
+        "output_thresh": "-29.31",
+        "normalization_type": "dynamic",
+        "target_offset": "1.31"
+      },
+      "pass2": {
+        "input_i": "-34.57",
+        "input_tp": "-18.39",
+        "input_lra": "4.10",
+        "input_thresh": "-44.57",
+        "output_i": "-17.99",
+        "output_tp": "-3.10",
+        "output_lra": "2.30",
+        "output_thresh": "-27.99",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.01"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-36.7",
+      "max_volume": "-20.4"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.18",
+      "input_tp": "-3.15",
+      "input_lra": "2.30",
+      "input_thresh": "-28.18",
+      "output_i": "-18.60",
+      "output_tp": "-4.46",
+      "output_lra": "1.70",
+      "output_thresh": "-28.60",
+      "normalization_type": "dynamic",
+      "target_offset": "0.60"
+    },
+    "deliveredAudioIntegratedLufs": -18.18,
+    "deliveredAudioTruePeakDbTP": -3.15,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/ruijin-contact.jpg",
+    "contactNominalTimesSeconds": [0, 3, 6, 9.8],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/ruijin/2026-11-02T06-32-07.666Z-c97266cb",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}

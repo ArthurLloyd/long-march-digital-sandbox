@@ -1,0 +1,158 @@
+{
+  "region": "chishui",
+  "version": 2,
+  "edition": "v2-repair",
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "MiniMax H3",
+  "actualGenerationCostCredits": 420,
+  "costEvidence": "2026-11-02 MiniMax manual video panel confirmed one completed Chishui repair: H3, 768P, 16:9, 6 seconds, native sound on, quantity 1, 420 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T07:00:02.618Z",
+  "source": {
+    "path": "assets/雨中红军.mp4",
+    "preservedCopy": "artifacts/media-v2/v2-repair/chishui/2026-11-02T07-00-01.876Z-6c2a86de/source-original.mp4",
+    "bytes": 2807600,
+    "sha256": "ca5f1eb77d2ec64eccbd6fecdeff4f01cf08455969ef510b79ba79ae1e27b413",
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/chishui-intro.mp4",
+    "bytes": 2910713,
+    "sha256": "abc67ceea8bfdf3e5ce1ae4e8caac9616b9001e8bdd47f28d2966df887cbf33d",
+    "fastStart": true,
+    "durationSeconds": 6.583333,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 158
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2-repair/chishui-intro.jpg",
+    "selectedTimeSeconds": 2,
+    "bytes": 167833,
+    "sha256": "28422997b07d04f306e6ba1cd15112ffae7ee395d501da18f82e3fb274ded6fb",
+    "selection": "After quick visual review, selected 2s showing all three soldiers and river rocks; the default 5.4s frame cuts the leading soldier. Both source frames retained in QA. This is not historical or full-motion approval."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "c33b24f303a7b0664d8ccee68f998bc673301cb76b692ab62f548a4a1e23663c",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 6.183332999999999,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "linear",
+      "pass1": {
+        "input_i": "-24.70",
+        "input_tp": "-10.57",
+        "input_lra": "1.20",
+        "input_thresh": "-34.70",
+        "output_i": "-18.03",
+        "output_tp": "-4.11",
+        "output_lra": "1.50",
+        "output_thresh": "-28.03",
+        "normalization_type": "dynamic",
+        "target_offset": "0.03"
+      },
+      "pass2": {
+        "input_i": "-24.54",
+        "input_tp": "-10.70",
+        "input_lra": "1.50",
+        "input_thresh": "-34.54",
+        "output_i": "-17.84",
+        "output_tp": "-4.00",
+        "output_lra": "1.50",
+        "output_thresh": "-27.84",
+        "normalization_type": "linear",
+        "target_offset": "-0.16"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-26.0",
+      "max_volume": "-9.5"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.08",
+      "input_tp": "-3.72",
+      "input_lra": "1.20",
+      "input_thresh": "-28.08",
+      "output_i": "-18.02",
+      "output_tp": "-3.90",
+      "output_lra": "1.50",
+      "output_thresh": "-28.02",
+      "normalization_type": "dynamic",
+      "target_offset": "0.02"
+    },
+    "deliveredAudioIntegratedLufs": -18.08,
+    "deliveredAudioTruePeakDbTP": -3.72,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/chishui-contact.jpg",
+    "contactNominalTimesSeconds": [0, 2, 4, 6.2],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/v2-repair/chishui/2026-11-02T07-00-01.876Z-6c2a86de",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}
