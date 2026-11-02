@@ -1,0 +1,78 @@
+{
+  "pointer": [1230, 540],
+  "delta": -120,
+  "before": {
+    "time": 34354.9,
+    "position": [-0.41983567091329516, 1.0222673651103293, 5.504482101603218],
+    "target": [-0.8105670835976866, 0.1756826376274817, 4.202044059321913],
+    "distance": 1.6017869994625085,
+    "fov": 43,
+    "near": 0.0192214439935501,
+    "far": 12,
+    "targetPlaneWidth": 2.7849298925996497,
+    "frameMedianMs": 4.19999999999709,
+    "frameP95Ms": 4.299999999995634,
+    "calls": 55,
+    "triangles": 2677796,
+    "geometries": 114,
+    "textures": 6,
+    "viewport": [1920, 870],
+    "visibility": "visible",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "terrainMeshes": 3,
+    "morphing": false,
+    "closeBounds": [
+      -1.9770805396097018, 3.395686019364735, 0.06377679160031136,
+      5.224132337484209
+    ],
+    "regionalBounds": [
+      -1.9770805396097018, 3.395686019364735, 0.06377679160031136,
+      5.224132337484209
+    ],
+    "region": "chishui",
+    "heightVersion": 14,
+    "fieldCache": 2,
+    "exaggeration": 12,
+    "materials": 7,
+    "targetGround": 0.08414303337201143,
+    "targetWater": 0.08594278073500397,
+    "cameraFloor": 0.17530263533738788
+  },
+  "after": {
+    "time": 111462.6,
+    "position": [-0.4187606123103363, 0.8826234778378026, 5.313037946409411],
+    "target": [-0.7474218027745505, 0.17052423183200563, 4.21750064486203],
+    "distance": 1.347332732980646,
+    "fov": 43,
+    "near": 0.016167992795767753,
+    "far": 12,
+    "targetPlaneWidth": 2.34252569449925,
+    "frameMedianMs": 4.19999999999709,
+    "frameP95Ms": 4.30000000000291,
+    "calls": 47,
+    "triangles": 2671060,
+    "geometries": 114,
+    "textures": 6,
+    "viewport": [1920, 870],
+    "visibility": "visible",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "terrainMeshes": 3,
+    "morphing": false,
+    "closeBounds": [
+      -1.9770805396097018, 3.395686019364735, 0.06377679160031136,
+      5.224132337484209
+    ],
+    "regionalBounds": [
+      -1.9770805396097018, 3.395686019364735, 0.06377679160031136,
+      5.224132337484209
+    ],
+    "region": "chishui",
+    "heightVersion": 14,
+    "fieldCache": 2,
+    "exaggeration": 12,
+    "materials": 7,
+    "targetGround": 0.10673645896196063,
+    "targetWater": null,
+    "cameraFloor": 0.14163266371814098
+  }
+}
