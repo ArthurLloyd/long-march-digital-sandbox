@@ -9,9 +9,16 @@ import { REGIONS, type RegionId } from './map-regions';
 import type { PublishedMapRoute } from './map-objects';
 import type { ForcePhaseState } from '../history/force-state';
 import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
+import { composeReliefEntry } from './relief-block';
+import {
+  PANORAMA_SCENE,
+  RUIJIN_SCENE,
+  isPanoramaSceneId,
+  type PanoramaSceneId,
+} from './panorama-bookmark';
 
 export interface PanoramaBookmark {
-  sceneId: 'long-march-modern-panorama';
+  sceneId: PanoramaSceneId;
   position: [number, number, number];
   target: [number, number, number];
 }
@@ -22,6 +29,7 @@ export interface MarkerProjection {
   visible: boolean;
 }
 export interface PanoramaMapAdapter {
+  entry(): void;
   focus(bounds: GeoBounds): void;
   focusGeo(point: GeoPoint): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
@@ -49,6 +57,8 @@ export function createPanoramaMap(
     onError: (message: string) => void;
     onReady: () => void;
     technicalMarkers?: boolean;
+    entryView?: boolean;
+    initialBookmark?: PanoramaBookmark;
     onViewChange?: (bookmark: PanoramaBookmark) => void;
   },
 ): PanoramaMapAdapter {
@@ -165,6 +175,8 @@ export function createPanoramaMap(
     };
   });
   let disposed = false,
+    preparingEntry = false,
+    entryFraming = false,
     suspended = false,
     frame = 0,
     didRender = false;
@@ -202,19 +214,23 @@ export function createPanoramaMap(
       };
   };
   const cancel = () => {
+    entryFraming = false;
+    preparingEntry = false;
     flight = null;
     focusRevision++;
     landscape.cancelPending();
   };
   controls.addEventListener('start', cancel);
   const bookmark = (): PanoramaBookmark => ({
-    sceneId: 'long-march-modern-panorama',
+    sceneId: landscape.exhibit ? RUIJIN_SCENE : PANORAMA_SCENE,
     position: camera.position.toArray(),
     target: controls.target.toArray(),
   });
   const viewChanged = () => options.onViewChange?.(bookmark());
   controls.addEventListener('end', viewChanged);
   const overview = (top = false) => {
+    entryFraming = false;
+    preparingEntry = false;
     focusRevision++;
     landscape.overview();
     drape();
@@ -240,10 +256,55 @@ export function createPanoramaMap(
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    if (entryFraming && !preparingEntry) {
+      const pose = composeReliefEntry(
+        landscape.bounds,
+        heightAt,
+        camera.aspect,
+      );
+      camera.position.fromArray(pose.position);
+      controls.target.fromArray(pose.target);
+      controls.update();
+    }
   };
   const observer = new ResizeObserver(resize);
   observer.observe(host);
   resize();
+  const entry = (initial = false) => {
+    entryFraming = true;
+    const revision = ++focusRevision;
+    preparingEntry = true;
+    void landscape.focus('ruijin', true).then((pivot) => {
+      if (disposed || revision !== focusRevision) return;
+      preparingEntry = false;
+      if (!pivot) {
+        options.onError('瑞金区域地形未能加载，请重试。');
+        return;
+      }
+      const pose =
+        initial && options.initialBookmark
+          ? options.initialBookmark
+          : composeReliefEntry(landscape.bounds, heightAt, width / height);
+      sun.target.position.set(pivot.x, 0, pivot.z);
+      sun.position.copy(sun.target.position).add(new THREE.Vector3(-5, 9, 2));
+      sun.shadow.camera.left = -5;
+      sun.shadow.camera.right = 5;
+      sun.shadow.camera.top = 5;
+      sun.shadow.camera.bottom = -5;
+      sun.shadow.camera.updateProjectionMatrix();
+      drape();
+      if (initial) {
+        camera.position.fromArray(pose.position);
+        controls.target.fromArray(pose.target);
+        controls.update();
+      } else
+        travel(
+          new THREE.Vector3(...pose.position),
+          new THREE.Vector3(...pose.target),
+        );
+    });
+  };
+  if (options.entryView) entry(true);
   const key = (event: KeyboardEvent) => {
     if (
       ![
@@ -287,7 +348,7 @@ export function createPanoramaMap(
   const draw = (now: number) => {
     if (disposed) return;
     frame = requestAnimationFrame(draw);
-    if (suspended) return;
+    if (suspended || preparingEntry) return;
     let flightFinished = false;
     if (flight) {
       const t = Math.min(1, (now - flight.start) / flight.duration);
@@ -351,6 +412,7 @@ export function createPanoramaMap(
   };
   frame = requestAnimationFrame(draw);
   return {
+    entry: () => entry(),
     setForceRegions(state, camps) {
       clearForceRegions();
       for (const { track, snapshot } of state.entries) {
@@ -403,6 +465,7 @@ export function createPanoramaMap(
         });
     },
     focusGeo(point) {
+      entryFraming = false;
       if (!inCoverage(point)) return;
       const revision = ++focusRevision;
       const region = (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(
@@ -430,6 +493,8 @@ export function createPanoramaMap(
       else complete();
     },
     focus(bounds) {
+      entryFraming = false;
+      preparingEntry = false;
       const revision = ++focusRevision;
       const id = (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(
         ([, value]) => value.every((n, i) => n === bounds[i]),
@@ -482,22 +547,36 @@ export function createPanoramaMap(
     bookmark,
     restore(bookmark) {
       if (
-        bookmark.sceneId !== 'long-march-modern-panorama' ||
+        !isPanoramaSceneId(bookmark.sceneId) ||
         ![...bookmark.position, ...bookmark.target].every(Number.isFinite)
       )
         return;
-      cancel();
       if (
         camera.position.distanceTo(new THREE.Vector3(...bookmark.position)) <
           0.00001 &&
         controls.target.distanceTo(new THREE.Vector3(...bookmark.target)) <
-          0.00001
+          0.00001 &&
+        (bookmark.sceneId === RUIJIN_SCENE) === landscape.exhibit
       )
         return;
-      travel(
-        new THREE.Vector3(...bookmark.position),
-        new THREE.Vector3(...bookmark.target),
-      );
+      cancel();
+      const revision = focusRevision;
+      const complete = () => {
+        if (disposed || revision !== focusRevision) return;
+        travel(
+          new THREE.Vector3(...bookmark.position),
+          new THREE.Vector3(...bookmark.target),
+        );
+      };
+      if (bookmark.sceneId === RUIJIN_SCENE && !landscape.exhibit)
+        void landscape.focus('ruijin', true).then(complete);
+      else {
+        if (bookmark.sceneId === PANORAMA_SCENE && landscape.exhibit) {
+          landscape.overview();
+          drape();
+        }
+        complete();
+      }
     },
     setRoutes(routes, camps) {
       clearRoutes();

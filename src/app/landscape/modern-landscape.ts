@@ -21,6 +21,7 @@ import {
 } from './river-mesh';
 import type { RegionId } from './map-regions';
 import { disposeLandscapeRoot } from './resource-lifecycle';
+import { reliefBlockGeometry, reliefBlockMaterial } from './relief-block';
 import {
   createExhibitionAtmosphere,
   EXHIBITION_LIGHT,
@@ -71,6 +72,7 @@ export function createModernLandscape(
     side: THREE.DoubleSide,
   });
   let gain = 12,
+    cutaway = false,
     detailField: TerrainField | null = null,
     region: RegionId | null = null,
     disposed = false,
@@ -82,7 +84,9 @@ export function createModernLandscape(
   let carve = channelCarver(activeLines, halfWidth);
   const landHeight = (x: number, z: number) =>
     detailField
-      ? blendDetailHeight(detailField, x, z, gain, globalField.height)
+      ? cutaway
+        ? detailField.height(x, z, gain)
+        : blendDetailHeight(detailField, x, z, gain, globalField.height)
       : globalField.height(x, z, gain);
   let channel: ReturnType<typeof createRiverChannel> | null = null;
   const surface = (x: number, z: number) =>
@@ -157,14 +161,11 @@ export function createModernLandscape(
   scene.fog = fog;
   const [left, top, right, bottom] = globalField.worldBounds;
   const plinth = new THREE.Mesh(
-    new THREE.BoxGeometry(right - left, 0.18, bottom - top),
-    new THREE.MeshStandardMaterial({
-      color: EXHIBITION_LIGHT.background,
-      roughness: 1,
-    }),
+    reliefBlockGeometry([left, top, right, bottom], surface, -0.75),
+    reliefBlockMaterial(),
   );
-  plinth.position.y = -0.095;
-  plinth.visible = false;
+  plinth.receiveShadow = true;
+  plinth.castShadow = true;
   root.add(plinth);
   const stitch = () => {
     globalIndex.array.set(originalIndex);
@@ -205,6 +206,17 @@ export function createModernLandscape(
       detailMesh = buildTerrain(detailField, 769, 641);
       root.add(detailMesh);
     }
+    globe.visible = !cutaway;
+    const blockBounds =
+      cutaway && detailField
+        ? detailField.worldBounds
+        : globalField.worldBounds;
+    plinth.geometry.dispose();
+    plinth.geometry = reliefBlockGeometry(
+      blockBounds,
+      surface,
+      cutaway ? -0.44 : -0.75,
+    );
     stitch();
     // Restored overview triangles need their normals recomputed AFTER indices.
     // Degenerate detail cut-outs otherwise leave a black rectangle on return.
@@ -235,9 +247,10 @@ export function createModernLandscape(
   };
   return {
     heightAt: surface,
-    async focus(id: RegionId) {
+    async focus(id: RegionId, asExhibit = false) {
       const ticket = ++revision;
-      if (region === id && focusedPivot) return focusedPivot;
+      if (region === id && focusedPivot && cutaway === asExhibit)
+        return focusedPivot;
       try {
         const loader = loaders[`./data/details/${id}.json`];
         if (!loader) return null;
@@ -249,6 +262,7 @@ export function createModernLandscape(
         const data = await pending;
         if (disposed || ticket !== revision) return null;
         region = id;
+        cutaway = asExhibit;
         focusedPivot = null;
         detailField = createTerrainField(data);
         activeLines = localLines(id, detailField);
@@ -260,8 +274,8 @@ export function createModernLandscape(
           0.0035,
         );
         updateTerrain();
-        fog.near = id === 'chishui' ? 0.4 : 0.7;
-        fog.far = id === 'chishui' ? 2.6 : 5;
+        fog.near = asExhibit ? 9 : id === 'chishui' ? 0.4 : 0.7;
+        fog.far = asExhibit ? 24 : id === 'chishui' ? 2.6 : 5;
         const bounds = detailField.worldBounds;
         const center = {
           x: (bounds[0] + bounds[2]) / 2,
@@ -272,7 +286,10 @@ export function createModernLandscape(
           landHeight(center.x, center.z),
           center.z,
         );
-        atmosphere.local.value = 1;
+        atmosphere.local.value = asExhibit ? 0 : 1;
+        atmosphere.bounds.value.set(
+          ...(asExhibit ? detailField.worldBounds : globalField.worldBounds),
+        );
         const osm = modernWater.regions.find((item) => item.regionId === id);
         if (osm) {
           const nearest = osm.lines
@@ -333,6 +350,8 @@ export function createModernLandscape(
       atmosphere.local.value = 0;
       revision++;
       region = null;
+      cutaway = false;
+      atmosphere.bounds.value.set(...globalField.worldBounds);
       focusedPivot = null;
       detailField = null;
       channel = null;
@@ -379,6 +398,9 @@ export function createModernLandscape(
     },
     get region() {
       return region;
+    },
+    get exhibit() {
+      return cutaway;
     },
     get modernWaterSource() {
       return modernWater.regions.some((item) => item.regionId === region)

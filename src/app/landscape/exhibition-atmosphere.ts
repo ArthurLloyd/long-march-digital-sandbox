@@ -5,7 +5,7 @@ import type { GeoBounds } from './geography';
 export const EXHIBITION_LIGHT = {
   background: '#0b141e',
   shadow: '#19364b',
-  foliage: '#3a5158',
+  foliage: '#426f5b',
   stone: '#8b9297',
   snow: '#cbd0cc',
   haze: '#c5b69c',
@@ -65,7 +65,7 @@ export function exhibitionAerialPerspective(world: string) {
 export function exhibitionEdgeFade(world: string) {
   return `
   vec2 panBorder=min(${world}.xz-panMapBounds.xy,panMapBounds.zw-${world}.xz);
-  float panEdge=smoothstep(0.,.65,min(panBorder.x,panBorder.y));
+  float panEdge=1.;
   gl_FragColor.rgb=mix(panExhibitionSky(${world}-cameraPosition),gl_FragColor.rgb,panEdge);
   `;
 }

@@ -97,6 +97,10 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       rock*=mix(1.,.58+rockLuminance*1.35,panRockReady*.85);
       float exposed=clamp(smoothstep(2100.,4400.,panMetres)*.55+smoothstep(.15,.65,panSlope)*.82,0.,.91);
       vec3 ground=mix(forest,rock,exposed);
+      // Height colors describe modern relief artistically, never historic areas.
+      vec3 hill=mix(vec3(.16,.27,.19),vec3(.39,.43,.25),smoothstep(120.,850.,panMetres));
+      hill=mix(hill,vec3(.57,.47,.31),smoothstep(650.,1600.,panMetres)*.72);
+      ground=mix(ground,hill,.48*(1.-smoothstep(1800.,2800.,panMetres)));
       ground=mix(ground,panSnow,smoothstep(4400.,5700.,panMetres)*.82);
       diffuseColor.rgb=ground*(.92+.15*grain);
     `,
@@ -124,7 +128,7 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       '#include <fog_fragment>\n' + exhibitionEdgeFade('panWorld'),
     );
   };
-  material.customProgramCacheKey = () => 'panorama-exhibition-land-v8';
+  material.customProgramCacheKey = () => 'panorama-exhibition-land-v9';
   return material;
 }
 export function waterMaterial(

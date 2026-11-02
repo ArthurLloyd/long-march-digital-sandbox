@@ -13,6 +13,7 @@ import { createPanoramaMap, type PanoramaMapAdapter } from './map-renderer';
 import { GEOGRAPHIC_VIEWS, REGIONS, type RegionId } from './map-regions';
 import { inCoverage, regionCenter } from './geography';
 import { selectMapRoutes } from './map-objects';
+import { RUIJIN_SCENE, isPanoramaSceneId } from './panorama-bookmark';
 import {
   selectForceStateForPhase,
   SPATIAL_LABELS,
@@ -38,6 +39,21 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
   const [rivers, setRivers] = useState(true),
     [gain, setGain] = useState<1 | 6 | 12 | 24>(12);
   const [follow, setFollow] = useState(true);
+  const [entry, setEntry] = useState(
+    () =>
+      (props.cameraBookmark?.sceneId === RUIJIN_SCENE &&
+        props.cameraBookmark.phaseId === props.phaseId) ||
+      (!props.cameraBookmark &&
+        !props.phaseId &&
+        !props.activeEventId &&
+        !props.events.some(
+          (event) =>
+            event.releaseStatus === 'published' &&
+            event.reviewStatus === 'reviewed' &&
+            event.coordinates,
+        )),
+  );
+  const initialEntry = useRef(entry);
   const [camps, setCamps] = useState(['red_army', 'nationalist_army', 'other']);
   useLayoutEffect(() => {
     latest.current = props;
@@ -83,6 +99,16 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       active = true;
     try {
       map = createPanoramaMap(host.current, {
+        entryView: initialEntry.current,
+        initialBookmark:
+          latest.current.cameraBookmark &&
+          latest.current.cameraBookmark.phaseId === latest.current.phaseId &&
+          isPanoramaSceneId(latest.current.cameraBookmark.sceneId)
+            ? {
+                ...latest.current.cameraBookmark,
+                sceneId: latest.current.cameraBookmark.sceneId,
+              }
+            : undefined,
         technicalMarkers: false,
         reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)')
           .matches,
@@ -163,18 +189,20 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
     api.current?.setVerticalExaggeration(gain);
   }, [gain, epoch]);
   useEffect(() => {
+    if (!epoch) return;
     const saved = props.cameraBookmark;
     if (
       saved &&
       saved.phaseId === props.phaseId &&
-      saved.sceneId === 'long-march-modern-panorama'
+      isPanoramaSceneId(saved.sceneId)
     )
-      api.current?.restore({ ...saved, sceneId: 'long-march-modern-panorama' });
+      api.current?.restore({ ...saved, sceneId: saved.sceneId });
   }, [props.cameraBookmark, props.phaseId, epoch]);
   useEffect(() => {
     if (!follow) return;
     if (
-      props.cameraBookmark?.sceneId === 'long-march-modern-panorama' &&
+      props.cameraBookmark &&
+      isPanoramaSceneId(props.cameraBookmark.sceneId) &&
       props.cameraBookmark.phaseId === props.phaseId
     )
       return;
@@ -201,6 +229,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
   };
   const chooseView = (id: RegionId) => {
     remember();
+    setEntry(false);
     setFollow(false);
     setEventId(null);
     setView(id);
@@ -225,7 +254,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
     );
   return (
     <div
-      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}`}
+      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}${entry ? ' is-entry' : ''}`}
       onKeyDown={(e) => {
         if (e.key === 'Escape' && visibleCinematic) {
           e.preventDefault();
@@ -234,9 +263,30 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       }}
     >
       <div ref={host} className="museum-map-canvas" />
+      {entry && (
+        <div className="museum-entry-place">
+          <h2>瑞金</h2>
+          <p>赣南丘陵 · 现代地理取景</p>
+        </div>
+      )}
       <nav className="museum-map-toolbar" aria-label="全景地图视角">
+        {!entry && (
+          <button
+            onClick={() => {
+              setEntry(true);
+              setView('ruijin');
+              setEventId(null);
+              setCinematic(null);
+              setFollow(false);
+              api.current?.entry();
+            }}
+          >
+            瑞金
+          </button>
+        )}
         <button
           onClick={() => {
+            setEntry(false);
             setCinematic(null);
             setView(null);
             setEventId(null);
@@ -248,6 +298,8 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         </button>
         <button
           onClick={() => {
+            setEntry(false);
+            setView(null);
             setCinematic(null);
             api.current?.overview(true);
           }}
@@ -387,6 +439,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             className="museum-event-marker"
             title={`${point.title} · ${point.coordinatePrecision === 'exact' ? '精确' : point.coordinatePrecision === 'approximate' ? '近似' : '示意'}位置`}
             onClick={() => {
+              setEntry(false);
               remember();
               setEventId(point.id);
               setView(null);
@@ -420,6 +473,44 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
           </button>
         </aside>
       )}
+      {view && !visibleCinematic && !entry && (
+        <details className="museum-region-events">
+          <summary>查看区域内事件</summary>
+          <p>仅显示当前历史阶段已发布且位置可用的事件。</p>
+          {points
+            .filter((point) => {
+              const [west, south, east, north] = REGIONS[view];
+              return (
+                point.coordinates![0] >= west &&
+                point.coordinates![0] <= east &&
+                point.coordinates![1] >= south &&
+                point.coordinates![1] <= north
+              );
+            })
+            .map((point) => (
+              <button
+                key={point.id}
+                onClick={() => {
+                  remember();
+                  setEventId(point.id);
+                  setCinematic(point.title);
+                  api.current?.focusGeo(point.coordinates!);
+                }}
+              >
+                {point.title}
+              </button>
+            ))}
+          {!points.some((point) => {
+            const [west, south, east, north] = REGIONS[view];
+            return (
+              point.coordinates![0] >= west &&
+              point.coordinates![0] <= east &&
+              point.coordinates![1] >= south &&
+              point.coordinates![1] <= north
+            );
+          }) && <p>当前区域暂无可发布事件。历史资料仍在核验中。</p>}
+        </details>
+      )}
       {visibleCinematic && (
         <CinematicTitle
           title={visibleCinematic}
@@ -431,7 +522,9 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         <details>
           <summary>现代地理 · 艺术表现</summary>
           <div>
-            <p>地势、河宽与深度为艺术显示，不用于历史或地理量测。</p>
+            <p>
+              地势、河宽与深度为艺术显示，不用于历史或地理量测。厚切面为展陈造型，不代表真实地下地层。
+            </p>
             <p>现代高程：USGS / Mapzen；全景河流：Natural Earth。</p>
             <p>局部现代水系：OpenStreetMap contributors · ODbL。</p>
           </div>
