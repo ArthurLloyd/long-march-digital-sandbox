@@ -23,5 +23,6 @@
     "bytes": 19024,
     "sha256": "60e4bb6d83c12640de5ccb7900ed67ecb82076fce4df7ce4406eb0002e7c88e2",
     "processing": "Existing FontTools; previous title glyphs retained and modern geographic-view lettering added; WOFF2, no outline modification."
-  }
+  },
+  "licenseCopyProcessing": "SIL OFL wording preserved; repository LF line endings and trailing line whitespace removed. Source hash records the original download."
 }
