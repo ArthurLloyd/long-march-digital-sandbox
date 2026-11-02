@@ -445,7 +445,12 @@ export function createPanoramaMap(
         const flush = () => {
           if (!segment.length) return;
           const geometry = new THREE.BufferGeometry().setFromPoints(segment);
-          const color = route.camp === 'red_army' ? '#d66155' : '#75b6da';
+          const color =
+            route.camp === 'red_army'
+              ? '#d66155'
+              : route.camp === 'nationalist_army'
+                ? '#75b6da'
+                : '#d9c49a';
           if (route.mode === 'points')
             routeGroup.add(
               new THREE.Points(
