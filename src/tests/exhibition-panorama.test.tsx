@@ -1,3 +1,6 @@
+import raw from '../data/verified/dataset.json';
+import { normalizeDataset } from '../shared/contracts';
+import { validateDataset } from '../shared/utils/validate-dataset';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -90,6 +93,46 @@ beforeEach(() => {
   }));
 });
 afterEach(() => vi.unstubAllGlobals());
+
+it('B故事的外部演绎请求复用A观察路径，并在退出时通知宿主和恢复地图', async () => {
+  const props = properties();
+  const closed = vi.fn();
+  const user = userEvent.setup();
+  render(
+    <ExhibitionPanorama
+      {...props}
+      observationRequest="snow"
+      onObservationClosed={closed}
+    />,
+  );
+  await user.click(
+    await screen.findByRole('button', { name: '返回艺术观察地图' }),
+  );
+  expect(renderer.api.suspend).toHaveBeenCalledWith(true);
+  expect(renderer.api.suspend).toHaveBeenLastCalledWith(false);
+  expect(closed).toHaveBeenCalledOnce();
+  expect(props.onEventSelect).not.toHaveBeenCalled();
+  expect(props.onObjectSelect).not.toHaveBeenCalled();
+});
+
+it('文字专题已有阶段但没有历史定位时，仍保留瑞金启程意象，不把它当作部队点', async () => {
+  const dataset = normalizeDataset(validateDataset(raw));
+  const props = properties(dataset, dataset.phases[0]!.phaseId);
+  const user = userEvent.setup();
+  render(<ExhibitionPanorama {...props} />);
+  expect(screen.getByRole('heading', { name: '瑞金' })).toBeInTheDocument();
+  expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith({
+    coordinates: [115.75, 25.9],
+    kind: 'origin',
+    prominent: true,
+  });
+  expect(props.phaseId).toBe(dataset.phases[0]!.phaseId);
+  expect(dataset.events.every((event) => event.coordinates === null)).toBe(
+    true,
+  );
+  await user.click(screen.getByRole('button', { name: '全景' }));
+  expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
+});
 
 describe('原展馆的现代全景与正式历史边界', () => {
   it('空态启程火炬与真实阶段态势分离，撤回或未知位置清除火炬', async () => {

@@ -1,3 +1,4 @@
+import raw from '../data/verified/dataset.json';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useEffect } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -36,7 +37,7 @@ describe('场景超时后的完整恢复路径', () => {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     }));
-    render(<App />);
+    render(<App input={raw} />);
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: '开启征程' }));
     });

@@ -102,8 +102,10 @@ export function ChapterContent({
 }
 export function SourceContent({
   sources,
+  fullExhibition = false,
 }: {
   sources: readonly SourceReference[];
+  fullExhibition?: boolean;
 }) {
   return (
     <>
@@ -127,9 +129,11 @@ export function SourceContent({
           </p>
         </li>
         <li>
-          <h4>发布须复核</h4>
+          <h4>{fullExhibition ? '保留材料原貌' : '发布须复核'}</h4>
           <p>
-            正式内容须经两名不同成员独立复核。自动校验只检查数据规则，不能代替人工史实审核。
+            {fullExhibition
+              ? '历史正文、文献转录、照片与艺术再现分别标注，资料出处和不确定性随内容保留。'
+              : '正式内容须经两名不同成员独立复核。自动校验只检查数据规则，不能代替人工史实审核。'}
           </p>
         </li>
         <li>
@@ -141,7 +145,7 @@ export function SourceContent({
       </ol>
       {sources.length > 0 && (
         <div className="reading-section">
-          <h3>已发布来源</h3>
+          <h3>{fullExhibition ? '资料来源' : '已发布来源'}</h3>
           <ul className="source-list">
             {sources.map((source) => (
               <li key={source.sourceId}>
@@ -197,17 +201,23 @@ export function SourceContent({
     </>
   );
 }
-export function GuideContent() {
+export function GuideContent({
+  fullExhibition = false,
+}: { fullExhibition?: boolean } = {}) {
   return (
     <div className="reading-section">
       <h3>从一个历史节点开始</h3>
       <p>
-        当前为展馆开发预览。可体验导航、章节抽屉与资料阅读；真实沙盘和历史专题由团队逐步接入。
+        {fullExhibition
+          ? '从山河地图出发，阅读六个历史专题，查看人物、地点与史料，参与分步图文互动。地图中的区域艺术场景可独立进入与返回。'
+          : '当前为展馆开发预览。可体验导航、章节抽屉与资料阅读；真实沙盘和历史专题由团队逐步接入。'}
       </p>
       <ol className="guide-steps">
         <li>
           <strong>选择章节</strong>
-          <p>通过左下方“历史专题”打开目录。只显示已发布节点。</p>
+          <p>
+            通过左下方“历史专题”打开目录，选择专题正文、历史阶段、人物或地点。
+          </p>
         </li>
         <li>
           <strong>阅读资料</strong>
@@ -216,7 +226,9 @@ export function GuideContent() {
         <li>
           <strong>沿时间轴浏览</strong>
           <p>
-            使用播放与前后节点，依次浏览核验记录。无正式节点时控件保持禁用。
+            {fullExhibition
+              ? '使用阶段播放与前后切换，查看当前专题的过程；播放速度不代表真实历史时长。'
+              : '使用播放与前后节点，依次浏览核验记录。无正式节点时控件保持禁用。'}
           </p>
         </li>
       </ol>
@@ -227,7 +239,9 @@ export function GuideContent() {
     </div>
   );
 }
-export function AboutContent() {
+export function AboutContent({
+  fullExhibition = false,
+}: { fullExhibition?: boolean } = {}) {
   return (
     <div className="reading-section">
       <p className="content-symbol">长征 · 不灭的火种</p>
@@ -240,7 +254,9 @@ export function AboutContent() {
         年“赓续长征精神，智创青春新程”微程序大赛。首页山河为原创艺术表达，不对应任何真实山脉、渡口或行军路线。
       </p>
       <p>
-        本阶段完成展馆首页和探索交互。三维场景、历史内容与教学互动待相应模块完成并通过审核后开放。
+        {fullExhibition
+          ? '沿山河地图探索六个历史专题，阅读事件经过、人物与地点资料，在观察、排序、配对和材料判断中理解长征。三个重点故事可进入区域艺术场景，随后返回正文继续阅读。'
+          : '本阶段完成展馆首页和探索交互。三维场景、历史内容与教学互动待相应模块完成并通过审核后开放。'}
       </p>
       <p>
         首页“长征”二字选自毛泽东《长征》诗手迹题名，由竖排取字后横向编排。
@@ -252,7 +268,11 @@ export function AboutContent() {
           查看手迹出处
         </a>
       </p>
-      <p className="integrity-note">历史数据正在核验，正式路线暂未开放展示。</p>
+      <p className="integrity-note">
+        {fullExhibition
+          ? '地图中的现代取景与艺术演绎分别标注；没有历史几何依据的路线不补画。'
+          : '历史数据正在核验，正式路线暂未开放展示。'}
+      </p>
     </div>
   );
 }

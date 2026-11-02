@@ -1,3 +1,4 @@
+import raw from '../data/verified/dataset.json';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -31,14 +32,14 @@ afterEach(() => vi.unstubAllGlobals());
 async function enter() {
   mockMotion();
   const user = userEvent.setup();
-  render(<App />);
+  render(<App input={raw} />);
   await user.click(screen.getByRole('button', { name: '开启征程' }));
   await user.click(screen.getByRole('button', { name: '立即进入' }));
   await screen.findByText('预览已就绪');
   return user;
 }
 
-describe('基础应用与空状态', () => {
+describe('显式发布过滤输入的兼容与空状态', () => {
   it('正常渲染主界面和模块入口', async () => {
     const user = await enter();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
@@ -108,7 +109,7 @@ describe('基础应用与空状态', () => {
 
 describe('展馆进入、返回与无障碍', () => {
   it('首页包含主题和可用主入口', () => {
-    render(<App />);
+    render(<App input={raw} />);
     expect(
       screen.getByRole('heading', { level: 1, name: '长征 · 不灭的火种' }),
     ).toBeInTheDocument();
@@ -117,7 +118,7 @@ describe('展馆进入、返回与无障碍', () => {
   it('常规模式须主动确认，核心交互不依赖动画结束事件', async () => {
     mockMotion(false);
     const user = userEvent.setup();
-    render(<App />);
+    render(<App input={raw} />);
     await user.click(screen.getByRole('button', { name: '开启征程' }));
     expect(screen.getByText('山河之间，开启征程。')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '立即进入' })).toHaveFocus();
@@ -131,7 +132,7 @@ describe('展馆进入、返回与无障碍', () => {
   it('减少动画只减少视觉效果，仍须确认进入', async () => {
     mockMotion();
     const user = userEvent.setup();
-    render(<App />);
+    render(<App input={raw} />);
     await user.click(screen.getByRole('button', { name: '开启征程' }));
     expect(screen.getByRole('button', { name: '立即进入' })).toHaveFocus();
     expect(document.querySelector('.museum-app')).toHaveAttribute(
@@ -146,7 +147,7 @@ describe('展馆进入、返回与无障碍', () => {
   it('进入确认可取消，并恢复首页入口焦点和可操作状态', async () => {
     mockMotion(false);
     const user = userEvent.setup();
-    render(<App />);
+    render(<App input={raw} />);
     await user.click(screen.getByRole('button', { name: '开启征程' }));
     await user.click(
       within(screen.getByRole('dialog')).getByRole('button', {
@@ -196,7 +197,7 @@ describe('展馆进入、返回与无障碍', () => {
   });
   it('首页史料原则与作品介绍均可打开关闭', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    render(<App input={raw} />);
     await user.click(screen.getByRole('button', { name: '了解作品' }));
     expect(
       screen.getByRole('dialog', { name: '关于展馆' }),

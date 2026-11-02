@@ -27,6 +27,7 @@ export interface ExperienceBundle {
 }
 export interface ExperienceCatalog {
   published: HistoryDatasetV2;
+  audience?: 'exhibition';
   /** Restriction metadata only. Never read content or grant access from this index. */
   gates: ReadonlyMap<string, string>;
   error: string | null;
@@ -148,11 +149,13 @@ export function resolveHistoricalRoute(
   if (!bundle)
     return { status: 'unavailable', message: '该历史体验正在完善，暂未开放。' };
   return {
-    status: records.some((record) =>
-      isCompletionRecordForExperience(record, bundle.manifest),
-    )
-      ? 'reading'
-      : 'intro',
+    status:
+      catalog.audience === 'exhibition' ||
+      records.some((record) =>
+        isCompletionRecordForExperience(record, bundle.manifest),
+      )
+        ? 'reading'
+        : 'intro',
     detail,
     bundle,
   };
