@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import type { REGION_MOOD } from './environment-details';
+import type { RegionId } from './regions';
 import rockAlbedoUrl from './assets/rock/albedo.jpg';
 import rockHeightUrl from './assets/rock/height.jpg';
 
@@ -36,7 +38,18 @@ export function terrainMaterial() {
     albedo.dispose();
     relief.dispose();
   });
+  const forestTint = { value: new THREE.Color('#365b3b') },
+    earthTint = { value: new THREE.Color('#767f59') },
+    snowLine = { value: 4400 };
+  material.userData.setMood = (mood: (typeof REGION_MOOD)[RegionId] | null) => {
+    forestTint.value.set(mood?.forest ?? '#365b3b');
+    earthTint.value.set(mood?.ground ?? '#767f59');
+    snowLine.value = mood?.snow ?? 4400;
+  };
   material.onBeforeCompile = (shader) => {
+    shader.uniforms.panForestTint = forestTint;
+    shader.uniforms.panEarthTint = earthTint;
+    shader.uniforms.panSnowLine = snowLine;
     shader.uniforms.panRockAlbedo = { value: albedo };
     shader.uniforms.panRockHeight = { value: relief };
     shader.uniforms.panRockReady = ready;
@@ -48,7 +61,7 @@ export function terrainMaterial() {
       '#include <begin_vertex>\npanWorld=(modelMatrix*vec4(transformed,1.)).xyz;panTerrainNormal=normalize(mat3(modelMatrix)*normal);panMetres=panElevation;panSlope=1.-abs(normalize(normal).y);',
     );
     shader.fragmentShader =
-      'uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
+      'uniform vec3 panForestTint;uniform vec3 panEarthTint;uniform float panSnowLine;uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
       noise +
       shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
@@ -64,15 +77,15 @@ export function terrainMaterial() {
       fracture=mix(.5,fracture,detail);
       vec3 scannedRock=texture2D(panRockAlbedo,panWorld.zy*45.).rgb*weights.x+texture2D(panRockAlbedo,panWorld.xz*45.).rgb*weights.y+texture2D(panRockAlbedo,panWorld.xy*45.).rgb*weights.z;
       float surfaceLight=clamp(dot(scannedRock,vec3(.3,.55,.15))*1.5,.18,1.3);
-      vec3 forest=mix(vec3(.014,.047,.025),vec3(.052,.103,.041),broad);
+      vec3 forest=mix(panForestTint*.48,panEarthTint*.65,broad);
       forest*=mix(1.,.65+surfaceLight*.75,panRockReady*detail);
       float earth=smoothstep(.54,.8,panFbm(panWorld.xz*110.));
       forest=mix(forest,vec3(.07,.058,.029)*(.7+surfaceLight),earth*detail*.34);
       vec3 rock=mix(vec3(.055,.068,.052),vec3(.20,.19,.14),grain)*(.72+.5*fracture);
       rock=mix(rock,scannedRock*.64*(.85+.2*broad),panRockReady*.9);
-      float exposed=clamp(smoothstep(2100.,4400.,panMetres)*.55+smoothstep(.15,.65,panSlope)*.82,0.,.91);
+      float exposed=clamp(smoothstep(2100.,4400.,panMetres)*.55+smoothstep(.22,.78,panSlope)*.62,0.,.91);
       vec3 ground=mix(forest,rock,exposed);
-      ground=mix(ground,vec3(.80,.84,.79),smoothstep(4400.,5700.,panMetres)*.82);
+      ground=mix(ground,vec3(.80,.84,.79),smoothstep(panSnowLine,panSnowLine+850.,panMetres)*.94);
       diffuseColor.rgb=ground*(.92+.15*grain);
     `,
     );
@@ -91,7 +104,7 @@ export function terrainMaterial() {
     `,
     );
   };
-  material.customProgramCacheKey = () => 'panorama-modern-land-v6';
+  material.customProgramCacheKey = () => 'panorama-modern-land-v7';
   return material;
 }
 export function waterMaterial() {

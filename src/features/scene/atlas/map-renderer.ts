@@ -109,7 +109,7 @@ export function createPanoramaMap(
   scene.add(ambient, sun, sun.target);
 
   const landscape = createModernLandscape(scene, renderer);
-  let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
+  let verticalExaggeration: 1 | 6 | 12 | 24 = 6;
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
   const units = createUnitLayer(heightAt);
   scene.add(units.group);

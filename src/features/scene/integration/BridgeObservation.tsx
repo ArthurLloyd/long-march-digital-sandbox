@@ -7,6 +7,7 @@ export function BridgeObservation({ onClose }: { onClose: () => void }) {
     host = useRef<HTMLDivElement>(null),
     api = useRef<ReturnType<typeof createBridgeStudy> | null>(null);
   const [error, setError] = useState('');
+  const [view, setView] = useState(0);
   useEffect(() => {
     const element = dialog.current;
     element?.showModal();
@@ -52,17 +53,47 @@ export function BridgeObservation({ onClose }: { onClose: () => void }) {
         <small>艺术空间 · 代表性白模</small>
       </header>
       <div className="atlas-observation-title">
-        <small>THE CROSSING</small>
+        <small>山河纪行 / 局部观察</small>
         <h2>峡谷与桥</h2>
         <p>观两岸山势，辨桥索结构。</p>
       </div>
       <nav aria-label="桥谷观察视角">
-        <button onClick={() => api.current?.pose(0)}>远望山河</button>
-        <button onClick={() => api.current?.focusSpot('bridge')}>
+        <button
+          aria-pressed={view === 0}
+          onClick={() => {
+            setView(0);
+            api.current?.pose(0);
+          }}
+        >
+          远望山河
+        </button>
+        <button
+          aria-pressed={view === 1}
+          onClick={() => {
+            setView(1);
+            api.current?.focusSpot('bridge');
+          }}
+        >
           桥索与石壁
         </button>
-        <button onClick={() => api.current?.focusCompany()}>近看编队</button>
-        <button onClick={() => api.current?.pose(3)}>回望来路</button>
+        <button
+          aria-pressed={view === 2}
+          onClick={() => {
+            setView(2);
+            api.current?.focusCompany();
+          }}
+        >
+          近看编队
+        </button>
+        <button
+          aria-pressed={view === 3}
+          onClick={() => {
+            setView(3);
+            api.current?.pose(3);
+          }}
+        >
+          回望来路
+        </button>
       </nav>
       <p className="atlas-observation-note">
         原有三维素材的结构观察，不表示历史桥板状态、人物数量或行军位置。

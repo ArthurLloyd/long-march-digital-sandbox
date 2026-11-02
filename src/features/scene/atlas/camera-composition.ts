@@ -9,7 +9,7 @@ export function composeTerrainView(
 ): CameraPose {
   const target: [number, number, number] = [
     anchor.x,
-    anchor.y + (riverCandidates.length ? 0.065 : 0.012),
+    anchor.y + (riverCandidates.length ? 0.065 : 0.035),
     anchor.z,
   ];
   const bearing = Math.atan2(tangent.x, tangent.z);
@@ -25,7 +25,7 @@ export function composeTerrainView(
             i % Math.max(1, Math.ceil(riverPositions.length / 24)) === 0,
         )
         .map((p) => ({ x: p.x, z: p.z, turn: 0 }))
-    : [0.18, 0.25, 0.34, 0.46].flatMap((radius) =>
+    : [0.28, 0.38, 0.52, 0.68].flatMap((radius) =>
         [
           0,
           Math.PI,
@@ -43,7 +43,7 @@ export function composeTerrainView(
       );
   for (const { x, z, turn } of positions) {
     const radius = Math.hypot(x - anchor.x, z - anchor.z);
-    let y = target[1] + radius * 0.65;
+    let y = target[1] + radius * 0.48;
     // Keep the near camera volume clear as well as its centre ray.
     for (let j = 0; j < 12; j++)
       y = Math.max(

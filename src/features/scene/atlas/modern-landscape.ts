@@ -20,6 +20,7 @@ import {
   type RiverPoint,
 } from './river-mesh';
 import type { RegionId } from './regions';
+import { createEnvironmentDetails, REGION_MOOD } from './environment-details';
 
 const loaders = import.meta.glob<ModernHeightfield>(
   [
@@ -53,6 +54,9 @@ export function createModernLandscape(
   scene.environment = environment.texture;
   scene.environmentIntensity = 0.55;
   scene.add(root);
+  const dressing = createEnvironmentDetails();
+  root.add(dressing.root);
+  let dressingCenter: { x: number; z: number } | null = null;
   const globalField = createTerrainField(geography);
   const landMaterial = terrainMaterial(),
     water = waterMaterial();
@@ -61,7 +65,7 @@ export function createModernLandscape(
     roughness: 0.94,
     side: THREE.DoubleSide,
   });
-  let gain = 12,
+  let gain = 6,
     detailField: TerrainField | null = null,
     region: RegionId | null = null,
     disposed = false,
@@ -172,6 +176,21 @@ export function createModernLandscape(
     }
     globalIndex.needsUpdate = true;
   };
+  const dress = () => {
+    if (!region || !detailField || !dressingCenter) {
+      dressing.clear();
+      return;
+    }
+    dressing.populate(
+      region,
+      dressingCenter,
+      surface,
+      (x, z) =>
+        detailField!.contains(x, z) &&
+        (!channel?.at(x, z) ||
+          channel.at(x, z)!.distance > channel.at(x, z)!.width * 2.2),
+    );
+  };
   const updateTerrain = () => {
     const p = globe.geometry.getAttribute('position');
     for (let i = 0; i < p.count; i++)
@@ -196,6 +215,7 @@ export function createModernLandscape(
     // Degenerate detail cut-outs otherwise leave a black rectangle on return.
     globe.geometry.computeVertexNormals();
     buildWater();
+    dress();
   };
   const localLines = (id: RegionId, field: TerrainField) => {
     const osm = modernWater.regions.find((item) => item.regionId === id);
@@ -234,6 +254,12 @@ export function createModernLandscape(
         const data = await pending;
         if (disposed || ticket !== revision) return null;
         region = id;
+        dressingCenter = null;
+        const mood = REGION_MOOD[id];
+        landMaterial.userData.setMood(mood);
+        fog.color.set(
+          id === 'snow' ? '#a7bfc1' : id === 'reunion' ? '#b5aa88' : '#72958d',
+        );
         detailField = createTerrainField(data);
         activeLines = localLines(id, detailField);
         halfWidth = 0.0065;
@@ -244,8 +270,8 @@ export function createModernLandscape(
           0.0035,
         );
         updateTerrain();
-        fog.near = id === 'chishui' ? 0.18 : 0.7;
-        fog.far = id === 'chishui' ? 1.5 : 5;
+        fog.near = 0.7;
+        fog.far = id === 'chishui' ? 3.5 : 5;
         const bounds = detailField.worldBounds;
         const center = {
           x: (bounds[0] + bounds[2]) / 2,
@@ -283,6 +309,8 @@ export function createModernLandscape(
                 Math.hypot(b.x - center.x, b.z - center.z),
             )[0];
           if (nearest) {
+            dressingCenter = nearest;
+            dress();
             const riverCandidates = channel!.paths
               .flatMap((line) =>
                 line.filter(
@@ -296,6 +324,8 @@ export function createModernLandscape(
             return { ...nearest, riverCandidates };
           }
         }
+        dressingCenter = center;
+        dress();
         return center;
       } catch {
         cache.delete(id);
@@ -305,12 +335,15 @@ export function createModernLandscape(
     overview() {
       revision++;
       region = null;
+      dressingCenter = null;
+      landMaterial.userData.setMood(null);
       detailField = null;
       channel = null;
       activeLines = modernLines.map((line) => line.points);
       halfWidth = 0.018;
       carve = channelCarver(activeLines, halfWidth);
       updateTerrain();
+      fog.color.set('#72958d');
       fog.near = 27;
       fog.far = 80;
     },
@@ -340,6 +373,7 @@ export function createModernLandscape(
     },
     update(seconds: number) {
       water.time.value = seconds;
+      dressing.update(seconds);
     },
     get region() {
       return region;
@@ -354,6 +388,7 @@ export function createModernLandscape(
     },
     dispose() {
       disposed = true;
+      dressing.dispose();
       scene.environment = null;
       environment.dispose();
       revision++;
