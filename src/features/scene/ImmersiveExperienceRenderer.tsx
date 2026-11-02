@@ -6,10 +6,28 @@ import type {
 import { createBridgeStudy } from './prototype/bridge-renderer';
 import { createAmbience } from './prototype/ambience';
 import './integration/integrated-scene.css';
+import { RegionalImmersiveRun } from './integration/RegionalImmersiveRun';
+import type { RegionId } from './atlas/regions';
 
 const SUPPORTED = 'exp-feiduo-ludingqiao';
+const REGIONAL_EXPERIENCES: Record<string, RegionId> = {
+  'exp-zunyi-conference': 'zunyi',
+  'exp-sidu-chishui': 'chishui',
+  'exp-qiaodu-jinshajiang': 'jinsha',
+  'exp-crossing-snow-mountains': 'snow',
+  'exp-crossing-grasslands': 'grass',
+};
 /** C owns the run, completion and interactions. This module reports only rendered/user-observed work. */
 export function ImmersiveExperienceRenderer(props: ImmersiveExperienceProps) {
+  const regionId = REGIONAL_EXPERIENCES[props.manifest.experienceId];
+  if (regionId)
+    return (
+      <RegionalImmersiveRun
+        key={`${props.manifest.experienceId}:${props.manifest.scriptVersion}:${props.command.runId}`}
+        {...props}
+        regionId={regionId}
+      />
+    );
   return (
     <ImmersiveRun
       key={`${props.manifest.experienceId}:${props.manifest.scriptVersion}:${props.command.runId}`}

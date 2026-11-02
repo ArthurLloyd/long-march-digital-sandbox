@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import type {
   CameraBookmark,
   LongMarchSceneV2Props,
@@ -9,8 +10,8 @@ import {
 } from './atlas/map-renderer';
 import { ATLAS_REGIONS, REGIONS, type RegionId } from './atlas/regions';
 import { buildSpatialView } from './atlas/spatial-view';
-import { BridgeObservation } from './integration/BridgeObservation';
-import { PanoramaObservation } from './integration/PanoramaObservation';
+import { RegionalObservation } from './integration/RegionalObservation';
+import { getSceneCover } from './integration/cinematic-config';
 import './integration/integrated-scene.css';
 import {
   Compass,
@@ -29,13 +30,12 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
     api = useRef<PanoramaMapAdapter | null>(null),
     latest = useRef(props);
   const bridgeEntry = useRef<HTMLButtonElement>(null);
+  const observationEntry = useRef<HTMLElement | null>(null);
   const regionLabels = useRef(new Map<string, HTMLButtonElement>());
   const objectLabels = useRef(new Map<string, HTMLButtonElement>());
   const [region, setRegion] = useState<RegionId | null>(null),
     [mode, setMode] = useState('全程总览'),
-    [observation, setObservation] = useState<
-      'bridge' | 'snow' | 'grass' | null
-    >(null);
+    [observation, setObservation] = useState<RegionId | null>(null);
   const [gain, setGain] = useState<1 | 6 | 12 | 24>(6),
     [rivers, setRivers] = useState(true);
   const [ready, setReady] = useState(false);
@@ -168,7 +168,11 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
     setMode('区域视野');
     api.current?.focus(REGIONS[id]);
   };
-  const openObservation = (kind: 'bridge' | 'snow' | 'grass') => {
+  const openObservation = (kind: RegionId) => {
+    observationEntry.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     saved.current = api.current?.bookmark() ?? null;
     api.current?.suspend(true);
     setObservation(kind);
@@ -177,7 +181,7 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
     setObservation(null);
     api.current?.suspend(false);
     if (saved.current) api.current?.restore(saved.current);
-    requestAnimationFrame(() => bridgeEntry.current?.focus());
+    requestAnimationFrame(() => observationEntry.current?.focus());
   };
   return (
     <div
@@ -197,17 +201,47 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
         {ATLAS_REGIONS.map((item, index) => (
           <button
             key={item.id}
-            aria-label={`观察${item.title}`}
+            aria-label={
+              ['ruijin', 'luding', 'snow', 'grass'].includes(item.id)
+                ? `进入${item.title}沉浸场景`
+                : `观察${item.title}`
+            }
             disabled={!ready}
             data-side={index % 2 ? 'right' : 'left'}
+            data-region={item.id}
+            style={
+              {
+                '--scene-cover': `url("${getSceneCover(item.id)}")`,
+              } as CSSProperties
+            }
+            data-featured={['ruijin', 'luding', 'snow', 'grass'].includes(
+              item.id,
+            )}
             ref={(node) => {
               if (node) regionLabels.current.set(item.id, node);
               else regionLabels.current.delete(item.id);
             }}
-            onClick={() => focus(item.id)}
+            onClick={() =>
+              ['ruijin', 'luding', 'snow', 'grass'].includes(item.id)
+                ? openObservation(item.id)
+                : focus(item.id)
+            }
           >
             <i aria-hidden="true" />
-            <span>{item.title}</span>
+            <span>
+              {['ruijin', 'luding', 'snow', 'grass'].includes(item.id) && (
+                <b
+                  className={`atlas-marker-cover atlas-cover-${item.id}`}
+                  aria-hidden="true"
+                />
+              )}
+              <strong>{item.title}</strong>
+              {['ruijin', 'luding', 'snow', 'grass'].includes(item.id) && (
+                <small>
+                  进入沉浸场景 <ArrowUpRight size={12} />
+                </small>
+              )}
+            </span>
           </button>
         ))}
       </nav>
@@ -239,15 +273,22 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
         <p>
           {region ? REGION_MOOD[region].subtitle : '循山川脉络，见辽阔天地。'}
         </p>
-        {(region === 'snow' || region === 'grass') && (
+        {region ? (
           <button ref={bridgeEntry} onClick={() => openObservation(region)}>
-            展开环境画卷 <ArrowUpRight size={15} />
+            走进此地 <ArrowUpRight size={17} />
           </button>
-        )}
-        {region === 'luding' && (
-          <button ref={bridgeEntry} onClick={() => openObservation('bridge')}>
-            走近桥谷 <ArrowUpRight size={15} />
-          </button>
+        ) : (
+          <div className="atlas-map-intro">
+            <p>循山河而行，与长征相遇。</p>
+            <span>八处情境 · 自由环顾 · 观察与思考</span>
+            <button
+              ref={bridgeEntry}
+              disabled={!ready}
+              onClick={() => openObservation('ruijin')}
+            >
+              从瑞金出发 <ArrowUpRight size={17} />
+            </button>
+          </div>
         )}
       </div>
       <nav className="atlas-controls" aria-label="地图视野">
@@ -340,7 +381,7 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
       <nav className="atlas-chapters" aria-label="区域地理观察">
         <div className="atlas-chapter-heading">
           <span>山 河 图 卷</span>
-          <small>选择一处，走近山河</small>
+          <small>选择区域查看地形，再「走进此地」</small>
         </div>
         <div className="atlas-chapter-list">
           {ATLAS_REGIONS.map((item, index) => (
@@ -350,6 +391,11 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
               aria-pressed={region === item.id}
               onClick={() => focus(item.id)}
               data-biome={item.id}
+              style={
+                {
+                  '--scene-cover': `url("${getSceneCover(item.id)}")`,
+                } as CSSProperties
+              }
             >
               <span className="atlas-chapter-art" aria-hidden="true">
                 <i />
@@ -372,7 +418,7 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
         <div>
           <strong>山川为景，史料为据</strong>
           <p>
-            地形取自现代高程，植被、积雪与近景为艺术示意，不代表历史地貌。图卷封面为
+            地形取自现代高程，植被、积雪与近景为艺术示意，不代表历史地貌。图卷封面为场景预览，部分远景使用
             AI 环境意象。地势可切换原始高程。
           </p>
           <p>历史路线与军队位置只显示已发布资料；未知位置不作推测。</p>
@@ -396,11 +442,13 @@ export function LongMarchSceneV2(props: LongMarchSceneV2Props) {
       {cinematic && (
         <span className="atlas-cinematic-hint">按 Esc 返回 · 拖动自由观景</span>
       )}
-      {observation === 'bridge' && (
-        <BridgeObservation onClose={closeObservation} />
-      )}
-      {(observation === 'snow' || observation === 'grass') && (
-        <PanoramaObservation kind={observation} onClose={closeObservation} />
+      {observation && (
+        <RegionalObservation
+          key={observation}
+          regionId={observation}
+          onExit={closeObservation}
+          onRegionChange={setObservation}
+        />
       )}
     </div>
   );

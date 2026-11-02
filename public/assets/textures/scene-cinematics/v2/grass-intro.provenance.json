@@ -1,0 +1,157 @@
+{
+  "region": "grass",
+  "version": 2,
+  "representation": "ai_artistic_recreation",
+  "disclosure": "AI-generated historical-theme artistic scene; not historical footage or a verified reconstruction.",
+  "generator": "MiniMax Design",
+  "modelReportedByGenerationUI": "H3",
+  "actualGenerationCostCredits": 700,
+  "costEvidence": "2026-11-02 MiniMax UI batch confirmation: 8 H3 jobs x 700 credits = 5600 credits",
+  "costStatus": "ui_confirmed_completed_source",
+  "costNote": "Cost is supplied from the observed generation UI only after a completed source was processed; it is never inferred from media metadata. Pending queue jobs are not included in this per-file record.",
+  "preparedAt": "2026-11-02T06:33:28.053Z",
+  "source": {
+    "path": "assets/V2-07-grass.mp4",
+    "preservedCopy": "artifacts/media-v2/grass/2026-11-02T06-33-27.079Z-a8c4011c/source-original.mp4",
+    "bytes": 3339707,
+    "sha256": "6b27a6fd6dbd836404266ad09eb86542ed6af99a07090da1282fd20ae7d2d5e2",
+    "durationSeconds": 10.125,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 243
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 32000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    },
+    "pathScope": "minimax_project_relative",
+    "project": "长征-山河行迹-沉浸素材",
+    "preservedCopyScope": "local_only_not_committed"
+  },
+  "output": {
+    "path": "/assets/textures/scene-cinematics/v2/grass-intro.mp4",
+    "bytes": 3497006,
+    "sha256": "fb951087fa40e800253a6f10cbf3d1cf235ca0bfe5f271a4c89b1348a11c4444",
+    "fastStart": true,
+    "durationSeconds": 10.125,
+    "video": {
+      "codec": "h264",
+      "width": 1344,
+      "height": 768,
+      "pixelFormat": "yuv420p",
+      "averageFrameRate": "24/1",
+      "frameCount": 243
+    },
+    "audio": {
+      "codec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "channelLayout": "stereo"
+    }
+  },
+  "poster": {
+    "path": "/assets/textures/scene-cinematics/v2/grass-intro.jpg",
+    "selectedTimeSeconds": 7,
+    "bytes": 153367,
+    "sha256": "a6bdea051e5ee953194237303167c60dd1152a9fda25425934e6f5feb95f7fd6",
+    "selection": "Frame near 7s; environment-and-people composition requires visual review, not inferred by this script."
+  },
+  "processing": {
+    "video": "stream_copy",
+    "encodedVideoPacketSha256": "43079ce8343d4d07b89c4b2159c99913c60873a7e95d547eeb8ceae51f80157d",
+    "encodedVideoPacketsUnchanged": true,
+    "spatialResizing": false,
+    "generatedFrames": false,
+    "audio": "existing_source_audio_two_pass_loudnorm_aac",
+    "syntheticOrDownloadedAudioAdded": false,
+    "audioPreconditioning": {
+      "highPassHz": 55,
+      "compressor": {
+        "thresholdDbFS": -15,
+        "ratio": 1.5,
+        "attackMs": 25,
+        "releaseMs": 180,
+        "makeup": 1
+      }
+    },
+    "audioFadeOut": {
+      "startSeconds": 9.725,
+      "durationSeconds": 0.4,
+      "appliedBeforeNormalization": true
+    },
+    "audioPaddingRemoved": "Trim only decoder/normalizer audio padding to the original video duration; encoded video is never trimmed.",
+    "normalization": {
+      "targetLufs": -18,
+      "targetLra": 9,
+      "normalizationTruePeakDbTP": -2,
+      "actualNormalizationType": "linear",
+      "pass1": {
+        "input_i": "-39.69",
+        "input_tp": "-24.81",
+        "input_lra": "5.40",
+        "input_thresh": "-49.69",
+        "output_i": "-17.07",
+        "output_tp": "-2.00",
+        "output_lra": "3.00",
+        "output_thresh": "-27.07",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.93"
+      },
+      "pass2": {
+        "input_i": "-39.65",
+        "input_tp": "-24.82",
+        "input_lra": "5.40",
+        "input_thresh": "-49.65",
+        "output_i": "-17.97",
+        "output_tp": "-3.13",
+        "output_lra": "5.40",
+        "output_thresh": "-27.97",
+        "normalization_type": "linear",
+        "target_offset": "-0.03"
+      }
+    }
+  },
+  "verification": {
+    "fullVideoAndAudioDecode": true,
+    "fullDecodePasses": 1,
+    "sourceRawVolumeDbFS": {
+      "mean_volume": "-41.9",
+      "max_volume": "-25.0"
+    },
+    "deliveredLoudnormMeasurement": {
+      "input_i": "-18.02",
+      "input_tp": "-3.33",
+      "input_lra": "5.40",
+      "input_thresh": "-28.02",
+      "output_i": "-17.06",
+      "output_tp": "-2.00",
+      "output_lra": "3.00",
+      "output_thresh": "-27.06",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.94"
+    },
+    "deliveredAudioIntegratedLufs": -18.02,
+    "deliveredAudioTruePeakDbTP": -3.33,
+    "audioGatePassed": true,
+    "audioGate": {
+      "acceptedLufsRange": [-19, -17],
+      "maximumTruePeakDbTP": -1.5
+    },
+    "contactSheet": "src/features/scene/integration/evidence/cinematic-v2/grass-contact.jpg",
+    "contactNominalTimesSeconds": [0, 3, 6, 9.8],
+    "contactSamplingIntervalSeconds": 0.2,
+    "qaDirectory": "artifacts/media-v2/grass/2026-11-02T06-33-27.079Z-a8c4011c",
+    "visualReview": "root_contact_sheet_and_selected_poster_review_passed",
+    "audioListening": "subjective_listening_not_performed; encoded_audio_and_loudness_verified",
+    "historicalAccuracyReview": "not_performed",
+    "visualReviewScope": "Sampled frames and selected poster reviewed for anonymous Red Army identity, scene readability and visible artifacts; not a frame-by-frame historical accuracy review.",
+    "contactSheetScope": "repository_relative",
+    "qaDirectoryScope": "local_only_not_committed"
+  }
+}

@@ -9,6 +9,7 @@ import { createBridgeMaterials } from './bridge-materials';
 import { createCanyon } from './bridge-landscape';
 import { createAtmosphere } from './bridge-atmosphere';
 import { bridgeDeckHeight, createMarchingCompany } from './marching-company';
+import { immersiveFieldOfView } from '../integration/camera-framing';
 
 export interface StudyMetrics {
   fps: number;
@@ -439,6 +440,7 @@ export function createBridgeStudy(
       renderer.setSize(w, h, false);
       composer.setSize(w, h);
       camera.aspect = w / h;
+      camera.fov = immersiveFieldOfView(camera.aspect);
       camera.updateProjectionMatrix();
     }
     resizePending = false;
@@ -656,6 +658,15 @@ export function createBridgeStudy(
       paused = value;
     },
     pose,
+    focusArrival() {
+      followingCompany = false;
+      const rect = host.getBoundingClientRect();
+      const portrait = rect.height > rect.width;
+      moveTo(
+        new THREE.Vector3(14, portrait ? 72 : 61, portrait ? 98 : 58),
+        new THREE.Vector3(-3, 31, -24),
+      );
+    },
     focusCompany() {
       if (!company) return;
       const target = company.center();

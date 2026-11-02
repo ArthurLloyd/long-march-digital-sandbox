@@ -1055,27 +1055,12 @@
   right: 105px;
   max-width: 260px;
 }
-.atlas-chapter-list [data-biome='luding'] {
+.atlas-chapter-list button[data-biome] {
   background:
-    linear-gradient(0deg, #071d27ed, #102c3550),
-    url('/assets/textures/immersive-landscapes/river-valley-cover.webp')
-      center/cover;
+    linear-gradient(0deg, #071d27ed, #102c3520),
+    var(--scene-cover) center/cover;
 }
-.atlas-chapter-list [data-biome='snow'] {
-  background:
-    linear-gradient(0deg, #071d27ed, #102c3540),
-    url('/assets/textures/immersive-landscapes/snow-pass-cover.webp')
-      center/cover;
-}
-.atlas-chapter-list [data-biome='grass'] {
-  background:
-    linear-gradient(0deg, #071d27ed, #102c3540),
-    url('/assets/textures/immersive-landscapes/grassland-cover.webp')
-      center/cover;
-}
-.atlas-chapter-list [data-biome='luding'] .atlas-chapter-art,
-.atlas-chapter-list [data-biome='snow'] .atlas-chapter-art,
-.atlas-chapter-list [data-biome='grass'] .atlas-chapter-art {
+.atlas-chapter-list .atlas-chapter-art {
   display: none;
 }
 .atlas-panorama-shade {
@@ -1161,4 +1146,173 @@
 .atlas-root[data-cinematic='true'] .atlas-source-credit {
   bottom: 25px;
   left: 4vw;
+}
+
+/* Scenic entry cards follow the atlas -> inhabited scene -> observation flow. */
+.atlas-map-intro > p {
+  font-size: 15px;
+  margin: 18px 0 10px;
+}
+.atlas-map-intro > span {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #b9c7c0;
+}
+.atlas-map-intro button {
+  margin-top: 24px;
+  background: #8d3731;
+  border-color: #cfa879;
+  color: #fff0d5;
+}
+.atlas-map-intro button:hover {
+  background: #a4473b;
+}
+.atlas-region-markers [data-featured='true'] {
+  z-index: 2;
+  width: 118px;
+  height: auto;
+}
+.atlas-region-markers strong {
+  font-size: inherit;
+  font-weight: 500;
+}
+.atlas-region-markers [data-featured='true'] > span {
+  position: relative;
+  display: block;
+  width: 118px;
+  white-space: normal;
+  bottom: 10px;
+  padding: 6px;
+  border: 1px solid #d3bb8c;
+  border-radius: 4px;
+  background: #f2e7cf;
+  color: #3f4030;
+  box-shadow:
+    0 6px 20px #061a2870,
+    inset 0 0 0 3px #fff8e733;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.atlas-region-markers [data-featured='true']:hover > span,
+.atlas-region-markers [data-featured='true']:focus-visible > span {
+  background: #fff3d9;
+  box-shadow: 0 8px 28px #04172299;
+}
+.atlas-region-markers [data-featured='true'] strong {
+  display: block;
+  padding: 6px 2px 4px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+.atlas-region-markers [data-featured='true'] small {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #9b483a;
+  font:
+    9px/1.5 'Noto Sans SC',
+    sans-serif;
+  padding: 0 2px 3px;
+}
+.atlas-marker-cover {
+  display: block;
+  width: 100%;
+  height: 48px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
+  background-image: var(--scene-cover);
+}
+.atlas-region-markers [data-region='grass'] > span {
+  inset: auto;
+}
+.atlas-region-markers [data-region='snow'] > span {
+  inset: auto;
+}
+.atlas-region-markers [data-region='luding'] > span {
+  inset: auto;
+}
+.atlas-region-markers [data-region='ruijin'] > span {
+  inset: auto;
+}
+.atlas-region-markers [data-region='grass'] {
+  translate: calc(-100% - 22px) -100%;
+}
+.atlas-region-markers [data-region='snow'] {
+  translate: 25px calc(-100% - 12px);
+}
+.atlas-region-markers [data-region='luding'] {
+  translate: calc(-100% - 18px) 0;
+}
+.atlas-region-markers [data-region='ruijin'] {
+  translate: 22px calc(-100% + 8px);
+}
+.atlas-region-markers [data-region='grass'] i {
+  left: calc(100% + 22px);
+  top: 100%;
+}
+.atlas-region-markers [data-region='snow'] i {
+  left: -25px;
+  top: calc(100% + 12px);
+}
+.atlas-region-markers [data-region='luding'] i {
+  left: calc(100% + 18px);
+  top: 0;
+}
+.atlas-region-markers [data-region='ruijin'] i {
+  left: -22px;
+  top: calc(100% - 8px);
+}
+.atlas-region-markers [data-featured='true'] i {
+  background: #bc6251;
+  border-color: #f7e3b8;
+  width: 9px;
+  height: 9px;
+  box-shadow: 0 0 0 5px #d8c28c22;
+}
+.atlas-root[data-region='overview'] .atlas-region-title {
+  max-width: 28%;
+}
+.atlas-root[data-region='overview'] .atlas-region-title > p {
+  display: none;
+}
+@media (max-width: 1050px) {
+  .atlas-region-markers [data-featured='true'],
+  .atlas-region-markers [data-featured='true'] > span {
+    width: 95px;
+  }
+  .atlas-marker-cover {
+    height: 36px;
+  }
+  .atlas-region-markers [data-featured='true'] strong {
+    font-size: 10px;
+  }
+  .atlas-region-markers [data-featured='true'] small {
+    font-size: 8px;
+  }
+  .atlas-root[data-region='overview'] .atlas-region-title {
+    max-width: 32%;
+  }
+}
+@media (max-width: 760px) {
+  .atlas-region-markers [data-featured='true'],
+  .atlas-region-markers [data-featured='true'] > span {
+    width: 83px;
+  }
+  .atlas-marker-cover {
+    height: 30px;
+  }
+  .atlas-map-intro > p {
+    font-size: 12px;
+  }
+  .atlas-map-intro > span {
+    display: none;
+  }
+  .atlas-root[data-region='overview'] .atlas-region-title {
+    max-width: 70%;
+  }
+  .atlas-region-markers [data-region='luding'] > span {
+    bottom: -73px;
+  }
 }

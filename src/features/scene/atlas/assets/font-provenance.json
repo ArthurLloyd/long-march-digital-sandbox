@@ -26,9 +26,9 @@
   },
   "atlasTitleSubset": {
     "file": "atlas-titles.woff2",
-    "bytes": 16376,
-    "sha256": "87cf6c5affc678ad3582476b186687869d75a623d21c25edb36caa8707d13440",
-    "processing": "FontTools 4.60.2; original glyphs plus all eight region names and immersive titles. No outline modification.",
-    "verifiedTitles": "山河之间瑞金周边遵义周边赤水流域金沙江谷地泸定河谷川西雪山川西北草地陕甘地区雪岭微光草地回声峡谷与桥山河纪行"
+    "bytes": 17712,
+    "sha256": "88f35a6eb124bb16a98b9e353e9a8105e6c3d325163887fcd7ac88c14c28b9c5",
+    "processing": "FontTools 4.60.2; region and eight inhabited-scene titles verified against cmap. No outline modification.",
+    "verifiedTitles": "山河之间瑞金周边遵义周边赤水流域金沙江谷地泸定河谷川西雪山川西北草地陕甘地区雪岭微光草地回声峡谷与桥山河纪行青山行囊城巷灯影赤水回环江岸待渡峡谷与桥雪岭同行旷野相伴山河相望长征山河行迹"
   }
 }
