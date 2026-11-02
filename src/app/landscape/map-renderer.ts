@@ -10,6 +10,7 @@ import type { PublishedMapRoute } from './map-objects';
 import type { ForcePhaseState } from '../history/force-state';
 import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
 import { composeReliefEntry, composeRegionalView } from './relief-block';
+import { createJourneyTorch, type JourneyMarker } from './journey-torch';
 import {
   PANORAMA_SCENE,
   RUIJIN_SCENE,
@@ -29,6 +30,7 @@ export interface MarkerProjection {
   visible: boolean;
 }
 export interface PanoramaMapAdapter {
+  setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
   focus(bounds: GeoBounds, framing?: 'place'): void;
   focusGeo(point: GeoPoint): void;
@@ -117,6 +119,8 @@ export function createPanoramaMap(
   scene.add(ambient, sun, sun.target);
 
   const landscape = createModernLandscape(scene, renderer);
+  const journeyTorch = createJourneyTorch();
+  scene.add(journeyTorch.root);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
   const routeGroup = new THREE.Group();
@@ -377,6 +381,12 @@ export function createPanoramaMap(
       options.reducedMotion ? 0 : now / 1000,
       camera.position.distanceTo(controls.target),
     );
+    journeyTorch.update(
+      now / 1000,
+      camera.position.distanceTo(controls.target),
+      heightAt,
+      options.reducedMotion,
+    );
     try {
       renderer.render(scene, camera);
       if (shaderProblem) {
@@ -415,6 +425,7 @@ export function createPanoramaMap(
   };
   frame = requestAnimationFrame(draw);
   return {
+    setJourneyMarker: journeyTorch.setMarker,
     entry: () => entry(),
     setForceRegions(state, camps) {
       clearForceRegions();
@@ -650,6 +661,7 @@ export function createPanoramaMap(
     dispose() {
       if (disposed) return;
       disposed = true;
+      journeyTorch.dispose();
       landscape.dispose();
       cancelAnimationFrame(frame);
       observer.disconnect();

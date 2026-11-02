@@ -1,0 +1,303 @@
+/* C-owned exhibition skin over A's unchanged eight-region observation UI. */
+.museum-art-space .regional-story-wrap {
+  width: min(1180px, calc(100% - 160px));
+  bottom: 56px;
+  color: #f0dfbd;
+  --notebook-gold: #cfb278;
+  --notebook-ink: #14212b;
+}
+.museum-art-space .regional-story-topline {
+  font: 13px/1.6 var(--font-display);
+  padding: 0 10px 12px;
+  letter-spacing: 0.1em;
+}
+.museum-art-space .regional-story-topline b {
+  font-size: 23px;
+  color: #f2d69f;
+}
+.museum-art-space .regional-story-topline button {
+  min-height: 40px;
+  font-size: 13px;
+  padding-inline: 12px;
+  border-bottom: 1px solid #cfb27880;
+  transition:
+    color 220ms ease,
+    translate 220ms ease;
+}
+.museum-art-space .regional-story-topline button:hover {
+  color: #ffe5ad;
+  translate: 0 -2px;
+}
+.museum-art-space .regional-spot-tabs {
+  position: relative;
+  background: #14212bf5;
+  border: 1px solid #b99b66;
+  border-bottom: 0;
+  padding: 7px 16px 0;
+  gap: 10px;
+  backdrop-filter: none;
+}
+.museum-art-space .regional-spot-tabs::before,
+.museum-art-space .regional-story-panel::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid #cfb27840;
+  pointer-events: none;
+}
+.museum-art-space .regional-spot-tabs::before {
+  border-bottom: 0;
+}
+.museum-art-space .regional-spot-tabs button {
+  min-height: 55px;
+  padding: 12px 18px;
+  border: 0;
+  font: 15px/1.5 var(--font-display);
+  color: #e3d4b6;
+  letter-spacing: 0.05em;
+  transition:
+    color 220ms ease,
+    background 220ms ease;
+}
+.museum-art-space .regional-spot-tabs button svg {
+  color: #ddbd7c;
+}
+.museum-art-space .regional-spot-tabs button small {
+  font-size: 13px;
+  color: #cab68e;
+}
+.museum-art-space .regional-spot-tabs button:hover:not(:disabled) {
+  background: #af8d4f20;
+  color: #fff0d1;
+}
+.museum-art-space .regional-spot-tabs button[aria-pressed='true'] {
+  background: #63342e;
+  color: #ffe3af;
+}
+.museum-art-space .regional-spot-tabs button[aria-pressed='true']::after {
+  height: 1px;
+  inset-inline: 18px;
+  background: #edcc8c;
+}
+.museum-art-space .regional-story-panel {
+  position: relative;
+  grid-template-columns: 1.65fr 1fr;
+  background: #172630fa;
+  color: #f1e3c5;
+  border: 1px solid #b99b66;
+  border-top: 0;
+  box-shadow: 0 16px 40px #040e1859;
+  backdrop-filter: none;
+  max-height: min(340px, 40dvh);
+  overflow-y: auto;
+  scrollbar-color: #a99060 #172630;
+  scrollbar-width: thin;
+}
+.museum-art-space .regional-story-panel::after {
+  border-top: 0;
+}
+.museum-art-space .regional-narrative {
+  padding: 24px 32px 28px;
+}
+.museum-art-space .regional-narrative > span {
+  display: inline-block;
+  font: 12px/1.5 var(--font-display);
+  color: #cfb278;
+  letter-spacing: 0.15em;
+}
+.museum-art-space .regional-narrative h3 {
+  font: 400 clamp(23px, 1.7vw, 30px)/1.6 var(--font-display);
+  color: #f2dfb7;
+  margin: 6px 0 10px;
+  letter-spacing: 0.04em;
+}
+.museum-art-space .regional-narrative p {
+  color: #e0d6c1;
+  font: 14px/1.9 var(--font-body);
+  max-width: 64ch;
+}
+.museum-art-space .regional-reflection {
+  border-left: 1px solid #cfb27838;
+  margin: 26px 0;
+  padding: 0 30px;
+}
+.museum-art-space .regional-reflection > span {
+  font: 13px/1.6 var(--font-display);
+  color: #d4b982;
+}
+.museum-art-space .regional-reflection p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e0d6c1;
+  margin: 12px 0 16px;
+}
+.museum-art-space .regional-reflection button {
+  min-height: 44px;
+  padding: 10px 18px;
+  min-width: 160px;
+  background: #753b32;
+  border: 1px solid #c9a96d;
+  outline: 1px solid #c9a96d66;
+  outline-offset: -5px;
+  font: 15px/1.5 var(--font-display);
+  color: #ffe9bd;
+  transition:
+    background 220ms ease,
+    translate 220ms ease;
+}
+.museum-art-space .regional-reflection button:hover:not(:disabled) {
+  background: #964a38;
+  translate: 0 -2px;
+}
+.museum-art-space .regional-reflection button:disabled {
+  background: #28363d;
+  color: #d0c5ad;
+  opacity: 0.65;
+}
+.museum-art-space .regional-question {
+  padding: 22px 32px 28px;
+}
+.museum-art-space .regional-question-title > span {
+  font: 13px/1.6 var(--font-display);
+  color: #d4b982;
+}
+.museum-art-space .regional-question-title button {
+  color: #eedbb2;
+  min-width: 36px;
+  min-height: 36px;
+}
+.museum-art-space .regional-question h3 {
+  color: #f0dfbd;
+  font: 400 23px/1.7 var(--font-display);
+  margin: 4px 0 18px;
+}
+.museum-art-space .regional-answers {
+  gap: 16px;
+}
+.museum-art-space .regional-answers > button {
+  border: 1px solid #c4a56c75;
+  background: #20313a;
+  color: #e7dcc5;
+  padding: 14px 18px;
+  min-height: 58px;
+  font: 14px/1.8 var(--font-body);
+  transition:
+    border-color 220ms ease,
+    background 220ms ease;
+}
+.museum-art-space .regional-answers > button > span {
+  color: #e4bf7a;
+  font-size: 21px;
+}
+.museum-art-space .regional-answers > button:hover:not(:disabled) {
+  border-color: #e5c38b;
+  background: #35413f;
+}
+.museum-art-space .regional-answers > button[data-result='correct'] {
+  background: #29483f;
+  border-color: #bbce9d;
+}
+.museum-art-space .regional-answers > button[data-result='consider'] {
+  background: #613a2f;
+  border-color: #d2a476;
+}
+.museum-art-space .regional-answer-feedback {
+  border-color: #cfb27844;
+  margin-top: 18px;
+  padding-top: 14px;
+}
+.museum-art-space .regional-answer-feedback p {
+  color: #e7dcc5;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.museum-art-space .regional-answer-feedback strong {
+  color: #d2dfb7;
+}
+.museum-art-space .regional-answer-feedback button {
+  font: 15px/1.6 var(--font-display);
+  color: #f0d39f;
+  min-height: 44px;
+}
+.museum-art-space .regional-story-wrap button:focus-visible {
+  outline: 2px solid #ffe0a1;
+  outline-offset: 3px;
+}
+.museum-art-space .regional-story-wrap ::selection {
+  background: #b4834766;
+  color: #fff1d1;
+}
+@media (max-height: 820px) {
+  .museum-art-space .regional-story-wrap {
+    bottom: 48px;
+  }
+  .museum-art-space .regional-story-topline {
+    padding-bottom: 5px;
+  }
+  .museum-art-space .regional-spot-tabs button {
+    min-height: 48px;
+  }
+  .museum-art-space .regional-narrative {
+    padding: 16px 26px 20px;
+  }
+  .museum-art-space .regional-reflection {
+    margin-block: 18px;
+  }
+}
+@media (max-width: 1100px) {
+  .museum-art-space .regional-story-wrap {
+    width: calc(100% - 80px);
+  }
+  .museum-art-space .regional-spot-tabs button {
+    padding-inline: 12px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 767px) {
+  .museum-art-space .regional-story-wrap {
+    width: calc(100% - 32px);
+    bottom: 48px;
+  }
+  .museum-art-space .regional-spot-tabs {
+    padding-inline: 7px;
+    gap: 2px;
+  }
+  .museum-art-space .regional-spot-tabs button {
+    padding: 10px 7px;
+    font-size: 12px;
+    gap: 5px;
+  }
+  .museum-art-space .regional-spot-tabs button > svg {
+    display: none;
+  }
+  .museum-art-space .regional-story-panel {
+    grid-template-columns: 1fr;
+    max-height: 34dvh;
+  }
+  .museum-art-space .regional-narrative {
+    padding: 18px 22px;
+  }
+  .museum-art-space .regional-reflection {
+    border-left: 0;
+    border-top: 1px solid #cfb27838;
+    margin: 0 22px 20px;
+    padding: 16px 0 0;
+  }
+  .museum-art-space .regional-question {
+    padding: 18px 22px;
+  }
+  .museum-art-space .regional-answers {
+    flex-direction: column;
+  }
+  .museum-art-space .regional-answer-feedback {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .museum-art-space .regional-story-wrap *,
+  .museum-art-space .regional-story-wrap *::after {
+    animation: none;
+    transition: none;
+  }
+}

@@ -9,7 +9,17 @@ import {
   Suspense,
 } from 'react';
 import { loadRegionalObservation } from '../../features/scene';
-import { Expand, Layers, Map, Mountain, ZoomIn, ZoomOut } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ChevronDown,
+  Expand,
+  Layers,
+  Map,
+  ZoomIn,
+  ZoomOut,
+} from 'lucide-react';
+import { MapControlFrame } from '../../components/exhibition/MapControlFrame';
+import { ToolEmblem } from '../../components/exhibition/ExhibitionOrnaments';
 import type { LongMarchSceneV2Props } from '../../shared/contracts';
 import { CinematicTitle } from '../../components/exhibition/CinematicTitle';
 import { createPanoramaMap, type PanoramaMapAdapter } from './map-renderer';
@@ -22,6 +32,8 @@ import {
   SPATIAL_LABELS,
 } from '../history/force-state';
 import '../../styles/exhibition-panorama.css';
+import '../../styles/exhibition-map-controls.css';
+import '../../styles/exhibition-art-notebook.css';
 const geographicMarkers = GEOGRAPHIC_VIEWS.map((view) => ({
   id: `view:${view.id}`,
   coordinates: regionCenter(REGIONS[view.id]),
@@ -169,7 +181,8 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
                   : marker.id === 'view:luding'
                     ? 16
                     : 0;
-            label.style.transform = `translate(${marker.x}px,${marker.y + shift}px) translate(-50%,-100%)`;
+            const besideTorch = label.classList.contains('is-ruijin-anchor');
+            label.style.transform = `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
             label.style.visibility = marker.visible ? 'visible' : 'hidden';
           }),
         onViewChange: (bookmark) => {
@@ -217,6 +230,28 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
   useEffect(() => {
     api.current?.setForceRegions(forceState, camps);
   }, [forceState, camps, epoch]);
+  useEffect(() => {
+    const redPoints = forcePoints.filter(
+      ({ track }) => track.camp === 'red_army',
+    );
+    // A single unambiguous point can drive the journey marker. Multiple units
+    // keep their individually labelled force layer; never invent one centroid.
+    api.current?.setJourneyMarker(
+      redPoints.length === 1
+        ? {
+            coordinates: redPoints[0]!.snapshot.coordinates!,
+            kind: 'force',
+            prominent: false,
+          }
+        : !props.phaseId && focusedView === 'ruijin'
+          ? {
+              coordinates: regionCenter(REGIONS.ruijin),
+              kind: 'origin',
+              prominent: entry,
+            }
+          : null,
+    );
+  }, [forcePoints, props.phaseId, focusedView, entry, epoch]);
   useEffect(() => {
     api.current?.setRivers(rivers);
   }, [rivers, epoch]);
@@ -303,7 +338,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       <div ref={host} className="museum-map-canvas" />
       {focusedView && (
         <button
-          className="museum-region-anchor"
+          className={`museum-region-anchor${focusedView === 'ruijin' ? ' is-ruijin-anchor' : ''}`}
           ref={(element) => {
             labels.current[`view:${focusedView}`] = element;
           }}
@@ -315,7 +350,8 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             )
           }
         >
-          <span aria-hidden="true" />
+          <MapControlFrame />
+          <span className="map-anchor-diamond" aria-hidden="true" />
           {focusedView === 'ruijin'
             ? '瑞金 · 赣南丘陵'
             : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!.title}
@@ -325,19 +361,10 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       {entry && (
         <div className="museum-entry-place">
           <h2>瑞金</h2>
-          <p>赣南丘陵 · 现代地理取景</p>
+          <p className="museum-departure-line">从瑞金启程，重温长征之路。</p>
         </div>
       )}
       <nav className="museum-map-toolbar" aria-label="全景地图视角">
-        {!entry && (
-          <button
-            onClick={() => {
-              chooseView('ruijin', '瑞金');
-            }}
-          >
-            瑞金定位
-          </button>
-        )}
         <button
           onClick={() => {
             setEntry(false);
@@ -347,6 +374,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             api.current?.overview();
           }}
         >
+          <MapControlFrame />
           <Expand size={16} />
           全景
         </button>
@@ -358,19 +386,22 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             api.current?.overview(true);
           }}
         >
+          <MapControlFrame />
           <Map size={16} />
           俯瞰
         </button>
         <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
+          <MapControlFrame />
           <ZoomIn size={18} />
         </button>
         <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
+          <MapControlFrame />
           <ZoomOut size={18} />
         </button>
       </nav>
       <details ref={views} className="museum-geographic-views">
         <summary>
-          <Mountain size={17} />
+          <MapControlFrame />
           山河取景<span>现代地理</span>
         </summary>
         <div>
@@ -392,19 +423,26 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             className="outlined-button"
             onClick={() => openObservation(focusedView)}
           >
-            走进
-            {focusedView === 'ruijin'
-              ? '瑞金'
-              : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!.title}
-            艺术场景
+            <MapControlFrame />
+            <ToolEmblem kind="chapters" />
+            <span>
+              走进
+              {focusedView === 'ruijin'
+                ? '瑞金'
+                : GEOGRAPHIC_VIEWS.find((item) => item.id === focusedView)!
+                    .title}
+              艺术场景
+            </span>
+            <ArrowUpRight size={20} />
           </button>
-          <small>成员 A 艺术空间 · 不计历史体验完成</small>
         </div>
       )}
       <details className="museum-map-layers">
         <summary>
+          <MapControlFrame />
           <Layers size={16} />
           地图图层
+          <ChevronDown size={14} className="map-disclosure-chevron" />
         </summary>
         <label title="仅跟随已发布的事件坐标，未知位置保持当前视野">
           <input
@@ -481,6 +519,7 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
               title="现代地理取景区，不是历史事件发生点"
               onClick={() => chooseView(item.id)}
             >
+              <MapControlFrame />
               {item.title}
               <small>区域</small>
             </button>
@@ -546,7 +585,11 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
       )}
       {view && !visibleCinematic && !entry && (
         <details className="museum-region-events">
-          <summary>查看区域内事件</summary>
+          <summary>
+            <MapControlFrame />
+            查看区域内事件
+            <ChevronDown size={14} className="map-disclosure-chevron" />
+          </summary>
           <p>仅显示当前历史阶段已发布且位置可用的事件。</p>
           {points
             .filter((point) => {
@@ -590,20 +633,6 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
         />
       )}
       <div className="museum-map-credit">
-        <details>
-          <summary>现代地理 · 艺术表现</summary>
-          <div>
-            <p>
-              地势、河宽与深度为艺术显示，不用于历史或地理量测。厚切面为展陈造型，不代表真实地下地层。
-            </p>
-            <p>
-              区域配色、植被与岩石接入成员 A
-              的程序艺术布景，不代表历史植被分布。
-            </p>
-            <p>现代高程：USGS / Mapzen；全景河流：Natural Earth。</p>
-            <p>局部现代水系：OpenStreetMap contributors · ODbL。</p>
-          </div>
-        </details>
         <a
           href="https://www.openstreetmap.org/copyright"
           target="_blank"
@@ -623,11 +652,13 @@ export function ExhibitionPanorama(props: LongMarchSceneV2Props) {
             </div>
           }
         >
-          <RegionalObservation
-            regionId={observation}
-            onExit={closeObservation}
-            onRegionChange={setObservation}
-          />
+          <div className="museum-art-space">
+            <RegionalObservation
+              regionId={observation}
+              onExit={closeObservation}
+              onRegionChange={setObservation}
+            />
+          </div>
         </Suspense>
       )}
     </div>

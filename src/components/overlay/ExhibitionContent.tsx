@@ -166,6 +166,34 @@ export function SourceContent({
           </ul>
         </div>
       )}
+      <section
+        className="reading-section map-source-notes"
+        aria-labelledby="map-source-heading"
+      >
+        <h3 id="map-source-heading">现代地理 · 艺术表现</h3>
+        <p>现代高程：USGS / Mapzen；全景河流：Natural Earth。</p>
+        <p>
+          局部现代水系：
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noreferrer"
+          >
+            © OpenStreetMap contributors · ODbL
+          </a>
+          。
+        </p>
+        <p>
+          地势、河宽与深度为艺术显示，不用于历史或地理量测。厚切面为展陈造型，不代表真实地下地层；程序植被与岩石不代表历史分布。
+        </p>
+        <p>
+          瑞金火炬是启程意象，使用现代取景区域中心，不是经核验的历史部队位置。阶段态势只采用已发布的合法坐标，不推算行军轨迹。
+        </p>
+        <p>
+          局部人物、环境与开场影片为艺术再现；AI
+          画面不是历史影像。艺术观察与思考不计入正式历史体验完成记录。
+        </p>
+      </section>
     </>
   );
 }
