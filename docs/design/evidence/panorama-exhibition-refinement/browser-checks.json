@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "canvas": 1,
+    "disabledPhaseControls": true,
+    "emptyDock": 144,
+    "modernViews": 8,
+    "pageOverflow": false,
+    "publishedEventMarkers": 0,
+    "ready": "预览已就绪",
+    "url": "http://127.0.0.1:5176/",
+    "viewport": [1912, 943]
+  },
+  "exit": {
+    "canvas": 0,
+    "landing": true
+  },
+  "originErrors": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-11-02T06:20:59.116Z",
+      "url": "http://127.0.0.1:5176/"
+    }
+  ],
+  "observed": [
+    "modern source disclosure expands/closes with visible provenance and artistic width/depth statement",
+    "header source drawer opens/closes after transparent-header hit fix",
+    "exit canvas0, reentercanvas1 and realready",
+    "same six screenshot states reviewed; viewport override cleared"
+  ],
+  "nativeBackgroundHidden": "skipped-unverified"
+}

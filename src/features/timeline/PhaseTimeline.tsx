@@ -24,7 +24,11 @@ export function PhaseTimeline({
   const final =
     clock.phases.length > 0 && clock.index === clock.phases.length - 1;
   return (
-    <section className="timeline phase-timeline" aria-label="历史时间轴">
+    <section
+      className="timeline phase-timeline"
+      data-empty={!clock.phases.length}
+      aria-label="历史时间轴"
+    >
       <EmberCrest className="timeline-crest" />
       <div className="playback-controls">
         <button

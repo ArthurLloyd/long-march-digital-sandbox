@@ -8,6 +8,7 @@ import { projectGeo, regionCenter, inCoverage } from './geography';
 import { REGIONS, type RegionId } from './map-regions';
 import type { PublishedMapRoute } from './map-objects';
 import type { ForcePhaseState } from '../history/force-state';
+import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
 
 export interface PanoramaBookmark {
   sceneId: 'long-march-modern-panorama';
@@ -52,7 +53,7 @@ export function createPanoramaMap(
   },
 ): PanoramaMapAdapter {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#17343a');
+  scene.background = new THREE.Color(EXHIBITION_LIGHT.background);
   const camera = new THREE.PerspectiveCamera(43, 1, 0.02, 160);
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -62,8 +63,8 @@ export function createPanoramaMap(
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
-  renderer.setClearColor('#17343a');
+  renderer.toneMappingExposure = 1.08;
+  renderer.setClearColor(EXHIBITION_LIGHT.background);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   let shaderProblem = false;
@@ -87,9 +88,13 @@ export function createPanoramaMap(
   controls.minPolarAngle = 0.12;
   controls.enablePan = true;
   controls.screenSpacePanning = false;
-  const ambient = new THREE.HemisphereLight('#c8dcd6', '#152e26', 0.7);
-  const sun = new THREE.DirectionalLight('#fff1d3', 3.2);
-  sun.position.set(-15, 20, -12);
+  const ambient = new THREE.HemisphereLight(
+    EXHIBITION_LIGHT.skyFill,
+    EXHIBITION_LIGHT.groundFill,
+    0.7,
+  );
+  const sun = new THREE.DirectionalLight(EXHIBITION_LIGHT.sun, 3.4);
+  sun.position.set(15, 16, -12);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
   sun.shadow.camera.left = -16;
@@ -214,7 +219,7 @@ export function createPanoramaMap(
     landscape.overview();
     drape();
     sun.target.position.set(0, 0, 0);
-    sun.position.set(-15, 20, -12);
+    sun.position.set(15, 16, -12);
     sun.shadow.camera.left = -16;
     sun.shadow.camera.right = 16;
     sun.shadow.camera.top = 16;
@@ -453,7 +458,7 @@ export function createPanoramaMap(
         const target = new THREE.Vector3(...pose.target);
         const position = new THREE.Vector3(...pose.position);
         sun.target.position.copy(target);
-        sun.position.copy(target).add(new THREE.Vector3(-7, 12, -5));
+        sun.position.copy(target).add(new THREE.Vector3(7, 8, -6));
         sun.shadow.camera.left = -3;
         sun.shadow.camera.right = 3;
         sun.shadow.camera.top = 3;
