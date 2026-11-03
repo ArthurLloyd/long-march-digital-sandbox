@@ -13,6 +13,11 @@ import { composeReliefEntry, composeRegionalView } from './relief-block';
 import { createJourneyTorch, type JourneyMarker } from './journey-torch';
 import { createTerrainDiagnostics } from './terrain-diagnostics';
 import { createMarchLayer } from './march-layer';
+import {
+  marchPanNeeded,
+  clearMarchSightline,
+  MARCH_PRESENTATION,
+} from './march-presentation';
 import type { JourneyTransport } from '../../features/timeline';
 import type { MapSafeRect } from './map-safe-area';
 import {
@@ -58,6 +63,7 @@ export interface PanoramaMapAdapter {
     transition?: 'regional' | 'local',
   ): void;
   frameMarch?(points: readonly GeoPoint[]): void;
+  focusMarch?(mode: 'overview' | 'follow'): void;
   setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -159,7 +165,7 @@ export function createPanoramaMap(
   scene.add(journeyTorch.root);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
-  const march = createMarchLayer(scene, heightAt);
+  const march = createMarchLayer(scene, landscape.navigationHeightAt);
   let safeAreas: readonly MapSafeRect[] = [];
   const applySafeFrame = () => {
     if (entryFraming || !safeAreas.length) {
@@ -533,6 +539,7 @@ export function createPanoramaMap(
   let shadowDistance = 0;
   let previousDrawTime = 0;
   let followHeading = 0;
+  let overviewPanning = false;
   const followPosition = new THREE.Vector3(),
     followTarget = new THREE.Vector3();
   const shadowTarget = new THREE.Vector3(Infinity, Infinity, Infinity);
@@ -560,23 +567,55 @@ export function createPanoramaMap(
         Math.cos(desiredHeading - followHeading),
       );
       followHeading += THREE.MathUtils.clamp(difference, -0.65 * dt, 0.65 * dt);
-      // Strategic direction evidence cannot support road-level first-person flight.
-      const distance = Math.max(0.48, marchingState.distance * 0.65);
+      const distance =
+        MARCH_PRESENTATION.followDistance * marchingState.distance;
+      const sideHeading = followHeading + MARCH_PRESENTATION.sideAngle;
       followTarget.copy(marching.point);
       followPosition.set(
-        followTarget.x - Math.sin(followHeading) * distance,
-        followTarget.y + distance * 0.6,
-        followTarget.z - Math.cos(followHeading) * distance,
+        followTarget.x - Math.sin(sideHeading) * distance,
+        followTarget.y + distance * 0.55,
+        followTarget.z - Math.cos(sideHeading) * distance,
       );
       followPosition.y = Math.max(
         followPosition.y,
-        landscape.navigationHeightAt(followPosition.x, followPosition.z) + 0.18,
+        landscape.navigationHeightAt(followPosition.x, followPosition.z) +
+          0.012,
+      );
+      clearMarchSightline(
+        followPosition,
+        followTarget,
+        landscape.navigationHeightAt,
       );
       // Move eye and target together: different lag factors shrink the offset
       // while the arrow moves and let it drift toward the edge of the frame.
       const alpha = 1 - Math.exp(-dt * 8);
       camera.position.lerp(followPosition, alpha);
       controls.target.lerp(followTarget, alpha);
+    }
+    if (
+      marching &&
+      marchingState?.camera === 'overview' &&
+      !marching.transferring &&
+      !marchingState.pendingEventId &&
+      !flight
+    ) {
+      const projected = marching.point.clone().project(camera);
+      if (
+        marchPanNeeded(projected.x, projected.y) ||
+        projected.z < -1 ||
+        projected.z > 1
+      )
+        overviewPanning = true;
+      if (overviewPanning) {
+        const shift = marching.point
+          .clone()
+          .sub(controls.target)
+          .multiplyScalar(1 - Math.exp(-dt * 3.5));
+        controls.target.add(shift);
+        camera.position.add(shift);
+        if (Math.abs(projected.x) < 0.1 && Math.abs(projected.y) < 0.1)
+          overviewPanning = false;
+      }
     }
     let flightFinished = false;
     if (flight) {
@@ -875,6 +914,43 @@ export function createPanoramaMap(
         new THREE.Vector3(x, ground + rise, z + rise * 0.22),
         new THREE.Vector3(x, ground, z),
       );
+    },
+    focusMarch(mode) {
+      const selected = march.update(
+        camera.position.distanceTo(controls.target),
+      );
+      if (!selected) return;
+      entryFraming = false;
+      preparingEntry = false;
+      focusRevision++;
+      overviewPanning = false;
+      const target = selected.point.clone();
+      followHeading = Math.atan2(selected.direction.x, selected.direction.z);
+      const heading = followHeading + MARCH_PRESENTATION.sideAngle;
+      const distance =
+        mode === 'follow'
+          ? MARCH_PRESENTATION.followDistance *
+            (march.transport?.read().distance ?? 1)
+          : MARCH_PRESENTATION.overviewDistance;
+      const position =
+        mode === 'follow'
+          ? new THREE.Vector3(
+              target.x - Math.sin(heading) * distance,
+              target.y + distance * 0.55,
+              target.z - Math.cos(heading) * distance,
+            )
+          : new THREE.Vector3(
+              target.x + distance * 0.1,
+              target.y + distance * 0.65,
+              target.z + distance,
+            );
+      position.y = Math.max(
+        position.y,
+        landscape.navigationHeightAt(position.x, position.z) + 0.012,
+      );
+      if (mode === 'follow')
+        clearMarchSightline(position, target, landscape.navigationHeightAt);
+      travel(position, target);
     },
     focus(bounds, framing) {
       entryFraming = false;

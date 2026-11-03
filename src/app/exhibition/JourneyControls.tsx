@@ -85,7 +85,7 @@ export function JourneyControls({
               if (state.playing) t.pause();
               else {
                 onNavigate();
-                t.camera('follow');
+                if (state.camera === 'free') t.camera('follow');
                 t.play();
               }
             }}
@@ -192,6 +192,13 @@ export function JourneyControls({
             ).map(([id, title, Icon]) => (
               <button
                 key={id}
+                title={
+                  id === 'overview'
+                    ? '区域俯瞰，箭头进入画面外侧四分之一时平移'
+                    : id === 'follow'
+                      ? '斜侧方近景陪行，箭头贴合地面'
+                      : '手动观察山河'
+                }
                 aria-pressed={state.camera === id}
                 onClick={() => t.camera(id as JourneyCamera)}
               >

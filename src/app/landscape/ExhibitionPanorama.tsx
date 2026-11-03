@@ -80,6 +80,7 @@ export function ExhibitionPanorama(
     geographicRegion?: RegionId | null;
     onBrowseRegion?: (region: RegionId | null) => void;
     onMapAdapter?: (adapter: PanoramaMapAdapter | null) => void;
+    onMarchOverview?: () => void;
     journey?: JourneyTransport;
     opening?: boolean;
     arrivalEventId?: string | null;
@@ -265,10 +266,15 @@ export function ExhibitionPanorama(
                     ? 16
                     : 0;
             const besideTorch = label.classList.contains('is-ruijin-anchor');
+            const besideMarch = marker.id.startsWith('march:');
+            const closeMarch =
+              latest.current.journey?.read().camera === 'follow';
             const packed = geographyLayout.find((m) => m.id === marker.id);
             label.style.transform = packed
               ? `translate(${packed.labelX}px,${packed.labelY}px) translate(-50%,-100%)`
-              : `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
+              : besideMarch
+                ? `translate(${marker.x + (closeMarch ? 70 : 90)}px,${marker.y + (closeMarch ? 48 : 80)}px)`
+                : `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
             const geographicVisible =
               latest.current.geographicRegion === undefined ||
               !marker.id.startsWith('view:') ||
@@ -804,10 +810,15 @@ export function ExhibitionPanorama(
           全景
         </button>
         <button
+          aria-label={props.onMarchOverview ? '区域俯瞰' : undefined}
           onClick={() => {
             setEntry(false);
             setView(null);
             setCinematic(null);
+            if (props.onMarchOverview) {
+              props.onMarchOverview();
+              return;
+            }
             api.current?.overview(true);
             props.onBrowseRegion?.(null);
             props.journey?.camera('free');

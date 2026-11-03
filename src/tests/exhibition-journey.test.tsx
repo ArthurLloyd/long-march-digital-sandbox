@@ -49,6 +49,9 @@ vi.mock('../app/landscape/ExhibitionPanorama', () => ({
     return (
       <section aria-label="地图GPU边界" data-march={p.showMarch}>
         <output aria-label="当前区域">{p.geographicRegion ?? 'global'}</output>
+        {p.onMarchOverview && (
+          <button onClick={p.onMarchOverview}>区域俯瞰</button>
+        )}
         {GEOGRAPHIC_VIEWS.map((v) => (
           <button key={v.id} onClick={() => p.onBrowseRegion?.(v.id)}>
             {v.title}
@@ -225,6 +228,46 @@ it('map and chapter links use the same central story without completing C1', asy
   expect(
     screen.getByRole('button', { name: '开始或继续行军', hidden: true }),
   ).toBeInTheDocument();
+});
+
+it('preserves an explicitly chosen overview on resume and restores follow only when leaving free observation', async () => {
+  const user = await enter();
+  await user.selectOptions(
+    screen.getByLabelText('跳转行军章节'),
+    'chapter-event-sd-2',
+  );
+  await user.click(screen.getByRole('button', { name: '开始或继续行军' }));
+  expect(screen.getByRole('button', { name: '俯瞰' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  await user.click(screen.getByRole('button', { name: '暂停行军' }));
+  await user.click(screen.getByRole('button', { name: '自由' }));
+  await user.click(screen.getByRole('button', { name: '开始或继续行军' }));
+  expect(screen.getByRole('button', { name: '随行' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+});
+
+it('uses the toolbar overview to enter the same march camera without changing the clock', async () => {
+  const user = await enter();
+  await user.selectOptions(
+    screen.getByLabelText('跳转行军章节'),
+    'chapter-event-sd-2',
+  );
+  await user.click(screen.getByRole('button', { name: '自由探索' }));
+  const time = (screen.getByLabelText('行军演示进度') as HTMLInputElement)
+    .value;
+  await user.click(screen.getByRole('button', { name: '区域俯瞰' }));
+  expect(screen.getByRole('button', { name: '俯瞰' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  expect(
+    (screen.getByLabelText('行军演示进度') as HTMLInputElement).value,
+  ).toBe(time);
+  expect(screen.getByLabelText('当前区域')).toHaveTextContent('chishui');
 });
 it('pins one person card, switches people, closes card before story and restores name focus', async () => {
   const user = await enter();

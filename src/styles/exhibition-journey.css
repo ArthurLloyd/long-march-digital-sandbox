@@ -3,6 +3,9 @@
   height: 100dvh;
   min-height: 0;
 }
+.journey-exhibition .journey-exploration {
+  overflow: clip;
+}
 .journey-exploration .scene-viewport {
   inset: 0 0 142px;
 }
@@ -579,7 +582,9 @@
     gap: 12px;
   }
   .journey-current > span {
-    display: none;
+    display: block;
+    flex-shrink: 0;
+    font-size: 10px;
   }
   .journey-controls select {
     max-width: 190px;

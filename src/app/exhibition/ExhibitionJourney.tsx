@@ -282,12 +282,26 @@ export function ExhibitionJourney({
       transport.read().time,
     );
     const { tracks } = currentSample;
+    const held = content.plan.tracks.some(
+      (t) =>
+        (t.holdChapterIds ?? []).includes(chapter.id) &&
+        (!t.sequenceIds || t.sequenceIds.includes(transport.read().sequenceId)),
+    );
     if (journeyStage === 'overview') {
       api.current?.overview(true);
       return;
     }
     if (journeyStage === 'transit') {
       api.current?.frameMarch?.(tracks.flatMap((t) => t.points));
+      return;
+    }
+    if (
+      !state.pendingEventId &&
+      (tracks.length || held) &&
+      api.current?.focusMarch &&
+      (state.camera === 'follow' || state.camera === 'overview')
+    ) {
+      api.current.focusMarch(state.camera);
       return;
     }
     if (
@@ -516,6 +530,24 @@ export function ExhibitionJourney({
                       setRegion(id);
                     }}
                     onMapAdapter={onAdapter}
+                    onMarchOverview={() => {
+                      setOpening(false);
+                      setRegion(undefined);
+                      transport.camera('overview');
+                      const current = sampleJourney(
+                        content.plan,
+                        transport.read().sequenceId,
+                        transport.read().time,
+                      );
+                      if (current.stage === 'local')
+                        api.current?.focusMarch?.('overview');
+                      else if (current.stage === 'overview')
+                        api.current?.overview(true);
+                      else
+                        api.current?.frameMarch?.(
+                          current.tracks.flatMap((t) => t.points),
+                        );
+                    }}
                     onExhibitionPreview={transport.pause}
                     onExhibitionRead={openStory}
                     observationRequest={observationRequest}
@@ -678,7 +710,8 @@ export function ExhibitionJourney({
             onContinue={() => {
               closeStory();
               setRegion(undefined);
-              transport.camera('follow');
+              if (transport.read().camera === 'free')
+                transport.camera('follow');
               transport.play();
             }}
             onSources={(ids) => {
