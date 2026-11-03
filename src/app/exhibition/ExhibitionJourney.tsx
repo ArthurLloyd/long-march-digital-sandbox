@@ -606,7 +606,7 @@ export function ExhibitionJourney({
                       阅读本章故事
                       <ArrowUpRight size={16} />
                     </button>
-                    <p>本章暂无A区域体验资源，可继续阅读与观察山河。</p>
+                    <p>本章提供历史故事，可继续阅读与观察山河。</p>
                   </aside>
                 )}
               {state.pendingEventId &&
