@@ -178,7 +178,7 @@
     background-color 160ms;
 }
 .event-map-cluster {
-  border-left: 3px solid var(--gold);
+  border-color: var(--gold);
 }
 .event-map-cluster small {
   color: var(--text);
