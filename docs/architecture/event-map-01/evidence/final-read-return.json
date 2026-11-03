@@ -1,0 +1,84 @@
+{
+  "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+  "scope": "settled camera before reading",
+  "before": {
+    "canvasId": 11407,
+    "metrics": {
+      "time": 161470.6,
+      "position": [-1.0441922199038458, 0.20329995885573282, 4.281361201304825],
+      "target": [-1.07089350143129, 0.08629995885573283, 4.103352657788531],
+      "distance": 0.2146834879537781,
+      "fov": 43,
+      "near": 0.002576201855445337,
+      "far": 12,
+      "targetPlaneWidth": 0.41404035211607115,
+      "frameMedianMs": 4.199999999982538,
+      "frameP95Ms": 8.200000000011642,
+      "calls": 28,
+      "triangles": 802968,
+      "geometries": 180,
+      "textures": 6,
+      "viewport": [1366, 558],
+      "visibility": "visible",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "terrainMeshes": 3,
+      "morphing": false,
+      "closeBounds": [
+        -1.3393126236065722, 3.852797598894604, -0.765321499203756,
+        4.4078616597523
+      ],
+      "regionalBounds": [
+        -1.3393126236065722, 3.852797598894604, 0.7015447076034409,
+        5.681243917014076
+      ],
+      "region": "zunyi",
+      "heightVersion": 375,
+      "fieldCache": 2,
+      "exaggeration": 12,
+      "materials": 7,
+      "targetGround": 0.07707967097167749,
+      "targetWater": 0.07955434828563666,
+      "cameraFloor": 0.15105340993192296
+    }
+  },
+  "after": {
+    "canvasId": 11407,
+    "metrics": {
+      "time": 162470.6,
+      "position": [-1.0441922199038458, 0.20329995885573282, 4.281361201304825],
+      "target": [-1.07089350143129, 0.08629995885573283, 4.103352657788531],
+      "distance": 0.2146834879537781,
+      "fov": 43,
+      "near": 0.002576201855445337,
+      "far": 12,
+      "targetPlaneWidth": 0.41404035211607115,
+      "frameMedianMs": 4.199999999982538,
+      "frameP95Ms": 8.39999999999418,
+      "calls": 28,
+      "triangles": 802968,
+      "geometries": 180,
+      "textures": 6,
+      "viewport": [1366, 558],
+      "visibility": "visible",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "terrainMeshes": 3,
+      "morphing": false,
+      "closeBounds": [
+        -1.3393126236065722, 3.852797598894604, -0.765321499203756,
+        4.4078616597523
+      ],
+      "regionalBounds": [
+        -1.3393126236065722, 3.852797598894604, 0.7015447076034409,
+        5.681243917014076
+      ],
+      "region": "zunyi",
+      "heightVersion": 375,
+      "fieldCache": 2,
+      "exaggeration": 12,
+      "materials": 7,
+      "targetGround": 0.07707967097167749,
+      "targetWater": 0.07955434828563666,
+      "cameraFloor": 0.15105340993192296
+    }
+  }
+}

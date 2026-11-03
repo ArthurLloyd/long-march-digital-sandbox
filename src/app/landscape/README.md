@@ -30,3 +30,9 @@
 首页与地图的光色、材质和空态衔接见[展馆视觉修正记录](../../../docs/design/panorama-exhibition-refinement.md)。
 
 连续总图的默认瑞金取景、同画布区域／内层定位与 A 八区公共模块接入见[新版集成记录](../../../docs/architecture/continuous-panorama-a-integration.md)。旧[瑞金展台记录](../../../docs/design/ruijin-entry-relief.md)仅保留被用户否决的独立切块审计，不再代表当前效果。
+
+## C-EVENT-MAP-01 附加展陈位置
+
+正常展馆由 App 额外提供完整 EventMapModel，和原 C2 阶段 dataset 分离；strict 输入继续只使用原审核坐标。EventMapLayer 复用 setMarkers 的 DOM 投影、heightAt 和同一 Canvas，远景聚合、近景展开、屏幕标签避让与按压期间的指针捕获均不改变经纬度。setEventAreas 仅绘制闭合区域参考；focusGeo 可带展陈 bounds，并保留原单点调用方式。
+
+“事件地图”目录、地点预览与既有正文共享事件ID；阅读暂停原C2时钟、保存书签，关闭恢复选择，不自动完成C1或播放艺术视频。失效数据清空附加标记/引用，不以失败回退重开旧事件。见[事件位置说明](../history/event-map/README.md)和[本轮验收报告](../../../docs/architecture/phase-event-map-01-report.md)。
