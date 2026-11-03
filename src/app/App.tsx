@@ -21,6 +21,7 @@ import {
   createExhibitionCatalog,
   REGION_HISTORY,
 } from './history/exhibition-catalog';
+import { loadExhibitionEventMap } from './history/event-map/event-map-loader';
 import {
   Timeline,
   PhaseTimeline,
@@ -104,6 +105,10 @@ export function App({
   );
   const { events, routes, sources } = catalog.published;
   const fullExhibition = catalog.audience === 'exhibition';
+  const eventMap = useMemo(
+    () => loadExhibitionEventMap(catalog.published, catalog.audience),
+    [catalog.published, catalog.audience],
+  );
   const [experience, dispatch] = useExperience();
   const phaseMode = catalog.phaseSystem;
   const clock = useHistoricalPhase(
@@ -441,6 +446,14 @@ export function App({
                             {...props}
                             {...(panoramic && fullExhibition
                               ? {
+                                  eventMap,
+                                  eventMapReading:
+                                    historical.state.status !== 'idle',
+                                  onExhibitionPreview: pauseMacro,
+                                  onExhibitionRead: (id: string) => {
+                                    pauseMacro();
+                                    openHistoricalObject({ kind: 'event', id });
+                                  },
                                   observationRequest,
                                   onObservationClosed: () => {
                                     setObservationRequest(null);
@@ -569,8 +582,21 @@ export function App({
                   )}
                 </>
               )}
-              <div className="exploration-tools">
-                <button className="scene-tool" onClick={() => open('chapters')}>
+              <div
+                className="exploration-tools"
+                style={
+                  eventMap && panoramic ? { pointerEvents: 'none' } : undefined
+                }
+              >
+                <button
+                  className="scene-tool"
+                  style={
+                    eventMap && panoramic
+                      ? { pointerEvents: 'auto' }
+                      : undefined
+                  }
+                  onClick={() => open('chapters')}
+                >
                   <OrnamentFrame />
                   <ToolEmblem kind="chapters" />
                   <span className="scene-tool-copy">
@@ -583,7 +609,15 @@ export function App({
                   </span>
                   <ForwardOrnament />
                 </button>
-                <button className="scene-tool" onClick={() => open('history')}>
+                <button
+                  className="scene-tool"
+                  style={
+                    eventMap && panoramic
+                      ? { pointerEvents: 'auto' }
+                      : undefined
+                  }
+                  onClick={() => open('history')}
+                >
                   <OrnamentFrame />
                   <ToolEmblem kind="history" />
                   <span className="scene-tool-copy">

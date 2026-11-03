@@ -11,6 +11,7 @@ import {
 } from '../app/experience/historical-experience-routing';
 import { COMPLETION_STORAGE_KEY } from '../app/experience/experience-completion-service';
 import type { LongMarchSceneProps } from '../shared/contracts';
+import type { EventMapModel } from '../app/history/event-map/event-map-selectors';
 
 vi.mock('../features/scene', () => ({ LongMarchScene: () => <div /> }));
 // Only the GPU boundary is replaced. App, routing, drawers, B components and C1 run for real.
@@ -20,12 +21,34 @@ vi.mock('../app/landscape/ExhibitionPanorama', () => ({
       onRegionHistory?: (region: string) => void;
       observationRequest?: string | null;
       onObservationClosed?: () => void;
+      eventMap?: EventMapModel | null;
+      onExhibitionRead?: (eventId: string) => void;
     },
   ) {
     const { onSceneReady } = props;
     useEffect(() => onSceneReady(), [onSceneReady]);
     return (
       <div aria-label="地图GPU测试边界">
+        {props.eventMap && (
+          <section aria-label="展陈位置接线测试边界">
+            <p>
+              {new Set(props.eventMap.entries.map((p) => p.eventId)).size}事件/
+              {props.eventMap.entries.length}标记
+            </p>
+            {[
+              ...new Map(
+                props.eventMap.entries.map((p) => [p.eventId, p]),
+              ).values(),
+            ].map((p) => (
+              <button
+                key={p.eventId}
+                onClick={() => props.onExhibitionRead?.(p.eventId)}
+              >
+                地图阅读{p.displayLabel ?? p.event.title}
+              </button>
+            ))}
+          </section>
+        )}
         {props.observationRequest && (
           <section aria-label="区域演绎GPU边界">
             {props.observationRequest}
@@ -101,6 +124,27 @@ it('normal App entry exposes all six real topic bodies directly from the exhibit
     expect(screen.queryByText('走进这段历史')).not.toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '关闭当前资料' }));
   }
+});
+it('正常展馆给地图全局事件投影，跨当前阶段直接阅读原正文，不产生C1完成', async () => {
+  const user = await enter();
+  const boundary = screen.getByLabelText('展陈位置接线测试边界');
+  expect(boundary).toHaveTextContent(`${raw.events.length}事件/15标记`);
+  await user.click(
+    within(boundary).getByRole('button', { name: '地图阅读安顺场渡河' }),
+  );
+  expect(
+    screen.getByRole('heading', { name: '安顺场渡河' }),
+  ).toBeInTheDocument();
+  const original = raw.events.find((e) => e.id === 'event-anshunchang')!;
+  expect(
+    screen.getByText((_t, node) => node?.textContent === original.detail),
+  ).toBeInTheDocument();
+  expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
+  await user.click(screen.getByRole('button', { name: '关闭当前资料' }));
+  expect(screen.getByLabelText('展陈位置接线测试边界')).toHaveTextContent(
+    `${raw.events.length}事件/15标记`,
+  );
+  expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
 });
 it('all five same-person photo/art pairs are visible through normal people navigation', async () => {
   const user = await enter();

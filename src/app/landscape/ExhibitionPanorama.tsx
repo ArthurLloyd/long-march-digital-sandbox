@@ -28,6 +28,8 @@ import { createPanoramaMap, type PanoramaMapAdapter } from './map-renderer';
 import { GEOGRAPHIC_VIEWS, REGIONS, type RegionId } from './map-regions';
 import { inCoverage, regionCenter } from './geography';
 import { selectMapRoutes } from './map-objects';
+import type { EventMapModel } from '../history/event-map/event-map-selectors';
+import { EventMapLayer, type EventMapLayerHandle } from './EventMapLayer';
 import { RUIJIN_SCENE, isPanoramaSceneId } from './panorama-bookmark';
 import {
   selectForceStateForPhase,
@@ -54,10 +56,15 @@ export function ExhibitionPanorama(
     historyRegions?: readonly string[];
     observationRequest?: RegionId | null;
     onObservationClosed?: () => void;
+    eventMap?: EventMapModel | null;
+    eventMapReading?: boolean;
+    onExhibitionPreview?: () => void;
+    onExhibitionRead?: (eventId: string) => void;
   },
 ) {
   const host = useRef<HTMLDivElement>(null),
     api = useRef<PanoramaMapAdapter | null>(null);
+  const eventLayer = useRef<EventMapLayerHandle>(null);
   const latest = useRef(props),
     labels = useRef<Record<string, HTMLElement | null>>({});
   const trigger = useRef<HTMLElement | null>(null),
@@ -186,7 +193,8 @@ export function ExhibitionPanorama(
           if (active)
             latest.current.onSceneError({ code: 'render_failed', message });
         },
-        onMarkers: (markers) =>
+        onMarkers: (markers, viewport) => {
+          eventLayer.current?.project(markers, viewport);
           markers.forEach((marker) => {
             const label = labels.current[marker.id];
             if (!label) return;
@@ -201,7 +209,8 @@ export function ExhibitionPanorama(
             const besideTorch = label.classList.contains('is-ruijin-anchor');
             label.style.transform = `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
             label.style.visibility = marker.visible ? 'visible' : 'hidden';
-          }),
+          });
+        },
         onViewChange: (bookmark) => {
           if (active)
             latest.current.onCameraBookmark({
@@ -239,8 +248,25 @@ export function ExhibitionPanorama(
         id: `force:${snapshot.snapshotId}`,
         coordinates: snapshot.coordinates!,
       })),
+      ...(props.eventMap?.entries ?? []).map((p) => ({
+        id: `placement:${p.placementId}`,
+        coordinates: p.anchorCoordinates,
+      })),
+      ...(props.eventMap?.resources.positions.regions ?? [])
+        .filter((r) =>
+          props.eventMap?.entries.some((p) => p.regionIds.includes(r.regionId)),
+        )
+        .map((r) => ({
+          id: `event-region:${r.regionId}`,
+          coordinates: r.anchorCoordinates,
+        })),
     ]);
-  }, [points, forcePoints, epoch]);
+    api.current?.setEventAreas?.(
+      (props.eventMap?.entries ?? []).flatMap((p) =>
+        p.bounds ? [{ id: p.placementId, bounds: p.bounds }] : [],
+      ),
+    );
+  }, [points, forcePoints, props.eventMap, epoch]);
   useEffect(() => {
     api.current?.setRoutes(routes, camps);
   }, [routes, camps, epoch]);
@@ -344,7 +370,7 @@ export function ExhibitionPanorama(
     );
   return (
     <div
-      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}${entry ? ' is-entry' : ''}`}
+      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}${entry ? ' is-entry' : ''}${props.eventMap ? ' has-event-map' : ''}`}
       onKeyDown={(e) => {
         if (e.key === 'Escape' && visibleCinematic) {
           e.preventDefault();
@@ -357,6 +383,60 @@ export function ExhibitionPanorama(
       }}
     >
       <div ref={host} className="museum-map-canvas" />
+      {props.eventMap && (
+        <EventMapLayer
+          ref={eventLayer}
+          model={props.eventMap}
+          reading={Boolean(props.eventMapReading)}
+          activeEventIds={props.events.map((e) => e.id)}
+          onChoose={(p) => {
+            setEntry(false);
+            setFollow(false);
+            setCinematic(null);
+            setEventId(null);
+            setView(null);
+            props.onExhibitionPreview?.();
+            api.current?.focusGeo(p.anchorCoordinates, p.bounds ?? undefined);
+          }}
+          onOverview={() => {
+            setEntry(false);
+            setFollow(false);
+            setCinematic(null);
+            setEventId(null);
+            setView(null);
+            api.current?.overview();
+          }}
+          onRegion={(id) => {
+            const region = props.eventMap?.resources.positions.regions.find(
+              (r) => r.regionId === id,
+            );
+            if (!region) return;
+            setEntry(false);
+            setFollow(false);
+            setCinematic(null);
+            setEventId(null);
+            setView(null);
+            props.onExhibitionPreview?.();
+            api.current?.focusGeo(region.anchorCoordinates, region.bounds);
+          }}
+          onRead={(id) => {
+            if (
+              !props.eventMap?.entries.some((p) => p.eventId === id) &&
+              !props.eventMap?.unlocated.some((e) => e.id === id)
+            )
+              return;
+            const saved = api.current?.bookmark();
+            if (saved)
+              props.onCameraBookmark({
+                ...saved,
+                coordinateSystem: 'scene-local',
+                zoom: 1,
+                phaseId: props.phaseId,
+              });
+            props.onExhibitionRead?.(id);
+          }}
+        />
+      )}
       <p className="museum-terrain-hint">滚轮随鼠标取景 · 双击山坡或河面聚焦</p>
       {focusedView && (
         <button
@@ -559,7 +639,7 @@ export function ExhibitionPanorama(
               )}
             </div>
           )}
-          {view && !visibleCinematic && !entry && (
+          {view && !visibleCinematic && !entry && !props.eventMap && (
             <details className="museum-region-events">
               <summary>
                 <MapControlFrame />
@@ -642,26 +722,27 @@ export function ExhibitionPanorama(
             {track.name}
           </span>
         ))}
-        {points.map((point) => (
-          <button
-            ref={(el) => {
-              labels.current[`event:${point.id}`] = el;
-            }}
-            key={point.id}
-            className="museum-event-marker"
-            title={`${point.title} · ${point.coordinatePrecision === 'exact' ? '精确' : point.coordinatePrecision === 'approximate' ? '近似' : '示意'}位置`}
-            onClick={() => {
-              setEntry(false);
-              remember();
-              setEventId(point.id);
-              setView(null);
-              setCinematic(point.title);
-              api.current?.focusGeo(point.coordinates!);
-            }}
-          >
-            {point.title}
-          </button>
-        ))}
+        {!props.eventMap &&
+          points.map((point) => (
+            <button
+              ref={(el) => {
+                labels.current[`event:${point.id}`] = el;
+              }}
+              key={point.id}
+              className="museum-event-marker"
+              title={`${point.title} · ${point.coordinatePrecision === 'exact' ? '精确' : point.coordinatePrecision === 'approximate' ? '近似' : '示意'}位置`}
+              onClick={() => {
+                setEntry(false);
+                remember();
+                setEventId(point.id);
+                setView(null);
+                setCinematic(point.title);
+                api.current?.focusGeo(point.coordinates!);
+              }}
+            >
+              {point.title}
+            </button>
+          ))}
       </div>
       {event && !visibleCinematic && (
         <aside className="museum-map-event-preview" aria-label="地图事件预览">
