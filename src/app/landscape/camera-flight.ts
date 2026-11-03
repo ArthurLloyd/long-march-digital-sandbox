@@ -50,3 +50,17 @@ export function sampleCameraFlight(
     ],
   };
 }
+
+/** Regional chapter handoff rises to a strategic view, then approaches the destination. */
+export function sampleChapterCameraFlight(
+  from: CameraPose,
+  to: CameraPose,
+  progress: number,
+  overview?: CameraPose,
+): CameraPose {
+  if (!overview) return sampleCameraFlight(from, to, progress);
+  const t = Math.max(0, Math.min(1, progress));
+  return t < 0.48
+    ? sampleCameraFlight(from, overview, t / 0.48)
+    : sampleCameraFlight(overview, to, (t - 0.48) / 0.52);
+}

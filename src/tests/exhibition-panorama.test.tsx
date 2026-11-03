@@ -53,8 +53,20 @@ vi.mock('../app/landscape/map-renderer', () => ({
 // Lazy component boundary only; A's real module has its original tests and UI QA.
 vi.mock('../features/scene', () => ({
   loadRegionalObservation: async () => ({
-    RegionalObservation: ({ onExit }: { onExit: () => void }) => (
-      <button onClick={onExit}>返回艺术观察地图</button>
+    RegionalObservation: ({
+      onExit,
+      onRegionChange,
+      regionId,
+    }: {
+      onExit: () => void;
+      onRegionChange?: (id: 'zunyi') => void;
+      regionId: string;
+    }) => (
+      <>
+        <output aria-label="A区域">{regionId}</output>
+        <button onClick={() => onRegionChange?.('zunyi')}>A下一地域</button>
+        <button onClick={onExit}>返回艺术观察地图</button>
+      </>
     ),
   }),
 }));
@@ -99,6 +111,37 @@ async function openMapTools(user: ReturnType<typeof userEvent.setup>) {
   const summary = screen.getByText('地图工具').closest('summary')!;
   if (!summary.parentElement!.hasAttribute('open')) await user.click(summary);
 }
+
+it.each(['single', 'continuous'] as const)(
+  'A公共边界按%s控制结束，恢复同一地图且不改宏观历史状态',
+  async (scope) => {
+    const closed = vi.fn(),
+      user = userEvent.setup();
+    render(
+      <ExhibitionPanorama
+        {...properties()}
+        observationRequest="ruijin"
+        observationScope={scope}
+        onObservationClosed={closed}
+      />,
+    );
+    expect(await screen.findByLabelText('A区域')).toHaveTextContent('ruijin');
+    await user.click(screen.getByRole('button', { name: 'A下一地域' }));
+    if (scope === 'single') {
+      expect(closed).toHaveBeenCalledOnce();
+      expect(screen.queryByLabelText('A区域')).not.toBeInTheDocument();
+    } else {
+      expect(screen.getByLabelText('A区域')).toHaveTextContent('zunyi');
+      expect(closed).not.toHaveBeenCalled();
+      await user.click(
+        screen.getByRole('button', { name: '返回艺术观察地图' }),
+      );
+      expect(closed).toHaveBeenCalledOnce();
+    }
+    expect(renderer.creates).toBe(1);
+    expect(renderer.api.restore).toHaveBeenCalled();
+  },
+);
 
 it('全局展陈位置穿过阶段投影接入同一地图，快速点击取最后落点，正文使用宿主入口', async () => {
   const data = normalizeDataset(validateDataset(raw)),
@@ -282,17 +325,17 @@ it('文字专题已有阶段但没有历史定位时，仍保留瑞金启程意�
 });
 
 describe('原展馆的现代全景与正式历史边界', () => {
-  it('工具默认收纳，展开后原操作可用；收起与Esc不重挂地图或改变历史状态', async () => {
+  it('工具默认收纳，四个视角按钮独立可用；收起与Esc不重挂地图或改变历史状态', async () => {
     const props = properties(),
       user = userEvent.setup();
     render(<ExhibitionPanorama {...props} />);
     expect(
       screen.getByRole('navigation', { name: '全景地图视角' }),
-    ).not.toBeVisible();
+    ).toBeVisible();
     await openMapTools(user);
     expect(screen.getByRole('button', { name: /^全景$/ })).toBeVisible();
     await user.click(screen.getByRole('button', { name: '收起地图工具' }));
-    expect(screen.getByRole('button', { name: /^全景$/ })).not.toBeVisible();
+    expect(screen.getByRole('button', { name: /^全景$/ })).toBeVisible();
     await openMapTools(user);
     await user.keyboard('{Escape}');
     expect(screen.getByText('地图工具').closest('summary')).toHaveFocus();

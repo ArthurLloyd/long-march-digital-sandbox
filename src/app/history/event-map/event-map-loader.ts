@@ -11,10 +11,15 @@ export const eventMapInput = { positions, references };
 export function loadExhibitionEventMap(
   dataset: HistoryDatasetV2,
   audience?: 'exhibition',
+  input: { positions: unknown; references: unknown } = eventMapInput,
 ): EventMapModel | null {
   if (audience !== 'exhibition') return null;
   try {
-    const resources = validateEventMapResources(positions, references, dataset);
+    const resources = validateEventMapResources(
+      input.positions,
+      input.references,
+      dataset,
+    );
     const entries = selectExhibitionPlacements(dataset, resources);
     return {
       entries,

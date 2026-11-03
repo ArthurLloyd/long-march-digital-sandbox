@@ -8,6 +8,7 @@ import { normalizeDataset } from '../src/shared/contracts/dataset.ts';
 import { validatePublishedAssets } from './validate-published-assets.ts';
 import { eventMapInput } from '../src/app/history/event-map/event-map-loader.ts';
 import { validateEventMapResources } from '../src/app/history/event-map/event-map-schema.ts';
+import { createJourneyContent } from '../src/app/exhibition/exhibition-content.ts';
 
 const root = new URL('../src/data/verified/', import.meta.url);
 async function collect(directory: URL): Promise<unknown[]> {
@@ -34,6 +35,10 @@ try {
       '当前契约只允许 dataset.json 一个正式数据入口；扩展前须由 C 同步运行时加载器与校验脚本。',
     );
   const data = normalizeDataset(validateDataset(files[0]));
+  const exhibition = createJourneyContent(data, 'exhibition');
+  console.log(
+    `展馆补充校验：${exhibition.dataset.events.length} 个展出事件、${exhibition.plan.chapters.length} 个章节、${exhibition.plan.tracks.length} 条有来源战略示意；不等于史实审核。`,
+  );
   const spatial = validateEventMapResources(
     eventMapInput.positions,
     eventMapInput.references,

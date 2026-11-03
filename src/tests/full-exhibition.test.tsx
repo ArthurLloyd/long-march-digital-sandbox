@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { App } from '../app/App';
+// Preserve the prior exhibition compatibility suite; the new normal shell has its own integration suite.
+import { LegacyApp as App } from '../app/App';
 import raw from '../data/verified/dataset.json';
 import { createExhibitionCatalog } from '../app/history/exhibition-catalog';
 import {

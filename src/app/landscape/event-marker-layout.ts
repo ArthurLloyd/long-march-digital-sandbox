@@ -1,4 +1,32 @@
 import type { MarkerProjection } from './map-renderer';
+import { intersectsMapRect, type MapSafeRect } from './map-safe-area';
+
+/** Fixed screen offset from the real projected anchor. Crowding hides; it never relocates. */
+export function layoutAnchoredMapLabels(
+  markers: readonly MarkerProjection[],
+  width: number,
+  height: number,
+  selectedId: string | null,
+  obstacles: readonly MapSafeRect[] = [],
+) {
+  const occupied: MapSafeRect[] = [];
+  return [...markers]
+    .sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId))
+    .map((p) => {
+      const labelX = p.x,
+        labelY = p.y - 15;
+      const box = { x: labelX - 110, y: labelY - 42, width: 220, height: 42 };
+      const visible =
+        p.visible &&
+        box.x >= 8 &&
+        box.x + box.width <= width - 8 &&
+        box.y >= 100 &&
+        labelY <= height - 18 &&
+        ![...obstacles, ...occupied].some((r) => intersectsMapRect(box, r, 8));
+      if (visible) occupied.push(box);
+      return { ...p, labelX, labelY, visible };
+    });
+}
 
 /** Screen-space label packing only. Never writes back to geographic coordinates. */
 export function layoutEventLabels(
@@ -6,6 +34,7 @@ export function layoutEventLabels(
   width: number,
   height: number,
   selectedId: string | null,
+  obstacles: readonly MapSafeRect[] = [],
 ) {
   const boxes: { x: number; y: number }[] = [];
   return [...markers]
@@ -26,6 +55,15 @@ export function layoutEventLabels(
         const x = p.x + dx!,
           y = p.y + dy!;
         if (x < 105 || x > width - 105 || y < 115 || y > height - 32) continue;
+        if (
+          obstacles.some((r) =>
+            intersectsMapRect(
+              { x: x - 100, y: y - 36, width: 200, height: 36 },
+              r,
+            ),
+          )
+        )
+          continue;
         if (
           boxes.some((b) => Math.abs(b.x - x) < 200 && Math.abs(b.y - y) < 36)
         )

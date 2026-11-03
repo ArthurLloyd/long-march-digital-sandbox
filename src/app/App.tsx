@@ -73,6 +73,7 @@ import {
   sceneSelection,
 } from './history/scene-phase-view';
 import '../styles/historical-orchestration.css';
+import { ExhibitionJourney } from './exhibition/ExhibitionJourney';
 
 const ExhibitionPanorama = lazy(() =>
   import('./landscape/ExhibitionPanorama').then((module) => ({
@@ -87,7 +88,17 @@ const titles: Record<Overlay, string> = {
   guide: '使用说明',
   about: '关于展馆',
 };
-export function App({
+export function App(props: Parameters<typeof LegacyApp>[0] = {}) {
+  return props.input === undefined && !props.modules ? (
+    <ExhibitionJourney
+      input={releaseSnapshot.dataset}
+      completionStore={props.completionStore}
+    />
+  ) : (
+    <LegacyApp {...props} />
+  );
+}
+export function LegacyApp({
   input,
   modules: injectedModules,
   completionStore,

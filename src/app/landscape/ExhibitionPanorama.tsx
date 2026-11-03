@@ -31,6 +31,13 @@ import { selectMapRoutes } from './map-objects';
 import type { EventMapModel } from '../history/event-map/event-map-selectors';
 import { EventMapLayer, type EventMapLayerHandle } from './EventMapLayer';
 import { RUIJIN_SCENE, isPanoramaSceneId } from './panorama-bookmark';
+import type { JourneyTransport } from '../../features/timeline';
+import {
+  observeMapSafeAreas,
+  intersectsMapRect,
+  type MapSafeRect,
+} from './map-safe-area';
+import { layoutAnchoredMapLabels } from './event-marker-layout';
 import {
   selectForceStateForPhase,
   SPATIAL_LABELS,
@@ -60,11 +67,21 @@ export function ExhibitionPanorama(
     eventMapReading?: boolean;
     onExhibitionPreview?: () => void;
     onExhibitionRead?: (eventId: string) => void;
+    geographicRegion?: RegionId | null;
+    onBrowseRegion?: (region: RegionId | null) => void;
+    onMapAdapter?: (adapter: PanoramaMapAdapter | null) => void;
+    journey?: JourneyTransport;
+    opening?: boolean;
+    arrivalEventId?: string | null;
+    observationScope?: 'single' | 'continuous';
+    onObservationOpened?: () => void;
   },
 ) {
   const host = useRef<HTMLDivElement>(null),
     api = useRef<PanoramaMapAdapter | null>(null);
   const eventLayer = useRef<EventMapLayerHandle>(null);
+  const [safeAreas, setSafeAreas] = useState<readonly MapSafeRect[]>([]);
+  const safeAreasRef = useRef<readonly MapSafeRect[]>([]);
   const latest = useRef(props),
     labels = useRef<Record<string, HTMLElement | null>>({});
   const trigger = useRef<HTMLElement | null>(null),
@@ -77,7 +94,7 @@ export function ExhibitionPanorama(
   const [rivers, setRivers] = useState(true),
     [gain, setGain] = useState<1 | 6 | 12 | 24>(12);
   const [follow, setFollow] = useState(true);
-  const [entry, setEntry] = useState(
+  const [localEntry, setEntry] = useState(
     () =>
       (props.cameraBookmark?.sceneId === RUIJIN_SCENE &&
         props.cameraBookmark.phaseId === props.phaseId) ||
@@ -90,8 +107,14 @@ export function ExhibitionPanorama(
             event.coordinates,
         )),
   );
+  const entry = props.opening ?? localEntry;
   const initialEntry = useRef(entry);
-  const focusedView = entry ? 'ruijin' : view;
+  const focusedView =
+    props.geographicRegion !== undefined
+      ? props.geographicRegion
+      : entry
+        ? 'ruijin'
+        : view;
   const [observation, setObservation] = useState<RegionId | null>(null);
   const observationTrigger = useRef<HTMLElement | null>(null);
   const observationBookmark = useRef<ReturnType<
@@ -99,6 +122,7 @@ export function ExhibitionPanorama(
   > | null>(null);
   const observationPhase = useRef<string | null>(null);
   const openObservation = useCallback((id: RegionId) => {
+    latest.current.onObservationOpened?.();
     observationTrigger.current =
       document.activeElement instanceof HTMLElement
         ? document.activeElement
@@ -195,6 +219,21 @@ export function ExhibitionPanorama(
         },
         onMarkers: (markers, viewport) => {
           eventLayer.current?.project(markers, viewport);
+          const geographyLayout =
+            latest.current.geographicRegion !== undefined && viewport
+              ? layoutAnchoredMapLabels(
+                  markers.filter(
+                    (m) =>
+                      m.id.startsWith('view:') &&
+                      (!latest.current.geographicRegion ||
+                        m.id === `view:${latest.current.geographicRegion}`),
+                  ),
+                  viewport.width,
+                  viewport.height,
+                  null,
+                  safeAreasRef.current,
+                )
+              : [];
           markers.forEach((marker) => {
             const label = labels.current[marker.id];
             if (!label) return;
@@ -207,8 +246,34 @@ export function ExhibitionPanorama(
                     ? 16
                     : 0;
             const besideTorch = label.classList.contains('is-ruijin-anchor');
-            label.style.transform = `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
-            label.style.visibility = marker.visible ? 'visible' : 'hidden';
+            const packed = geographyLayout.find((m) => m.id === marker.id);
+            label.style.transform = packed
+              ? `translate(${packed.labelX}px,${packed.labelY}px) translate(-50%,-100%)`
+              : `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
+            const geographicVisible =
+              latest.current.geographicRegion === undefined ||
+              !marker.id.startsWith('view:') ||
+              !latest.current.geographicRegion ||
+              marker.id === `view:${latest.current.geographicRegion}`;
+            const occupied = packed
+              ? !packed.visible
+              : safeAreasRef.current.some((r) =>
+                  intersectsMapRect(
+                    {
+                      x: marker.x - 90,
+                      y: marker.y - 38,
+                      width: 180,
+                      height: 38,
+                    },
+                    r,
+                  ),
+                );
+            label.style.visibility =
+              marker.visible && geographicVisible && !occupied
+                ? 'visible'
+                : 'hidden';
+            label.tabIndex =
+              marker.visible && geographicVisible && !occupied ? 0 : -1;
           });
         },
         onViewChange: (bookmark) => {
@@ -220,8 +285,10 @@ export function ExhibitionPanorama(
               phaseId: latest.current.phaseId,
             });
         },
+        onUserNavigate: () => latest.current.journey?.camera('free'),
       });
       api.current = map;
+      latest.current.onMapAdapter?.(map);
     } catch (problem) {
       latest.current.onSceneError({
         code: 'webgl_unavailable',
@@ -235,8 +302,20 @@ export function ExhibitionPanorama(
       active = false;
       map?.dispose();
       api.current = null;
+      latest.current.onMapAdapter?.(null);
     };
   }, []);
+  useEffect(() => {
+    api.current?.setMarchTransport?.(props.journey ?? null);
+  }, [props.journey, epoch]);
+  useEffect(() => {
+    if (!props.journey || !host.current) return;
+    return observeMapSafeAreas(host.current, (areas) => {
+      safeAreasRef.current = areas;
+      setSafeAreas(areas);
+      api.current?.setSafeAreas?.(areas);
+    });
+  }, [props.journey, epoch]);
   useEffect(() => {
     api.current?.setMarkers([
       ...geographicMarkers,
@@ -286,7 +365,9 @@ export function ExhibitionPanorama(
             kind: 'force',
             prominent: false,
           }
-        : focusedView === 'ruijin' && (entry || !props.phaseId)
+        : focusedView === 'ruijin' &&
+            (entry || !props.phaseId) &&
+            (!props.journey || entry)
           ? {
               coordinates: regionCenter(REGIONS.ruijin),
               kind: 'origin',
@@ -294,7 +375,7 @@ export function ExhibitionPanorama(
             }
           : null,
     );
-  }, [forcePoints, props.phaseId, focusedView, entry, epoch]);
+  }, [forcePoints, props.phaseId, focusedView, entry, epoch, props.journey]);
   useEffect(() => {
     api.current?.setRivers(rivers);
   }, [rivers, epoch]);
@@ -312,7 +393,7 @@ export function ExhibitionPanorama(
       api.current?.restore({ ...saved, sceneId: saved.sceneId });
   }, [props.cameraBookmark, props.phaseId, epoch]);
   useEffect(() => {
-    if (!follow) return;
+    if (!follow || props.journey) return;
     if (
       props.cameraBookmark &&
       isPanoramaSceneId(props.cameraBookmark.sceneId) &&
@@ -329,6 +410,7 @@ export function ExhibitionPanorama(
     points,
     follow,
     epoch,
+    props.journey,
   ]);
   const dismiss = useCallback(() => {
     setCinematic(null);
@@ -346,6 +428,9 @@ export function ExhibitionPanorama(
     setFollow(false);
     setEventId(null);
     setView(id);
+    props.onBrowseRegion?.(id);
+    props.journey?.pause();
+    props.journey?.camera('free');
     const title =
       titleOverride ?? GEOGRAPHIC_VIEWS.find((item) => item.id === id)!.title;
     if (view === id && visibleCinematic === title) {
@@ -355,7 +440,8 @@ export function ExhibitionPanorama(
       requestAnimationFrame(() => trigger.current?.focus());
       return;
     }
-    setCinematic((current) => (current === title ? null : title));
+    if (!props.journey)
+      setCinematic((current) => (current === title ? null : title));
     if (id === 'ruijin' && titleOverride)
       api.current?.focus(REGIONS[id], 'place');
     else api.current?.focus(REGIONS[id]);
@@ -370,7 +456,7 @@ export function ExhibitionPanorama(
     );
   return (
     <div
-      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}${entry ? ' is-entry' : ''}${props.eventMap ? ' has-event-map' : ''}`}
+      className={`museum-panorama${visibleCinematic ? ' is-cinematic' : ''}${entry ? ' is-entry' : ''}${props.eventMap ? ' has-event-map' : ''}${props.geographicRegion !== undefined ? ' is-geographic-led' : ''}`}
       onKeyDown={(e) => {
         if (e.key === 'Escape' && visibleCinematic) {
           e.preventDefault();
@@ -383,60 +469,70 @@ export function ExhibitionPanorama(
       }}
     >
       <div ref={host} className="museum-map-canvas" />
-      {props.eventMap && (
-        <EventMapLayer
-          ref={eventLayer}
-          model={props.eventMap}
-          reading={Boolean(props.eventMapReading)}
-          activeEventIds={props.events.map((e) => e.id)}
-          onChoose={(p) => {
-            setEntry(false);
-            setFollow(false);
-            setCinematic(null);
-            setEventId(null);
-            setView(null);
-            props.onExhibitionPreview?.();
-            api.current?.focusGeo(p.anchorCoordinates, p.bounds ?? undefined);
-          }}
-          onOverview={() => {
-            setEntry(false);
-            setFollow(false);
-            setCinematic(null);
-            setEventId(null);
-            setView(null);
-            api.current?.overview();
-          }}
-          onRegion={(id) => {
-            const region = props.eventMap?.resources.positions.regions.find(
-              (r) => r.regionId === id,
-            );
-            if (!region) return;
-            setEntry(false);
-            setFollow(false);
-            setCinematic(null);
-            setEventId(null);
-            setView(null);
-            props.onExhibitionPreview?.();
-            api.current?.focusGeo(region.anchorCoordinates, region.bounds);
-          }}
-          onRead={(id) => {
-            if (
-              !props.eventMap?.entries.some((p) => p.eventId === id) &&
-              !props.eventMap?.unlocated.some((e) => e.id === id)
-            )
-              return;
-            const saved = api.current?.bookmark();
-            if (saved)
-              props.onCameraBookmark({
-                ...saved,
-                coordinateSystem: 'scene-local',
-                zoom: 1,
-                phaseId: props.phaseId,
-              });
-            props.onExhibitionRead?.(id);
-          }}
-        />
-      )}
+      {props.eventMap &&
+        (props.geographicRegion === undefined ||
+          props.geographicRegion !== null) && (
+          <EventMapLayer
+            ref={eventLayer}
+            model={props.eventMap}
+            reading={Boolean(props.eventMapReading)}
+            directRead={Boolean(props.journey)}
+            safeAreas={safeAreas}
+            activeEventIds={props.events.map((e) => e.id)}
+            arrivingEventId={props.arrivalEventId}
+            onChoose={(p) => {
+              setEntry(false);
+              setFollow(false);
+              setCinematic(null);
+              setEventId(null);
+              if (!props.journey) setView(null);
+              props.onExhibitionPreview?.();
+              api.current?.focusGeo(p.anchorCoordinates, p.bounds ?? undefined);
+            }}
+            onOverview={() => {
+              setEntry(false);
+              setFollow(false);
+              setCinematic(null);
+              setEventId(null);
+              setView(null);
+              api.current?.overview();
+              props.onBrowseRegion?.(null);
+            }}
+            onRegion={(id) => {
+              if (props.journey && id in REGIONS) {
+                chooseView(id as RegionId);
+                return;
+              }
+              const region = props.eventMap?.resources.positions.regions.find(
+                (r) => r.regionId === id,
+              );
+              if (!region) return;
+              setEntry(false);
+              setFollow(false);
+              setCinematic(null);
+              setEventId(null);
+              setView(null);
+              props.onExhibitionPreview?.();
+              api.current?.focusGeo(region.anchorCoordinates, region.bounds);
+            }}
+            onRead={(id) => {
+              if (
+                !props.eventMap?.entries.some((p) => p.eventId === id) &&
+                !props.eventMap?.unlocated.some((e) => e.id === id)
+              )
+                return;
+              const saved = api.current?.bookmark();
+              if (saved)
+                props.onCameraBookmark({
+                  ...saved,
+                  coordinateSystem: 'scene-local',
+                  zoom: 1,
+                  phaseId: props.phaseId,
+                });
+              props.onExhibitionRead?.(id);
+            }}
+          />
+        )}
       <p className="museum-terrain-hint">滚轮随鼠标取景 · 双击山坡或河面聚焦</p>
       {focusedView && (
         <button
@@ -467,13 +563,17 @@ export function ExhibitionPanorama(
         </div>
       )}
       <details className="museum-map-toolbox" ref={toolbox}>
-        <summary>
+        <summary data-map-obstacle="true">
           <MapControlFrame />
           <SlidersHorizontal size={16} />
           <span>地图工具</span>
           <ChevronDown size={14} className="map-disclosure-chevron" />
         </summary>
-        <aside className="museum-map-tool-panel" aria-label="地图工具面板">
+        <aside
+          className="museum-map-tool-panel"
+          aria-label="地图工具面板"
+          data-map-obstacle="true"
+        >
           <div className="museum-tool-panel-heading">
             <span>山河取景与观察</span>
             <button
@@ -488,41 +588,7 @@ export function ExhibitionPanorama(
               收起
             </button>
           </div>
-          <nav className="museum-map-toolbar" aria-label="全景地图视角">
-            <button
-              onClick={() => {
-                setEntry(false);
-                setCinematic(null);
-                setView(null);
-                setEventId(null);
-                api.current?.overview();
-              }}
-            >
-              <MapControlFrame />
-              <Expand size={16} />
-              全景
-            </button>
-            <button
-              onClick={() => {
-                setEntry(false);
-                setView(null);
-                setCinematic(null);
-                api.current?.overview(true);
-              }}
-            >
-              <MapControlFrame />
-              <Map size={16} />
-              俯瞰
-            </button>
-            <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
-              <MapControlFrame />
-              <ZoomIn size={18} />
-            </button>
-            <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
-              <MapControlFrame />
-              <ZoomOut size={18} />
-            </button>
-          </nav>
+
           <details ref={views} className="museum-geographic-views">
             <summary>
               <MapControlFrame />
@@ -608,7 +674,7 @@ export function ExhibitionPanorama(
             {!routes.length && <p>当前阶段暂无可发布的行军路线。</p>}
           </details>
           <ForceLegend state={forceState} hasV2Renderer />
-          {focusedView && !visibleCinematic && (
+          {!props.journey && focusedView && !visibleCinematic && (
             <div className="museum-art-entry">
               <button
                 className="outlined-button"
@@ -683,6 +749,49 @@ export function ExhibitionPanorama(
           )}
         </aside>
       </details>
+      <nav
+        className="museum-map-toolbar"
+        aria-label="全景地图视角"
+        data-map-obstacle="true"
+      >
+        <button
+          onClick={() => {
+            setEntry(false);
+            setCinematic(null);
+            setView(null);
+            setEventId(null);
+            api.current?.overview();
+            props.onBrowseRegion?.(null);
+            props.journey?.camera('free');
+          }}
+        >
+          <MapControlFrame />
+          <Expand size={16} />
+          全景
+        </button>
+        <button
+          onClick={() => {
+            setEntry(false);
+            setView(null);
+            setCinematic(null);
+            api.current?.overview(true);
+            props.onBrowseRegion?.(null);
+            props.journey?.camera('free');
+          }}
+        >
+          <MapControlFrame />
+          <Map size={16} />
+          俯瞰
+        </button>
+        <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
+          <MapControlFrame />
+          <ZoomIn size={18} />
+        </button>
+        <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
+          <MapControlFrame />
+          <ZoomOut size={18} />
+        </button>
+      </nav>
       <div
         className="museum-map-events"
         inert={Boolean(visibleCinematic)}
@@ -707,6 +816,19 @@ export function ExhibitionPanorama(
             </button>
           ),
         )}
+        {props.journey?.plan.tracks.map((track) => (
+          <span
+            key={track.id}
+            ref={(element) => {
+              labels.current[`march:${track.id}`] = element;
+            }}
+            className="journey-unit-label"
+            data-camp={track.camp}
+            aria-label={track.unitName}
+          >
+            {track.unitName}
+          </span>
+        ))}
         {forcePoints.map(({ track, snapshot }) => (
           <span
             key={snapshot.snapshotId}
@@ -797,7 +919,11 @@ export function ExhibitionPanorama(
             <RegionalObservation
               regionId={observation}
               onExit={closeObservation}
-              onRegionChange={setObservation}
+              onRegionChange={(id) => {
+                if (latest.current.observationScope === 'single')
+                  closeObservation();
+                else setObservation(id);
+              }}
             />
           </div>
         </Suspense>

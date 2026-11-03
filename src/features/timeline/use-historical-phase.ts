@@ -2,14 +2,16 @@ import { useMemo } from 'react';
 import type { HistoryDatasetV2 } from '../../shared/contracts';
 import { createPhaseModel } from './historical-phase-selectors';
 import { usePhaseClock } from './use-phase-clock';
+import type { JourneyPlan } from './journey/journey-model';
 export { PHASE_DISPLAY_INTERVAL_MS } from './use-phase-clock';
 
 export function useHistoricalPhase(
   published: HistoryDatasetV2,
   enabled = true,
+  journeyPlan?: JourneyPlan,
 ) {
   const model = useMemo(() => createPhaseModel(published), [published]);
-  const clock = usePhaseClock(model, enabled);
+  const clock = usePhaseClock(model, enabled, journeyPlan);
   const phases = model.orders.get(clock.selectedTopicId ?? '') ?? [];
   const index = phases.findIndex((p) => p.phaseId === clock.activePhaseId);
   return {

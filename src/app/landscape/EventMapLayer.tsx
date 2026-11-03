@@ -11,8 +11,12 @@ import type {
   MapEventEntry,
 } from '../history/event-map/event-map-selectors';
 import type { MarkerProjection, MarkerViewport } from './map-renderer';
-import { layoutEventLabels } from './event-marker-layout';
+import {
+  layoutEventLabels,
+  layoutAnchoredMapLabels,
+} from './event-marker-layout';
 import '../../styles/event-map.css';
+import type { MapSafeRect } from './map-safe-area';
 
 export interface EventMapLayerHandle {
   project(
@@ -29,6 +33,9 @@ export function EventMapLayer({
   onOverview,
   reading,
   onRegion,
+  directRead = false,
+  safeAreas = [],
+  arrivingEventId,
 }: {
   model: EventMapModel;
   ref: Ref<EventMapLayerHandle>;
@@ -38,6 +45,9 @@ export function EventMapLayer({
   onOverview: () => void;
   onRegion: (regionId: string) => void;
   reading: boolean;
+  directRead?: boolean;
+  safeAreas?: readonly MapSafeRect[];
+  arrivingEventId?: string | null;
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const [region, setRegion] = useState('all');
@@ -70,6 +80,7 @@ export function EventMapLayer({
         : null;
     setSelection(entry.placementId);
     onChoose(entry);
+    if (directRead) onRead(entry.eventId);
     if (directory.current) directory.current.open = false;
   };
   const browseRegion = (id: string) => {
@@ -88,7 +99,7 @@ export function EventMapLayer({
     () => ({
       project(markers, viewport) {
         if (!viewport) return;
-        const far = viewport.distance > 4.8;
+        const far = !directRead && viewport.distance > 4.8;
         const wanted = markers.filter((m) =>
           far
             ? m.id.startsWith('event-region:') &&
@@ -97,11 +108,16 @@ export function EventMapLayer({
               model.entries.some((p) => m.id === `placement:${p.placementId}`),
         );
         const layout = new Map(
-          layoutEventLabels(
+          (directRead ? layoutAnchoredMapLabels : layoutEventLabels)(
             wanted,
             viewport.width,
             viewport.height,
-            selection ? `placement:${selection}` : null,
+            arrivingEventId
+              ? `placement:${model.entries.find((p) => p.eventId === arrivingEventId)?.placementId}`
+              : selection
+                ? `placement:${selection}`
+                : null,
+            safeAreas,
           ).map((m) => [m.id, m]),
         );
         for (const [id, element] of elements.current) {
@@ -126,7 +142,7 @@ export function EventMapLayer({
         }
       },
     }),
-    [model, regions, selection],
+    [model, regions, selection, directRead, safeAreas, arrivingEventId],
   );
   const register = (id: string, element: HTMLButtonElement | null) => {
     if (element) elements.current.set(id, element);
@@ -160,66 +176,72 @@ export function EventMapLayer({
   const unique = [...new Map(readable.map((p) => [p.eventId, p])).values()];
   return (
     <section className="event-map-layer" aria-label="事件概略地图">
-      <details className="event-map-directory" ref={directory}>
-        <summary>
-          <MapPin size={15} />
-          事件地图 <span>{eventCount}</span>
-        </summary>
-        <div className="event-map-directory-body">
-          <div className="event-map-directory-heading">
-            <h2>山河中的历史</h2>
-            <button
-              onClick={() => {
-                browseRegion('all');
-                if (directory.current) directory.current.open = false;
-              }}
-            >
-              查看总览
-              <ArrowUpRight size={14} />
-            </button>
-          </div>
-          <p>
-            {eventCount} 个事件 · {model.entries.length} 个位置标记
-          </p>
-          <label>
-            浏览区域
-            <select
-              value={
-                regions.some((r) => r.regionId === region) ? region : 'all'
-              }
-              onChange={(e) => {
-                browseRegion(e.target.value);
-              }}
-            >
-              <option value="all">全部区域</option>
-              {regions.map((r) => (
-                <option key={r.regionId} value={r.regionId}>
-                  {r.title}
-                </option>
-              ))}
-            </select>
-          </label>
-          {model.error && <p role="status">{model.error}</p>}
-          <div className="event-map-directory-list">
-            {unique.map((p) => (
-              <button key={p.eventId} onClick={() => choose(p)}>
-                <strong>{p.displayLabel ?? p.event.title}</strong>
-                <span>{p.event.dateText}</span>
+      {!directRead && (
+        <details
+          className="event-map-directory"
+          ref={directory}
+          data-map-obstacle={directRead ? 'true' : undefined}
+        >
+          <summary>
+            <MapPin size={15} />
+            {directRead ? '区域故事' : '事件地图'} <span>{eventCount}</span>
+          </summary>
+          <div className="event-map-directory-body">
+            <div className="event-map-directory-heading">
+              <h2>山河中的历史</h2>
+              <button
+                onClick={() => {
+                  browseRegion('all');
+                  if (directory.current) directory.current.open = false;
+                }}
+              >
+                查看总览
+                <ArrowUpRight size={14} />
               </button>
-            ))}
-          </div>
-          {model.unlocated.length > 0 && (
-            <details>
-              <summary>尚无位置参考（{model.unlocated.length}）</summary>
-              {model.unlocated.map((e) => (
-                <button key={e.id} onClick={() => onRead(e.id)}>
-                  {e.title} · 阅读正文
+            </div>
+            <p>
+              {eventCount} 个事件 · {model.entries.length} 个位置标记
+            </p>
+            <label>
+              浏览区域
+              <select
+                value={
+                  regions.some((r) => r.regionId === region) ? region : 'all'
+                }
+                onChange={(e) => {
+                  browseRegion(e.target.value);
+                }}
+              >
+                <option value="all">全部区域</option>
+                {regions.map((r) => (
+                  <option key={r.regionId} value={r.regionId}>
+                    {r.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {model.error && <p role="status">{model.error}</p>}
+            <div className="event-map-directory-list">
+              {unique.map((p) => (
+                <button key={p.eventId} onClick={() => choose(p)}>
+                  <strong>{p.displayLabel ?? p.event.title}</strong>
+                  <span>{p.event.dateText}</span>
                 </button>
               ))}
-            </details>
-          )}
-        </div>
-      </details>
+            </div>
+            {model.unlocated.length > 0 && (
+              <details>
+                <summary>尚无位置参考（{model.unlocated.length}）</summary>
+                {model.unlocated.map((e) => (
+                  <button key={e.id} onClick={() => onRead(e.id)}>
+                    {e.title} · 阅读正文
+                  </button>
+                ))}
+              </details>
+            )}
+          </div>
+        </details>
+      )}
       <p className="event-map-legend">
         事件位置为概略定位 <span>◇ 事件点 ▱ 区域参考</span>
       </p>
@@ -271,6 +293,7 @@ export function EventMapLayer({
             data-current={activeEventIds.includes(p.eventId)}
             data-selected={selected?.placementId === p.placementId}
             data-kind={p.placementKind}
+            data-arriving={p.eventId === arrivingEventId}
             aria-label={`${p.displayLabel ?? p.event.title}，${p.locationLabel}`}
             aria-hidden="true"
             tabIndex={-1}
@@ -284,7 +307,7 @@ export function EventMapLayer({
           </button>
         ))}
       </div>
-      {selected && (
+      {selected && !directRead && (
         <aside
           className="event-map-preview"
           aria-label="事件位置预览"

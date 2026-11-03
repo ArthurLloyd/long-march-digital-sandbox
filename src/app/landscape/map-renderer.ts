@@ -1,4 +1,4 @@
-import { sampleCameraFlight } from './camera-flight';
+import { sampleChapterCameraFlight } from './camera-flight';
 import { composeTerrainView } from './camera-composition';
 import { createModernLandscape } from './modern-landscape';
 import * as THREE from 'three';
@@ -12,6 +12,9 @@ import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
 import { composeReliefEntry, composeRegionalView } from './relief-block';
 import { createJourneyTorch, type JourneyMarker } from './journey-torch';
 import { createTerrainDiagnostics } from './terrain-diagnostics';
+import { createMarchLayer } from './march-layer';
+import type { JourneyTransport } from '../../features/timeline';
+import type { MapSafeRect } from './map-safe-area';
 import {
   constrainTerrainCamera,
   createSurfaceGesture,
@@ -43,10 +46,16 @@ export interface MarkerViewport {
   distance: number;
 }
 export interface PanoramaMapAdapter {
+  setMarchTransport?(transport: JourneyTransport | null): void;
+  setSafeAreas?(areas: readonly MapSafeRect[]): void;
   setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
   focus(bounds: GeoBounds, framing?: 'place'): void;
-  focusGeo(point: GeoPoint, bounds?: GeoBounds): void;
+  focusGeo(
+    point: GeoPoint,
+    bounds?: GeoBounds,
+    transition?: 'regional' | 'local',
+  ): void;
   setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -76,6 +85,7 @@ export function createPanoramaMap(
     entryView?: boolean;
     initialBookmark?: PanoramaBookmark;
     onViewChange?: (bookmark: PanoramaBookmark) => void;
+    onUserNavigate?: () => void;
   },
 ): PanoramaMapAdapter {
   const scene = new THREE.Scene();
@@ -147,6 +157,40 @@ export function createPanoramaMap(
   scene.add(journeyTorch.root);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
+  const march = createMarchLayer(scene, heightAt);
+  let safeAreas: readonly MapSafeRect[] = [];
+  const applySafeFrame = () => {
+    if (entryFraming || !safeAreas.length) {
+      camera.clearViewOffset();
+      return;
+    }
+    let left = 0,
+      right = width,
+      top = 0,
+      bottom = height;
+    for (const r of safeAreas) {
+      if (r.width > width * 0.6 && r.y < 100)
+        top = Math.max(top, r.y + r.height);
+      else if (r.width > width * 0.6 && r.y > height * 0.55)
+        bottom = Math.min(bottom, r.y);
+      else if (r.height > 120 && r.x < width * 0.2)
+        left = Math.max(left, r.x + r.width);
+      else if (r.height > 120 && r.x > width * 0.6)
+        right = Math.min(right, r.x);
+    }
+    if (right - left < width * 0.3) {
+      left = 0;
+      right = width;
+    }
+    camera.setViewOffset(
+      width,
+      height,
+      width / 2 - (left + right) / 2,
+      height / 2 - (top + bottom) / 2,
+      width,
+      height,
+    );
+  };
   const routeGroup = new THREE.Group();
   const forceGroup = new THREE.Group();
   const eventAreaGroup = new THREE.Group();
@@ -219,8 +263,16 @@ export function createPanoramaMap(
     to: THREE.Vector3;
     targetFrom: THREE.Vector3;
     targetTo: THREE.Vector3;
+    overview?: {
+      position: [number, number, number];
+      target: [number, number, number];
+    };
   } = null;
-  const travel = (position: THREE.Vector3, target: THREE.Vector3) => {
+  const travel = (
+    position: THREE.Vector3,
+    target: THREE.Vector3,
+    regional = false,
+  ) => {
     if (options.reducedMotion) {
       camera.position.copy(position);
       controls.target.copy(target);
@@ -231,16 +283,34 @@ export function createPanoramaMap(
     } else
       flight = {
         start: performance.now(),
-        duration:
-          camera.position.distanceTo(controls.target) /
-            Math.max(0.01, position.distanceTo(target)) >
-            6 || controls.target.distanceTo(target) > 3
+        duration: regional
+          ? 2600
+          : camera.position.distanceTo(controls.target) /
+                Math.max(0.01, position.distanceTo(target)) >
+                6 || controls.target.distanceTo(target) > 3
             ? 2400
             : 1600,
         from: camera.position.clone(),
         to: position,
         targetFrom: controls.target.clone(),
         targetTo: target,
+        overview: regional
+          ? (() => {
+              const middle = controls.target.clone().lerp(target, 0.5);
+              const rise = Math.max(
+                2.4,
+                controls.target.distanceTo(target) * 0.85,
+              );
+              return {
+                position: [
+                  middle.x,
+                  Math.max(middle.y, heightAt(middle.x, middle.z)) + rise,
+                  middle.z + rise * 0.15,
+                ] as [number, number, number],
+                target: middle.toArray(),
+              };
+            })()
+          : undefined,
       };
   };
   const cancel = () => {
@@ -250,7 +320,11 @@ export function createPanoramaMap(
     focusRevision++;
     landscape.cancelPending();
   };
-  controls.addEventListener('start', cancel);
+  const userCancel = () => {
+    cancel();
+    options.onUserNavigate?.();
+  };
+  controls.addEventListener('start', userCancel);
   const gesture = createSurfaceGesture(renderer.domElement);
   const ray = new THREE.Raycaster();
   const pickSurface = (clientX: number, clientY: number) => {
@@ -289,6 +363,7 @@ export function createPanoramaMap(
       ),
     );
     cancel();
+    options.onUserNavigate?.();
     if (!pose) return;
     camera.position.copy(pose.position);
     controls.target.copy(pose.target);
@@ -300,6 +375,7 @@ export function createPanoramaMap(
     if (!gesture.accept(event)) return;
     const hit = pickSurface(event.clientX, event.clientY);
     if (!hit) return;
+    options.onUserNavigate?.();
     const pose = localTerrainPose(camera.position, controls.target, hit);
     if (!pose) return;
     cancel();
@@ -351,6 +427,7 @@ export function createPanoramaMap(
     height = Math.max(1, rect.height);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    applySafeFrame();
     camera.updateProjectionMatrix();
     if (entryFraming && !preparingEntry) {
       const pose = composeReliefEntry(
@@ -418,6 +495,7 @@ export function createPanoramaMap(
       return;
     event.preventDefault();
     cancel();
+    options.onUserNavigate?.();
     if (event.key === 'Home') return overview();
     const offset = camera.position.clone().sub(controls.target);
     if (event.key === '+' || event.key === '-')
@@ -451,21 +529,62 @@ export function createPanoramaMap(
   renderer.domElement.addEventListener('webglcontextlost', contextLost);
   let drawnHeightVersion = -1;
   let shadowDistance = 0;
+  let previousDrawTime = 0;
+  let followHeading = 0;
+  const followPosition = new THREE.Vector3(),
+    followTarget = new THREE.Vector3();
   const shadowTarget = new THREE.Vector3(Infinity, Infinity, Infinity);
   const draw = (now: number) => {
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     if (suspended || preparingEntry) return;
+    const dt = Math.min(0.1, Math.max(0, (now - previousDrawTime) / 1000));
+    previousDrawTime = now;
+    const marching = march.update(camera.position.distanceTo(controls.target));
+    const marchingState = march.transport?.read();
+    if (
+      marching &&
+      marchingState?.camera === 'follow' &&
+      !marchingState.pendingEventId &&
+      !flight
+    ) {
+      const desiredHeading = Math.atan2(
+        marching.direction.x,
+        marching.direction.z,
+      );
+      const difference = Math.atan2(
+        Math.sin(desiredHeading - followHeading),
+        Math.cos(desiredHeading - followHeading),
+      );
+      followHeading += THREE.MathUtils.clamp(difference, -0.65 * dt, 0.65 * dt);
+      // Strategic direction evidence cannot support road-level first-person flight.
+      const distance = Math.max(0.48, marchingState.distance * 0.65);
+      followTarget.copy(marching.point);
+      followTarget.y += 0.045;
+      followPosition.set(
+        followTarget.x - Math.sin(followHeading) * distance,
+        followTarget.y + distance * 0.6,
+        followTarget.z - Math.cos(followHeading) * distance,
+      );
+      followPosition.y = Math.max(
+        followPosition.y,
+        landscape.navigationHeightAt(followPosition.x, followPosition.z) + 0.18,
+      );
+      const alpha = 1 - Math.exp(-dt * 2.8);
+      camera.position.lerp(followPosition, alpha);
+      controls.target.lerp(followTarget, alpha);
+    }
     let flightFinished = false;
     if (flight) {
       const t = Math.min(1, (now - flight.start) / flight.duration);
-      const pose = sampleCameraFlight(
+      const pose = sampleChapterCameraFlight(
         {
           position: flight.from.toArray(),
           target: flight.targetFrom.toArray(),
         },
         { position: flight.to.toArray(), target: flight.targetTo.toArray() },
         t,
+        flight.overview,
       );
       camera.position.fromArray(pose.position);
       controls.target.fromArray(pose.target);
@@ -497,6 +616,7 @@ export function createPanoramaMap(
     if (landscape.heightVersion !== drawnHeightVersion) {
       drawnHeightVersion = landscape.heightVersion;
       drape();
+      march.drape();
       renderer.shadowMap.needsUpdate = true;
     }
     constrain();
@@ -558,25 +678,35 @@ export function createPanoramaMap(
       return;
     }
     options.onMarkers(
-      markers.map((marker) => {
-        marker.point.y = heightAt(marker.point.x, marker.point.z) + marker.lift;
-        const point = marker.point.clone().project(camera);
-        return {
-          id: marker.id,
-          x: ((point.x + 1) * width) / 2,
-          y: ((1 - point.y) * height) / 2,
-          visible:
-            point.z < 1 &&
-            point.z > -1 &&
-            Math.abs(point.x) < 0.97 &&
-            Math.abs(point.y) < 0.94,
-        };
-      }),
+      [
+        ...markers.map((marker) => {
+          marker.point.y =
+            heightAt(marker.point.x, marker.point.z) + marker.lift;
+          const point = marker.point.clone().project(camera);
+          return {
+            id: marker.id,
+            x: ((point.x + 1) * width) / 2,
+            y: ((1 - point.y) * height) / 2,
+            visible:
+              point.z < 1 &&
+              point.z > -1 &&
+              Math.abs(point.x) < 0.97 &&
+              Math.abs(point.y) < 0.94,
+          };
+        }),
+        ...march.projections(camera, width, height),
+      ],
       { width, height, distance: camera.position.distanceTo(controls.target) },
     );
   };
   frame = requestAnimationFrame(draw);
   return {
+    setMarchTransport: (transport) => march.setTransport(transport),
+    setSafeAreas: (areas) => {
+      safeAreas = areas;
+      applySafeFrame();
+      camera.updateProjectionMatrix();
+    },
     setJourneyMarker: journeyTorch.setMarker,
     entry: () => entry(),
     setEventAreas(areas) {
@@ -675,7 +805,7 @@ export function createPanoramaMap(
           };
         });
     },
-    focusGeo(point, bounds) {
+    focusGeo(point, bounds, transition) {
       entryFraming = false;
       if (!inCoverage(point)) return;
       const revision = ++focusRevision;
@@ -708,6 +838,7 @@ export function createPanoramaMap(
         travel(
           new THREE.Vector3(...pose.position),
           new THREE.Vector3(...pose.target),
+          transition === 'regional',
         );
       };
       if (region) void landscape.focus(region).then(complete);
@@ -882,10 +1013,11 @@ export function createPanoramaMap(
       if (disposed) return;
       disposed = true;
       journeyTorch.dispose();
+      march.dispose();
       landscape.dispose();
       cancelAnimationFrame(frame);
       observer.disconnect();
-      controls.removeEventListener('start', cancel);
+      controls.removeEventListener('start', userCancel);
       controls.removeEventListener('end', viewChanged);
       controls.dispose();
       renderer.domElement.removeEventListener('pointerdown', gesture.down);
