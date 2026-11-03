@@ -53,7 +53,7 @@ it('renders a forward arrow and reveals the line to the same sampled pose even w
   const selected = layer.update(1)!;
   const [x, z] = projectGeo(sampleTrack(plan.tracks[0]!, 0.5)!.coordinates);
   expect(selected.point.x).toBeCloseTo(x);
-  expect(selected.point.y).toBeCloseTo(0.465);
+  expect(selected.point.y).toBeCloseTo(0.4 + MARCH_PRESENTATION.floatingLift);
   expect(selected.point.z).toBeCloseTo(z);
   const group = scene.children[0]!,
     line = group.children.find((o) => o instanceof THREE.Line) as THREE.Line,
@@ -117,46 +117,41 @@ it('keeps the full dashed corridor separate from the travelled trail and uses a 
   expect(size.z / size.x).toBeGreaterThan(3);
   const vertices = arrow.geometry.getAttribute('position');
   for (let i = 0; i < vertices.count; i++)
-    if (vertices.getZ(i) < -0.099)
+    if (vertices.getZ(i) < -0.239)
       expect(Math.abs(vertices.getX(i))).toBeLessThan(0.001);
   layer.dispose();
   expect(scene.children).toHaveLength(0);
 });
 
-it('switches from a large floating overview glyph to a small ground-draped follow glyph and back without new scene objects', () => {
+it('keeps the same tip-anchored suspended glyph in custom and default follow views without allocating new scene objects', () => {
   const scene = new THREE.Scene(),
     layer = createMarchLayer(scene, () => 0.4),
     t = createJourneyTransport(plan);
   layer.setTransport(t);
   t.seek(50);
-  layer.update(0.72);
+  layer.update(3);
   const group = scene.children[0]!,
     count = group.children.length;
   const mesh = group.children.find(
     (o) => o instanceof THREE.Mesh,
   ) as THREE.Mesh;
-  const flat = mesh.geometry;
-  flat.computeBoundingBox();
-  const flatLength =
-    flat.boundingBox!.getSize(new THREE.Vector3()).z * mesh.scale.z;
-  t.camera('follow');
-  layer.update(0.17);
-  expect(mesh.geometry).not.toBe(flat);
-  mesh.geometry.computeBoundingBox();
-  expect(
-    mesh.geometry.boundingBox!.getSize(new THREE.Vector3()).x,
-  ).toBeLessThan(flatLength * 0.3);
-  const vertices = mesh.geometry.getAttribute('position');
-  for (let i = 0; i < vertices.count; i++)
-    expect(vertices.getY(i)).toBeCloseTo(
-      0.4 + MARCH_PRESENTATION.groundLift,
-      6,
-    );
-  t.camera('overview');
-  layer.update(0.72);
-  expect(mesh.geometry).toBe(flat);
-  expect(mesh.position.y).toBeCloseTo(0.465);
-  expect(group.children).toHaveLength(count);
+  const geometry = mesh.geometry;
+  for (const mode of ['follow', 'free', 'overview', 'follow'] as const) {
+    t.camera(mode);
+    const selected = layer.update(3)!;
+    expect(mesh.geometry).toBe(geometry);
+    expect(mesh.position.toArray()).toEqual(selected.point.toArray());
+    expect(mesh.position.y).toBeCloseTo(0.4 + MARCH_PRESENTATION.floatingLift);
+    const vertices = mesh.geometry.getAttribute('position');
+    let tipCount = 0;
+    for (let i = 0; i < vertices.count; i++)
+      if (Math.abs(vertices.getZ(i)) < 1e-6) {
+        expect(Math.abs(vertices.getX(i))).toBeLessThan(1e-6);
+        tipCount++;
+      }
+    expect(tipCount).toBeGreaterThan(0);
+    expect(group.children).toHaveLength(count);
+  }
   layer.dispose();
   expect(scene.children).toHaveLength(0);
 });

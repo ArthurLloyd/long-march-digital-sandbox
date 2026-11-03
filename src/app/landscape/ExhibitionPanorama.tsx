@@ -14,7 +14,6 @@ import {
   ChevronDown,
   Expand,
   Layers,
-  Map,
   ZoomIn,
   ZoomOut,
   SlidersHorizontal,
@@ -26,7 +25,7 @@ import type { LongMarchSceneV2Props } from '../../shared/contracts';
 import { CinematicTitle } from '../../components/exhibition/CinematicTitle';
 import { createPanoramaMap, type PanoramaMapAdapter } from './map-renderer';
 import { GEOGRAPHIC_VIEWS, REGIONS, type RegionId } from './map-regions';
-import { inCoverage, regionCenter } from './geography';
+import { inCoverage, regionCenter, type GeoPoint } from './geography';
 import { selectMapRoutes } from './map-objects';
 import type { EventMapModel } from '../history/event-map/event-map-selectors';
 import { EventMapLayer, type EventMapLayerHandle } from './EventMapLayer';
@@ -80,10 +79,11 @@ export function ExhibitionPanorama(
     geographicRegion?: RegionId | null;
     onBrowseRegion?: (region: RegionId | null) => void;
     onMapAdapter?: (adapter: PanoramaMapAdapter | null) => void;
-    onMarchOverview?: () => void;
+    onGeographicBrowse?: (region: RegionId | null) => void;
     journey?: JourneyTransport;
     opening?: boolean;
     arrivalEventId?: string | null;
+    arrivalCoordinates?: GeoPoint | null;
     showMarch?: boolean;
     observationScope?: 'single' | 'continuous';
     onObservationOpened?: () => void;
@@ -218,6 +218,7 @@ export function ExhibitionPanorama(
               }
             : undefined,
         technicalMarkers: false,
+        hideGuides: Boolean(latest.current.journey),
         reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)')
           .matches,
         onReady: () => {
@@ -238,7 +239,8 @@ export function ExhibitionPanorama(
                   markers.filter(
                     (m) =>
                       m.id.startsWith('view:') &&
-                      (!latest.current.geographicRegion ||
+                      ((viewport.distance >= 5.5 && !latest.current.opening) ||
+                        !latest.current.geographicRegion ||
                         m.id === `view:${latest.current.geographicRegion}`),
                   ),
                   viewport.width,
@@ -248,6 +250,7 @@ export function ExhibitionPanorama(
                   {
                     width: 150,
                     offsets:
+                      (viewport.distance >= 5.5 && !latest.current.opening) ||
                       latest.current.geographicRegion === null
                         ? GLOBAL_REGION_LABEL_OFFSETS
                         : {},
@@ -278,6 +281,9 @@ export function ExhibitionPanorama(
             const geographicVisible =
               latest.current.geographicRegion === undefined ||
               !marker.id.startsWith('view:') ||
+              Boolean(
+                viewport && viewport.distance >= 5.5 && !latest.current.opening,
+              ) ||
               !latest.current.geographicRegion ||
               marker.id === `view:${latest.current.geographicRegion}`;
             const occupied = packed
@@ -318,6 +324,8 @@ export function ExhibitionPanorama(
               phaseId: latest.current.phaseId,
             });
         },
+        onGeographicBrowse: (region) =>
+          latest.current.onGeographicBrowse?.(region),
         onUserNavigate: () => {
           latest.current.journey?.pause();
           latest.current.journey?.camera('free');
@@ -520,6 +528,7 @@ export function ExhibitionPanorama(
             safeAreas={safeAreas}
             activeEventIds={props.events.map((e) => e.id)}
             arrivingEventId={props.arrivalEventId}
+            arrivingCoordinates={props.arrivalCoordinates}
             onChoose={(p) => {
               setEntry(false);
               setFollow(false);
@@ -527,7 +536,12 @@ export function ExhibitionPanorama(
               setEventId(null);
               if (!props.journey) setView(null);
               props.onExhibitionPreview?.();
-              api.current?.focusGeo(p.anchorCoordinates, p.bounds ?? undefined);
+              // Reading a map label must not launch an unrelated close-up flight.
+              if (!props.journey)
+                api.current?.focusGeo(
+                  p.anchorCoordinates,
+                  p.bounds ?? undefined,
+                );
             }}
             onOverview={() => {
               setEntry(false);
@@ -574,7 +588,7 @@ export function ExhibitionPanorama(
           />
         )}
       <p className="museum-terrain-hint">滚轮随鼠标取景 · 双击山坡或河面聚焦</p>
-      {focusedView && (
+      {focusedView && (!props.journey || entry) && (
         <button
           className={`museum-region-anchor${focusedView === 'ruijin' ? ' is-ruijin-anchor' : ''}`}
           ref={(element) => {
@@ -809,25 +823,6 @@ export function ExhibitionPanorama(
           <Expand size={16} />
           全景
         </button>
-        <button
-          aria-label={props.onMarchOverview ? '区域俯瞰' : undefined}
-          onClick={() => {
-            setEntry(false);
-            setView(null);
-            setCinematic(null);
-            if (props.onMarchOverview) {
-              props.onMarchOverview();
-              return;
-            }
-            api.current?.overview(true);
-            props.onBrowseRegion?.(null);
-            props.journey?.camera('free');
-          }}
-        >
-          <MapControlFrame />
-          <Map size={16} />
-          俯瞰
-        </button>
         <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
           <MapControlFrame />
           <ZoomIn size={18} />
@@ -854,25 +849,25 @@ export function ExhibitionPanorama(
             ))}
           </svg>
         )}
-        {GEOGRAPHIC_VIEWS.filter((item) => item.id !== focusedView).map(
-          (item) => (
-            <button
-              key={`view:${item.id}`}
-              ref={(element) => {
-                labels.current[`view:${item.id}`] = element;
-              }}
-              className="museum-geographic-marker"
-              aria-pressed={view === item.id}
-              aria-label={`取景${item.title}区域`}
-              title="现代地理取景区，不是历史事件发生点"
-              onClick={() => chooseView(item.id)}
-            >
-              <MapControlFrame />
-              {item.title}
-              <small>区域</small>
-            </button>
-          ),
-        )}
+        {GEOGRAPHIC_VIEWS.filter(
+          (item) => !entry || item.id !== focusedView,
+        ).map((item) => (
+          <button
+            key={`view:${item.id}`}
+            ref={(element) => {
+              labels.current[`view:${item.id}`] = element;
+            }}
+            className="museum-geographic-marker"
+            aria-pressed={view === item.id}
+            aria-label={`取景${item.title}区域`}
+            title="现代地理取景区，不是历史事件发生点"
+            onClick={() => chooseView(item.id)}
+          >
+            <MapControlFrame />
+            {item.title}
+            <small>区域</small>
+          </button>
+        ))}
         {props.journey?.plan.tracks.map((track) => (
           <span
             key={track.id}

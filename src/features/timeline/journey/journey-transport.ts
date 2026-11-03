@@ -1,5 +1,6 @@
 import {
   journeyChapters,
+  sampleJourney,
   journeyDuration,
   type JourneyPlan,
   type JourneyState,
@@ -17,7 +18,7 @@ export function createJourneyTransport(plan: JourneyPlan) {
     playing: false,
     speed: 1,
     unitId: 'central-red',
-    camera: 'overview',
+    camera: 'follow',
     distance: 1,
     pendingEventId: null,
     seen: [],
@@ -93,7 +94,11 @@ export function createJourneyTransport(plan: JourneyPlan) {
       };
     },
     advance,
-    tickWallTime: (seconds: number) => advance(seconds * JOURNEY_BASE_RATE),
+    tickWallTime: (seconds: number) => {
+      const sample = sampleJourney(plan, state.sequenceId, state.time);
+      const rate = sample.stage !== 'local' ? 1.8 : 1;
+      advance(seconds * JOURNEY_BASE_RATE * rate);
+    },
     pause,
     seek,
     acknowledge,

@@ -5,7 +5,6 @@ import {
   SkipBack,
   SkipForward,
   Compass,
-  Map,
   Navigation,
   ArrowLeft,
 } from 'lucide-react';
@@ -26,6 +25,7 @@ export function JourneyControls({
   onInteraction,
   onNavigate,
   onSample,
+  onDefaultView,
 }: {
   transport: JourneyTransport;
   state: JourneyState;
@@ -35,6 +35,7 @@ export function JourneyControls({
   onInteraction: () => void;
   onNavigate: () => void;
   onSample: () => void;
+  onDefaultView: () => void;
 }) {
   const chapters = journeyChapters(t.plan, state.sequenceId),
     total = journeyDuration(t.plan, state.sequenceId),
@@ -44,7 +45,7 @@ export function JourneyControls({
     const chapter = chapters[index + delta];
     if (chapter) {
       onNavigate();
-      t.camera('overview');
+      t.camera('follow');
       t.seek(chapter.start);
     }
   };
@@ -84,8 +85,6 @@ export function JourneyControls({
             onClick={() => {
               if (state.playing) t.pause();
               else {
-                onNavigate();
-                if (state.camera === 'free') t.camera('follow');
                 t.play();
               }
             }}
@@ -134,6 +133,7 @@ export function JourneyControls({
                 value={state.sequenceId}
                 onChange={(e) => {
                   onNavigate();
+                  t.camera('follow');
                   t.sequence(e.target.value);
                 }}
               >
@@ -153,7 +153,7 @@ export function JourneyControls({
                   const c = chapters.find((c) => c.id === e.target.value);
                   if (c) {
                     onNavigate();
-                    t.camera('overview');
+                    t.camera('follow');
                     t.seek(c.start);
                   }
                 }}
@@ -185,7 +185,6 @@ export function JourneyControls({
           <nav aria-label="行军镜头模式">
             {(
               [
-                ['overview', '俯瞰', Map],
                 ['follow', '随行', Navigation],
                 ['free', '自由', Compass],
               ] as const
@@ -193,14 +192,16 @@ export function JourneyControls({
               <button
                 key={id}
                 title={
-                  id === 'overview'
-                    ? '区域俯瞰，箭头进入画面外侧四分之一时平移'
-                    : id === 'follow'
-                      ? '斜侧方近景陪行，箭头贴合地面'
-                      : '手动观察山河'
+                  id === 'follow'
+                    ? '采用区域中远景随行；可自行旋转、缩放后继续跟随'
+                    : '保留手动构图；播放时按当前视角随箭头移动'
                 }
                 aria-pressed={state.camera === id}
-                onClick={() => t.camera(id as JourneyCamera)}
+                onClick={() => {
+                  t.pause();
+                  t.camera(id as JourneyCamera);
+                  if (id === 'follow') onDefaultView();
+                }}
               >
                 <Icon size={16} />
                 {title}
@@ -229,7 +230,10 @@ export function JourneyControls({
                 max={2}
                 step={0.1}
                 value={state.distance}
-                onChange={(e) => t.distance(Number(e.target.value))}
+                onChange={(e) => {
+                  t.distance(Number(e.target.value));
+                  onDefaultView();
+                }}
               />
             </label>
           )}

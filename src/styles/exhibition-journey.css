@@ -830,3 +830,11 @@
   opacity: 0.65;
   visibility: hidden;
 }
+
+/* Geographic helper envelopes/leaders are deliberately absent from the exhibit. */
+.journey-exhibition .event-map-leaders,
+.journey-exhibition .journey-geography-leaders,
+.journey-exhibition .museum-geographic-marker::after,
+.journey-exhibition .museum-region-anchor::after {
+  display: none;
+}

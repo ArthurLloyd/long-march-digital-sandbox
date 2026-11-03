@@ -1,4 +1,10 @@
 import raw from '../data/verified/dataset.json';
+import { createRef } from 'react';
+import {
+  EventMapLayer,
+  type EventMapLayerHandle,
+} from '../app/landscape/EventMapLayer';
+import { createJourneyContent } from '../app/exhibition/exhibition-content';
 import { normalizeDataset } from '../shared/contracts';
 import { validateDataset } from '../shared/utils/validate-dataset';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
@@ -15,6 +21,50 @@ import { simulatePublishedSample } from './fixtures/c1-sample';
 import { simulatePublishedC2 } from './fixtures/c2-sample';
 import { selectScenePhaseView } from '../app/history/scene-phase-view';
 import { loadExhibitionEventMap } from '../app/history/event-map/event-map-loader';
+
+it('prioritizes the observed army crossing when two placements of the same arrival event overlap', () => {
+  const content = createJourneyContent(raw, 'exhibition');
+  const entries = content.map.entries.filter((p) => p.eventId === 'event-sd-4');
+  const erlang = entries.find((p) => p.locationNodeId === 'node-erlang')!;
+  const taiping = entries.find((p) => p.locationNodeId === 'node-taiping')!;
+  const ref = createRef<EventMapLayerHandle>();
+  render(
+    <EventMapLayer
+      model={{ ...content.map, entries }}
+      ref={ref}
+      activeEventIds={[]}
+      onChoose={vi.fn()}
+      onRead={vi.fn()}
+      onOverview={vi.fn()}
+      onRegion={vi.fn()}
+      reading={false}
+      directRead
+      arrivingEventId="event-sd-4"
+      arrivingCoordinates={erlang.anchorCoordinates}
+    />,
+  );
+  act(() =>
+    ref.current!.project(
+      entries.map((p) => ({
+        id: `placement:${p.placementId}`,
+        x: 500,
+        y: 400,
+        visible: true,
+      })),
+      { width: 1200, height: 800, distance: 3 },
+    ),
+  );
+  expect(
+    screen.getByLabelText(
+      `${erlang.displayLabel ?? erlang.event.title}，${erlang.locationLabel}`,
+    ),
+  ).toHaveStyle({ visibility: 'visible' });
+  expect(
+    screen.getByLabelText(
+      `${taiping.displayLabel ?? taiping.event.title}，${taiping.locationLabel}`,
+    ),
+  ).toHaveStyle({ visibility: 'hidden' });
+});
 
 type RendererOptions = Parameters<typeof createPanoramaMap>[1];
 const renderer = vi.hoisted(() => ({

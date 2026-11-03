@@ -20,6 +20,9 @@ export function mapSafeRects(host: HTMLElement): MapSafeRect[] {
   ]
     .filter(
       (e) =>
+        (!e.closest('details:not([open])') ||
+          e.closest('summary')?.parentElement ===
+            e.closest('details:not([open])')) &&
         !e.closest('[hidden], [inert]') &&
         getComputedStyle(e).visibility !== 'hidden' &&
         getComputedStyle(e).display !== 'none',

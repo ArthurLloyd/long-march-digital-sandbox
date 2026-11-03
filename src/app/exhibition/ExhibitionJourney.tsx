@@ -12,6 +12,8 @@ import {
   journeyChapters,
   journeyDuration,
   sampleJourney,
+  sampleTrack,
+  journeyTrackProgress,
   type JourneyState,
 } from '../../features/timeline';
 import { ExhibitionLanding } from '../../components/exhibition/ExhibitionLanding';
@@ -272,7 +274,7 @@ export function ExhibitionJourney({
       camera: state.camera,
       stage: journeyStage,
     };
-    if (state.camera === 'free') return;
+    if (state.camera === 'free' || state.pendingEventId) return;
     const p = content.map.entries.find((p) =>
       chapter.eventIds.includes(p.eventId),
     );
@@ -281,65 +283,29 @@ export function ExhibitionJourney({
       transport.read().sequenceId,
       transport.read().time,
     );
-    const { tracks } = currentSample;
+    const tracks = currentSample.tracks;
     const held = content.plan.tracks.some(
       (t) =>
         (t.holdChapterIds ?? []).includes(chapter.id) &&
         (!t.sequenceIds || t.sequenceIds.includes(transport.read().sequenceId)),
     );
-    if (journeyStage === 'overview') {
-      api.current?.overview(true);
+    if (journeyStage !== 'local' && tracks.length) {
+      // One broad moving shot through the whole corridor, no second stage snap.
+      if (previous?.id !== chapter.id || previous.camera !== state.camera)
+        api.current?.frameMarch?.(tracks.flatMap((t) => t.points));
       return;
     }
-    if (journeyStage === 'transit') {
-      api.current?.frameMarch?.(tracks.flatMap((t) => t.points));
+    if ((tracks.length || held) && api.current?.focusMarch) {
+      api.current.focusMarch('follow');
       return;
     }
-    if (
-      !state.pendingEventId &&
-      (tracks.length || held) &&
-      api.current?.focusMarch &&
-      (state.camera === 'follow' || state.camera === 'overview')
-    ) {
-      api.current.focusMarch(state.camera);
-      return;
-    }
-    if (
-      state.pendingEventId ||
-      (tracks.some((t) => t.presentation) &&
-        currentSample.progress >= chapter.arrival - 1e-6)
-    ) {
-      const point = p?.anchorCoordinates ?? tracks[0]?.points.at(-1);
-      if (point)
-        api.current?.focusGeo(
-          point,
-          p?.placementKind === 'area' ? (p.bounds ?? undefined) : undefined,
-          'local',
-        );
-      return;
-    }
-    if (tracks.length && state.camera === 'overview') {
-      const points = tracks.flatMap((t) => t.points),
-        xs = points.map((p) => p[0]),
-        ys = points.map((p) => p[1]);
-      const bounds: [number, number, number, number] = [
-        Math.min(...xs) - 0.16,
-        Math.min(...ys) - 0.16,
-        Math.max(...xs) + 0.16,
-        Math.max(...ys) + 0.16,
-      ];
+    const point = tracks[0]?.points.at(-1) ?? p?.anchorCoordinates;
+    if (point)
       api.current?.focusGeo(
-        [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2],
-        bounds,
+        point,
+        p?.bounds ?? undefined,
         transition,
-      );
-    } else if (tracks.length && state.camera === 'follow') {
-      api.current?.focusGeo(tracks[0]!.points[0]!, undefined, transition);
-    } else if (p)
-      api.current?.focusGeo(
-        p.anchorCoordinates,
-        p.bounds ?? undefined,
-        transition,
+        isGeographicRegion(chapter.regionId) ? chapter.regionId : undefined,
       );
     else if (isGeographicRegion(chapter.regionId))
       api.current?.focus(REGIONS[chapter.regionId]);
@@ -401,7 +367,7 @@ export function ExhibitionJourney({
     transport.pause();
     transport.sequence('central');
     transport.restart();
-    transport.camera('overview');
+    transport.camera('follow');
     transport.distance(1);
     setOpening(true);
     setRegion('ruijin');
@@ -439,7 +405,7 @@ export function ExhibitionJourney({
     if (!c) return;
     setOpening(false);
     setRegion(undefined);
-    transport.camera('overview');
+    transport.camera('follow');
     transport.seek(c.start);
     dispatch({ type: 'close' });
     if (read && c.eventIds[0]) openStory(c.eventIds[0]);
@@ -516,9 +482,25 @@ export function ExhibitionJourney({
                     eventMap={regionalMap}
                     eventMapReading={Boolean(story)}
                     arrivalEventId={state.pendingEventId}
+                    arrivalCoordinates={
+                      state.pendingEventId
+                        ? (() => {
+                            const track = sample.tracks.find(
+                              (t) => t.unitId === state.unitId,
+                            );
+                            return track
+                              ? sampleTrack(
+                                  track,
+                                  journeyTrackProgress(track, sample),
+                                )?.coordinates
+                              : null;
+                          })()
+                        : null
+                    }
                     journey={transport}
                     showMarch={
-                      !opening && (region !== null || state.camera !== 'free')
+                      !opening &&
+                      (state.playing || state.time > 0 || region !== null)
                     }
 
                     opening={opening}
@@ -530,23 +512,9 @@ export function ExhibitionJourney({
                       setRegion(id);
                     }}
                     onMapAdapter={onAdapter}
-                    onMarchOverview={() => {
+                    onGeographicBrowse={(id) => {
                       setOpening(false);
-                      setRegion(undefined);
-                      transport.camera('overview');
-                      const current = sampleJourney(
-                        content.plan,
-                        transport.read().sequenceId,
-                        transport.read().time,
-                      );
-                      if (current.stage === 'local')
-                        api.current?.focusMarch?.('overview');
-                      else if (current.stage === 'overview')
-                        api.current?.overview(true);
-                      else
-                        api.current?.frameMarch?.(
-                          current.tracks.flatMap((t) => t.points),
-                        );
+                      setRegion(id);
                     }}
                     onExhibitionPreview={transport.pause}
                     onExhibitionRead={openStory}
@@ -575,7 +543,7 @@ export function ExhibitionJourney({
                       setOpening(false);
                       setRegion(undefined);
                       transport.camera('follow');
-                      transport.distance(0.7);
+                      transport.distance(1);
                       transport.play();
                     }}
                   >
@@ -657,6 +625,7 @@ export function ExhibitionJourney({
                   />
                 )}
               <JourneyControls
+                onDefaultView={() => api.current?.focusMarch?.('follow')}
                 onSample={() => {
                   jump('chapter-event-sd-1');
                   transport.camera('follow');
@@ -709,9 +678,6 @@ export function ExhibitionJourney({
             onClose={closeStory}
             onContinue={() => {
               closeStory();
-              setRegion(undefined);
-              if (transport.read().camera === 'free')
-                transport.camera('follow');
               transport.play();
             }}
             onSources={(ids) => {
@@ -977,9 +943,9 @@ export function ExhibitionJourney({
                 <p>
                   从瑞金开始，或通过章节导航前往任意章节。底栏控制播放、暂停、倍速与演示进度；历史日期和演示秒数分别呈现。
                 </p>
-                <h3>三种视角</h3>
+                <h3>随行与自由取景</h3>
                 <p>
-                  俯瞰观察当前章节；随行在有路线的区间跟随箭头。示意路线保持高位观察。拖动或缩放地图进入自由视角，点击随行或俯瞰可恢复自动镜头。全景、俯瞰和缩放按钮位于地图工具下方，收起工具仍可使用。
+                  随行提供区域尺度的默认镜头。旋转、平移或缩放后，播放会保留你选择的角度和距离，随箭头一起移动。点击随行可重新采用默认构图；滚轮缩小恢复区域名称，放大展开区域内事件。全景与缩放按钮位于地图工具下方。
                 </p>
                 <h3>区域、故事与人物</h3>
                 <p>

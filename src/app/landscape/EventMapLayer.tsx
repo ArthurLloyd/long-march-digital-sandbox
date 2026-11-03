@@ -17,6 +17,7 @@ import {
 } from './event-marker-layout';
 import '../../styles/event-map.css';
 import type { MapSafeRect } from './map-safe-area';
+import type { GeoPoint } from './geography';
 
 export interface EventMapLayerHandle {
   project(
@@ -36,6 +37,7 @@ export function EventMapLayer({
   directRead = false,
   safeAreas = [],
   arrivingEventId,
+  arrivingCoordinates,
 }: {
   model: EventMapModel;
   ref: Ref<EventMapLayerHandle>;
@@ -48,6 +50,7 @@ export function EventMapLayer({
   directRead?: boolean;
   safeAreas?: readonly MapSafeRect[];
   arrivingEventId?: string | null;
+  arrivingCoordinates?: GeoPoint | null;
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const [region, setRegion] = useState('all');
@@ -113,7 +116,19 @@ export function EventMapLayer({
             viewport.width,
             viewport.height,
             arrivingEventId
-              ? `placement:${model.entries.find((p) => p.eventId === arrivingEventId)?.placementId}`
+              ? `placement:${
+                  model.entries
+                    .filter((p) => p.eventId === arrivingEventId)
+                    .sort((a, b) => {
+                      if (!arrivingCoordinates) return 0;
+                      const distance = (p: MapEventEntry) =>
+                        Math.hypot(
+                          p.anchorCoordinates[0] - arrivingCoordinates[0],
+                          p.anchorCoordinates[1] - arrivingCoordinates[1],
+                        );
+                      return distance(a) - distance(b);
+                    })[0]?.placementId
+                }`
               : selection
                 ? `placement:${selection}`
                 : null,
@@ -142,7 +157,15 @@ export function EventMapLayer({
         }
       },
     }),
-    [model, regions, selection, directRead, safeAreas, arrivingEventId],
+    [
+      model,
+      regions,
+      selection,
+      directRead,
+      safeAreas,
+      arrivingEventId,
+      arrivingCoordinates,
+    ],
   );
   const register = (id: string, element: HTMLButtonElement | null) => {
     if (element) elements.current.set(id, element);

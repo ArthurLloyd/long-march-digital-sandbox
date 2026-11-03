@@ -49,9 +49,10 @@ vi.mock('../app/landscape/ExhibitionPanorama', () => ({
     return (
       <section aria-label="地图GPU边界" data-march={p.showMarch}>
         <output aria-label="当前区域">{p.geographicRegion ?? 'global'}</output>
-        {p.onMarchOverview && (
-          <button onClick={p.onMarchOverview}>区域俯瞰</button>
-        )}
+        <button onClick={() => p.onGeographicBrowse?.(null)}>缩小到全景</button>
+        <button onClick={() => p.onGeographicBrowse?.('chishui')}>
+          滚轮靠近赤水
+        </button>
         {GEOGRAPHIC_VIEWS.map((v) => (
           <button key={v.id} onClick={() => p.onBrowseRegion?.(v.id)}>
             {v.title}
@@ -138,7 +139,7 @@ it('uses the same overview, moving corridor and close arrival flow for all regio
       continue;
     await user.selectOptions(screen.getByLabelText('跳转行军章节'), chapter.id);
     expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
-    expect(cameraBoundary.overview).toHaveBeenLastCalledWith(true);
+    expect(cameraBoundary.frameMarch).toHaveBeenCalled();
     fireEvent.change(screen.getByLabelText('行军演示进度'), {
       target: { value: chapter.start + chapter.duration * 0.5 },
     });
@@ -230,44 +231,48 @@ it('map and chapter links use the same central story without completing C1', asy
   ).toBeInTheDocument();
 });
 
-it('preserves an explicitly chosen overview on resume and restores follow only when leaving free observation', async () => {
+it('preserves the user-selected camera on playback and has no overview option', async () => {
   const user = await enter();
   await user.selectOptions(
     screen.getByLabelText('跳转行军章节'),
     'chapter-event-sd-2',
   );
-  await user.click(screen.getByRole('button', { name: '开始或继续行军' }));
-  expect(screen.getByRole('button', { name: '俯瞰' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  );
-  await user.click(screen.getByRole('button', { name: '暂停行军' }));
   await user.click(screen.getByRole('button', { name: '自由' }));
+  const before =
+    cameraBoundary.focusGeo.mock.calls.length +
+    cameraBoundary.frameMarch.mock.calls.length;
   await user.click(screen.getByRole('button', { name: '开始或继续行军' }));
-  expect(screen.getByRole('button', { name: '随行' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  );
-});
-
-it('uses the toolbar overview to enter the same march camera without changing the clock', async () => {
-  const user = await enter();
-  await user.selectOptions(
-    screen.getByLabelText('跳转行军章节'),
-    'chapter-event-sd-2',
-  );
-  await user.click(screen.getByRole('button', { name: '自由探索' }));
-  const time = (screen.getByLabelText('行军演示进度') as HTMLInputElement)
-    .value;
-  await user.click(screen.getByRole('button', { name: '区域俯瞰' }));
-  expect(screen.getByRole('button', { name: '俯瞰' })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: '自由' })).toHaveAttribute(
     'aria-pressed',
     'true',
   );
   expect(
+    screen.queryByRole('button', { name: '俯瞰' }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole('button', { name: '区域俯瞰' }),
+  ).not.toBeInTheDocument();
+  expect(
+    cameraBoundary.focusGeo.mock.calls.length +
+      cameraBoundary.frameMarch.mock.calls.length,
+  ).toBe(before);
+});
+
+it('unfolds regions from wheel browsing and restores names without seeking the C2 clock', async () => {
+  const user = await enter();
+  await user.click(screen.getByRole('button', { name: '自由探索山河' }));
+  const time = (screen.getByLabelText('行军演示进度') as HTMLInputElement)
+    .value;
+  await user.click(screen.getByRole('button', { name: '缩小到全景' }));
+  expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
+  await user.click(screen.getByRole('button', { name: '滚轮靠近赤水' }));
+  expect(screen.getByLabelText('当前区域')).toHaveTextContent('chishui');
+  expect(
+    screen.getAllByRole('button', { name: /阅读地图三渡赤水/ }).length,
+  ).toBeGreaterThan(0);
+  expect(
     (screen.getByLabelText('行军演示进度') as HTMLInputElement).value,
   ).toBe(time);
-  expect(screen.getByLabelText('当前区域')).toHaveTextContent('chishui');
 });
 it('pins one person card, switches people, closes card before story and restores name focus', async () => {
   const user = await enter();
@@ -304,7 +309,7 @@ it('keeps filtered sources, reverse story links and the operation guide separate
   await user.keyboard('{Escape}');
   await user.click(screen.getByRole('button', { name: '使用说明' }));
   expect(screen.getByRole('dialog', { name: '使用说明' })).toHaveTextContent(
-    '三种视角',
+    '随行与自由取景',
   );
 });
 it('passes single and continuous A scopes and restores macro time, unit, camera and paused state', async () => {

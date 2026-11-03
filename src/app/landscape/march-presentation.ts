@@ -2,11 +2,30 @@ import * as THREE from 'three';
 
 export const MARCH_PRESENTATION = {
   overviewDistance: 0.62,
-  followDistance: 0.15,
+  followDistance: 3.1,
   sideAngle: Math.PI * 0.23,
   groundLift: 0.0012,
-  floatingLift: 0.065,
+  floatingLift: 0.12,
 } as const;
+
+/** Clear the complete arrow footprint, including the long tail, over every ridge. */
+export function floatingArrowHeight(
+  origin: THREE.Vector3,
+  direction: THREE.Vector3,
+  scale: number,
+  heightAt: (x: number, z: number) => number,
+) {
+  let floor = heightAt(origin.x, origin.z);
+  for (let row = 0; row <= 32; row++) {
+    const along = (-0.24 * scale * row) / 32;
+    for (const side of [-0.017, 0, 0.017]) {
+      const x = origin.x + direction.x * along + direction.z * side * scale;
+      const z = origin.z + direction.z * along - direction.x * side * scale;
+      floor = Math.max(floor, heightAt(x, z));
+    }
+  }
+  return floor + MARCH_PRESENTATION.floatingLift;
+}
 
 /** Central half is the quiet zone: start panning in the outer quarter. */
 export function marchPanNeeded(x: number, y: number) {
