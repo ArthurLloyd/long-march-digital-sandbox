@@ -294,6 +294,8 @@ export function createChishuiRenderer(
   const red = new THREE.MeshBasicMaterial({ color: '#ff7053' });
   const gold = new THREE.MeshBasicMaterial({ color: '#ffe2a0' });
   const blue = new THREE.MeshBasicMaterial({
+    depthTest: false,
+    depthWrite: false,
     color: '#79bbdd',
     transparent: true,
     opacity: 0.7,
@@ -369,18 +371,93 @@ export function createChishuiRenderer(
   root.add(crossingRing);
   const tip = new THREE.Mesh(new THREE.ConeGeometry(1, 2.5, 3), gold);
   root.add(tip);
-  const pressure = new THREE.Group();
-  root.add(pressure);
-  for (let i = 0; i < 7; i++) {
-    const g = new THREE.Group();
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.5, 3.5), blue);
-    bar.position.z = 1;
-    const arrow = new THREE.Mesh(new THREE.ConeGeometry(1.8, 2.5, 3), blue);
-    arrow.rotation.x = Math.PI / 2;
-    arrow.position.z = 4;
-    g.add(bar, arrow);
-    pressure.add(g);
-  }
+  // Local editorial paths illustrate pressure directions; never geographic tracks.
+  const bluePlans = [
+    [
+      [
+        [48, -34],
+        [30, -28],
+        [15, -27],
+      ],
+      [
+        [-45, -34],
+        [-42, -8],
+        [-40, 14],
+      ],
+    ],
+    [
+      [
+        [-43, -35],
+        [-42, -5],
+        [-40, 14],
+      ],
+      [
+        [-42, 39],
+        [-40, 25],
+        [-40, 14],
+      ],
+      [
+        [38, 30],
+        [33, 17],
+        [28, 11],
+      ],
+    ],
+    [
+      [
+        [38, -32],
+        [36, 0],
+        [34, 26],
+      ],
+      [
+        [45, 39],
+        [33, 30],
+        [18, 24],
+      ],
+    ],
+    [
+      [
+        [8, 24],
+        [-8, 14],
+        [-22, 0],
+        [-29, -10],
+      ],
+      [
+        [-46, -30],
+        [-25, -25],
+      ],
+    ],
+  ];
+  const blueTracks = bluePlans.map((plans, chapterIndex) =>
+    plans.map((points, index) => {
+      const curve = new THREE.CurvePath<THREE.Vector3>();
+      points.slice(1).forEach((p, i) => {
+        const a = points[i]!;
+        for (let step = 0; step < 30; step++) {
+          const at = (t: number) => {
+            const x = THREE.MathUtils.lerp(a[0]!, p[0]!, t),
+              z = THREE.MathUtils.lerp(a[1]!, p[1]!, t);
+            return new THREE.Vector3(x, height(x, z) + 1.45, z);
+          };
+          curve.add(new THREE.LineCurve3(at(step / 30), at((step + 1) / 30)));
+        }
+      });
+      const line = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 140, 0.22, 5, false),
+        blue,
+      );
+      line.renderOrder = 4;
+      const arrow = new THREE.Mesh(new THREE.ConeGeometry(0.9, 2.6, 3), blue);
+      root.add(line, arrow);
+      return {
+        curve,
+        line,
+        arrow,
+        chapterIndex,
+        index,
+        blockade: chapterIndex === 3 && index === 1,
+      };
+    }),
+  );
   const flashes = new THREE.Group();
   root.add(flashes);
   for (let i = 0; i < 8; i++) {
@@ -500,12 +577,25 @@ export function createChishuiRenderer(
       unit.position.x += (i % 2 ? 1 : -1) * 0.5;
       unit.position.y += Math.sin(time * 7 + i) * 0.08;
     });
-    pressure.children.forEach((unit, i) => {
-      const side = s.chapter % 2 === 0 ? 1 : -1;
-      unit.position.set(side * (48 - s.progress * 7), 9, -31 + i * 10);
-      unit.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-      unit.scale.setScalar(0.75);
-    });
+    blueTracks.forEach((tracks, phase) =>
+      tracks.forEach((track) => {
+        track.line.visible = track.arrow.visible = phase === s.chapter;
+        if (phase !== s.chapter) return;
+        const advance = Math.min(1, 0.22 + s.progress * 0.78);
+        track.line.geometry.setDrawRange(
+          0,
+          Math.floor((track.blockade ? 1 : advance) * 140) * 5 * 6,
+        );
+        track.arrow.visible = !track.blockade;
+        const point = track.curve.getPoint(advance),
+          direction = track.curve.getTangent(Math.min(0.999, advance));
+        track.arrow.position.copy(point);
+        track.arrow.quaternion.setFromUnitVectors(
+          new THREE.Vector3(0, 1, 0),
+          direction.normalize(),
+        );
+      }),
+    );
     flashes.children.forEach((obj, i) => {
       const mesh = obj as THREE.Mesh<
         THREE.RingGeometry,

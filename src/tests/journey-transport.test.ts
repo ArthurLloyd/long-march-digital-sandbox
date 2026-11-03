@@ -221,7 +221,7 @@ describe('真实补充内容与原始审核隔离', () => {
   });
   it('战略轨道具备逐点定位来源和时间范围，strict不因此增加发布数据', () => {
     const c = createJourneyContent(dataset, 'exhibition');
-    expect(c.plan.tracks).toHaveLength(27);
+    expect(c.plan.tracks).toHaveLength(37);
     expect(c.plan.tracks.some((t) => t.camp === 'nationalist_army')).toBe(true);
     for (const t of c.supplement.tracks) {
       expect(t.points).toHaveLength(t.locationReferenceIds.length);

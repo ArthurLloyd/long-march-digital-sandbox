@@ -9,6 +9,7 @@ export interface JourneyChapter {
   eventIds: string[];
   duration: number;
   arrival: number;
+  pauseAtArrival?: boolean;
 }
 export interface JourneyTrack {
   id: string;
@@ -19,6 +20,8 @@ export interface JourneyTrack {
   unitId: string;
   unitName: string;
   camp: 'red_army' | 'nationalist_army';
+  role?: 'pursuit' | 'reinforcement' | 'blockade' | 'reported';
+  visibleFrom?: number;
   points: [number, number][];
   sourceIds: string[];
   evidenceType: 'documented_geometry' | 'sourced_strategic_direction';
@@ -101,12 +104,20 @@ export function journeyTrackProgress(
   track: JourneyTrack,
   sample: ReturnType<typeof sampleJourney>,
 ) {
-  if (!track.presentation || !sample.chapter) return sample.progress;
-  const start = track.presentation === 'regional_transfer' ? 0.18 : 0;
-  return Math.max(
-    0,
-    Math.min(1, (sample.progress - start) / (sample.chapter.arrival - start)),
+  if (track.role === 'blockade' || track.role === 'reported') return 0.5;
+  if (
+    !sample.chapter ||
+    (!track.presentation && track.visibleFrom === undefined)
+  )
+    return sample.progress;
+  const start = Math.max(
+    track.presentation === 'regional_transfer' ? 0.18 : 0,
+    track.visibleFrom ?? 0,
   );
+  const end = track.presentation
+    ? Math.max(start + 1e-6, sample.chapter.arrival)
+    : 1;
+  return Math.max(0, Math.min(1, (sample.progress - start) / (end - start)));
 }
 export function sampleTrack(track: JourneyTrack, progress: number) {
   if (track.points.length < 2) return null;

@@ -18,6 +18,7 @@ import {
 import '../../styles/event-map.css';
 import type { MapSafeRect } from './map-safe-area';
 import type { GeoPoint } from './geography';
+import { eventMarkerCaption } from './event-marker-caption';
 
 export interface EventMapLayerHandle {
   project(
@@ -326,7 +327,7 @@ export function EventMapLayer({
             <span aria-hidden="true">
               {p.placementKind === 'point' ? '◇' : '▱'}
             </span>
-            <span>{p.displayLabel ?? p.event.title}</span>
+            <span>{eventMarkerCaption(p)}</span>
           </button>
         ))}
       </div>

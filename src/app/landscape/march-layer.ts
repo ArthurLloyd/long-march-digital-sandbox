@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import {
   sampleJourney,
   sampleTrack,
@@ -31,6 +34,9 @@ export function createMarchLayer(
       track: JourneyTrack;
       line: THREE.Line;
       preview: THREE.Line;
+      blue: Line2 | null;
+      bluePreview: Line2 | null;
+      active: boolean;
       arrow: THREE.Mesh;
       groundPose: [number, number, number, number, number];
       samples: [number, number][];
@@ -56,6 +62,10 @@ export function createMarchLayer(
   arrowGeometry.rotateX(-Math.PI / 2);
   const clear = () => {
     for (const item of compiled.values()) {
+      item.bluePreview?.geometry.dispose();
+      item.bluePreview?.material.dispose();
+      item.blue?.geometry.dispose();
+      item.blue?.material.dispose();
       item.line.geometry.dispose();
       (item.line.material as THREE.Material).dispose();
       item.preview.geometry.dispose();
@@ -82,6 +92,14 @@ export function createMarchLayer(
       });
       positions.needsUpdate = true;
       preview.needsUpdate = true;
+      if (item.blue) {
+        item.blue.geometry.setPositions(Array.from(positions.array));
+        item.blue.computeLineDistances();
+      }
+      if (item.bluePreview) {
+        item.bluePreview.geometry.setPositions(Array.from(positions.array));
+        item.bluePreview.computeLineDistances();
+      }
       item.line.computeLineDistances();
       item.preview.computeLineDistances();
     }
@@ -170,11 +188,64 @@ export function createMarchLayer(
           }),
         );
         line.visible = arrow.visible = preview.visible = false;
+        const blue =
+          track.camp === 'nationalist_army'
+            ? new Line2(
+                new LineGeometry(),
+                new LineMaterial({
+                  color: 0x71baff,
+                  linewidth: track.role === 'blockade' ? 5 : 3.5,
+                  transparent: true,
+                  opacity: track.role === 'reported' ? 0.7 : 0.95,
+                  depthTest: false,
+                  depthWrite: false,
+                  toneMapped: false,
+                  dashed: track.role === 'reported',
+                  dashSize: 0.045,
+                  gapSize: 0.025,
+                }),
+              )
+            : null;
+        if (blue) {
+          blue.material.resolution.set(window.innerWidth, window.innerHeight);
+          blue.name = `${track.id}:active-blue`;
+          blue.renderOrder = 12;
+          blue.visible = false;
+        }
+        const bluePreview =
+          blue && track.role !== 'reported' && track.role !== 'blockade'
+            ? new Line2(
+                new LineGeometry(),
+                new LineMaterial({
+                  color: 0x71baff,
+                  linewidth: 2.2,
+                  transparent: true,
+                  opacity: 0.3,
+                  depthTest: false,
+                  depthWrite: false,
+                  toneMapped: false,
+                }),
+              )
+            : null;
+        if (bluePreview) {
+          bluePreview.material.resolution.set(
+            window.innerWidth,
+            window.innerHeight,
+          );
+          bluePreview.name = `${track.id}:context-blue`;
+          bluePreview.renderOrder = 11;
+          bluePreview.visible = false;
+        }
         root.add(line, preview, arrow);
+        if (blue) root.add(blue);
+        if (bluePreview) root.add(bluePreview);
         compiled.set(track.id, {
           track,
           line,
           preview,
+          blue,
+          bluePreview,
+          active: false,
           arrow,
           groundPose: [NaN, NaN, NaN, NaN, -1],
           samples,
@@ -199,15 +270,24 @@ export function createMarchLayer(
         const allowed =
           !item.track.sequenceIds ||
           item.track.sequenceIds.includes(state?.sequenceId ?? '');
-        const moving = allowed && sample?.chapter?.id === item.track.chapterId;
+        const moving =
+          allowed &&
+          sample?.chapter?.id === item.track.chapterId &&
+          (sample?.progress ?? 0) >= (item.track.visibleFrom ?? 0);
         const visible =
           allowed &&
           (moving ||
             (item.track.holdChapterIds ?? []).includes(
               sample?.chapter?.id ?? '',
             ));
-        item.line.visible = item.preview.visible = moving;
-        item.arrow.visible = visible;
+        item.active = visible;
+        const staticPressure =
+          item.track.role === 'blockade' || item.track.role === 'reported';
+        item.line.visible = moving && !item.blue;
+        item.preview.visible = moving && !item.blue;
+        if (item.blue) item.blue.visible = visible;
+        if (item.bluePreview) item.bluePreview.visible = visible && moving;
+        item.arrow.visible = visible && !staticPressure;
         if (!visible || !sample || !state) continue;
         const progress = moving ? journeyTrackProgress(item.track, sample) : 1;
         const pose = sampleTrack(item.track, progress);
@@ -260,6 +340,30 @@ export function createMarchLayer(
         positions.setXYZ(tip, x, heightAt(x, z) + lineLift, z);
         positions.needsUpdate = true;
         item.line.geometry.setDrawRange(0, tip + 1);
+        if (item.blue) {
+          const ends = item.blue.geometry.getAttribute(
+            'instanceEnd',
+          ) as THREE.InterleavedBufferAttribute;
+          if (item.tipIndex >= 1) {
+            // Restore all touched ends from the original draped samples. Geometry stays persistent.
+            for (let n = 0; n < ends.count; n++) {
+              const original = item.samples[n + 1]!;
+              ends.setXYZ(
+                n,
+                original[0],
+                heightAt(original[0], original[1]) + lineLift,
+                original[1],
+              );
+            }
+          }
+          if (!staticPressure && moving && tip >= 1)
+            ends.setXYZ(tip - 1, x, heightAt(x, z) + lineLift, z);
+          ends.needsUpdate = true;
+          item.blue.geometry.instanceCount =
+            staticPressure || !moving
+              ? item.samples.length - 1
+              : Math.max(0, tip);
+        }
         if (state.unitId === item.track.unitId) selected = item;
       }
       return selected;
@@ -267,13 +371,15 @@ export function createMarchLayer(
     projections(camera: THREE.Camera, width: number, height: number) {
       return [...compiled.values()].map((item) => {
         const p = item.point.clone().project(camera);
+        item.blue?.material.resolution.set(width, height);
+        item.bluePreview?.material.resolution.set(width, height);
         return {
           id: `march:${item.track.id}`,
           x: ((p.x + 1) * width) / 2,
           y: ((1 - p.y) * height) / 2,
           visible:
             root.visible &&
-            item.arrow.visible &&
+            item.active &&
             p.z > -1 &&
             p.z < 1 &&
             Math.abs(p.x) < 0.95 &&
