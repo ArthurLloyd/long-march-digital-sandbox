@@ -52,13 +52,13 @@ export function translateMarchView(
 }
 
 export function regionalMarchDistance(id: string | null) {
-  if (!id || !(id in REGIONS)) return 3.1;
+  if (!id || !(id in REGIONS)) return 1.1;
   const b = REGIONS[id as RegionId],
     a = projectGeo([b[0], b[3]]),
     c = projectGeo([b[2], b[1]]);
   return THREE.MathUtils.clamp(
-    Math.max(c[0] - a[0], c[1] - a[1]) * 1.1,
-    2.6,
-    4.4,
+    Math.max(c[0] - a[0], c[1] - a[1]) * 0.35,
+    1,
+    1.25,
   );
 }

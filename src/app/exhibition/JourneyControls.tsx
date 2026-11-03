@@ -12,6 +12,7 @@ import {
   journeyChapters,
   journeyDuration,
   sampleJourney,
+  JOURNEY_FOLLOW_RANGE,
   type JourneyTransport,
   type JourneyState,
   type JourneyCamera,
@@ -226,9 +227,9 @@ export function JourneyControls({
               <input
                 aria-label="跟随距离"
                 type="range"
-                min={0.6}
-                max={2}
-                step={0.1}
+                min={JOURNEY_FOLLOW_RANGE.min}
+                max={JOURNEY_FOLLOW_RANGE.max}
+                step={JOURNEY_FOLLOW_RANGE.step}
                 value={state.distance}
                 onChange={(e) => {
                   t.distance(Number(e.target.value));

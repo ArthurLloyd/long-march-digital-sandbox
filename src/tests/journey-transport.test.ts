@@ -58,6 +58,23 @@ const plan: JourneyPlan = {
   ],
 };
 
+it('accepts the closer follow endpoint without changing march time or mode', () => {
+  const t = createJourneyTransport(plan);
+  t.seek(2);
+  t.camera('free');
+  t.distance(0.5);
+  expect(t.read()).toMatchObject({
+    distance: 0.5,
+    time: 2,
+    camera: 'free',
+    playing: false,
+  });
+  t.distance(0.1);
+  expect(t.read().distance).toBe(0.5);
+  t.distance(10);
+  expect(t.read().distance).toBe(2.5);
+});
+
 it('manual story reading counts as seen without moving time or writing completion', () => {
   const t = createJourneyTransport(plan);
   t.visit('e1');

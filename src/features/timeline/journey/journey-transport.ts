@@ -9,6 +9,7 @@ import {
 
 /** Wall-clock pacing: the former 4x is the exhibition's new displayed 1x. */
 export const JOURNEY_BASE_RATE = 4;
+export const JOURNEY_FOLLOW_RANGE = { min: 0.5, max: 2.5, step: 0.05 } as const;
 
 /** C2's continuous exhibition transport. It has no RAF, storage or completion writes. */
 export function createJourneyTransport(plan: JourneyPlan) {
@@ -139,7 +140,13 @@ export function createJourneyTransport(plan: JourneyPlan) {
     },
     camera: (camera: JourneyCamera) => publish({ ...state, camera }),
     distance: (distance: number) =>
-      publish({ ...state, distance: Math.max(0.6, Math.min(2, distance)) }),
+      publish({
+        ...state,
+        distance: Math.max(
+          JOURNEY_FOLLOW_RANGE.min,
+          Math.min(JOURNEY_FOLLOW_RANGE.max, distance),
+        ),
+      }),
     unit: (unitId: string) => publish({ ...state, unitId }),
     restore: (saved: JourneyState) => {
       if (plan.sequences.some((s) => s.id === saved.sequenceId))

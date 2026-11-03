@@ -115,3 +115,11 @@ B数据、审核字段、A专属实现、历史坐标与来源记录未修改。
 补充发现并修复：折叠工具面板仍报告布局尺寸时，不能进入地图安全区；相机书签保存现代区域ID，关闭资料卡或A体验后不按重叠窗口误换地形。同一事件的多个渡口标记重叠时，优先展示与当前观察部队到达点对应的已有标记，不更改其地理锚点。该规则由真实EventMapLayer DOM回归覆盖。
 
 [最终瑞金开篇](exhibition-02/evidence/revision-opening.jpg)、[1440开篇](exhibition-02/evidence/revision-opening-1440.jpg)、[滚轮全景](exhibition-02/evidence/revision-wheel-global.jpg)、[滚轮赤水区域](exhibition-02/evidence/revision-wheel-region.jpg)、[一渡到达](exhibition-02/evidence/revision-sd1-arrival.jpg)、[二渡到达](exhibition-02/evidence/revision-sd2-arrival.jpg)、[三渡到达](exhibition-02/evidence/revision-sd3-arrival.jpg)、[四渡到达](exhibition-02/evidence/revision-sd4-arrival.jpg)、[原始相机与到达采样](exhibition-02/evidence/revision-browser-check.json)。这些为真实网页截图和Canvas只读实测。最终构建已实测第四次渡河在二郎滩标记处到达，优先标记、到达提示与赤水地形共同显示；第四次到达截图和JSON finalFourthCrossing记录来自该次最终确认。构建保留既有Vite加载器与大chunk提示。
+
+## 随行近景比例补正（2026-11-03，用户第二张参考图）
+
+旧区域随行基准为区域最大跨度×1.1，限制2.6至4.4；赣南丘陵即使把距离滑杆拉到0.6，实测眼点距离仍约2.837，无法达到用户要求的山体占屏比例。现局部随行采用跨度×0.35、限制1.0至1.25；距离滑杆由0.6–2.0扩为0.5–2.5、步长0.05，UI和transport共用同一范围常量。瑞金实测默认距离1.504、最近0.752；最近档相较旧版放大约3.77倍。
+
+该修正仅调整显式区域随行的取景距离；自动播放继续平移用户眼点与观察中心，跨区宽幅取景、行军时间、地标坐标、审核与A/B实现不修改。新增回归覆盖八区局部取景上限及最近档可达、边界约束与时间/模式保持。
+
+本次59个测试文件、444项测试及lint、typecheck、format:check、validate:data、build、git diff --check通过。真实Edge使用最近档滑杆验证地形占屏比例，时间仍为0、保持暂停；临时取景和后续播放仍保留原有自由构图机制。[默认随行](exhibition-02/evidence/follow-scale-default.jpg)、[最近随行](exhibition-02/evidence/follow-scale-nearest.jpg)、[原始相机实测](exhibition-02/evidence/follow-scale-browser-check.json)。验收为镜头比例确认，不把短窗口长帧当作性能通过结论。

@@ -23,5 +23,8 @@ export type {
   JourneyState,
   JourneyCamera,
 } from './journey/journey-model';
-export { createJourneyTransport } from './journey/journey-transport';
+export {
+  createJourneyTransport,
+  JOURNEY_FOLLOW_RANGE,
+} from './journey/journey-transport';
 export type { JourneyTransport } from './journey/journey-transport';

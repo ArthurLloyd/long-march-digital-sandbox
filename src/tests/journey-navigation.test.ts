@@ -4,6 +4,7 @@ import {
   browseRegionAt,
   geographicRegionAt,
   translateMarchView,
+  regionalMarchDistance,
 } from '../app/landscape/journey-navigation';
 import {
   floatingArrowHeight,
@@ -20,6 +21,18 @@ import {
 } from '../features/timeline/journey';
 import raw from '../data/verified/dataset.json';
 import { mapSafeRects } from '../app/landscape/map-safe-area';
+import { REGIONS } from '../app/landscape/map-regions';
+
+it('frames follow at local terrain scale even for the widest geographic regions', () => {
+  for (const region of Object.keys(REGIONS)) {
+    const distance = regionalMarchDistance(region);
+    expect(distance).toBeGreaterThanOrEqual(1);
+    expect(distance).toBeLessThanOrEqual(1.25);
+    // With the nearest UI setting, the eye is within one display world unit,
+    // instead of the previous Ruijin closest pose at about 2.84 units.
+    expect(distance * 0.5 * Math.hypot(0.22, 0.7, 1)).toBeLessThan(1);
+  }
+});
 
 it('does not offset the map for a collapsed tool panel that still reports layout bounds', () => {
   const host = document.createElement('div'),
