@@ -218,7 +218,7 @@ export function JourneyControls({
             >
               <option value="central-red">红军主方向</option>
               <option value="red-alternative">红军关联方向</option>
-              <option value="nationalist-blockade">国民党军调动情报</option>
+              <option value="nationalist-blockade">敌军追堵与增援</option>
             </select>
           </label>
           {state.camera === 'follow' && (

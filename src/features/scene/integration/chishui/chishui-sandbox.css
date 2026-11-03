@@ -835,3 +835,55 @@
     font-size: 17px;
   }
 }
+.cs-story {
+  max-height: calc(100dvh - 370px);
+  overflow-y: auto;
+}
+.cs-causal-story h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e2c38a;
+  line-height: 1.7;
+}
+.cs-causal-story dl {
+  margin: 0;
+}
+.cs-causal-story dl > div {
+  display: grid;
+  grid-template-columns: 25px 1fr;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.cs-causal-story dt {
+  font-size: 10px;
+  color: #86bce8;
+}
+.cs-causal-story dl > div:nth-child(2) dt {
+  color: #ef967c;
+}
+.cs-causal-story dl > div:nth-child(3) dt {
+  color: #d3b77a;
+}
+.cs-causal-story dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.85;
+  color: #d0d8c9;
+}
+@media (max-width: 900px) {
+  .cs-story {
+    max-height: 29dvh;
+  }
+  .cs-causal-story h4 {
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .cs-causal-story dd {
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .cs-causal-story dl > div {
+    margin-bottom: 8px;
+  }
+}

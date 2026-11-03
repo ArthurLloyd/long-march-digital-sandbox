@@ -136,7 +136,10 @@ describe('四渡赤水真实入口与回放控制', () => {
     expect(
       screen.getByRole('button', { name: '播放战役回放' }),
     ).toBeInTheDocument();
-    expect(screen.getAllByRole('link')).toHaveLength(2);
+    expect(screen.getByRole('link', { name: /扎西会议/ })).toHaveAttribute(
+      'href',
+      'https://fuwu.12371.cn/2012/06/11/ARTI1339400564382590_5.shtml',
+    );
     fireEvent(
       screen.getByRole('dialog', { hidden: true }),
       new Event('cancel', { bubbles: true, cancelable: true }),

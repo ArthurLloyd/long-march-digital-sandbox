@@ -62,6 +62,8 @@ import { StoryDialog } from './StoryDialog';
 import { JourneyArrival } from './JourneyArrival';
 import { OrnamentFrame } from '../../components/exhibition/ExhibitionOrnaments';
 import { JourneyControls } from './JourneyControls';
+import { CampaignNarration } from './CampaignNarration';
+import { campaignBeat } from '../../shared/content/chishui-campaign';
 import '../../styles/exhibition-journey.css';
 const Panorama = lazy(() =>
   import('../landscape/ExhibitionPanorama').then((m) => ({
@@ -102,6 +104,7 @@ export function ExhibitionJourney({
   const [wantOpening, setOpening] = useState(true);
   const opening =
     wantOpening && state.time === 0 && state.sequenceId === 'central';
+  const activeCampaign = campaignBeat(sample.chapter?.id, sample.progress);
   const journeyStage = sample.stage;
   const transferring =
     !opening &&
@@ -609,6 +612,38 @@ export function ExhibitionJourney({
                     <p>本章提供历史故事，可继续阅读与观察山河。</p>
                   </aside>
                 )}
+              {!opening &&
+                !story &&
+                !screen.overlay &&
+                !observationRequest &&
+                activeCampaign &&
+                sample.chapter &&
+                (region === null ||
+                  region === 'chishui' ||
+                  browsedRegion === undefined) && (
+                  <CampaignNarration
+                    chapterId={sample.chapter.id}
+                    progress={sample.progress}
+                    onRead={() => {
+                      const id = sample.chapter?.eventIds[0];
+                      if (id) openStory(id);
+                    }}
+                    onBeat={(index) => {
+                      const timed = journeyChapters(
+                        content.plan,
+                        state.sequenceId,
+                      ).find((c) => c.id === sample.chapter?.id);
+                      if (timed)
+                        transport.seek(
+                          timed.start + timed.duration * [0, 0.28, 0.6][index]!,
+                        );
+                    }}
+                    onSources={(ids) => {
+                      open('sources');
+                      setSourcesFilter(ids);
+                    }}
+                  />
+                )}
               {state.pendingEventId &&
                 !story &&
                 !screen.overlay &&
@@ -622,6 +657,7 @@ export function ExhibitionJourney({
                       )?.title ?? '历史事件'
                     }
                     onOpen={openStory}
+                    autoOpen={!activeCampaign}
                   />
                 )}
               <JourneyControls

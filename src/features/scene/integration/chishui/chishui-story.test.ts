@@ -28,7 +28,9 @@ describe('四渡赤水回放边界', () => {
     expect(TOTAL_SECONDS).toBe(CHAPTER_SECONDS * 4);
   });
   it('四幕叙事具备日期、行动说明、史料入口，且图示不冒充经纬度', () => {
-    expect(CHISHUI_SOURCES).toHaveLength(2);
+    expect(
+      CHISHUI_SOURCES.some((source) => source.title.includes('扎西')),
+    ).toBe(true);
     for (const chapter of CHISHUI_CHAPTERS) {
       expect(chapter.date).toContain('1935');
       expect(chapter.path.length).toBeGreaterThan(4);

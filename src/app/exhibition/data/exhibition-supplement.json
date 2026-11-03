@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "1.1.0",
+  "version": "exhibition-chishui-causality-2026-11-04",
   "sources": [
     {
       "sourceId": "ex-src-ruijin",
@@ -472,6 +472,114 @@
       "supports": ["懋功会师以后北上与毛儿盖会议"],
       "limitations": "仅支持战略阶段衔接，未提供逐日位置、道路或所有部队的同一行程。",
       "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-zhaxi-meetings",
+      "title": "长征中的会议：扎西会议",
+      "publisherOrAuthor": "共产党员网（转载新华网）",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://fuwu.12371.cn/2012/06/11/ARTI1339400564382590_5.shtml",
+      "publicationDate": "见原网页",
+      "pageOrSection": "扎西会议：连续会议、回兵黔北、整编与2月8日通过决议段",
+      "accessedAt": "2026-11-04",
+      "supports": ["对应分幕的敌情、应对和作战意义"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；转载或相同编述不自动计为独立证据。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-sd-second-museum",
+      "title": "二渡赤水巧用兵",
+      "publisherOrAuthor": "四渡赤水纪念馆",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.sdcs1935.com/html/yanjiu/sdcs/202007/e3dd4b9a835af3c7.shtml",
+      "publicationDate": "见原网页",
+      "pageOrSection": "视机转兵、二渡前后双方部署及遵义战役段",
+      "accessedAt": "2026-11-04",
+      "supports": ["对应分幕的敌情、应对和作战意义"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；转载或相同编述不自动计为独立证据。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-sd-campaign-museum",
+      "title": "四渡赤水：中央红军战略转移的决定性胜利",
+      "publisherOrAuthor": "四渡赤水纪念馆",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.sdcs1935.com/html/yanjiu/sdcs/202104/fd2e1eb33ba35bb1.shtml",
+      "publicationDate": "见原网页",
+      "pageOrSection": "一渡危局、鲁班场与三渡四渡段；网页检索正文可得",
+      "accessedAt": "2026-11-04",
+      "supports": ["对应分幕的敌情、应对和作战意义"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；转载或相同编述不自动计为独立证据。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-sd-north-xinhua",
+      "title": "1935年红军四渡赤水转战川南 曾佯攻古蔺",
+      "publisherOrAuthor": "新华网",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.xinhuanet.com/politics/2015-02/12/c_127489364.htm",
+      "publicationDate": "见原网页",
+      "pageOrSection": "一渡进川南、扎西转兵、三渡佯攻古蔺段",
+      "accessedAt": "2026-11-04",
+      "supports": ["对应分幕的敌情、应对和作战意义"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；转载或相同编述不自动计为独立证据。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-sd-west-deployment",
+      "title": "第九章 四渡赤水（下）",
+      "publisherOrAuthor": "人民网党史频道",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://dangshi.people.com.cn/n1/2016/0814/c406330-28634785.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "三渡后周吴向古蔺追击、叙永古蔺防堵、川军茅台西渡追击段；检索摘要已读，全文请求失败，不宣称全文核验",
+      "accessedAt": "2026-11-04",
+      "supports": ["对应分幕的敌情、应对和作战意义"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；全文未取得，需保留后续全文核查。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-sd-first-deployment",
+      "title": "第八章 四渡赤水（上）",
+      "publisherOrAuthor": "人民网党史频道",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://dangshi.people.com.cn/n1/2016/0814/c406330-28634764.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "一渡：川军教导师第2旅由古蔺向土城迂回堵截段；检索摘要已读，全文尚未取得",
+      "accessedAt": "2026-11-04",
+      "supports": ["土城战斗前后的古蔺向土城堵截方向"],
+      "limitations": "只概述有据的战略态势，不能用于推断精确道路、逐日部队位置和兵力；全文未取得，需保留后续全文核查。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
       "reviewStatus": "draft",
       "releaseStatus": "unpublished",
       "reviewedBy": [],
@@ -1414,6 +1522,34 @@
       "kind": "modern_location",
       "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
       "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-gaoxian",
+      "title": "高县现代地名方向参考",
+      "url": "https://www.wikidata.org/wiki/Q693612",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [104.56027777777777, 28.39638888888889],
+      "revision": "Q693612 P625; viewed 2026-11-04",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "由该条目公开P625度分秒换算。仅作同名地区的战略方向锚点，不代表1935年城界、驻地、渡口或部队抵达该中心。扎西方向线的终点为展示锚点，不把大湾子定位到扎西镇。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-bijie",
+      "title": "毕节市现代地名方向参考",
+      "url": "https://www.wikidata.org/wiki/Q486319",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [105.23333333333333, 27.3],
+      "revision": "Q486319 P625; viewed 2026-11-04",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "由该条目公开P625度分秒换算。仅作同名地区的战略方向锚点，不代表1935年城界、驻地、渡口或部队抵达该中心。扎西方向线的终点为展示锚点，不把大湾子定位到扎西镇。",
+      "availability": "available"
     }
   ],
   "mapRegions": [
@@ -2081,7 +2217,8 @@
       "phaseId": "sd-phase-1",
       "eventIds": ["event-sd"],
       "duration": 48,
-      "arrival": 0.96
+      "arrival": 0.96,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-sd-1",
@@ -2091,19 +2228,21 @@
       "topicId": "topic-sd",
       "phaseId": "sd-phase-1",
       "eventIds": ["event-sd-1"],
-      "duration": 22,
-      "arrival": 0.01
+      "duration": 112,
+      "arrival": 0.01,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-zy-resolution",
-      "title": "遵义会议相关决议通过",
-      "dateText": "1935年2月8日",
+      "title": "扎西会议 · 决议与整编",
+      "dateText": "1935年2月5—9日（8日通过决议）",
       "regionId": "chishui",
       "topicId": null,
       "phaseId": null,
       "eventIds": ["event-zy-resolution"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 92,
+      "arrival": 0.74,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-sd-2",
@@ -2113,8 +2252,9 @@
       "topicId": "topic-sd",
       "phaseId": "sd-phase-2",
       "eventIds": ["event-sd-2"],
-      "duration": 22,
-      "arrival": 0.571992
+      "duration": 128,
+      "arrival": 0.571992,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-sd-3",
@@ -2124,8 +2264,9 @@
       "topicId": "topic-sd",
       "phaseId": "sd-phase-3",
       "eventIds": ["event-sd-3"],
-      "duration": 22,
-      "arrival": 0.645917
+      "duration": 112,
+      "arrival": 0.645917,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-sd-4",
@@ -2135,8 +2276,9 @@
       "topicId": "topic-sd",
       "phaseId": "sd-phase-4",
       "eventIds": ["event-sd-4"],
-      "duration": 22,
-      "arrival": 0.999
+      "duration": 112,
+      "arrival": 0.999,
+      "pauseAtArrival": false
     },
     {
       "id": "chapter-event-js",
@@ -2446,7 +2588,9 @@
       "waypointNames": ["xuyong", "gulin"],
       "dateText": "1935年1月底至2月上旬（战略调动范围）",
       "evidenceNote": "来源支持地名次序或明确战略方向；城镇参考之间的直段仅为战略示意，不是历史道路。",
-      "availability": "available"
+      "availability": "available",
+      "role": "reported",
+      "visibleFrom": 0.28
     },
     {
       "id": "march-sd2",
@@ -3025,40 +3169,274 @@
       "evidenceNote": "哈达铺地区；将台堡。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
       "availability": "available",
       "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-blue-sd1-north",
+      "chapterId": "chapter-event-sd-1",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军·川南北侧追堵方向",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [104.56027777777777, 28.39638888888889],
+        [105.04509, 27.84397]
+      ],
+      "sourceIds": ["ex-src-sd-strategy", "ex-src-sd-second-museum"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-gaoxian", "loc-zhaxi"],
+      "waypointNames": ["高县现代地名方向参考", "扎西镇"],
+      "dateText": "1935年2月上旬，西渡后的追堵",
+      "evidenceNote": "行动关系见sourceIds对应分幕段。按原文中的代表性地区表示方向，不推算途经点。高县代表北侧多个出发地区之一；扎西终点为地区指向锚，不把大湾子落到镇中心。",
+      "availability": "available",
+      "visibleFrom": 0.6
+    },
+    {
+      "id": "march-blue-zhaxi-north",
+      "chapterId": "chapter-event-zy-resolution",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军潘文华部·北面进逼",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [104.56027777777777, 28.39638888888889],
+        [105.04509, 27.84397]
+      ],
+      "sourceIds": ["ex-src-sd-strategy"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-gaoxian", "loc-zhaxi"],
+      "waypointNames": ["高县现代地名方向参考", "扎西镇"],
+      "dateText": "1935年2月上旬",
+      "evidenceNote": "行动关系见sourceIds对应分幕段。按原文中的代表性地区表示方向，不推算途经点。高县代表北侧多个出发地区之一；扎西终点为地区指向锚，不把大湾子落到镇中心。",
+      "availability": "available"
+    },
+    {
+      "id": "march-blue-zhaxi-south",
+      "chapterId": "chapter-event-zy-resolution",
+      "unitId": "nationalist-blockade",
+      "unitName": "滇军孙渡部·南面进逼",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [105.23333333333333, 27.3],
+        [105.04509, 27.84397]
+      ],
+      "sourceIds": ["ex-src-sd-strategy", "ex-src-sd-second-museum"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-bijie", "loc-zhaxi"],
+      "waypointNames": ["毕节市现代地名方向参考", "扎西镇"],
+      "dateText": "1935年2月上旬，指向扎西地区而非城内驻地",
+      "evidenceNote": "行动关系见sourceIds对应分幕段。按原文中的代表性地区表示方向，不推算途经点。高县代表北侧多个出发地区之一；扎西终点为地区指向锚，不把大湾子落到镇中心。",
+      "availability": "available"
+    },
+    {
+      "id": "march-blue-sd2-chuan",
+      "chapterId": "chapter-event-sd-2",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军·古蔺向土城东追",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [105.8085, 28.04406],
+        [105.99306, 28.28377]
+      ],
+      "sourceIds": ["ex-src-sd-second-museum"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-gulin", "loc-tucheng"],
+      "waypointNames": ["古蔺县", "土城镇 (习水县)"],
+      "dateText": "1935年2月下旬，二渡后的追击",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available",
+      "visibleFrom": 0.28
+    },
+    {
+      "id": "march-blue-sd2-qian",
+      "chapterId": "chapter-event-sd-2",
+      "unitId": "nationalist-blockade",
+      "unitName": "黔军·遵义向桐梓增援",
+      "camp": "nationalist_army",
+      "role": "reinforcement",
+      "points": [
+        [106.91611111, 27.69138889],
+        [106.82375, 28.13724]
+      ],
+      "sourceIds": ["ex-src-sd-second-museum", "ex-src-sd-strategy"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["loc-zunyi", "ex-loc-tongzi"],
+      "waypointNames": ["遵义会议会址", "桐梓县"],
+      "dateText": "1935年2月下旬",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available",
+      "visibleFrom": 0.28
+    },
+    {
+      "id": "march-blue-sd2-wu",
+      "chapterId": "chapter-event-sd-2",
+      "unitId": "nationalist-blockade",
+      "unitName": "吴奇伟部·向遵义增援",
+      "camp": "nationalist_army",
+      "role": "reinforcement",
+      "points": [
+        [106.70611111, 26.57305556],
+        [106.91611111, 27.69138889]
+      ],
+      "sourceIds": ["ex-src-sd-strategy"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-guiyang", "loc-zunyi"],
+      "waypointNames": ["贵阳市", "遵义会议会址"],
+      "dateText": "1935年2月下旬，贵阳方向来援",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available",
+      "visibleFrom": 0.28
+    },
+    {
+      "id": "march-blue-sd3-chuan",
+      "chapterId": "chapter-event-sd-3",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军·桐梓向遵义压迫",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [106.82375, 28.13724],
+        [106.91611111, 27.69138889]
+      ],
+      "sourceIds": ["ex-src-sd-strategy"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-tongzi", "loc-zunyi"],
+      "waypointNames": ["桐梓县", "遵义会议会址"],
+      "dateText": "1935年3月上中旬",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available"
+    },
+    {
+      "id": "march-blue-sd4-chuan",
+      "chapterId": "chapter-event-sd-4",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军一部·茅台西渡追击",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [106.36753, 27.85453],
+        [105.8085, 28.04406]
+      ],
+      "sourceIds": ["ex-src-sd-west-deployment"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["loc-maotai", "ex-loc-gulin"],
+      "waypointNames": ["茅台镇", "古蔺县"],
+      "dateText": "1935年3月中下旬，古蔺为追堵方向参考",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available"
+    },
+    {
+      "id": "march-blue-sd4-blockade",
+      "chapterId": "chapter-event-sd-4",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军·叙永古蔺防堵范围",
+      "camp": "nationalist_army",
+      "role": "blockade",
+      "points": [
+        [105.4327, 28.17095],
+        [105.8085, 28.04406]
+      ],
+      "sourceIds": ["ex-src-sd-west-deployment"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。范围线不作部队运动，不设置行进箭头。",
+      "locationReferenceIds": ["ex-loc-xuyong", "ex-loc-gulin"],
+      "waypointNames": ["叙永县", "古蔺县"],
+      "dateText": "1935年3月中下旬",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available"
+    },
+    {
+      "id": "march-blue-sd1-flank",
+      "chapterId": "chapter-event-sd-1",
+      "unitId": "nationalist-blockade",
+      "unitName": "川军·古蔺向土城迂回堵截",
+      "camp": "nationalist_army",
+      "role": "pursuit",
+      "points": [
+        [105.8085, 28.04406],
+        [105.99306, 28.28377]
+      ],
+      "sourceIds": ["ex-src-sd-first-deployment"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "蓝线为史料支持的追堵或增援方向；现代地区锚点间的直段不表示历史道路、精确驻地、连续实际封锁线、速度、兵力或到达时刻。",
+      "locationReferenceIds": ["ex-loc-gulin", "loc-tucheng"],
+      "waypointNames": ["古蔺方向", "土城方向"],
+      "dateText": "1935年1月下旬，土城战斗前后的堵截方向",
+      "evidenceNote": "行动关系见对应史料段；只画有据的地区方向，不补途经道路。",
+      "availability": "available"
     }
   ],
   "storyExtensions": {
     "event-sd-1": {
       "paragraphs": [
-        "土城战斗后，中央红军改变原定行动部署，于1月29日起从土城、元厚等处西渡赤水河，向川南转移。渡河并不是全部部队在同一个渡口同时完成的动作。",
-        "西进途中，中央红军经过古蔺、叙永相关地区，随后转向扎西集结。毛泽东、周恩来、朱德等参与军事指挥，在敌情变化中继续调整部署。",
-        "西渡后的行动使队伍暂时离开黔北方向。到扎西地区后，中央红军再次转向东进，二渡赤水河的部署由此展开。"
+        "土城、青杠坡战斗中，川军增援使战局难以速决。继续僵持将承受更大围堵压力，红军遂主动撤出战斗，于1月29日从土城南北及猿猴场等处西渡赤水，向川南转移。",
+        "西进途中，叙永一带作战与转移受阻，长江沿岸防御又已加强，原定北渡长江的条件恶化。红军因此暂缓北渡计划，向川滇黔交界的扎西地区集中。",
+        "扎西集结不是孤立停留。随后举行的会议、部队整编与回师黔北部署，是在敌情不断变化中保存力量、重新争取主动的连续应对。"
       ],
-      "sourceIds": ["ex-src-sd-monument", "ex-src-sd-order"]
+      "sourceIds": [
+        "ex-src-sd-strategy",
+        "ex-src-sd-second-museum",
+        "ex-src-zhaxi-meetings"
+      ]
     },
     "event-sd-2": {
       "paragraphs": [
-        "扎西集结后，中央红军决定回师黔北。2月中旬，队伍从扎西地区向东开进，重新把行动指向赤水河东岸。",
-        "2月18日至21日，部队从太平渡、二郎滩等处二渡赤水河，随后向桐梓等地推进，并再次攻占遵义。毛泽东等参与的指挥部署，在折返中寻找新的作战机会。",
-        "这次转向打乱了敌军原有部署。随后的战局仍不断变化，中央红军又向赤水河西岸机动，进入三渡阶段。"
+        "扎西地区受到川、滇两军进逼。红军判断敌主力已被吸引向西，黔北兵力相对薄弱，于是突然回师东进，2月18日至21日从太平渡、二郎滩等处二渡赤水。",
+        "二渡后，川军向东追击；黔军从遵义向桐梓、娄山关增援，吴奇伟部也向遵义推进。红军必须在敌军重新集中以前，迅速打开南进空间。",
+        "随后红军攻取桐梓、娄山关，再占遵义，打击来援之敌，取得重要胜利。机动不是单纯逃避，而是把对方调动中的空隙转化为作战主动。"
       ],
-      "sourceIds": ["ex-src-sd-strategy", "ex-src-sd-monument"]
+      "sourceIds": ["ex-src-sd-second-museum", "ex-src-sd-strategy"]
     },
     "event-sd-3": {
       "paragraphs": [
-        "再占遵义之后，中央红军在敌军追堵下继续转移。3月中旬，行动方向再次转向赤水河西侧。",
-        "3月16日至17日，中央红军从茅台一带三渡赤水河，向古蔺等方向活动。这一行动使敌军对红军后续方向作出新的判断。",
-        "西渡不是最终目的。中央红军随后迅速折返，以四渡赤水河继续争取机动主动，不能把同一区域的往返误读为一条单向行程。"
+        "再占遵义后，敌军从南北方向压迫遵义、鸭溪地区；周浑元部在鲁班场据守。3月中旬进攻未能奏效，援敌又在逼近，红军主动撤出战斗，向茅台机动。",
+        "3月16日至17日，中央红军从茅台及附近地区三渡赤水，西进古蔺、叙永方向。再次西渡改变了双方态势，迫使敌军重新部署。",
+        "敌军判断红军可能再寻北渡长江机会，向河西集中并加强川南防堵。红军随后又以佯动配合主力折返，三渡与四渡由此构成连续的调敌与摆脱。"
       ],
-      "sourceIds": ["ex-src-sd-monument", "ex-src-sd-strategy"]
+      "sourceIds": [
+        "ex-src-sd-campaign-museum",
+        "ex-src-sd-north-xinhua",
+        "ex-src-sd-west-deployment"
+      ]
     },
     "event-sd-4": {
       "paragraphs": [
-        "三渡之后，中央红军继续利用敌军部署变化寻找转移机会。部队重新转向东岸，四渡与此前西渡构成紧密相连的折返过程。",
-        "3月21日至22日，中央红军从太平渡、二郎滩等处四渡赤水河。渡河之后，部队继续向南机动，逐步摆脱敌军围追堵截。",
-        "四次渡河是这一时期机动作战的重要环节。后来南渡乌江、威逼贵阳、向云南转移及渡过金沙江，仍有各自的阶段与任务，不应压缩为同一天或同一条精确道路。"
+        "三渡之后，敌军继续向赤水河西集中：川军在叙永、古蔺地区防堵，并有部队由茅台西渡追击。继续向西硬闯将面对重兵，红军改以隐蔽折返寻找空隙。",
+        "3月20日前后，红军以一部向古蔺佯动牵制敌人，主力突然转向东。21日至22日，部队从二郎滩、太平渡等处四渡赤水，与追兵的集中方向错开。",
+        "四渡后仍需继续机动。主力随后向南疾进、南渡乌江，向贵阳方向行动，再向云南转移；不能把一次过河等同于全部突围在同一时刻完成。"
       ],
-      "sourceIds": ["ex-src-sd-monument", "ex-src-sd-strategy"]
+      "sourceIds": [
+        "ex-src-sd-west-deployment",
+        "ex-src-sd-strategy",
+        "ex-src-sd-campaign-museum"
+      ]
+    },
+    "event-zy-resolution": {
+      "paragraphs": [
+        "北渡长江受阻后，中央红军向扎西地区集中。川军、滇军从南北方向进逼，留在原地面临夹击，下一步战略去向因此成为迫切问题。",
+        "1935年2月5日至9日，中央政治局在扎西地区连续开会，讨论战略方针与部队缩编等工作；2月8日通过遵义会议决议。这里的决议通过，与1月15日至17日召开的遵义会议应分开理解。",
+        "扎西期间的会议和整编延续并落实遵义会议的转变。鉴于敌军主力向川滇边调动、黔北相对空虚，红军决定回师东进，再渡赤水，重新选择有利战场。"
+      ],
+      "sourceIds": ["ex-src-zhaxi-meetings", "ex-src-sd-second-museum"]
     }
   }
 }

@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Compass,
-  Flag,
   Mountain,
   Pause,
   Play,
@@ -28,6 +27,7 @@ import {
   type ChishuiRenderer,
 } from './chishui-renderer';
 import './chishui-sandbox.css';
+import { campaignBeat } from '../../../../shared/content/chishui-campaign';
 
 /** Scene playback only. Never writes C1 completion evidence or historical data. */
 export function ChishuiSandbox({
@@ -59,6 +59,10 @@ export function ChishuiSandbox({
   const start = useRef<HTMLButtonElement>(null);
   const sample = sampleChishui(time),
     chapter = CHISHUI_CHAPTERS[sample.chapter]!;
+  const narrative = campaignBeat(
+    `chapter-event-sd-${sample.chapter + 1}`,
+    sample.progress,
+  )!;
   const ended = time >= TOTAL_SECONDS;
   const seek = useCallback((value: number) => {
     const safe = sampleChishui(value).time;
@@ -243,17 +247,29 @@ export function ChishuiSandbox({
           </b>
         </div>
         <div className="cs-story-heading" aria-live="polite">
-          <span>{chapter.date}</span>
+          <span>{narrative.beat.date}</span>
           <h3>
             {chapter.name}
             <em>{chapter.keyword}</em>
           </h3>
         </div>
-        <p>{chapter.text}</p>
-        <div className="cs-strategy">
-          <Flag size={15} />
-          <span>{chapter.insight}</span>
-        </div>
+        <section className="cs-causal-story" aria-live="polite">
+          <h4>{narrative.beat.title}</h4>
+          <dl>
+            <div>
+              <dt>敌情</dt>
+              <dd>{narrative.beat.threat}</dd>
+            </div>
+            <div>
+              <dt>应对</dt>
+              <dd>{narrative.beat.response}</dd>
+            </div>
+            <div>
+              <dt>意义</dt>
+              <dd>{narrative.beat.significance}</dd>
+            </div>
+          </dl>
+        </section>
         <div className="cs-legend">
           <span>
             <i />

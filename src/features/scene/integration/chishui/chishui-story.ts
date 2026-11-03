@@ -1,18 +1,8 @@
+import { CAMPAIGN_SOURCES } from '../../../../shared/content/chishui-campaign';
 /** Original editorial layout in local diagram units; never geographic coordinates.
  * The lines communicate direction, not reconstructed marching routes. */
 export type DiagramPoint = readonly [number, number];
-export const CHISHUI_SOURCES = [
-  {
-    title: '四渡赤水出奇兵',
-    publisher: '中央网信办（转载人民网，2016-08-22）',
-    url: 'https://www.cac.gov.cn/2016-08/22/c_1119430867.htm',
-  },
-  {
-    title: '四渡赤水战役（1935年）',
-    publisher: '中国军网（2018-07-31）',
-    url: 'https://www.81.cn/2018byzt/2018-07/31/content_9238267.htm',
-  },
-] as const;
+export const CHISHUI_SOURCES = Object.values(CAMPAIGN_SOURCES);
 export const CHISHUI_CHAPTERS = [
   {
     id: 'first',

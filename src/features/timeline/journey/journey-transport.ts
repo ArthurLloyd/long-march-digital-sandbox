@@ -57,6 +57,7 @@ export function createJourneyTransport(plan: JourneyPlan) {
     const end = journeyDuration(plan, state.sequenceId);
     const next = Math.min(end, state.time + delta * state.speed);
     const cue = journeyChapters(plan, state.sequenceId)
+      .filter((c) => c.pauseAtArrival !== false)
       .flatMap((c) =>
         c.eventIds.map((id) => ({
           id,
