@@ -156,27 +156,17 @@
   color: var(--gold-bright);
   background: var(--surface);
   border: 1px solid var(--line-strong);
-}
-.journey-experience-entry summary {
-  padding: 16px;
-  display: flex;
-  gap: 10px;
+  display: inline-flex;
   align-items: center;
-  cursor: pointer;
+  gap: 10px;
+  padding: 14px 18px;
   font: 500 16px/1.6 var(--font-display);
+  white-space: nowrap;
 }
-.journey-experience-entry p {
-  margin: 0 16px 12px;
-  color: var(--muted);
-  font-size: 12px;
-}
-.journey-experience-entry button {
-  display: block;
-  width: calc(100% - 32px);
-  margin: 8px 16px 12px;
-  border: 1px solid var(--line-strong);
-  padding: 10px;
-  text-align: left;
+.journey-experience-entry:hover,
+.journey-experience-entry:focus-visible {
+  background: var(--red-muted);
+  border-color: var(--gold);
   color: var(--text);
 }
 .journey-experience-entry button:hover {
@@ -325,6 +315,8 @@
   background: var(--surface);
   font-size: 12px;
   white-space: nowrap;
+  transition: none;
+  will-change: transform;
 }
 .journey-unit-label[data-camp='red_army'] {
   color: #f3a19a;

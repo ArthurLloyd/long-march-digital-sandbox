@@ -88,6 +88,48 @@ it('manual story reading counts as seen without moving time or writing completio
   t.advance(6);
   expect(t.read().pendingEventId).toBe('e1');
 });
+
+it('re-arms arrival cues when returning to an earlier chapter without opening skipped stories during seek', () => {
+  const t = createJourneyTransport(plan);
+  t.play();
+  t.advance(20);
+  t.acknowledge();
+  t.play();
+  t.advance(20);
+  t.acknowledge();
+  t.seek(10);
+  expect(t.read()).toMatchObject({ pendingEventId: null, playing: false });
+  expect(t.read().seen).toEqual(['e1']);
+  t.play();
+  t.advance(20);
+  expect(t.read()).toMatchObject({
+    time: 15,
+    pendingEventId: 'e2',
+    playing: false,
+  });
+});
+
+it('stops at Jinsha and every subsequent event again after revisiting that part of the real journey', () => {
+  const c = createJourneyContent(dataset, 'exhibition');
+  const chapters = journeyChapters(c.plan, 'central');
+  const remaining = chapters.slice(
+    chapters.findIndex((c) => c.id === 'chapter-event-js'),
+  );
+  const t = createJourneyTransport(c.plan);
+  for (const chapter of remaining) t.visit(chapter.eventIds[0]!);
+  t.seek(remaining.at(-1)!.end);
+  t.seek(remaining[0]!.start);
+  for (const chapter of remaining) {
+    t.play();
+    t.advance(10000);
+    expect(t.read(), chapter.id).toMatchObject({
+      time: chapter.start + chapter.duration * chapter.arrival,
+      pendingEventId: chapter.eventIds[0],
+      playing: false,
+    });
+    t.acknowledge();
+  }
+});
 describe('统一C2连续行军扩展', () => {
   it('高倍速停在最早未呈现事件，不越过多个节点', () => {
     const t = createJourneyTransport(plan);

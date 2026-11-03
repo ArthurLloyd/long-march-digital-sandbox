@@ -36,7 +36,10 @@ import {
   intersectsMapRect,
   type MapSafeRect,
 } from './map-safe-area';
-import { layoutAnchoredMapLabels } from './event-marker-layout';
+import {
+  layoutAnchoredMapLabels,
+  layoutMovingMapLabels,
+} from './event-marker-layout';
 import {
   selectForceStateForPhase,
   SPATIAL_LABELS,
@@ -93,6 +96,21 @@ export function ExhibitionPanorama(
     api = useRef<PanoramaMapAdapter | null>(null);
   const eventLayer = useRef<EventMapLayerHandle>(null);
   const geographyLeaders = useRef<Record<string, SVGLineElement | null>>({});
+  const unitLabelSizes = useRef(
+    new Map<string, { width: number; height: number }>(),
+  );
+  useEffect(() => {
+    const invalidate = () => unitLabelSizes.current.clear();
+    let live = true;
+    void document.fonts?.ready.then(() => {
+      if (live) invalidate();
+    });
+    window.addEventListener('resize', invalidate);
+    return () => {
+      live = false;
+      window.removeEventListener('resize', invalidate);
+    };
+  }, []);
   const [safeAreas, setSafeAreas] = useState<readonly MapSafeRect[]>([]);
   const safeAreasRef = useRef<readonly MapSafeRect[]>([]);
   const latest = useRef(props),
@@ -232,7 +250,8 @@ export function ExhibitionPanorama(
             latest.current.onSceneError({ code: 'render_failed', message });
         },
         onMarkers: (markers, viewport) => {
-          eventLayer.current?.project(markers, viewport);
+          const eventBoxes =
+            eventLayer.current?.project(markers, viewport) ?? [];
           const geographyLayout =
             latest.current.geographicRegion !== undefined && viewport
               ? layoutAnchoredMapLabels(
@@ -257,9 +276,54 @@ export function ExhibitionPanorama(
                   },
                 )
               : [];
+          const moving = markers.filter((m) => m.id.startsWith('march:'));
+          for (const m of moving) {
+            const label = labels.current[m.id];
+            if (label && !unitLabelSizes.current.has(m.id))
+              unitLabelSizes.current.set(m.id, {
+                width: label.offsetWidth || 160,
+                height: label.offsetHeight || 28,
+              });
+          }
+          const preferredIds = new Set(
+            (latest.current.journey?.plan.tracks ?? [])
+              .filter((t) => t.unitId === latest.current.journey?.read().unitId)
+              .map((t) => `march:${t.id}`),
+          );
+          const movingLayout = viewport
+            ? new Map(
+                layoutMovingMapLabels(
+                  moving,
+                  viewport,
+                  unitLabelSizes.current,
+                  [
+                    ...safeAreasRef.current,
+                    ...eventBoxes,
+                    ...geographyLayout
+                      .filter((m) => m.visible)
+                      .map((m) => ({
+                        x: m.labelX - 90,
+                        y: m.labelY - 44,
+                        width: 180,
+                        height: 44,
+                      })),
+                  ],
+                  preferredIds,
+                ).map((m) => [m.id, m]),
+              )
+            : new Map();
           markers.forEach((marker) => {
             const label = labels.current[marker.id];
             if (!label) return;
+            if (marker.id.startsWith('march:')) {
+              const packed = movingLayout.get(marker.id);
+              label.style.transform = `translate(${packed?.labelX ?? marker.x}px,${packed?.labelY ?? marker.y}px)`;
+              label.style.visibility = packed?.visible ? 'visible' : 'hidden';
+              label.setAttribute('aria-hidden', String(!packed?.visible));
+              label.dataset.anchorX = String(marker.x);
+              label.dataset.anchorY = String(marker.y);
+              return;
+            }
             const shift =
               marker.id === 'view:chishui'
                 ? -26
@@ -269,15 +333,10 @@ export function ExhibitionPanorama(
                     ? 16
                     : 0;
             const besideTorch = label.classList.contains('is-ruijin-anchor');
-            const besideMarch = marker.id.startsWith('march:');
-            const closeMarch =
-              latest.current.journey?.read().camera === 'follow';
             const packed = geographyLayout.find((m) => m.id === marker.id);
             label.style.transform = packed
               ? `translate(${packed.labelX}px,${packed.labelY}px) translate(-50%,-100%)`
-              : besideMarch
-                ? `translate(${marker.x + (closeMarch ? 70 : 90)}px,${marker.y + (closeMarch ? 48 : 80)}px)`
-                : `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
+              : `translate(${marker.x + (besideTorch ? 145 : 0)}px,${marker.y + (besideTorch ? 28 : shift)}px) translate(-50%,-100%)`;
             const geographicVisible =
               latest.current.geographicRegion === undefined ||
               !marker.id.startsWith('view:') ||
@@ -877,8 +936,9 @@ export function ExhibitionPanorama(
             className="journey-unit-label"
             data-camp={track.camp}
             aria-label={track.unitName}
+            title={track.unitName}
           >
-            {track.unitName}
+            {track.unitName.split('·')[0]!.trim()}
           </span>
         ))}
         {forcePoints.map(({ track, snapshot }) => (

@@ -23,7 +23,7 @@ export interface EventMapLayerHandle {
   project(
     markers: readonly MarkerProjection[],
     viewport?: MarkerViewport,
-  ): void;
+  ): MapSafeRect[];
 }
 export function EventMapLayer({
   model,
@@ -101,7 +101,7 @@ export function EventMapLayer({
     ref,
     () => ({
       project(markers, viewport) {
-        if (!viewport) return;
+        if (!viewport) return [];
         const far = !directRead && viewport.distance > 4.8;
         const wanted = markers.filter((m) =>
           far
@@ -155,6 +155,19 @@ export function EventMapLayer({
             }
           }
         }
+        return [...layout.values()]
+          .filter((p) => p.visible && elements.current.has(p.id))
+          .map((p) => {
+            const element = elements.current.get(p.id)!;
+            const width = element.offsetWidth || (directRead ? 220 : 200);
+            const height = element.offsetHeight || 42;
+            return {
+              x: p.labelX - width / 2,
+              y: p.labelY - height,
+              width,
+              height,
+            };
+          });
       },
     }),
     [

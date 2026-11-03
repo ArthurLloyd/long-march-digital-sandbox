@@ -40,16 +40,26 @@ export function createJourneyTransport(plan: JourneyPlan) {
     }
   };
   const pause = () => publish({ ...state, playing: false });
-  const seek = (time: number) =>
+  const seek = (time: number) => {
+    const destination = Math.max(
+      0,
+      Math.min(journeyDuration(plan, state.sequenceId), time),
+    );
+    const upcoming = new Set(
+      journeyChapters(plan, state.sequenceId)
+        .filter((c) => c.start + c.duration * c.arrival >= destination)
+        .flatMap((c) => c.eventIds),
+    );
     publish({
       ...state,
-      time: Math.max(
-        0,
-        Math.min(journeyDuration(plan, state.sequenceId), time),
-      ),
+      time: destination,
       playing: false,
       pendingEventId: null,
+      // Re-entering a chapter is a new arrival, even if its story was read
+      // earlier. Seeking itself still never opens the events being skipped.
+      seen: state.seen.filter((id) => !upcoming.has(id)),
     });
+  };
   const acknowledge = () =>
     publish({ ...state, pendingEventId: null, playing: false });
   const advance = (delta: number) => {

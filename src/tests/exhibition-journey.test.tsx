@@ -1,20 +1,27 @@
 import { useEffect } from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { App } from '../app/App';
 import raw from '../data/verified/dataset.json';
 import { COMPLETION_STORAGE_KEY } from '../app/experience/experience-completion-service';
 import { GEOGRAPHIC_VIEWS } from '../app/landscape/map-regions';
+import { isGeographicRegion } from '../app/exhibition/exhibition-content';
 import type { ComponentProps } from 'react';
 import type { ExhibitionPanorama } from '../app/landscape/ExhibitionPanorama';
 import { createJourneyContent } from '../app/exhibition/exhibition-content';
-import { journeyChapters } from '../features/timeline/journey';
+import {
+  journeyChapters,
+  type JourneyTransport,
+} from '../features/timeline/journey';
 const cameraBoundary = vi.hoisted(() => ({
   focusGeo: vi.fn(),
   focus: vi.fn(),
   overview: vi.fn(),
   frameMarch: vi.fn(),
+  focusMarch: vi.fn(),
+  prepareRegion: vi.fn(),
+  transport: null as JourneyTransport | null,
   restore: vi.fn(),
 }));
 
@@ -24,6 +31,9 @@ vi.mock('../app/landscape/ExhibitionPanorama', () => ({
     p: ComponentProps<typeof ExhibitionPanorama>,
   ) {
     const { onSceneReady, onMapAdapter } = p;
+    useEffect(() => {
+      cameraBoundary.transport = p.journey ?? null;
+    }, [p.journey]);
     useEffect(() => onSceneReady(), [onSceneReady]);
     useEffect(() => {
       onMapAdapter?.({
@@ -97,13 +107,15 @@ it('drives the camera for every chapter of all three sequences, with regional an
     await user.selectOptions(screen.getByLabelText('序列'), sequence.id);
     for (const chapter of sequence.chapterIds) {
       const before =
+        cameraBoundary.focusMarch.mock.calls.length +
         cameraBoundary.focusGeo.mock.calls.length +
         cameraBoundary.focus.mock.calls.length +
         cameraBoundary.overview.mock.calls.length;
       await user.selectOptions(screen.getByLabelText('跳转行军章节'), chapter);
       if (checked > 0)
         expect(
-          cameraBoundary.focusGeo.mock.calls.length +
+          cameraBoundary.focusMarch.mock.calls.length +
+            cameraBoundary.focusGeo.mock.calls.length +
             cameraBoundary.focus.mock.calls.length +
             cameraBoundary.overview.mock.calls.length,
         ).toBeGreaterThanOrEqual(before);
@@ -121,6 +133,7 @@ it('drives the camera for every chapter of all three sequences, with regional an
   expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
 });
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
   localStorage.clear();
 });
@@ -145,15 +158,112 @@ it('uses the same overview, moving corridor and close arrival flow for all regio
     });
     expect(cameraBoundary.frameMarch).toHaveBeenCalled();
     expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
-    const before = cameraBoundary.focusGeo.mock.calls.length;
+    const before = cameraBoundary.focusMarch.mock.calls.length;
     fireEvent.change(screen.getByLabelText('行军演示进度'), {
       target: { value: chapter.start + chapter.duration * chapter.arrival },
     });
     expect(
-      cameraBoundary.focusGeo.mock.calls.length,
+      cameraBoundary.focusMarch.mock.calls.length,
       chapter.id,
     ).toBeGreaterThan(before);
   }
+});
+
+it('loads the arriving region and moves into follow scale before opening every story from Jinsha onward', async () => {
+  await enter();
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  const c = createJourneyContent(raw, 'exhibition');
+  const chapters = journeyChapters(c.plan, 'central');
+  const remaining = chapters.slice(
+    chapters.findIndex((c) => c.id === 'chapter-event-js'),
+  );
+  for (const chapter of remaining) {
+    fireEvent.change(screen.getByLabelText('跳转行军章节'), {
+      target: { value: chapter.id },
+    });
+    fireEvent.change(screen.getByLabelText('行军演示进度'), {
+      target: {
+        value: chapter.start + chapter.duration * chapter.arrival - 0.1,
+      },
+    });
+    cameraBoundary.focusMarch.mockClear();
+    cameraBoundary.prepareRegion.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: '开始或继续行军' }));
+    act(() => cameraBoundary.transport!.advance(1));
+    const event = c.dataset.events.find((e) => e.id === chapter.eventIds[0])!;
+    expect(
+      screen.getByRole('button', { name: `已到达${event.title}，点击阅读` }),
+      chapter.id,
+    ).toBeVisible();
+    expect(cameraBoundary.focusMarch, chapter.id).toHaveBeenCalledWith(
+      'follow',
+    );
+    if (isGeographicRegion(chapter.regionId)) {
+      expect(cameraBoundary.prepareRegion, chapter.id).toHaveBeenCalledWith(
+        chapter.regionId,
+      );
+      expect(screen.getByLabelText('当前区域')).toHaveTextContent(
+        chapter.regionId,
+      );
+    } else {
+      const placement = c.map.entries.find((p) =>
+        chapter.eventIds.includes(p.eventId),
+      )!;
+      expect(cameraBoundary.prepareRegion, chapter.id).toHaveBeenCalledWith(
+        null,
+        placement.bounds,
+      );
+      expect(
+        screen.getByRole('button', { name: `阅读地图${event.title}` }),
+      ).toBeVisible();
+    }
+    expect(
+      screen.getByRole('button', { name: '开始或继续行军' }),
+    ).toBeVisible();
+    act(() => vi.advanceTimersByTime(3000));
+    expect(
+      screen.getByRole('dialog', { name: event.title }),
+      chapter.id,
+    ).toBeVisible();
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: event.title })).getByRole(
+        'button',
+        { name: '关闭面板' },
+      ),
+    );
+    act(() => vi.advanceTimersByTime(20));
+    expect(
+      screen.getByRole('button', { name: '开始或继续行军' }),
+    ).toBeVisible();
+  }
+  expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
+});
+
+it('loads the arriving terrain in free mode while keeping the chosen camera mode and composition', async () => {
+  const user = await enter();
+  const c = createJourneyContent(raw, 'exhibition');
+  const chapter = journeyChapters(c.plan, 'central').find(
+    (c) => c.id === 'chapter-event-js',
+  )!;
+  await user.selectOptions(screen.getByLabelText('跳转行军章节'), chapter.id);
+  fireEvent.change(screen.getByLabelText('行军演示进度'), {
+    target: { value: chapter.start + chapter.duration * chapter.arrival - 0.1 },
+  });
+  await user.click(screen.getByRole('button', { name: '自由' }));
+  cameraBoundary.focusMarch.mockClear();
+  cameraBoundary.prepareRegion.mockClear();
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+  fireEvent.click(screen.getByRole('button', { name: '开始或继续行军' }));
+  act(() => cameraBoundary.transport!.advance(1));
+  expect(
+    screen.getByRole('button', { name: '已到达巧渡金沙江，点击阅读' }),
+  ).toBeVisible();
+  expect(cameraBoundary.prepareRegion).toHaveBeenCalledWith('jinsha');
+  expect(cameraBoundary.focusMarch).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: '自由' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
 });
 async function enter() {
   const user = userEvent.setup();
@@ -326,7 +436,12 @@ it('passes single and continuous A scopes and restores macro time, unit, camera 
   const time = (screen.getByLabelText('行军演示进度') as HTMLInputElement)
     .value;
   await user.click(screen.getByText('赤水河谷 · 区域体验'));
-  await user.click(screen.getByRole('button', { name: '仅体验本区域' }));
+  expect(
+    screen.queryByRole('button', { name: '仅体验本区域' }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole('button', { name: '从本区域继续连续体验' }),
+  ).not.toBeInTheDocument();
   expect(screen.getByLabelText('A场景公共边界')).toHaveTextContent(
     'chishui / single',
   );
@@ -340,13 +455,6 @@ it('passes single and continuous A scopes and restores macro time, unit, camera 
     'true',
   );
   expect(screen.getByRole('button', { name: '开始或继续行军' })).toBeVisible();
-  await user.click(
-    screen.getByRole('button', { name: '从本区域继续连续体验' }),
-  );
-  expect(screen.getByLabelText('A场景公共边界')).toHaveTextContent(
-    'chishui / continuous',
-  );
-  await user.click(screen.getByRole('button', { name: '退出A场景' }));
   await user.click(screen.getByRole('button', { name: '完整互动体验' }));
   expect(screen.getByLabelText('A场景公共边界')).toHaveTextContent(
     'ruijin / continuous',

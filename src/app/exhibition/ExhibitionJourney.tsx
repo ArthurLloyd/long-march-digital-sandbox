@@ -62,6 +62,7 @@ import { StoryDialog } from './StoryDialog';
 import { JourneyArrival } from './JourneyArrival';
 import { OrnamentFrame } from '../../components/exhibition/ExhibitionOrnaments';
 import { JourneyControls } from './JourneyControls';
+import { CampaignSituation } from './CampaignSituation';
 import '../../styles/exhibition-journey.css';
 const Panorama = lazy(() =>
   import('../landscape/ExhibitionPanorama').then((m) => ({
@@ -253,6 +254,7 @@ export function ExhibitionJourney({
     region: string;
     camera: string;
     stage: string;
+    arrival: string | null;
   } | null>(null);
   useEffect(() => {
     if (!ready || opening) return;
@@ -260,10 +262,10 @@ export function ExhibitionJourney({
     if (!chapter) return;
     const previous = previousChapter.current;
     if (
-      !state.pendingEventId &&
       previous?.id === chapter.id &&
       previous.camera === state.camera &&
-      previous.stage === journeyStage
+      previous.stage === journeyStage &&
+      (!state.pendingEventId || previous.arrival === state.pendingEventId)
     )
       return;
     const transition =
@@ -273,11 +275,19 @@ export function ExhibitionJourney({
       region: chapter.regionId,
       camera: state.camera,
       stage: journeyStage,
+      arrival: state.pendingEventId,
     };
-    if (state.camera === 'free' || state.pendingEventId) return;
     const p = content.map.entries.find((p) =>
       chapter.eventIds.includes(p.eventId),
     );
+    // Terrain readiness is independent of camera mode and of the reading
+    // pause. Otherwise the very arrival that should reveal a region skips it.
+    if (journeyStage === 'local') {
+      if (isGeographicRegion(chapter.regionId))
+        api.current?.prepareRegion?.(chapter.regionId);
+      else if (p?.bounds) api.current?.prepareRegion?.(null, p.bounds);
+    }
+    if (state.camera === 'free') return;
     const currentSample = sampleJourney(
       content.plan,
       transport.read().sequenceId,
@@ -564,30 +574,24 @@ export function ExhibitionJourney({
                   </button>
                 </div>
               )}
+              {!opening && sample.chapter && (
+                <CampaignSituation
+                  research={content.campaign}
+                  chapterId={sample.chapter.id}
+                  progress={sample.progress}
+                />
+              )}
               {region && !opening && (
-                <details
+                <button
                   className="journey-experience-entry"
                   data-map-obstacle="true"
+                  onClick={() => beginObservation(region, 'single', 'region')}
                 >
-                  <summary>
-                    <Mountain size={18} />
-                    {GEOGRAPHIC_VIEWS.find((v) => v.id === region)?.title} ·
-                    区域体验
-                  </summary>
-                  <p>保留当前行军位置，退出后返回。</p>
-                  <button
-                    onClick={() => beginObservation(region, 'single', 'region')}
-                  >
-                    仅体验本区域
-                  </button>
-                  <button
-                    onClick={() =>
-                      beginObservation(region, 'continuous', 'region')
-                    }
-                  >
-                    从本区域继续连续体验
-                  </button>
-                </details>
+                  <Mountain size={18} />
+                  {GEOGRAPHIC_VIEWS.find((v) => v.id === region)?.title} ·
+                  区域体验
+                  <ArrowUpRight size={16} />
+                </button>
               )}
               {!region &&
                 !opening &&
@@ -953,7 +957,7 @@ export function ExhibitionJourney({
                 </p>
                 <h3>深入区域体验</h3>
                 <p>
-                  右下角选择仅体验本区域，或从该区域继续体验。独立完整体验从瑞金开始。可以随时返回地图，行军保持原进度并暂停。艺术内容播放与C1教学完成记录分开。
+                  右下角直接进入本区域，场景底部可自行前往下一地块。独立完整体验从瑞金开始。可以随时返回地图，行军保持原进度并暂停。艺术内容播放与C1教学完成记录分开。
                 </p>
                 <h3>地图与资料</h3>
                 <p>

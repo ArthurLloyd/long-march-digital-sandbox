@@ -25,7 +25,7 @@ import {
   regionalMarchDistance,
   translateMarchView,
 } from './journey-navigation';
-import type { JourneyTransport } from '../../features/timeline';
+import { sampleJourney, type JourneyTransport } from '../../features/timeline';
 import type { MapSafeRect } from './map-safe-area';
 import {
   constrainTerrainCamera,
@@ -73,6 +73,7 @@ export interface PanoramaMapAdapter {
   ): void;
   frameMarch?(points: readonly GeoPoint[]): void;
   focusMarch?(mode: 'overview' | 'follow'): void;
+  prepareRegion?(region: RegionId | null, bounds?: GeoBounds): void;
   setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -908,6 +909,10 @@ export function createPanoramaMap(
         target,
       );
     },
+    prepareRegion(region, bounds) {
+      if (region && landscape.region !== region) void landscape.focus(region);
+      else if (!region && bounds) landscape.focusArea(bounds);
+    },
     focusMarch(mode) {
       const selected = march.update(
         camera.position.distanceTo(controls.target),
@@ -915,29 +920,40 @@ export function createPanoramaMap(
       if (!selected) return;
       entryFraming = false;
       preparingEntry = false;
-      focusRevision++;
+      const revision = ++focusRevision;
       const state = march.transport?.read();
       const region = state
-        ? (march.transport?.plan.chapters.find(
-            (c) => c.id === selected.track.chapterId,
-          )?.regionId ?? null)
+        ? (sampleJourney(march.transport!.plan, state.sequenceId, state.time)
+            .chapter?.regionId ?? null)
         : null;
+      const complete = () => {
+        if (disposed || revision !== focusRevision) return;
+        drape();
+        march.drape();
+        const current = march.update(
+          camera.position.distanceTo(controls.target),
+        );
+        if (!current) return;
+        const distance =
+          mode === 'follow'
+            ? regionalMarchDistance(region) *
+              (march.transport?.read().distance ?? 1)
+            : 3.1;
+        const target = current.point.clone();
+        const position = new THREE.Vector3(
+          target.x + distance * 0.22,
+          target.y + distance * 0.7,
+          target.z + distance,
+        );
+        clearMarchSightline(position, target, landscape.navigationHeightAt);
+        travel(position, target);
+      };
       if (region && region in REGIONS) {
         browseRegion = region as RegionId;
-        void landscape.focus(region as RegionId);
-      }
-      const distance =
-        mode === 'follow'
-          ? regionalMarchDistance(region) * (state?.distance ?? 1)
-          : 3.1;
-      const target = selected.point.clone();
-      const position = new THREE.Vector3(
-        target.x + distance * 0.22,
-        target.y + distance * 0.7,
-        target.z + distance,
-      );
-      clearMarchSightline(position, target, landscape.navigationHeightAt);
-      travel(position, target);
+        void landscape.focus(region as RegionId).then((pivot) => {
+          if (pivot) complete();
+        });
+      } else complete();
     },
     focus(bounds, framing) {
       entryFraming = false;

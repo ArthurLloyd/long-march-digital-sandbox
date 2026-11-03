@@ -1,9 +1,15 @@
 import * as THREE from 'three';
 import { createEnvironmentDetails, REGION_MOOD } from '../../features/scene';
-import { geography, projectGeo, type GeoBounds } from './geography';
+import {
+  geography,
+  projectGeo,
+  unprojectGeo,
+  type GeoBounds,
+} from './geography';
 import modernWater from './data/details/modern-water.json';
 import {
   createTerrainField,
+  combineTerrainFields,
   blendDetailHeight,
   type ModernHeightfield,
   type TerrainField,
@@ -15,7 +21,7 @@ import {
   skyEnvironment,
 } from './terrain-materials';
 import { riverRibbon, createRiverChannel, type RiverPoint } from './river-mesh';
-import { REGIONS, type RegionId } from './map-regions';
+import type { RegionId } from './map-regions';
 import { disposeLandscapeRoot } from './resource-lifecycle';
 import { reliefBlockGeometry, reliefBlockMaterial } from './relief-block';
 import {
@@ -24,6 +30,7 @@ import {
 } from './exhibition-atmosphere';
 import { createTerrainLod } from './terrain-lod';
 import { createTerrainRequests } from './terrain-requests';
+import { geographicRegionAt } from './journey-navigation';
 
 const loaders = import.meta.glob<ModernHeightfield>(
   './data/details/{ruijin,zunyi,chishui,jinsha,luding,snow,grass,reunion}.json',
@@ -149,6 +156,7 @@ export function createModernLandscape(
     disposed = false;
   let focusedPivot: FocusPivot | null = null,
     visibleRivers = true;
+  let areaBounds: GeoBounds | null = null;
   const landHeight = (x: number, z: number) =>
     detailField
       ? blendDetailHeight(detailField, x, z, gain, globalField.height)
@@ -228,7 +236,7 @@ export function createModernLandscape(
   let heightVersion = 0;
   const updateTerrain = () => {
     channel = createRiverChannel(referenceWater, landHeight, 0.0068, 0.0038);
-    lod.setRegion(detailField?.worldBounds ?? null);
+    lod.setRegion(detailField?.worldBounds ?? areaBounds);
     plinth.geometry.dispose();
     plinth.geometry = reliefBlockGeometry(
       globalField.worldBounds,
@@ -239,9 +247,14 @@ export function createModernLandscape(
     refreshEnvironment();
     heightVersion++;
   };
-  const commit = (field: TerrainField, id: string) => {
+  let requestedRegion: RegionId = 'ruijin';
+  const terrainKey = (id: RegionId) =>
+    id === 'zunyi' || id === 'chishui' ? 'zunyi-chishui' : id;
+  const commit = (field: TerrainField) => {
+    const changed = detailField !== field;
     detailField = field;
-    region = id as RegionId;
+    areaBounds = null;
+    region = requestedRegion;
     focusedPivot = null;
     const b = field.worldBounds,
       mood = REGION_MOOD[region];
@@ -257,9 +270,18 @@ export function createModernLandscape(
       center.z,
     );
     atmosphere.local.value = 0.18;
-    updateTerrain();
+    if (changed) updateTerrain();
+    else refreshEnvironment();
   };
   const requests = createTerrainRequests<TerrainField>(async (id) => {
+    if (id === 'zunyi-chishui') {
+      const fields = await Promise.all(
+        ['zunyi', 'chishui'].map(async (name) =>
+          createTerrainField(await loaders[`./data/details/${name}.json`]!()),
+        ),
+      );
+      return combineTerrainFields(fields);
+    }
     const loader = loaders[`./data/details/${id}.json`];
     if (!loader) throw new Error('无区域高程');
     return createTerrainField(await loader());
@@ -272,16 +294,8 @@ export function createModernLandscape(
       since: number;
     } | null = null;
   let retryAfter = 0;
-  const wantedRegion = (x: number, z: number) => {
-    if (detailField?.contains(x, z)) return region;
-    return (
-      (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(([, b]) => {
-        const a = projectGeo([b[0], b[3]]),
-          c = projectGeo([b[2], b[1]]);
-        return x >= a[0] && x <= c[0] && z >= a[1] && z <= c[1];
-      })?.[0] ?? null
-    );
-  };
+  const wantedRegion = (x: number, z: number) =>
+    geographicRegionAt(unprojectGeo([x, z]), region);
   const waterAt = (x: number, z: number) => {
     const p = channel.at(x, z);
     return p && p.distance <= p.width ? p.level : null;
@@ -304,7 +318,10 @@ export function createModernLandscape(
       retryAfter = 0;
       requests.cancel();
       if (region !== id || !focusedPivot) {
-        if (region !== id && !(await requests.request(id))) return null;
+        if (region !== id) {
+          requestedRegion = id;
+          if (!(await requests.request(terrainKey(id)))) return null;
+        }
         const b = detailField!.worldBounds,
           center = { x: (b[0] + b[2]) / 2, z: (b[1] + b[3]) / 2 };
         const paths = channel.paths
@@ -329,9 +346,28 @@ export function createModernLandscape(
       retryAfter = 0;
       region = null;
       detailField = null;
+      areaBounds = null;
       focusedPivot = null;
       atmosphere.regionActive.value = 0;
       atmosphere.local.value = 0;
+      updateTerrain();
+    },
+    focusArea(bounds: GeoBounds) {
+      const a = projectGeo([bounds[0], bounds[3]]),
+        b = projectGeo([bounds[2], bounds[1]]);
+      const next: GeoBounds = [a[0], a[1], b[0], b[1]];
+      if (areaBounds?.every((v, i) => v === next[i])) return;
+      requests.cancel();
+      pendingObservation = null;
+      observerKey = '';
+      region = null;
+      detailField = null;
+      focusedPivot = null;
+      areaBounds = next;
+      atmosphere.regionActive.value = 0;
+      atmosphere.local.value = 0.18;
+      // Local display resampling of the existing continental DEM, never a
+      // newly claimed high-resolution source or a historical boundary.
       updateTerrain();
     },
     observe(x: number, z: number, distance: number, now: number) {
@@ -340,6 +376,10 @@ export function createModernLandscape(
         heightVersion++;
         if (!lod.details.morphing) refreshEnvironment();
       }
+      // Explicit chapter/arrival requests must finish before the old camera
+      // target can infer another region. A failed/cancelled request releases
+      // this guard, preserving ordinary wheel browsing and retries.
+      if (requests.pendingId !== null) return;
       const p = pendingObservation;
       if (
         !p ||
@@ -360,14 +400,15 @@ export function createModernLandscape(
         now >= retryAfter
       ) {
         observerKey = key;
-        if (id)
-          void requests.request(id).then((result) => {
+        if (id) {
+          requestedRegion = id;
+          void requests.request(terrainKey(id)).then((result) => {
             if (!result && !disposed && observerKey === key) {
               observerKey = '';
               retryAfter = performance.now() + 1500;
             }
           });
-        else {
+        } else {
           requests.cancel();
           region = null;
           detailField = null;
@@ -423,7 +464,7 @@ export function createModernLandscape(
       return region;
     },
     get bounds(): GeoBounds {
-      return detailField?.worldBounds ?? globalField.worldBounds;
+      return detailField?.worldBounds ?? areaBounds ?? globalField.worldBounds;
     },
     get heightVersion() {
       return heightVersion;

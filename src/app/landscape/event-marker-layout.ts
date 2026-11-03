@@ -1,6 +1,52 @@
 import type { MarkerProjection } from './map-renderer';
 import { intersectsMapRect, type MapSafeRect } from './map-safe-area';
 
+/** Labels stay near their own moving tip. All placement is from this frame's
+ * projection; there is no tween or persistent screen position to lag behind. */
+export function layoutMovingMapLabels(
+  markers: readonly MarkerProjection[],
+  viewport: { width: number; height: number },
+  sizes: ReadonlyMap<string, { width: number; height: number }>,
+  obstacles: readonly MapSafeRect[],
+  preferredIds: ReadonlySet<string> = new Set(),
+) {
+  const occupied = [...obstacles];
+  const tips = markers
+    .filter((m) => m.visible)
+    .map((m) => ({ x: m.x - 10, y: m.y - 10, width: 20, height: 20 }));
+  return [...markers]
+    .sort(
+      (a, b) => Number(preferredIds.has(b.id)) - Number(preferredIds.has(a.id)),
+    )
+    .map((m) => {
+      const size = sizes.get(m.id) ?? { width: 160, height: 28 };
+      if (m.visible) {
+        for (const [dx, dy] of [
+          [18, 12],
+          [-size.width - 18, 12],
+          [-size.width / 2, -size.height - 18],
+          [18, -size.height - 12],
+          [-size.width - 18, -size.height - 12],
+          [-size.width / 2, 24],
+        ]) {
+          const box = { x: m.x + dx!, y: m.y + dy!, ...size };
+          if (
+            box.x < 8 ||
+            box.y < 80 ||
+            box.x + box.width > viewport.width - 8 ||
+            box.y + box.height > viewport.height - 8
+          )
+            continue;
+          if ([...occupied, ...tips].some((r) => intersectsMapRect(box, r, 6)))
+            continue;
+          occupied.push(box);
+          return { ...m, labelX: box.x, labelY: box.y, visible: true };
+        }
+      }
+      return { ...m, labelX: m.x, labelY: m.y, visible: false };
+    });
+}
+
 /** Fixed screen offset from the real projected anchor. Crowding hides; it never relocates. */
 export function layoutAnchoredMapLabels(
   markers: readonly MarkerProjection[],

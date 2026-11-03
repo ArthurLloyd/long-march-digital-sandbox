@@ -16,6 +16,7 @@ import {
 import { validateEventMapResources } from '../history/event-map/event-map-schema';
 import { REGIONS, type RegionId } from '../landscape/map-regions';
 import type { JourneyPlan } from '../../features/timeline/journey';
+import { validateCampaignSituations } from './campaign-situations';
 const id = z.string().min(1);
 const point = z.tuple([
   z.number().min(-180).max(180),
@@ -225,7 +226,8 @@ export function createJourneyContent(input: unknown, audience: 'exhibition') {
         ),
     ),
   };
-  return { catalog, dataset, map, plan, supplement };
+  const campaign = validateCampaignSituations(chapters.map((c) => c.id));
+  return { catalog, dataset, map, plan, supplement, campaign };
 }
 export type JourneyContent = ReturnType<typeof createJourneyContent>;
 const regionModels = new WeakMap<

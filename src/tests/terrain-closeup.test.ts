@@ -218,6 +218,33 @@ describe('局部观察输入与安全相机', () => {
   });
 });
 describe('地形异步生命期', () => {
+  it('keeps the new region pending when an older load finishes, and releases it on completion or cancellation', async () => {
+    const pending = new Map<string, (v: string) => void>();
+    const commit = vi.fn();
+    const requests = createTerrainRequests<string>(
+      (id) => new Promise((resolve) => pending.set(id, resolve)),
+      commit,
+    );
+    const old = requests.request('jinsha');
+    const arriving = requests.request('luding');
+    pending.get('jinsha')!('old terrain');
+    await old;
+    expect(requests.pendingId).toBe('luding');
+    expect(commit).not.toHaveBeenCalled();
+    pending.get('luding')!('arriving terrain');
+    await arriving;
+    expect(requests.pendingId).toBeNull();
+    expect(commit).toHaveBeenCalledExactlyOnceWith(
+      'arriving terrain',
+      'luding',
+    );
+    const cancelled = requests.request('snow');
+    requests.cancel();
+    expect(requests.pendingId).toBeNull();
+    pending.get('snow')!('cancelled terrain');
+    await cancelled;
+    expect(commit).toHaveBeenCalledTimes(1);
+  });
   it('最后有效请求胜出；全景取消和卸载后不再提交；失败保留现有地表', async () => {
     const pending = new Map<string, (v: string) => void>(),
       commit = vi.fn();

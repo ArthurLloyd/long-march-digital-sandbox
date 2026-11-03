@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 import { createPanoramaMap } from '../app/landscape/map-renderer';
 import { projectGeo } from '../app/landscape/geography';
+import { createJourneyContent } from '../app/exhibition/exhibition-content';
+import raw from '../data/verified/dataset.json';
+import { createJourneyTransport, journeyChapters } from '../features/timeline';
 const boundary = vi.hoisted(() => ({
   render: vi.fn(),
   dispose: vi.fn(),
@@ -12,6 +15,7 @@ const boundary = vi.hoisted(() => ({
   controls: null as unknown,
   frames: [] as FrameRequestCallback[],
   landFocus: vi.fn(),
+  focusArea: vi.fn(),
   terrainHeight: 0.1,
   heightVersion: 0,
 }));
@@ -60,7 +64,7 @@ vi.mock('three/examples/jsm/controls/OrbitControls.js', async () => {
 vi.mock('../app/landscape/modern-landscape', () => ({
   createModernLandscape: () => ({
     heightAt: () => boundary.terrainHeight,
-    navigationHeightAt: () => 0.1,
+    navigationHeightAt: () => boundary.terrainHeight,
     waterHeightAt: () => null,
     worldBounds: [-20, -20, 20, 20],
     bounds: [-2, -2, 2, 2],
@@ -69,6 +73,7 @@ vi.mock('../app/landscape/modern-landscape', () => ({
     },
     region: null,
     focus: boundary.landFocus,
+    focusArea: boundary.focusArea,
     overview: vi.fn(),
     cancelPending: boundary.cancel,
     observe: vi.fn(),
@@ -145,6 +150,55 @@ const dbl = (canvas: HTMLCanvasElement) =>
     }),
   );
 describe('真实地图输入接线（只模拟GPU边界）', () => {
+  it('到达镜头等待新地区地形；旧异步响应不能覆盖用户手动镜头', async () => {
+    const { api, host } = setup(),
+      content = createJourneyContent(raw, 'exhibition');
+    const transport = createJourneyTransport(content.plan);
+    const chapter = journeyChapters(content.plan, 'central').find(
+      (c) => c.id === 'chapter-event-js',
+    )!;
+    transport.seek(chapter.start + chapter.duration * chapter.arrival);
+    api.setMarchTransport!(transport);
+    let finish!: (p: { x: number; z: number }) => void;
+    boundary.landFocus.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const before = api.bookmark();
+    api.focusMarch!('follow');
+    expect(boundary.landFocus).toHaveBeenLastCalledWith('jinsha');
+    expect(api.bookmark()).toEqual(before);
+    boundary.terrainHeight = 0.8;
+    finish({ x: 0, z: 0 });
+    await Promise.resolve();
+    expect(api.bookmark().target[1]).toBeGreaterThan(0.8);
+    expect(api.bookmark()).not.toEqual(before);
+    boundary.landFocus.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    api.focusMarch!('follow');
+    api.zoom(1);
+    const manual = api.bookmark();
+    finish({ x: 0, z: 0 });
+    await Promise.resolve();
+    expect(api.bookmark()).toEqual(manual);
+    api.dispose();
+    host.remove();
+  });
+  it('独立章节地区准备不会重写自由镜头', () => {
+    const { api, host } = setup(),
+      before = api.bookmark();
+    api.prepareRegion!(null, [103.7, 34, 104.1, 34.2]);
+    expect(boundary.focusArea).toHaveBeenCalledWith([103.7, 34, 104.1, 34.2]);
+    expect(api.bookmark()).toEqual(before);
+    api.dispose();
+    host.remove();
+  });
   it('事件区域是贴地闭合轮廓而非行军线，地形更新后重贴地，清空释放几何', () => {
     const { api, host } = setup();
     api.setEventAreas!([

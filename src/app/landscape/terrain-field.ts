@@ -18,6 +18,57 @@ export interface TerrainField {
   metres(x: number, z: number): number;
   height(x: number, z: number, gain: number): number;
 }
+
+/** Join adjacent source fields for one continuous display tile. The original
+ * samples remain untouched; only overlap seams are blended for rendering. */
+export function combineTerrainFields(
+  fields: readonly TerrainField[],
+): TerrainField {
+  if (!fields.length) throw new Error('合并地形缺少来源');
+  const worldBounds: GeoBounds = [
+    Math.min(...fields.map((f) => f.worldBounds[0])),
+    Math.min(...fields.map((f) => f.worldBounds[1])),
+    Math.max(...fields.map((f) => f.worldBounds[2])),
+    Math.max(...fields.map((f) => f.worldBounds[3])),
+  ];
+  const sample = (
+    x: number,
+    z: number,
+    read: (field: TerrainField) => number,
+  ) => {
+    const inside = fields.filter((f) => f.contains(x, z));
+    if (!inside.length) return 0;
+    let sum = 0,
+      total = 0,
+      low = Infinity,
+      high = -Infinity;
+    for (const field of inside) {
+      const [l, t, r, b] = field.worldBounds;
+      const weight = Math.max(
+        1e-6,
+        Math.min(
+          (x - l) / (r - l),
+          (r - x) / (r - l),
+          (z - t) / (b - t),
+          (b - z) / (b - t),
+          0.15,
+        ),
+      );
+      const value = read(field);
+      low = Math.min(low, value);
+      high = Math.max(high, value);
+      sum += value * weight;
+      total += weight;
+    }
+    return Math.max(low, Math.min(high, sum / total));
+  };
+  return {
+    worldBounds,
+    contains: (x, z) => fields.some((f) => f.contains(x, z)),
+    metres: (x, z) => sample(x, z, (f) => f.metres(x, z)),
+    height: (x, z, gain) => sample(x, z, (f) => f.height(x, z, gain)),
+  };
+}
 /** Raw source remains intact. Smoothing affects artistic display only. */
 export function createTerrainField(data: ModernHeightfield): TerrainField {
   if (
