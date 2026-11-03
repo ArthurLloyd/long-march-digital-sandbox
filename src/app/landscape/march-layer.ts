@@ -22,6 +22,7 @@ export function createMarchLayer(
   let transport: JourneyTransport | null = null;
   let key = '';
   let terrainRevision = 0;
+  let camps: readonly string[] = ['red_army', 'nationalist_army'];
   let selected: {
     track: JourneyTrack;
     point: THREE.Vector3;
@@ -60,6 +61,22 @@ export function createMarchLayer(
   shape.closePath();
   const arrowGeometry = new THREE.ShapeGeometry(shape);
   arrowGeometry.rotateX(-Math.PI / 2);
+  const shield = new THREE.Shape();
+  shield.moveTo(-0.035, 0.04);
+  shield.lineTo(0.035, 0.04);
+  shield.lineTo(0.03, -0.015);
+  shield.lineTo(0, -0.05);
+  shield.lineTo(-0.03, -0.015);
+  shield.closePath();
+  const garrisonGeometry = new THREE.ExtrudeGeometry(shield, {
+    depth: 0.014,
+    bevelEnabled: true,
+    bevelSize: 0.003,
+    bevelThickness: 0.003,
+    bevelSegments: 1,
+    steps: 1,
+  });
+  const pressureGeometry = new THREE.OctahedronGeometry(0.045);
   const clear = () => {
     for (const item of compiled.values()) {
       item.bluePreview?.geometry.dispose();
@@ -108,12 +125,16 @@ export function createMarchLayer(
     setVisible: (visible: boolean) => {
       root.visible = visible;
     },
+    setCamps(next: readonly string[]) {
+      camps = [...next];
+    },
     setTransport(next: JourneyTransport | null) {
       transport = next;
       if (key === (next?.plan.key ?? '')) return;
       clear();
       key = next?.plan.key ?? '';
       for (const track of next?.plan.tracks ?? []) {
+        const deployment = track.evidenceType === 'sourced_deployment';
         const samples: [number, number][] = [];
         // Subdivide each supplied straight strategic segment only to drape it.
         // Never smooth, join separate routes, or invent an intermediate place.
@@ -166,7 +187,11 @@ export function createMarchLayer(
           }),
         );
         const arrow = new THREE.Mesh(
-          arrowGeometry,
+          deployment
+            ? track.role === 'pressure'
+              ? pressureGeometry
+              : garrisonGeometry
+            : arrowGeometry,
           new THREE.MeshStandardMaterial({
             color,
             emissive: color,
@@ -174,8 +199,13 @@ export function createMarchLayer(
             roughness: 0.58,
             metalness: 0.18,
             side: THREE.DoubleSide,
+            ...(deployment
+              ? { depthTest: false, depthWrite: false, toneMapped: false }
+              : {}),
           }),
         );
+        arrow.name = `${track.id}:${deployment ? 'deployment' : 'arrow'}`;
+        arrow.renderOrder = deployment ? 13 : 0;
         const preview = new THREE.Line(
           line.geometry.clone(),
           new THREE.LineDashedMaterial({
@@ -189,7 +219,7 @@ export function createMarchLayer(
         );
         line.visible = arrow.visible = preview.visible = false;
         const blue =
-          track.camp === 'nationalist_army'
+          track.camp === 'nationalist_army' && !deployment
             ? new Line2(
                 new LineGeometry(),
                 new LineMaterial({
@@ -200,7 +230,7 @@ export function createMarchLayer(
                   depthTest: false,
                   depthWrite: false,
                   toneMapped: false,
-                  dashed: track.role === 'reported',
+                  dashed: track.role === 'reported' || !!track.motionWindow,
                   dashSize: 0.045,
                   gapSize: 0.025,
                 }),
@@ -268,12 +298,15 @@ export function createMarchLayer(
           : null;
       for (const item of compiled.values()) {
         const allowed =
-          !item.track.sequenceIds ||
-          item.track.sequenceIds.includes(state?.sequenceId ?? '');
+          camps.includes(item.track.camp) &&
+          (!item.track.sequenceIds ||
+            item.track.sequenceIds.includes(state?.sequenceId ?? ''));
         const moving =
           allowed &&
           sample?.chapter?.id === item.track.chapterId &&
-          (sample?.progress ?? 0) >= (item.track.visibleFrom ?? 0);
+          (sample?.progress ?? 0) >= (item.track.visibleFrom ?? 0) &&
+          ((sample?.progress ?? 0) < (item.track.visibleUntil ?? 1) ||
+            ((item.track.visibleUntil ?? 1) === 1 && sample?.progress === 1));
         const visible =
           allowed &&
           (moving ||
@@ -283,8 +316,9 @@ export function createMarchLayer(
         item.active = visible;
         const staticPressure =
           item.track.role === 'blockade' || item.track.role === 'reported';
-        item.line.visible = moving && !item.blue;
-        item.preview.visible = moving && !item.blue;
+        const deployment = item.track.evidenceType === 'sourced_deployment';
+        item.line.visible = moving && !item.blue && !deployment;
+        item.preview.visible = moving && !item.blue && !deployment;
         if (item.blue) item.blue.visible = visible;
         if (item.bluePreview) item.bluePreview.visible = visible && moving;
         item.arrow.visible = visible && !staticPressure;
@@ -316,12 +350,9 @@ export function createMarchLayer(
           old[4] !== terrainRevision
         ) {
           item.point.set(x, 0, z);
-          item.point.y = floatingArrowHeight(
-            item.point,
-            item.direction,
-            scale,
-            heightAt,
-          );
+          item.point.y = deployment
+            ? heightAt(x, z) + 0.16
+            : floatingArrowHeight(item.point, item.direction, scale, heightAt);
           item.groundPose = [x, z, heading, scale, terrainRevision];
         }
         item.arrow.position.copy(item.point);
@@ -344,27 +375,34 @@ export function createMarchLayer(
           const ends = item.blue.geometry.getAttribute(
             'instanceEnd',
           ) as THREE.InterleavedBufferAttribute;
-          if (item.tipIndex >= 1) {
-            // Restore all touched ends from the original draped samples. Geometry stays persistent.
-            for (let n = 0; n < ends.count; n++) {
-              const original = item.samples[n + 1]!;
-              ends.setXYZ(
-                n,
-                original[0],
-                heightAt(original[0], original[1]) + lineLift,
-                original[1],
-              );
-            }
+          // Only the previous tip can have changed. Restore it before replacing
+          // the new tip; seeking backwards must not retain a stretched segment.
+          const oldTip = item.blue.userData.tip as number | undefined;
+          if (oldTip !== undefined && oldTip >= 1) {
+            const original = item.samples[oldTip]!;
+            ends.setXYZ(
+              oldTip - 1,
+              original[0],
+              heightAt(original[0], original[1]) + lineLift,
+              original[1],
+            );
           }
           if (!staticPressure && moving && tip >= 1)
             ends.setXYZ(tip - 1, x, heightAt(x, z) + lineLift, z);
           ends.needsUpdate = true;
+          item.blue.userData.tip = tip;
           item.blue.geometry.instanceCount =
             staticPressure || !moving
               ? item.samples.length - 1
               : Math.max(0, tip);
         }
-        if (state.unitId === item.track.unitId) selected = item;
+        if (
+          state.unitId === item.track.unitId &&
+          (!selected ||
+            (!deployment && !staticPressure) ||
+            selected.track.evidenceType === 'sourced_deployment')
+        )
+          selected = item;
       }
       return selected;
     },
@@ -393,6 +431,8 @@ export function createMarchLayer(
     dispose() {
       clear();
       arrowGeometry.dispose();
+      garrisonGeometry.dispose();
+      pressureGeometry.dispose();
       scene.remove(root);
     },
   };

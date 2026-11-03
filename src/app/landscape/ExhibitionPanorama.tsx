@@ -454,6 +454,7 @@ export function ExhibitionPanorama(
   }, [points, forcePoints, props.eventMap, epoch]);
   useEffect(() => {
     api.current?.setRoutes(routes, camps);
+    api.current?.setMarchCamps?.(camps);
   }, [routes, camps, epoch]);
   useEffect(() => {
     api.current?.setForceRegions(forceState, camps);
@@ -936,9 +937,11 @@ export function ExhibitionPanorama(
             className="journey-unit-label"
             data-camp={track.camp}
             aria-label={track.unitName}
-            title={track.unitName}
+            title={`${track.unitName} · ${track.dateText}`}
           >
-            {track.unitName.split('·')[0]!.trim()}
+            {track.camp === 'nationalist_army'
+              ? track.unitName
+              : track.unitName.split('·')[0]!.trim()}
           </span>
         ))}
         {forcePoints.map(({ track, snapshot }) => (

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import raw from './data/exhibition-supplement.json';
+import enemyRaw from './data/enemy-map-additions.json';
 import {
   historyEventSchema,
   historicalPersonSchema,
@@ -34,28 +35,70 @@ const chapterSchema = z.strictObject({
   arrival: z.number().min(0.01).max(1),
   pauseAtArrival: z.boolean().optional(),
 });
-const trackSchema = z.strictObject({
-  id,
-  chapterId: id,
-  holdChapterIds: z.array(id).optional(),
-  sequenceIds: z.array(id).min(1).optional(),
-  presentation: z.enum(['regional_transfer', 'local_transfer']).optional(),
-  unitId: id,
-  unitName: id,
-  camp: z.enum(['red_army', 'nationalist_army']),
-  role: z.enum(['pursuit', 'reinforcement', 'blockade', 'reported']).optional(),
-  visibleFrom: z.number().min(0).max(0.7).optional(),
-  points: z.array(point).min(2),
-  sourceIds: z.array(id).min(1),
-  evidenceType: z.enum(['documented_geometry', 'sourced_strategic_direction']),
-  precision: z.enum(['approximate', 'schematic']),
-  limitations: id,
-  locationReferenceIds: z.array(id).min(2),
-  waypointNames: z.array(id).min(2),
-  dateText: id,
-  evidenceNote: id,
-  availability: z.enum(['available', 'withdrawn']),
-});
+const trackSchema = z
+  .strictObject({
+    id,
+    chapterId: id,
+    holdChapterIds: z.array(id).optional(),
+    sequenceIds: z.array(id).min(1).optional(),
+    presentation: z.enum(['regional_transfer', 'local_transfer']).optional(),
+    unitId: id,
+    unitName: id,
+    camp: z.enum(['red_army', 'nationalist_army']),
+    role: z
+      .enum([
+        'pursuit',
+        'reinforcement',
+        'blockade',
+        'reported',
+        'garrison',
+        'pressure',
+      ])
+      .optional(),
+    visibleFrom: z.number().min(0).max(0.7).optional(),
+    visibleUntil: z.number().min(0).max(1).optional(),
+    motionWindow: z
+      .tuple([z.number().min(0).max(1), z.number().min(0).max(1)])
+      .optional(),
+    points: z.array(point).min(1),
+    sourceIds: z.array(id).min(1),
+    evidenceType: z.enum([
+      'documented_geometry',
+      'sourced_strategic_direction',
+      'sourced_deployment',
+    ]),
+    precision: z.enum(['approximate', 'schematic']),
+    limitations: id,
+    locationReferenceIds: z.array(id).min(1),
+    waypointNames: z.array(id).min(1),
+    dateText: id,
+    evidenceNote: id,
+    availability: z.enum(['available', 'withdrawn']),
+  })
+  .superRefine((t, ctx) => {
+    const single = t.evidenceType === 'sourced_deployment';
+    if (
+      single !== (t.points.length === 1) ||
+      single !== (t.role === 'garrison' || t.role === 'pressure')
+    )
+      ctx.addIssue({
+        code: 'custom',
+        message: '单点部署必须明确为守备或压力；行军轨道至少需要两点。',
+      });
+    if ((t.visibleUntil ?? 1) <= (t.visibleFrom ?? 0))
+      ctx.addIssue({ code: 'custom', message: '态势展示窗口无效' });
+    if (
+      t.motionWindow &&
+      (single ||
+        t.motionWindow[1] <= t.motionWindow[0] ||
+        t.motionWindow[0] < (t.visibleFrom ?? 0) ||
+        t.motionWindow[1] > (t.visibleUntil ?? 1))
+    )
+      ctx.addIssue({
+        code: 'custom',
+        message: '动作窗口必须在可见窗口内，单点不得设置动作窗口',
+      });
+  });
 const supplementSchema = z.strictObject({
   schemaVersion: z.literal(1),
   version: id,
@@ -91,7 +134,23 @@ const supplementSchema = z.strictObject({
 export function createJourneyContent(input: unknown, audience: 'exhibition') {
   if (audience !== 'exhibition')
     throw new Error('补充展陈内容不供 strict 消费者使用');
-  const supplement = supplementSchema.parse(raw);
+  const base = supplementSchema.parse(raw);
+  const enemy = z
+    .strictObject({
+      schemaVersion: z.literal(1),
+      version: id,
+      sources: z.array(sourceReferenceSchema),
+      modernReferences: z.array(z.unknown()),
+      tracks: z.array(trackSchema),
+    })
+    .parse(enemyRaw);
+  const supplement = {
+    ...base,
+    version: `${base.version}-enemy-${enemy.version}`,
+    sources: [...base.sources, ...enemy.sources],
+    modernReferences: [...base.modernReferences, ...enemy.modernReferences],
+    tracks: [...base.tracks, ...enemy.tracks],
+  };
   const original = normalizeDataset(validateDataset(input));
   const unique = <T>(items: T[], key: (item: T) => string) => {
     if (new Set(items.map(key)).size !== items.length)
@@ -178,10 +237,7 @@ export function createJourneyContent(input: unknown, audience: 'exhibition') {
       t.locationReferenceIds.some((id) => !referenceIds.has(id))
     )
       throw new Error(`路线引用失效：${t.id}`);
-    if (
-      t.evidenceType === 'sourced_strategic_direction' &&
-      t.precision !== 'schematic'
-    )
+    if (t.evidenceType !== 'documented_geometry' && t.precision !== 'schematic')
       throw new Error('战略方向不能升级为道路几何');
     if (
       t.points.length !== t.locationReferenceIds.length ||

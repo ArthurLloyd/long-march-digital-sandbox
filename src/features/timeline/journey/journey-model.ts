@@ -20,11 +20,22 @@ export interface JourneyTrack {
   unitId: string;
   unitName: string;
   camp: 'red_army' | 'nationalist_army';
-  role?: 'pursuit' | 'reinforcement' | 'blockade' | 'reported';
+  role?:
+    | 'pursuit'
+    | 'reinforcement'
+    | 'blockade'
+    | 'reported'
+    | 'garrison'
+    | 'pressure';
   visibleFrom?: number;
+  visibleUntil?: number;
+  motionWindow?: [number, number];
   points: [number, number][];
   sourceIds: string[];
-  evidenceType: 'documented_geometry' | 'sourced_strategic_direction';
+  evidenceType:
+    | 'documented_geometry'
+    | 'sourced_strategic_direction'
+    | 'sourced_deployment';
   precision: 'approximate' | 'schematic';
   limitations: string;
   dateText: string;
@@ -104,6 +115,10 @@ export function journeyTrackProgress(
   track: JourneyTrack,
   sample: ReturnType<typeof sampleJourney>,
 ) {
+  if (track.motionWindow) {
+    const [from, until] = track.motionWindow;
+    return Math.max(0, Math.min(1, (sample.progress - from) / (until - from)));
+  }
   if (track.role === 'blockade' || track.role === 'reported') return 0.5;
   if (
     !sample.chapter ||
@@ -120,7 +135,13 @@ export function journeyTrackProgress(
   return Math.max(0, Math.min(1, (sample.progress - start) / (end - start)));
 }
 export function sampleTrack(track: JourneyTrack, progress: number) {
-  if (track.points.length < 2) return null;
+  if (!track.points.length) return null;
+  // A sourced deployment is a stationary symbol, never a fabricated route.
+  if (track.points.length === 1)
+    return {
+      coordinates: [...track.points[0]!] as [number, number],
+      direction: [0, 0] as [number, number],
+    };
   const distances = trackCache.get(track) ?? [0];
   if (!trackCache.has(track))
     for (let i = 1; i < track.points.length; i++) {

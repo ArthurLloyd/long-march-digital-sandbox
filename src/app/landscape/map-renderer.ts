@@ -61,6 +61,7 @@ export interface MarkerViewport {
 export interface PanoramaMapAdapter {
   setMarchTransport?(transport: JourneyTransport | null): void;
   setMarchVisible?(visible: boolean): void;
+  setMarchCamps?(camps: readonly string[]): void;
   setSafeAreas?(areas: readonly MapSafeRect[]): void;
   setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
@@ -750,6 +751,7 @@ export function createPanoramaMap(
   return {
     setMarchTransport: (transport) => march.setTransport(transport),
     setMarchVisible: march.setVisible,
+    setMarchCamps: march.setCamps,
     setSafeAreas: (areas) => {
       safeAreas = areas;
       applySafeFrame();

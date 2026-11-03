@@ -5,6 +5,7 @@ import {
   type EventMapLayerHandle,
 } from '../app/landscape/EventMapLayer';
 import { createJourneyContent } from '../app/exhibition/exhibition-content';
+import { createJourneyTransport } from '../features/timeline';
 import { normalizeDataset } from '../shared/contracts';
 import { validateDataset } from '../shared/utils/validate-dataset';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
@@ -81,6 +82,7 @@ const renderer = vi.hoisted(() => ({
     setMarkers: vi.fn(),
     setEventAreas: vi.fn(),
     setRoutes: vi.fn(),
+    setMarchCamps: vi.fn(),
     setForceRegions: vi.fn(),
     setRivers: vi.fn(),
     setVerticalExaggeration: vi.fn(),
@@ -161,6 +163,46 @@ async function openMapTools(user: ReturnType<typeof userEvent.setup>) {
   const summary = screen.getByText('地图工具').closest('summary')!;
   if (!summary.parentElement!.hasAttribute('open')) await user.click(summary);
 }
+
+it('国军图层控制主地图行军层，敌军标签保留具体动作名称', async () => {
+  // jsdom has no layout observer; only this browser API boundary is replaced.
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
+  const content = createJourneyContent(raw, 'exhibition');
+  const transport = createJourneyTransport(content.plan);
+  const user = userEvent.setup();
+  render(
+    <ExhibitionPanorama {...properties(content.dataset)} journey={transport} />,
+  );
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'nationalist_army',
+    'other',
+  ]);
+  expect(screen.getByLabelText('湘军·嘉禾向宁远追击')).toHaveTextContent(
+    '湘军·嘉禾向宁远追击',
+  );
+  const before = transport.read();
+  await openMapTools(user);
+  await user.click(screen.getByText('地图图层'));
+  await user.click(screen.getByRole('checkbox', { name: '国军图层' }));
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'other',
+  ]);
+  await user.click(screen.getByRole('checkbox', { name: '国军图层' }));
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'other',
+    'nationalist_army',
+  ]);
+  expect(transport.read()).toBe(before);
+});
 
 it.each(['single', 'continuous'] as const)(
   'A公共边界按%s控制结束，恢复同一地图且不改宏观历史状态',

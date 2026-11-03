@@ -37,7 +37,7 @@ try {
   const data = normalizeDataset(validateDataset(files[0]));
   const exhibition = createJourneyContent(data, 'exhibition');
   console.log(
-    `展馆补充校验：${exhibition.dataset.events.length} 个展出事件、${exhibition.plan.chapters.length} 个章节、${exhibition.plan.tracks.length} 条有来源战略示意；不等于史实审核。`,
+    `展馆补充校验：${exhibition.dataset.events.length} 个展出事件、${exhibition.plan.chapters.length} 个章节、${exhibition.plan.tracks.length} 项战略方向/部署示意（其中 ${exhibition.plan.tracks.filter((t) => t.evidenceType === 'sourced_deployment').length} 项为单点部署）；不等于史实审核。`,
   );
   const spatial = validateEventMapResources(
     eventMapInput.positions,
