@@ -3,6 +3,7 @@ import {
   createJourneyTransport,
   journeyChapters,
   sampleJourney,
+  journeyTrackProgress,
   sampleTrack,
   type JourneyPlan,
 } from '../features/timeline/journey';
@@ -56,6 +57,20 @@ const plan: JourneyPlan = {
     },
   ],
 };
+
+it('manual story reading counts as seen without moving time or writing completion', () => {
+  const t = createJourneyTransport(plan);
+  t.visit('e1');
+  expect(t.read().time).toBe(0);
+  expect(t.read().seen).toEqual(['e1']);
+  t.play();
+  t.advance(6);
+  expect(t.read().pendingEventId).toBeNull();
+  t.restart();
+  t.play();
+  t.advance(6);
+  expect(t.read().pendingEventId).toBe('e1');
+});
 describe('统一C2连续行军扩展', () => {
   it('高倍速停在最早未呈现事件，不越过多个节点', () => {
     const t = createJourneyTransport(plan);
@@ -189,7 +204,7 @@ describe('真实补充内容与原始审核隔离', () => {
   });
   it('战略轨道具备逐点定位来源和时间范围，strict不因此增加发布数据', () => {
     const c = createJourneyContent(dataset, 'exhibition');
-    expect(c.plan.tracks).toHaveLength(9);
+    expect(c.plan.tracks).toHaveLength(27);
     expect(c.plan.tracks.some((t) => t.camp === 'nationalist_army')).toBe(true);
     for (const t of c.supplement.tracks) {
       expect(t.points).toHaveLength(t.locationReferenceIds.length);
@@ -222,4 +237,71 @@ describe('真实补充内容与原始审核隔离', () => {
     expect(y.detail).toContain('18日');
     expect(c.supplement.people.every((p) => p.reviews.length === 0)).toBe(true);
   });
+});
+
+it('maps one wall second at displayed 1x to the former four-times progress without changing historical data', () => {
+  const t = createJourneyTransport(plan);
+  t.play();
+  t.tickWallTime(1);
+  expect(t.read().time).toBe(4);
+  t.speed(0.5);
+  t.tickWallTime(0.25);
+  expect(t.read().time).toBe(4.5);
+  expect(plan.chapters[0]!.dateText).toBe('未知');
+});
+
+it('covers every change of geographic region in the main itinerary with a sourced incoming track', () => {
+  const c = createJourneyContent(dataset, 'exhibition');
+  const chapters = journeyChapters(c.plan, 'central');
+  for (let i = 1; i < chapters.length; i++) {
+    const current = chapters[i]!,
+      previous = chapters[i - 1]!;
+    if (current.regionId === previous.regionId) continue;
+    const sampled = sampleJourney(c.plan, 'central', current.start);
+    expect(
+      sampled.tracks.some((t) => t.presentation === 'regional_transfer'),
+      current.id,
+    ).toBe(true);
+  }
+});
+
+it('regional transfers show overview, move along their own source vertices and arrive exactly before the story cue', () => {
+  const c = createJourneyContent(dataset, 'exhibition');
+  for (const chapter of journeyChapters(c.plan, 'central')) {
+    const start = sampleJourney(c.plan, 'central', chapter.start);
+    for (const track of start.tracks.filter(
+      (t) => t.presentation === 'regional_transfer',
+    )) {
+      expect(start.stage).toBe('overview');
+      expect(journeyTrackProgress(track, start)).toBe(0);
+      const moving = sampleJourney(
+        c.plan,
+        'central',
+        chapter.start + chapter.duration * 0.5,
+      );
+      expect(moving.stage).toBe('transit');
+      expect(journeyTrackProgress(track, moving)).toBeGreaterThan(0);
+      const arrived = sampleJourney(
+        c.plan,
+        'central',
+        chapter.start + chapter.duration * chapter.arrival,
+      );
+      expect(arrived.stage).toBe('local');
+      const position = sampleTrack(
+        track,
+        journeyTrackProgress(track, arrived),
+      )!.coordinates;
+      position.forEach((coordinate, i) =>
+        expect(coordinate).toBeCloseTo(track.points.at(-1)![i]!, 9),
+      );
+    }
+  }
+});
+
+it('does not borrow the central army route when the red twenty-fifth army sequence reaches the shared meeting chapter', () => {
+  const c = createJourneyContent(dataset, 'exhibition');
+  const chapter = journeyChapters(c.plan, 'red25').find(
+    (c) => c.id === 'chapter-ex-event-ganquan',
+  )!;
+  expect(sampleJourney(c.plan, 'red25', chapter.start).tracks).toHaveLength(0);
 });

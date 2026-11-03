@@ -6,6 +6,9 @@ import {
   type JourneyCamera,
 } from './journey-model';
 
+/** Wall-clock pacing: the former 4x is the exhibition's new displayed 1x. */
+export const JOURNEY_BASE_RATE = 4;
+
 /** C2's continuous exhibition transport. It has no RAF, storage or completion writes. */
 export function createJourneyTransport(plan: JourneyPlan) {
   const initial = (): JourneyState => ({
@@ -90,9 +93,16 @@ export function createJourneyTransport(plan: JourneyPlan) {
       };
     },
     advance,
+    tickWallTime: (seconds: number) => advance(seconds * JOURNEY_BASE_RATE),
     pause,
     seek,
     acknowledge,
+    visit: (id: string) =>
+      publish({
+        ...state,
+        seen: state.seen.includes(id) ? state.seen : [...state.seen, id],
+        playing: false,
+      }),
     play: () =>
       publish({
         ...state,

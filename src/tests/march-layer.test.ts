@@ -52,7 +52,7 @@ it('renders a forward arrow and reveals the line to the same sampled pose even w
   const selected = layer.update(1)!;
   const [x, z] = projectGeo(sampleTrack(plan.tracks[0]!, 0.5)!.coordinates);
   expect(selected.point.x).toBeCloseTo(x);
-  expect(selected.point.y).toBeCloseTo(0.435);
+  expect(selected.point.y).toBeCloseTo(0.465);
   expect(selected.point.z).toBeCloseTo(z);
   const group = scene.children[0]!,
     line = group.children.find((o) => o instanceof THREE.Line) as THREE.Line,
@@ -85,4 +85,39 @@ it('does not follow a different army when the selected unit has no route in the 
   layer.setTransport(t);
   expect(scene.children[0]!.children).toHaveLength(childCount);
   layer.dispose();
+});
+
+it('keeps the full dashed corridor separate from the travelled trail and uses a narrow pointed tail', () => {
+  const scene = new THREE.Scene(),
+    layer = createMarchLayer(scene, () => 0);
+  const p: JourneyPlan = {
+    ...plan,
+    key: 'regional-memory',
+    tracks: [{ ...plan.tracks[0]!, presentation: 'regional_transfer' }],
+  };
+  const t = createJourneyTransport(p);
+  layer.setTransport(t);
+  t.seek(50);
+  expect(layer.update(5)!.transferring).toBe(true);
+  const group = scene.children[0]!;
+  const lines = group.children.filter(
+    (o) => o instanceof THREE.Line,
+  ) as THREE.Line[];
+  expect(lines).toHaveLength(2);
+  expect(lines[0]!.geometry).not.toBe(lines[1]!.geometry);
+  expect(lines[0]!.geometry.drawRange.count).toBeLessThan(
+    lines[1]!.geometry.getAttribute('position').count,
+  );
+  const arrow = group.children.find(
+    (o) => o instanceof THREE.Mesh,
+  ) as THREE.Mesh;
+  arrow.geometry.computeBoundingBox();
+  const size = arrow.geometry.boundingBox!.getSize(new THREE.Vector3());
+  expect(size.z / size.x).toBeGreaterThan(3);
+  const vertices = arrow.geometry.getAttribute('position');
+  for (let i = 0; i < vertices.count; i++)
+    if (vertices.getZ(i) < -0.099)
+      expect(Math.abs(vertices.getX(i))).toBeLessThan(0.001);
+  layer.dispose();
+  expect(scene.children).toHaveLength(0);
 });

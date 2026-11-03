@@ -8,14 +8,25 @@ export function layoutAnchoredMapLabels(
   height: number,
   selectedId: string | null,
   obstacles: readonly MapSafeRect[] = [],
+  options?: {
+    offsets: Record<string, readonly [number, number]>;
+    width: number;
+  },
 ) {
   const occupied: MapSafeRect[] = [];
   return [...markers]
     .sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId))
     .map((p) => {
-      const labelX = p.x,
-        labelY = p.y - 15;
-      const box = { x: labelX - 110, y: labelY - 42, width: 220, height: 42 };
+      const offset = options?.offsets[p.id] ?? [0, 0],
+        labelWidth = options?.width ?? 220;
+      const labelX = p.x + offset[0],
+        labelY = p.y - 15 + offset[1];
+      const box = {
+        x: labelX - labelWidth / 2,
+        y: labelY - 42,
+        width: labelWidth,
+        height: 42,
+      };
       const visible =
         p.visible &&
         box.x >= 8 &&

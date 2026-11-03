@@ -11,21 +11,14 @@ import type {
   HistoryEvent,
   HistoryDatasetV2,
 } from '../../shared/contracts';
-import { readingCopy, personBiography, portraitCaption } from './story-display';
+import {
+  readingCopy,
+  personBiography,
+  portraitCaption,
+  eventNarrative,
+} from './story-display';
 import { ExhibitionDrawer } from '../../components/overlay/ExhibitionDrawer';
 
-function narrativeParagraphs(event: HistoryEvent) {
-  return event.detail
-    .split(/\n\s*\n/)
-    .map(readingCopy)
-    .filter(
-      (p) =>
-        p &&
-        !/^(材料边界|使用条件|素材条件|工程说明|程序说明|图像配对|照片出处|编辑性摘要|限制|使用说明)/.test(
-          p,
-        ),
-    );
-}
 export function StoryDialog({
   event,
   dataset,
@@ -50,7 +43,12 @@ export function StoryDialog({
   const [person, setPerson] = useState<HistoricalPerson | null>(null);
   const [pinned, setPinned] = useState(false);
   const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
-  const [position, setPosition] = useState({ left: 0, top: 0, maxHeight: 560 });
+  const [position, setPosition] = useState({
+    left: 0,
+    top: 0,
+    maxHeight: 560,
+    width: 440,
+  });
   const opener = useRef<HTMLButtonElement | null>(null);
   const hover = useRef<ReturnType<typeof setTimeout> | null>(null);
   const section = useRef<HTMLDivElement>(null);
@@ -75,32 +73,36 @@ export function StoryDialog({
     const dialog = section.current
       ?.closest('[role="dialog"]')
       ?.getBoundingClientRect();
+    const leftBound = Math.max(24, (dialog?.left ?? 0) + 16),
+      rightBound = Math.min(
+        innerWidth - 24,
+        (dialog?.right ?? innerWidth) - 16,
+      );
+    const rightSpace = rightBound - r.right - 14,
+      leftSpace = r.left - 14 - leftBound;
+    const side = rightSpace >= leftSpace ? 'right' : 'left';
     const width = Math.min(
       440,
-      (dialog?.width ?? innerWidth) - 40,
-      innerWidth - 48,
+      Math.max(300, Math.max(rightSpace, leftSpace)),
+      rightBound - leftBound,
     );
-    const low = Math.max(24, dialog?.left ?? 24),
-      high = Math.min(
-        innerWidth - width - 24,
-        (dialog?.right ?? innerWidth) - width - 16,
-      );
+    const left =
+      side === 'right'
+        ? Math.min(rightBound - width, r.right + 14)
+        : Math.max(leftBound, r.left - 14 - width);
     const topBound = (dialog?.top ?? 0) + 90,
       bottomBound = Math.min(
         innerHeight - 24,
         (dialog?.bottom ?? innerHeight) - 16,
       );
     const maxHeight = Math.max(160, Math.min(560, bottomBound - topBound));
-    const targetTop =
-      r.bottom + 12 + maxHeight <= bottomBound
-        ? r.bottom + 12
-        : r.top - 12 - maxHeight;
     setPosition({
-      left: Math.max(low, Math.min(high, r.left)) - (dialog?.left ?? 0),
+      left: left - (dialog?.left ?? 0),
       top:
-        Math.max(topBound, Math.min(bottomBound - maxHeight, targetTop)) -
+        Math.max(topBound, Math.min(bottomBound - maxHeight, r.top - 40)) -
         (dialog?.top ?? 0),
       maxHeight,
+      width,
     });
     opener.current = element;
     setPerson(record);
@@ -174,7 +176,7 @@ export function StoryDialog({
       );
     });
   const paragraphs = [
-    ...narrativeParagraphs(event),
+    ...eventNarrative(event),
     ...(extension?.paragraphs.map(readingCopy).filter(Boolean) ?? []),
   ];
   const photo =

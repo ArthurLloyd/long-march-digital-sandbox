@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {
   sampleJourney,
   sampleTrack,
+  journeyTrackProgress,
   type JourneyTransport,
   type JourneyTrack,
 } from '../../features/timeline';
@@ -20,28 +21,32 @@ export function createMarchLayer(
     track: JourneyTrack;
     point: THREE.Vector3;
     direction: THREE.Vector3;
+    transferring: boolean;
   } | null = null;
   const compiled = new Map<
     string,
     {
       track: JourneyTrack;
       line: THREE.Line;
+      preview: THREE.Line;
       arrow: THREE.Mesh;
       samples: [number, number][];
       fractions: number[];
       tipIndex: number;
       point: THREE.Vector3;
       direction: THREE.Vector3;
+      transferring: boolean;
     }
   >();
   const shape = new THREE.Shape();
-  shape.moveTo(0, -0.055);
-  shape.lineTo(0.036, -0.006);
-  shape.lineTo(0.015, -0.006);
-  shape.lineTo(0.015, 0.045);
-  shape.lineTo(-0.015, 0.045);
-  shape.lineTo(-0.015, -0.006);
-  shape.lineTo(-0.036, -0.006);
+  shape.moveTo(0, -0.09);
+  shape.lineTo(0.026, -0.035);
+  shape.lineTo(0.009, -0.025);
+  shape.lineTo(0.006, 0.045);
+  shape.lineTo(0, 0.1);
+  shape.lineTo(-0.006, 0.045);
+  shape.lineTo(-0.009, -0.025);
+  shape.lineTo(-0.026, -0.035);
   shape.closePath();
   const arrowGeometry = new THREE.ShapeGeometry(shape);
   arrowGeometry.rotateX(-Math.PI / 2);
@@ -49,6 +54,8 @@ export function createMarchLayer(
     for (const item of compiled.values()) {
       item.line.geometry.dispose();
       (item.line.material as THREE.Material).dispose();
+      item.preview.geometry.dispose();
+      (item.preview.material as THREE.Material).dispose();
       (item.arrow.material as THREE.Material).dispose();
     }
     compiled.clear();
@@ -60,14 +67,23 @@ export function createMarchLayer(
       const positions = item.line.geometry.getAttribute(
         'position',
       ) as THREE.BufferAttribute;
-      item.samples.forEach(([x, z], i) =>
-        positions.setXYZ(i, x, heightAt(x, z) + 0.014, z),
-      );
+      const preview = item.preview.geometry.getAttribute(
+        'position',
+      ) as THREE.BufferAttribute;
+      item.samples.forEach(([x, z], i) => {
+        positions.setXYZ(i, x, heightAt(x, z) + 0.03, z);
+        preview.setXYZ(i, x, heightAt(x, z) + 0.028, z);
+      });
       positions.needsUpdate = true;
+      preview.needsUpdate = true;
       item.line.computeLineDistances();
+      item.preview.computeLineDistances();
     }
   };
   return {
+    setVisible: (visible: boolean) => {
+      root.visible = visible;
+    },
     setTransport(next: JourneyTransport | null) {
       transport = next;
       if (key === (next?.plan.key ?? '')) return;
@@ -136,17 +152,30 @@ export function createMarchLayer(
             side: THREE.DoubleSide,
           }),
         );
-        line.visible = arrow.visible = false;
-        root.add(line, arrow);
+        const preview = new THREE.Line(
+          line.geometry.clone(),
+          new THREE.LineDashedMaterial({
+            color,
+            dashSize: 0.045,
+            gapSize: 0.032,
+            transparent: true,
+            opacity: 0.32,
+            depthTest: true,
+          }),
+        );
+        line.visible = arrow.visible = preview.visible = false;
+        root.add(line, preview, arrow);
         compiled.set(track.id, {
           track,
           line,
+          preview,
           arrow,
           samples,
           fractions,
           tipIndex: -1,
           point: new THREE.Vector3(),
           direction: new THREE.Vector3(0, 0, -1),
+          transferring: false,
         });
       }
       drape();
@@ -160,17 +189,28 @@ export function createMarchLayer(
           ? sampleJourney(transport.plan, state.sequenceId, state.time)
           : null;
       for (const item of compiled.values()) {
-        const moving = sample?.chapter?.id === item.track.chapterId;
+        const allowed =
+          !item.track.sequenceIds ||
+          item.track.sequenceIds.includes(state?.sequenceId ?? '');
+        const moving = allowed && sample?.chapter?.id === item.track.chapterId;
         const visible =
-          moving ||
-          (item.track.holdChapterIds ?? []).includes(sample?.chapter?.id ?? '');
-        item.line.visible = moving;
+          allowed &&
+          (moving ||
+            (item.track.holdChapterIds ?? []).includes(
+              sample?.chapter?.id ?? '',
+            ));
+        item.line.visible = item.preview.visible = moving;
         item.arrow.visible = visible;
         if (!visible || !sample || !state) continue;
-        const pose = sampleTrack(item.track, moving ? sample.progress : 1);
+        const progress = moving ? journeyTrackProgress(item.track, sample) : 1;
+        const pose = sampleTrack(item.track, progress);
         if (!pose) continue;
         const [x, z] = projectGeo(pose.coordinates);
-        item.point.set(x, heightAt(x, z) + 0.035, z);
+        item.point.set(x, heightAt(x, z) + 0.065, z);
+        item.transferring =
+          moving &&
+          item.track.presentation === 'regional_transfer' &&
+          sample.stage !== 'local';
         item.direction
           .set(pose.direction[0], 0, -pose.direction[1])
           .normalize();
@@ -185,12 +225,12 @@ export function createMarchLayer(
         ) as THREE.BufferAttribute;
         if (item.tipIndex >= 0) {
           const [px, pz] = item.samples[item.tipIndex]!;
-          positions.setXYZ(item.tipIndex, px, heightAt(px, pz) + 0.014, pz);
+          positions.setXYZ(item.tipIndex, px, heightAt(px, pz) + 0.03, pz);
         }
-        let tip = item.fractions.findIndex((f) => f > sample.progress);
+        let tip = item.fractions.findIndex((f) => f > progress);
         if (tip < 0) tip = item.samples.length - 1;
         item.tipIndex = tip;
-        positions.setXYZ(tip, x, heightAt(x, z) + 0.014, z);
+        positions.setXYZ(tip, x, heightAt(x, z) + 0.03, z);
         positions.needsUpdate = true;
         item.line.geometry.setDrawRange(0, tip + 1);
         if (state.unitId === item.track.unitId) selected = item;
@@ -205,6 +245,7 @@ export function createMarchLayer(
           x: ((p.x + 1) * width) / 2,
           y: ((1 - p.y) * height) / 2,
           visible:
+            root.visible &&
             item.arrow.visible &&
             p.z > -1 &&
             p.z < 1 &&

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "sources": [
     {
       "sourceId": "ex-src-ruijin",
@@ -297,6 +297,186 @@
       "reviewedBy": [],
       "reviewedAt": null,
       "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-1934",
+      "title": "中央红军开始长征与前三道封锁线",
+      "publisherOrAuthor": "国防部",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.mod.gov.cn/gfbw/gfjy_index/js_214151/4852696.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "1934年出发、信丰、汝城和宜章一线",
+      "accessedAt": "2026-11-03",
+      "supports": ["1934年出发、信丰、汝城和宜章一线"],
+      "limitations": "检索索引可读取相关段落，正文请求超时；列作待真人复核的宏观方向依据，不作道路证据。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-guizhou",
+      "title": "中央红军长征在贵州",
+      "publisherOrAuthor": "上海党史网",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.ccphistory.org.cn/shds/shhm/content/13b1cdbd-0432-4ed9-8f15-7082ed2ea754.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "通道转兵、黎平、瓮安猴场、乌江与遵义",
+      "accessedAt": "2026-11-03",
+      "supports": ["通道转兵、黎平、瓮安猴场、乌江与遵义"],
+      "limitations": "存在多路纵队与不同渡口，本图只表现地区间的叙事方向。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-yunnan",
+      "title": "中央红军“巧渡金沙江”巧在哪",
+      "publisherOrAuthor": "云南日报 / 云南省委党史研究室余红",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.ynxc.gov.cn/html/2026/whxdfocus_0915/3037473.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "四渡赤水、贵阳附近转进、富源、曲靖与金沙江",
+      "accessedAt": "2026-11-03",
+      "supports": ["四渡赤水、贵阳附近转进、富源、曲靖与金沙江"],
+      "limitations": "贵阳是附近战略区域参照，不表示主力进入城内；各军团分路行动，概略连线不能代表道路。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-yi",
+      "title": "红军为何能顺利通过彝族区？这面旗帜告诉你",
+      "publisherOrAuthor": "中国军网 / 马冀",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://photo.81.cn/zhuanti/2016-09/28/content_7279560_4.htm",
+      "publicationDate": "见原网页",
+      "pageOrSection": "金沙江、会理、冕宁与安顺场",
+      "accessedAt": "2026-11-03",
+      "supports": ["金沙江、会理、冕宁与安顺场"],
+      "limitations": "主力与佯动部队分路，当前只表现主力北上方向。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-baoxing",
+      "title": "宝兴县：夹金山上的向导",
+      "publisherOrAuthor": "中共宝兴县纪委 / 宝兴县监察委",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.bxjw.gov.cn/news/BXDT/202577/25779364289299K9E64082JBK87F3.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "泸定之后经芦山、宝兴抵硗碛与夹金山南麓",
+      "accessedAt": "2026-11-03",
+      "supports": ["泸定之后经芦山、宝兴抵硗碛与夹金山南麓"],
+      "limitations": "县域参照不是具体山口坐标，当前不绘制未知山脊上的历史道路。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-grass",
+      "title": "长征革命遗址、遗迹",
+      "publisherOrAuthor": "若尔盖县人民政府",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.ruoergai.gov.cn/regxrmzf/c105376/202303/f66ee6ab86f044019bfbc9170a6fe707.shtml",
+      "publicationDate": "见原网页",
+      "pageOrSection": "右路军从毛儿盖进入草地、班佑与巴西等地区",
+      "accessedAt": "2026-11-03",
+      "supports": ["右路军从毛儿盖进入草地、班佑与巴西等地区"],
+      "limitations": "1935年与1936年不同部队、不同批次不混作同一路线；省略未定位的中间地名。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-north",
+      "title": "腊子口，红色火种已燎原",
+      "publisherOrAuthor": "人民日报 / 人民网军事",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://military.people.com.cn/n1/2016/1020/c1011-28792267.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "毛儿盖、班佑、俄界与腊子口方向",
+      "accessedAt": "2026-11-03",
+      "supports": ["毛儿盖、班佑、俄界与腊子口方向"],
+      "limitations": "省略包座、俄界等尚未定位的中间节点；示意线不表示直接道路。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-reunion",
+      "title": "三军大会师——红军长征三大主力会师全纪录",
+      "publisherOrAuthor": "新华社 / 中央网信办转载",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.cac.gov.cn/2016-08/22/c_1119432029.htm",
+      "publicationDate": "见原网页",
+      "pageOrSection": "甘孜、哈达铺、会宁和将台堡的分别会合过程",
+      "accessedAt": "2026-11-03",
+      "supports": ["甘孜、哈达铺、会宁和将台堡的分别会合过程"],
+      "limitations": "会宁和将台堡分别展示不同方面军的北上方向，不连接成一支军队的连续轨迹。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-yudu",
+      "title": "走好新时代长征路 于都县红色旅游发展",
+      "publisherOrAuthor": "国家发展和改革委员会",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.ndrc.gov.cn/fzggw/jgsj/zys/sjdt/202106/t20210615_1283294.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "1934年从于都向赣县、信丰方向转移",
+      "accessedAt": "2026-11-03",
+      "supports": ["1934年从于都向赣县、信丰方向转移"],
+      "limitations": "网页包含现代旅游步道，当前仅引用历史方向，不使用现代步道作为历史几何。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-corridor-maoergai",
+      "title": "百炼成钢·党史上的今天：1935年8月20日，毛儿盖会议",
+      "publisherOrAuthor": "湖南省应急管理厅",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://yjt.hunan.gov.cn/yjt/tszt/fdbnl/202108/t20210820_20382640.html",
+      "publicationDate": "见原网页",
+      "pageOrSection": "懋功会师以后北上与毛儿盖会议",
+      "accessedAt": "2026-11-03",
+      "supports": ["懋功会师以后北上与毛儿盖会议"],
+      "limitations": "仅支持战略阶段衔接，未提供逐日位置、道路或所有部队的同一行程。",
+      "rightsNote": "仅作来源链接及事实摘要；未复制网页照片、地图、图表、视频或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
     }
   ],
   "events": [
@@ -309,7 +489,7 @@
       "coordinates": null,
       "coordinatePrecision": "unknown",
       "summary": "从机关转移的开篇，理解瑞金与于都在长征出发过程中的不同位置。",
-      "detail": "第五次反“围剿”后期，中央苏区的处境日益严峻。中共中央、中革军委开始准备战略转移。瑞金作为中央领导机关所在地区，是理解这次远征的重要开篇。\n\n10月10日傍晚，编入中央第一、第二野战纵队的机关人员从瑞金云石山、梅坑等地出发，向于都集结地域转移。朱德等领导人的部署与各军团陆续撤离原战场相互配合，出发并非同一地点的一次整齐起步。\n\n机关离开瑞金，不等于所有部队在这一天同时开始渡河。接下来的于都集结和于都河夜渡，是需要分开阅读的两个过程。",
+      "detail": "第五次反“围剿”后期，中央苏区的处境日益严峻。中共中央、中革军委开始准备战略转移。瑞金作为中央领导机关所在地区，是理解这次远征的重要开篇。\n\n10月10日傍晚，编入中央第一、第二野战纵队的机关人员从瑞金云石山、梅坑等地出发，向于都集结地域转移。朱德等领导人的部署，与各军团陆续撤离原战场、向于都集结的行动相互衔接。\n\n中央机关转移之后，各军团陆续向于都集结。渡河出发在随后展开，远征由一段段相互衔接的行动组成。",
       "sourceIds": ["ex-src-ruijin", "ex-src-departure"],
       "contentType": "editorial_summary",
       "reviewStatus": "draft",
@@ -739,7 +919,7 @@
     },
     "ex-event-blockades": {
       "place": null,
-      "regionId": "ruijin",
+      "regionId": "blockades",
       "personIds": [],
       "kind": "area"
     },
@@ -1051,6 +1231,188 @@
       "license": "Wikidata structured data CC0; Wikipedia page coordinate metadata under its applicable terms",
       "kind": "modern_location",
       "notes": "现代地名定位，不是1930年代边界、渡口、道路或部队位置。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-huili",
+      "title": "会理市现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1200276#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [102.24686, 26.66144],
+      "revision": "Q1200276 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-xinfeng",
+      "title": "信丰县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1356667#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [114.90166666667, 25.288055555556],
+      "revision": "Q1356667 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-mianning",
+      "title": "冕宁县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1200322#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [102.16887, 28.5521],
+      "revision": "Q1200322 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-yizhang",
+      "title": "宜章县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q188427#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [112.94605, 25.40235],
+      "revision": "Q188427 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-baoxing",
+      "title": "宝兴县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q807084#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [102.81339, 30.37001],
+      "revision": "Q807084 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-fuyuan",
+      "title": "富源县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1200581#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [104.25353, 25.67161],
+      "revision": "Q1200581 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-xiaojin",
+      "title": "小金县现代地名参照",
+      "url": "https://zh.wikipedia.org/w/index.php?oldid=94286840",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [102.37, 30.99638889],
+      "revision": "oldid=94286840",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-qujing",
+      "title": "曲靖市现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q496405#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [103.80287, 25.51018],
+      "revision": "Q496405 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-bangluo",
+      "title": "榜罗镇现代地名参照",
+      "url": "https://zh.wikipedia.org/w/index.php?oldid=92634477",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [104.93803, 35.03564],
+      "revision": "oldid=92634477",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-rucheng",
+      "title": "汝城县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1199644#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [113.68177, 25.55706],
+      "revision": "Q1199644 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-wengan",
+      "title": "瓮安县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1346556#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [107.47229, 27.07072],
+      "revision": "Q1346556 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-lushan",
+      "title": "芦山县现代地名参照",
+      "url": "https://zh.wikipedia.org/w/index.php?oldid=94564500",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [102.92361111, 30.15388889],
+      "revision": "oldid=94564500",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-tongdao",
+      "title": "通道侗族自治县现代地名参照",
+      "url": "https://www.wikidata.org/wiki/Q1199383#P625",
+      "publisher": "Wikimedia / Wikidata",
+      "accessedAt": "2026-11-03",
+      "coordinateSystem": "WGS84",
+      "coordinates": [109.77826, 26.15754],
+      "revision": "Q1199383 P625; retrieved 2026-11-03",
+      "license": "Wikidata structured data CC0; Wikipedia coordinate metadata under its applicable terms",
+      "kind": "modern_location",
+      "notes": "现代行政区或聚落位置，仅供战略方向示意定位；不是历史渡口、道路、部队位置或1930年代边界。",
       "availability": "available"
     }
   ],
@@ -1670,12 +2032,12 @@
       "id": "chapter-ex-event-blockades",
       "title": "突破前三道封锁线",
       "dateText": "1934年10月下旬至11月中旬",
-      "regionId": "ruijin",
+      "regionId": "blockades",
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-blockades"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-xiangjiang",
@@ -1685,8 +2047,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-xiangjiang"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-liping",
@@ -1696,8 +2058,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-liping"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-zy",
@@ -1707,8 +2069,8 @@
       "topicId": "topic-zy",
       "phaseId": "zy-phase",
       "eventIds": ["event-zy"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-sd",
@@ -1718,8 +2080,8 @@
       "topicId": "topic-sd",
       "phaseId": "sd-phase-1",
       "eventIds": ["event-sd"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-sd-1",
@@ -1763,7 +2125,7 @@
       "phaseId": "sd-phase-3",
       "eventIds": ["event-sd-3"],
       "duration": 22,
-      "arrival": 0.01
+      "arrival": 0.645917
     },
     {
       "id": "chapter-event-sd-4",
@@ -1784,8 +2146,8 @@
       "topicId": "topic-js",
       "phaseId": "js-phase",
       "eventIds": ["event-js"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-anshunchang",
@@ -1795,8 +2157,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["event-anshunchang"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-ld",
@@ -1806,8 +2168,8 @@
       "topicId": "topic-ld",
       "phaseId": "ld-phase",
       "eventIds": ["event-ld"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 26,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-sn",
@@ -1817,8 +2179,8 @@
       "topicId": "topic-sn",
       "phaseId": "sn-phase",
       "eventIds": ["event-sn"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-dawei",
@@ -1828,8 +2190,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-dawei"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 26,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-maogong",
@@ -1839,8 +2201,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-maogong"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 26,
+      "arrival": 0.96
     },
     {
       "id": "chapter-event-gr",
@@ -1850,8 +2212,8 @@
       "topicId": "topic-gr",
       "phaseId": "gr-phase",
       "eventIds": ["event-gr"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-lazikou",
@@ -1861,8 +2223,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-lazikou"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-hadapu",
@@ -1872,8 +2234,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-hadapu"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-wuqi",
@@ -1883,8 +2245,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-wuqi"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-ganquan",
@@ -1894,8 +2256,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-ganquan"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-huining",
@@ -1905,8 +2267,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-huining"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-jiangtai",
@@ -1916,8 +2278,8 @@
       "topicId": null,
       "phaseId": null,
       "eventIds": ["ex-event-jiangtai"],
-      "duration": 14,
-      "arrival": 0.74
+      "duration": 48,
+      "arrival": 0.96
     },
     {
       "id": "chapter-ex-event-red25-start",
@@ -2043,7 +2405,8 @@
       "waypointNames": ["tucheng", "gulin", "xuyong", "zhaxi"],
       "dateText": "1935年1月底至2月上旬（战略调动范围）",
       "evidenceNote": "来源支持地名次序或明确战略方向；城镇参考之间的直段仅为战略示意，不是历史道路。",
-      "availability": "available"
+      "availability": "available",
+      "holdChapterIds": ["chapter-event-zy-resolution"]
     },
     {
       "id": "march-sd1-right",
@@ -2134,17 +2497,28 @@
       "unitName": "中央红军·茅台西渡",
       "camp": "red_army",
       "points": [
-        [106.368, 27.855],
-        [105.808, 28.044]
+        [106.82375, 28.13724],
+        [106.91611111, 27.69138889],
+        [106.36753, 27.85453],
+        [105.8085, 28.04406]
       ],
-      "sourceIds": ["ex-src-sd-monument", "ex-src-sd-strategy"],
+      "sourceIds": [
+        "ex-src-sd-monument",
+        "ex-src-sd-strategy",
+        "ex-src-corridor-yunnan"
+      ],
       "evidenceType": "sourced_strategic_direction",
       "precision": "schematic",
       "limitations": "战略示意，只支持较高视角观察；不代表真实道路、渡口岸线、逐日位置或兵力。",
-      "locationReferenceIds": ["loc-maotai", "ex-loc-gulin"],
-      "waypointNames": ["maotai", "gulin"],
+      "locationReferenceIds": [
+        "ex-loc-tongzi",
+        "loc-zunyi",
+        "loc-maotai",
+        "ex-loc-gulin"
+      ],
+      "waypointNames": ["桐梓地区", "遵义地区", "茅台", "古蔺地区"],
       "dateText": "1935年3月16—17日",
-      "evidenceNote": "来源支持地名次序或明确战略方向；城镇参考之间的直段仅为战略示意，不是历史道路。",
+      "evidenceNote": "二渡赤水后经桐梓、遵义一带，三渡从茅台及附近地区西进川南；分段仅为有据战略方向。",
       "availability": "available"
     },
     {
@@ -2210,6 +2584,447 @@
         "chapter-ex-event-yudu-assembly",
         "chapter-ex-event-yudu-crossing"
       ]
+    },
+    {
+      "id": "march-yudu-blockades",
+      "chapterId": "chapter-ex-event-blockades",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [115.48694444444, 25.9575],
+        [114.90166666667, 25.288055555556],
+        [113.68177, 25.55706],
+        [112.94605, 25.40235]
+      ],
+      "sourceIds": [
+        "ex-src-corridor-yudu",
+        "ex-src-corridor-1934",
+        "ex-src-1934"
+      ],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "ex-loc-yudu",
+        "ex-loc-xinfeng",
+        "ex-loc-rucheng",
+        "ex-loc-yizhang"
+      ],
+      "waypointNames": ["于都", "信丰一线", "汝城一线", "宜章一线"],
+      "dateText": "1934年10月下旬至11月中旬",
+      "evidenceNote": "于都；信丰一线；汝城一线；宜章一线。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-xiangjiang",
+      "chapterId": "chapter-ex-event-xiangjiang",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [112.94605, 25.40235],
+        [110.66666666667, 25.616666666667]
+      ],
+      "sourceIds": ["ex-src-1934", "ex-src-corridor-1934"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-yizhang", "ex-loc-xiangjiang"],
+      "waypointNames": ["宜章一线", "湘江兴安地区"],
+      "dateText": "1934年11月27日—12月1日",
+      "evidenceNote": "宜章一线；湘江兴安地区。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-liping",
+      "chapterId": "chapter-ex-event-liping",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [110.66666666667, 25.616666666667],
+        [109.77826, 26.15754],
+        [109.13265, 26.23548]
+      ],
+      "sourceIds": ["ex-src-1934", "ex-src-corridor-guizhou"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "ex-loc-xiangjiang",
+        "ex-loc-tongdao",
+        "ex-loc-liping"
+      ],
+      "waypointNames": ["湘江兴安地区", "通道", "黎平"],
+      "dateText": "1934年12月（黎平会议12月18日）",
+      "evidenceNote": "湘江兴安地区；通道；黎平。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-zunyi",
+      "chapterId": "chapter-event-zy",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [109.13265, 26.23548],
+        [107.47229, 27.07072],
+        [106.91611111, 27.69138889]
+      ],
+      "sourceIds": ["ex-src-corridor-guizhou"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-liping", "ex-loc-wengan", "loc-zunyi"],
+      "waypointNames": ["黎平", "瓮安地区", "遵义"],
+      "dateText": "1935年1月15—17日",
+      "evidenceNote": "黎平；瓮安地区；遵义。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-sidu-approach",
+      "chapterId": "chapter-event-sd",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [106.91611111, 27.69138889],
+        [105.99306, 28.28377]
+      ],
+      "sourceIds": ["ex-src-corridor-yunnan", "ex-src-sd-strategy"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["loc-zunyi", "loc-tucheng"],
+      "waypointNames": ["遵义", "土城"],
+      "dateText": "1935年1—3月",
+      "evidenceNote": "遵义；土城。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-jinsha",
+      "chapterId": "chapter-event-js",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [106.17013, 28.14908],
+        [106.70611111, 26.57305556],
+        [104.25353, 25.67161],
+        [103.80287, 25.51018],
+        [102.38904425513974, 26.29452737375617]
+      ],
+      "sourceIds": ["ex-src-corridor-yunnan"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "loc-erlang",
+        "ex-loc-guiyang",
+        "ex-loc-fuyuan",
+        "ex-loc-qujing",
+        "loc-jiaoping"
+      ],
+      "waypointNames": [
+        "二郎滩地区",
+        "贵阳附近",
+        "平彝（今富源）",
+        "曲靖地区",
+        "皎平渡"
+      ],
+      "dateText": "1935年5月3—9日（主力渡江范围）",
+      "evidenceNote": "二郎滩地区；贵阳附近；平彝（今富源）；曲靖地区；皎平渡。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-anshunchang",
+      "chapterId": "chapter-event-anshunchang",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [102.38904425513974, 26.29452737375617],
+        [102.24686, 26.66144],
+        [102.16887, 28.5521],
+        [102.28319, 29.27647]
+      ],
+      "sourceIds": ["ex-src-corridor-yi"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "loc-jiaoping",
+        "ex-loc-huili",
+        "ex-loc-mianning",
+        "loc-anshun"
+      ],
+      "waypointNames": ["皎平渡", "会理地区", "冕宁地区", "安顺场"],
+      "dateText": "1935年5月25日",
+      "evidenceNote": "皎平渡；会理地区；冕宁地区；安顺场。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-luding",
+      "chapterId": "chapter-event-ld",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [102.28319, 29.27647],
+        [102.23016667, 29.9145]
+      ],
+      "sourceIds": ["src-ld-study", "src-ld-review"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["loc-anshun", "loc-luding"],
+      "waypointNames": ["安顺场", "泸定桥"],
+      "dateText": "1935年5月29日",
+      "evidenceNote": "安顺场；泸定桥。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "local_transfer"
+    },
+    {
+      "id": "march-snow",
+      "chapterId": "chapter-event-sn",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [102.23016667, 29.9145],
+        [102.92361111, 30.15388889],
+        [102.81339, 30.37001],
+        [102.74478, 30.70281]
+      ],
+      "sourceIds": ["ex-src-corridor-baoxing", "src-sn-study"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "loc-luding",
+        "ex-loc-lushan",
+        "ex-loc-baoxing",
+        "loc-qiaoqi"
+      ],
+      "waypointNames": ["泸定", "芦山地区", "宝兴地区", "硗碛·夹金山南麓"],
+      "dateText": "1935年6月（夹金山相关批次）",
+      "evidenceNote": "泸定；芦山地区；宝兴地区；硗碛·夹金山南麓。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-dawei",
+      "chapterId": "chapter-ex-event-dawei",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [102.74478, 30.70281],
+        [102.63712, 30.9657]
+      ],
+      "sourceIds": ["src-sn-study", "ex-src-maogong"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["loc-qiaoqi", "loc-dawei"],
+      "waypointNames": ["硗碛·夹金山南麓", "达维"],
+      "dateText": "1935年6月12日",
+      "evidenceNote": "硗碛·夹金山南麓；达维。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "local_transfer"
+    },
+    {
+      "id": "march-maogong",
+      "chapterId": "chapter-ex-event-maogong",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [102.63712, 30.9657],
+        [102.37, 30.99638889]
+      ],
+      "sourceIds": ["ex-src-maogong"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["loc-dawei", "ex-loc-xiaojin"],
+      "waypointNames": ["达维", "懋功（今小金）地区"],
+      "dateText": "1935年6月中旬（主力18日到达）",
+      "evidenceNote": "达维；懋功（今小金）地区。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "local_transfer"
+    },
+    {
+      "id": "march-grass",
+      "chapterId": "chapter-event-gr",
+      "unitId": "central-red",
+      "unitName": "右路军·北上与过草地方向",
+      "camp": "red_army",
+      "points": [
+        [102.37, 30.99638889],
+        [103.0665, 32.60497],
+        [103.02449, 33.50777]
+      ],
+      "sourceIds": ["ex-src-corridor-maoergai", "ex-src-corridor-grass"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-xiaojin", "loc-maoergai", "loc-banyou"],
+      "waypointNames": ["懋功地区", "毛儿盖", "班佑"],
+      "dateText": "1935年8月（右路军本次北上范围）",
+      "evidenceNote": "懋功地区；毛儿盖；班佑。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-lazikou",
+      "chapterId": "chapter-ex-event-lazikou",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [103.02449, 33.50777],
+        [103.23094, 33.60788],
+        [103.89817, 34.0649]
+      ],
+      "sourceIds": [
+        "ex-src-corridor-grass",
+        "ex-src-corridor-north",
+        "ex-src-north"
+      ],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["loc-banyou", "loc-baxi", "ex-loc-lazikou"],
+      "waypointNames": ["班佑", "巴西地区", "腊子口"],
+      "dateText": "1935年9月16—17日",
+      "evidenceNote": "班佑；巴西地区；腊子口。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-hadapu",
+      "chapterId": "chapter-ex-event-hadapu",
+      "unitId": "central-red",
+      "unitName": "中央红军主力·战略方向",
+      "camp": "red_army",
+      "points": [
+        [103.89817, 34.0649],
+        [104.22394, 34.23216]
+      ],
+      "sourceIds": ["ex-src-north", "ex-src-hadapu"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-lazikou", "ex-loc-hadapu"],
+      "waypointNames": ["腊子口", "哈达铺"],
+      "dateText": "1935年9月中下旬",
+      "evidenceNote": "腊子口；哈达铺。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-wuqi",
+      "chapterId": "chapter-ex-event-wuqi",
+      "unitId": "central-red",
+      "unitName": "红军陕甘支队·北上方向",
+      "camp": "red_army",
+      "points": [
+        [104.22394, 34.23216],
+        [104.93803, 35.03564],
+        [108.175933, 36.927216]
+      ],
+      "sourceIds": ["ex-src-north"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "ex-loc-hadapu",
+        "ex-loc-bangluo",
+        "ex-loc-wuqi"
+      ],
+      "waypointNames": ["哈达铺", "榜罗镇", "吴起地区"],
+      "dateText": "1935年10月19日",
+      "evidenceNote": "哈达铺；榜罗镇；吴起地区。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-ganquan",
+      "chapterId": "chapter-ex-event-ganquan",
+      "unitId": "central-red",
+      "unitName": "陕甘支队·甘泉会合方向",
+      "camp": "red_army",
+      "points": [
+        [108.175933, 36.927216],
+        [109.12527777778, 36.368333333333]
+      ],
+      "sourceIds": ["ex-src-ganquan", "ex-src-meetings"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-wuqi", "ex-loc-ganquan"],
+      "waypointNames": ["吴起地区", "甘泉地区"],
+      "dateText": "1935年11月上旬",
+      "evidenceNote": "吴起地区；甘泉地区。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer",
+      "sequenceIds": ["central"]
+    },
+    {
+      "id": "march-huining",
+      "chapterId": "chapter-ex-event-huining",
+      "unitId": "central-red",
+      "unitName": "红四方面军·会宁会师方向",
+      "camp": "red_army",
+      "points": [
+        [99.9926662, 31.6229368],
+        [104.22394, 34.23216],
+        [105.05181, 35.6922]
+      ],
+      "sourceIds": ["ex-src-corridor-reunion", "ex-src-huining"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": [
+        "ex-loc-ganzi",
+        "ex-loc-hadapu",
+        "ex-loc-huining"
+      ],
+      "waypointNames": ["甘孜地区", "哈达铺地区", "会宁"],
+      "dateText": "1936年10月9日",
+      "evidenceNote": "甘孜地区；哈达铺地区；会宁。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
+    },
+    {
+      "id": "march-jiangtai",
+      "chapterId": "chapter-ex-event-jiangtai",
+      "unitId": "central-red",
+      "unitName": "红二方面军·将台堡会师方向",
+      "camp": "red_army",
+      "points": [
+        [104.22394, 34.23216],
+        [105.83963, 35.81754]
+      ],
+      "sourceIds": ["ex-src-corridor-reunion", "ex-src-jiangtai"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "按来源记述的地点顺序表现战略方向；现代地名定位之间的虚线不表示历史道路、逐日位置、速度或完整行军几何。",
+      "locationReferenceIds": ["ex-loc-hadapu", "ex-loc-jiangtai"],
+      "waypointNames": ["哈达铺地区", "将台堡"],
+      "dateText": "1936年10月22日",
+      "evidenceNote": "哈达铺地区；将台堡。相关来源支持宏观先后与行动方向，不提供可测量的历史路线。",
+      "availability": "available",
+      "presentation": "regional_transfer"
     }
   ],
   "storyExtensions": {

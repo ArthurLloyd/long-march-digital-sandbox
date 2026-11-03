@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { App } from '../app/App';
@@ -9,10 +9,12 @@ import { GEOGRAPHIC_VIEWS } from '../app/landscape/map-regions';
 import type { ComponentProps } from 'react';
 import type { ExhibitionPanorama } from '../app/landscape/ExhibitionPanorama';
 import { createJourneyContent } from '../app/exhibition/exhibition-content';
+import { journeyChapters } from '../features/timeline/journey';
 const cameraBoundary = vi.hoisted(() => ({
   focusGeo: vi.fn(),
   focus: vi.fn(),
   overview: vi.fn(),
+  frameMarch: vi.fn(),
   restore: vi.fn(),
 }));
 
@@ -45,7 +47,7 @@ vi.mock('../app/landscape/ExhibitionPanorama', () => ({
       return () => onMapAdapter?.(null);
     }, [onMapAdapter]);
     return (
-      <section aria-label="地图GPU边界">
+      <section aria-label="地图GPU边界" data-march={p.showMarch}>
         <output aria-label="当前区域">{p.geographicRegion ?? 'global'}</output>
         {GEOGRAPHIC_VIEWS.map((v) => (
           <button key={v.id} onClick={() => p.onBrowseRegion?.(v.id)}>
@@ -118,6 +120,37 @@ afterEach(() => {
   vi.unstubAllGlobals();
   localStorage.clear();
 });
+
+it('uses the same overview, moving corridor and close arrival flow for all regional transfer chapters', async () => {
+  const user = await enter(),
+    c = createJourneyContent(raw, 'exhibition');
+  await user.click(screen.getByRole('button', { name: '自由探索山河' }));
+  for (const chapter of journeyChapters(c.plan, 'central')) {
+    if (
+      !c.plan.tracks.some(
+        (t) =>
+          t.chapterId === chapter.id && t.presentation === 'regional_transfer',
+      )
+    )
+      continue;
+    await user.selectOptions(screen.getByLabelText('跳转行军章节'), chapter.id);
+    expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
+    expect(cameraBoundary.overview).toHaveBeenLastCalledWith(true);
+    fireEvent.change(screen.getByLabelText('行军演示进度'), {
+      target: { value: chapter.start + chapter.duration * 0.5 },
+    });
+    expect(cameraBoundary.frameMarch).toHaveBeenCalled();
+    expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
+    const before = cameraBoundary.focusGeo.mock.calls.length;
+    fireEvent.change(screen.getByLabelText('行军演示进度'), {
+      target: { value: chapter.start + chapter.duration * chapter.arrival },
+    });
+    expect(
+      cameraBoundary.focusGeo.mock.calls.length,
+      chapter.id,
+    ).toBeGreaterThan(before);
+  }
+});
 async function enter() {
   const user = userEvent.setup();
   render(<App />);
@@ -158,6 +191,10 @@ it('keeps all geographic regions including empty regions, and only unfolds local
   ).not.toBeInTheDocument();
   await user.click(screen.getByRole('button', { name: '自由探索' }));
   expect(screen.getByLabelText('当前区域')).toHaveTextContent('global');
+  expect(screen.getByLabelText('地图GPU边界')).toHaveAttribute(
+    'data-march',
+    'false',
+  );
   expect(
     screen.queryByRole('button', { name: /阅读地图/ }),
   ).not.toBeInTheDocument();

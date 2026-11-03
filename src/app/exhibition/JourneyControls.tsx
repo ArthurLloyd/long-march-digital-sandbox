@@ -85,6 +85,7 @@ export function JourneyControls({
               if (state.playing) t.pause();
               else {
                 onNavigate();
+                t.camera('follow');
                 t.play();
               }
             }}
@@ -107,9 +108,11 @@ export function JourneyControls({
             <strong>{current.chapter?.title ?? '瑞金开篇'}</strong>
             <time>{current.chapter?.dateText}</time>
             <span>
-              {current.transition
-                ? '章节转场 · 暂无区间路线'
-                : '战略方向示意 · 非历史道路'}
+              {current.stage !== 'local'
+                ? '跨区战略示意 · 非历史道路'
+                : current.transition
+                  ? '章节转场 · 暂无区间路线'
+                  : '战略方向示意 · 非历史道路'}
             </span>
           </div>
           <input

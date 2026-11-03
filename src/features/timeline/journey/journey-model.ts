@@ -14,6 +14,8 @@ export interface JourneyTrack {
   id: string;
   chapterId: string;
   holdChapterIds?: string[];
+  sequenceIds?: string[];
+  presentation?: 'regional_transfer' | 'local_transfer';
   unitId: string;
   unitName: string;
   camp: 'red_army' | 'nationalist_army';
@@ -80,8 +82,31 @@ export function sampleJourney(
   const progress = chapter
     ? Math.max(0, Math.min(1, (time - chapter.start) / chapter.duration))
     : 0;
-  const tracks = plan.tracks.filter((t) => t.chapterId === chapter?.id);
-  return { chapter, progress, tracks, transition: tracks.length === 0 };
+  const tracks = plan.tracks.filter(
+    (t) =>
+      t.chapterId === chapter?.id &&
+      (!t.sequenceIds || t.sequenceIds.includes(sequenceId)),
+  );
+  const regional = tracks.some((t) => t.presentation === 'regional_transfer');
+  const stage =
+    regional && chapter && progress < chapter.arrival - 1e-6
+      ? progress < 0.18
+        ? 'overview'
+        : 'transit'
+      : 'local';
+  return { chapter, progress, tracks, stage, transition: tracks.length === 0 };
+}
+/** Presentation pacing only. The historical dates and supplied vertices stay unchanged. */
+export function journeyTrackProgress(
+  track: JourneyTrack,
+  sample: ReturnType<typeof sampleJourney>,
+) {
+  if (!track.presentation || !sample.chapter) return sample.progress;
+  const start = track.presentation === 'regional_transfer' ? 0.18 : 0;
+  return Math.max(
+    0,
+    Math.min(1, (sample.progress - start) / (sample.chapter.arrival - start)),
+  );
 }
 export function sampleTrack(track: JourneyTrack, progress: number) {
   if (track.points.length < 2) return null;

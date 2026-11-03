@@ -4,6 +4,7 @@ export {
   journeyDuration,
   sampleJourney,
   sampleTrack,
+  journeyTrackProgress,
 } from './journey-model';
 export type {
   JourneyPlan,

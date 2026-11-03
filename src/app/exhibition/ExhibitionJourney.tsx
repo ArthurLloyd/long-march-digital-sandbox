@@ -100,13 +100,21 @@ export function ExhibitionJourney({
   const [wantOpening, setOpening] = useState(true);
   const opening =
     wantOpening && state.time === 0 && state.sequenceId === 'central';
+  const journeyStage = sample.stage;
+  const transferring =
+    !opening &&
+    journeyStage !== 'local' &&
+    browsedRegion === undefined &&
+    state.camera !== 'free';
   const region = opening
     ? 'ruijin'
-    : browsedRegion !== undefined
-      ? browsedRegion
-      : isGeographicRegion(sample.chapter?.regionId ?? null)
-        ? (sample.chapter!.regionId as RegionId)
-        : null;
+    : transferring
+      ? null
+      : browsedRegion !== undefined
+        ? browsedRegion
+        : isGeographicRegion(sample.chapter?.regionId ?? null)
+          ? (sample.chapter!.regionId as RegionId)
+          : null;
   const [storyId, setStoryId] = useState<string | null>(null);
   const activeStoryId = storyId;
   const [directoryScope, setDirectoryScope] = useState<'region' | 'sequence'>(
@@ -216,7 +224,7 @@ export function ExhibitionJourney({
           ? document.activeElement
           : null;
       storyCamera.current = api.current?.bookmark() ?? null;
-      transport.pause();
+      transport.visit(id);
       setStoryId(id);
       dispatch({ type: 'close' });
     },
@@ -242,6 +250,7 @@ export function ExhibitionJourney({
     id: string;
     region: string;
     camera: string;
+    stage: string;
   } | null>(null);
   useEffect(() => {
     if (!ready || opening) return;
@@ -251,7 +260,8 @@ export function ExhibitionJourney({
     if (
       !state.pendingEventId &&
       previous?.id === chapter.id &&
-      previous.camera === state.camera
+      previous.camera === state.camera &&
+      previous.stage === journeyStage
     )
       return;
     const transition =
@@ -260,20 +270,38 @@ export function ExhibitionJourney({
       id: chapter.id,
       region: chapter.regionId,
       camera: state.camera,
+      stage: journeyStage,
     };
     if (state.camera === 'free') return;
     const p = content.map.entries.find((p) =>
       chapter.eventIds.includes(p.eventId),
     );
-    const tracks = content.plan.tracks.filter(
-      (t) => t.chapterId === chapter.id,
+    const currentSample = sampleJourney(
+      content.plan,
+      transport.read().sequenceId,
+      transport.read().time,
     );
-    if (state.pendingEventId && p) {
-      api.current?.focusGeo(
-        p.anchorCoordinates,
-        p.bounds ?? undefined,
-        transition,
-      );
+    const { tracks } = currentSample;
+    if (journeyStage === 'overview') {
+      api.current?.overview(true);
+      return;
+    }
+    if (journeyStage === 'transit') {
+      api.current?.frameMarch?.(tracks.flatMap((t) => t.points));
+      return;
+    }
+    if (
+      state.pendingEventId ||
+      (tracks.some((t) => t.presentation) &&
+        currentSample.progress >= chapter.arrival - 1e-6)
+    ) {
+      const point = p?.anchorCoordinates ?? tracks[0]?.points.at(-1);
+      if (point)
+        api.current?.focusGeo(
+          point,
+          p?.placementKind === 'area' ? (p.bounds ?? undefined) : undefined,
+          'local',
+        );
       return;
     }
     if (tracks.length && state.camera === 'overview') {
@@ -302,7 +330,16 @@ export function ExhibitionJourney({
     else if (isGeographicRegion(chapter.regionId))
       api.current?.focus(REGIONS[chapter.regionId]);
     else api.current?.overview();
-  }, [chapterId, state.camera, state.pendingEventId, ready, content, opening]);
+  }, [
+    chapterId,
+    state.camera,
+    state.pendingEventId,
+    ready,
+    content,
+    opening,
+    journeyStage,
+    transport,
+  ]);
   useEffect(() => {
     if (screen.phase === 'exploring') exploreRef.current?.focus();
   }, [screen.phase]);
@@ -310,7 +347,13 @@ export function ExhibitionJourney({
     () => selectScenePhaseView(content.dataset, clock.activePhaseId),
     [content.dataset, clock.activePhaseId],
   );
-  const regionalMap = journeyRegionMap(content, region);
+  const regionalMap = journeyRegionMap(
+    content,
+    region ??
+      (browsedRegion === undefined && journeyStage === 'local'
+        ? (sample.chapter?.regionId ?? null)
+        : null),
+  );
   const onReady = useCallback(() => setReady(true), []),
     onError = useCallback((e: SceneError) => setError(e), []);
   const onBookmark = useCallback((value: CameraBookmark) => {
@@ -344,6 +387,8 @@ export function ExhibitionJourney({
     transport.pause();
     transport.sequence('central');
     transport.restart();
+    transport.camera('overview');
+    transport.distance(1);
     setOpening(true);
     setRegion('ruijin');
     api.current?.entry();
@@ -458,6 +503,9 @@ export function ExhibitionJourney({
                     eventMapReading={Boolean(story)}
                     arrivalEventId={state.pendingEventId}
                     journey={transport}
+                    showMarch={
+                      !opening && (region !== null || state.camera !== 'free')
+                    }
 
                     opening={opening}
                     geographicRegion={region}
@@ -579,6 +627,7 @@ export function ExhibitionJourney({
               <JourneyControls
                 onSample={() => {
                   jump('chapter-event-sd-1');
+                  transport.camera('follow');
                   transport.play();
                 }}
                 onNavigate={() => {
@@ -629,6 +678,7 @@ export function ExhibitionJourney({
             onContinue={() => {
               closeStory();
               setRegion(undefined);
+              transport.camera('follow');
               transport.play();
             }}
             onSources={(ids) => {

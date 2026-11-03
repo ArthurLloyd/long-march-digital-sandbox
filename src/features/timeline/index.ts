@@ -12,6 +12,7 @@ export type { PhaseClockModel, ClockPhase } from './phase-clock-model';
 export {
   sampleJourney,
   sampleTrack,
+  journeyTrackProgress,
   journeyChapters,
   journeyDuration,
 } from './journey/journey-model';

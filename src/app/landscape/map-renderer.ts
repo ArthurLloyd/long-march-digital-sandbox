@@ -47,6 +47,7 @@ export interface MarkerViewport {
 }
 export interface PanoramaMapAdapter {
   setMarchTransport?(transport: JourneyTransport | null): void;
+  setMarchVisible?(visible: boolean): void;
   setSafeAreas?(areas: readonly MapSafeRect[]): void;
   setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
@@ -56,6 +57,7 @@ export interface PanoramaMapAdapter {
     bounds?: GeoBounds,
     transition?: 'regional' | 'local',
   ): void;
+  frameMarch?(points: readonly GeoPoint[]): void;
   setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -545,6 +547,7 @@ export function createPanoramaMap(
     if (
       marching &&
       marchingState?.camera === 'follow' &&
+      !marching.transferring &&
       !marchingState.pendingEventId &&
       !flight
     ) {
@@ -560,7 +563,6 @@ export function createPanoramaMap(
       // Strategic direction evidence cannot support road-level first-person flight.
       const distance = Math.max(0.48, marchingState.distance * 0.65);
       followTarget.copy(marching.point);
-      followTarget.y += 0.045;
       followPosition.set(
         followTarget.x - Math.sin(followHeading) * distance,
         followTarget.y + distance * 0.6,
@@ -570,7 +572,9 @@ export function createPanoramaMap(
         followPosition.y,
         landscape.navigationHeightAt(followPosition.x, followPosition.z) + 0.18,
       );
-      const alpha = 1 - Math.exp(-dt * 2.8);
+      // Move eye and target together: different lag factors shrink the offset
+      // while the arrow moves and let it drift toward the edge of the frame.
+      const alpha = 1 - Math.exp(-dt * 8);
       camera.position.lerp(followPosition, alpha);
       controls.target.lerp(followTarget, alpha);
     }
@@ -702,6 +706,7 @@ export function createPanoramaMap(
   frame = requestAnimationFrame(draw);
   return {
     setMarchTransport: (transport) => march.setTransport(transport),
+    setMarchVisible: march.setVisible,
     setSafeAreas: (areas) => {
       safeAreas = areas;
       applySafeFrame();
@@ -844,6 +849,33 @@ export function createPanoramaMap(
       if (region) void landscape.focus(region).then(complete);
       else complete();
     },
+    frameMarch(points) {
+      const coordinates = points.filter(inCoverage).map(projectGeo);
+      if (coordinates.length < 2) return;
+      entryFraming = false;
+      preparingEntry = false;
+      focusRevision++;
+      landscape.overview();
+      drape();
+      const xs = coordinates.map((p) => p[0]),
+        zs = coordinates.map((p) => p[1]);
+      const x = (Math.min(...xs) + Math.max(...xs)) / 2,
+        z = (Math.min(...zs) + Math.max(...zs)) / 2;
+      const span = Math.max(
+        (Math.max(...xs) - Math.min(...xs) + 1.2) /
+          Math.max(0.7, camera.aspect),
+        Math.max(...zs) - Math.min(...zs) + 1.2,
+      );
+      const rise = Math.max(
+        5,
+        (span / (2 * Math.tan((camera.fov * Math.PI) / 360))) * 1.45,
+      );
+      const ground = heightAt(x, z);
+      travel(
+        new THREE.Vector3(x, ground + rise, z + rise * 0.22),
+        new THREE.Vector3(x, ground, z),
+      );
+    },
     focus(bounds, framing) {
       entryFraming = false;
       preparingEntry = false;
@@ -888,6 +920,12 @@ export function createPanoramaMap(
     },
     overview,
     zoom(direction) {
+      const transport = march.transport,
+        state = transport?.read();
+      if (transport && state?.camera === 'follow') {
+        transport.distance(state.distance * (direction === 1 ? 0.78 : 1.28));
+        return;
+      }
       cancel();
       const offset = camera.position
         .clone()

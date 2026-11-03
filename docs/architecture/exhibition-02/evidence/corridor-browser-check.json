@@ -1,0 +1,120 @@
+{
+  "followBefore": {
+    "arrowLabels": [
+      {
+        "name": "中央红军·西进方向",
+        "rect": {
+          "bottom": 352.931640625,
+          "height": 30.3984375,
+          "left": 835.4420776367188,
+          "right": 961.4420776367188,
+          "top": 322.533203125,
+          "width": 126,
+          "x": 835.4420776367188,
+          "y": 322.533203125
+        }
+      },
+      {
+        "name": "元厚渡河方向示意",
+        "rect": {
+          "bottom": 610.242919921875,
+          "height": 30.3984375,
+          "left": 478.3934326171875,
+          "right": 592.3934326171875,
+          "top": 579.844482421875,
+          "width": 114,
+          "x": 478.3934326171875,
+          "y": 579.844482421875
+        }
+      },
+      {
+        "name": "川军范子英旅·调动情报",
+        "rect": {
+          "bottom": 369.2140197753906,
+          "height": 30.3984375,
+          "left": 921.6841430664062,
+          "right": 1071.68408203125,
+          "top": 338.8155822753906,
+          "width": 149.99993896484375,
+          "x": 921.6841430664062,
+          "y": 338.8155822753906
+        }
+      }
+    ],
+    "diagnostics": {
+      "calls": 50,
+      "cameraFloor": 0.09446261469721418,
+      "closeBounds": [
+        -1.3393126236065722, 3.852797598894604, -0.8131540929039907,
+        4.228282110651281
+      ],
+      "distance": 0.5683839771663021,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 3,
+      "fov": 43,
+      "frameMedianMs": 4.2000000000116415,
+      "frameP95Ms": 545.8000000000466,
+      "geometries": 76,
+      "heightVersion": 28,
+      "materials": 7,
+      "morphing": false,
+      "near": 0.006820607725995625,
+      "position": [-1.2067377639979977, 0.4945990604966363, 3.625349408196385],
+      "region": "zunyi",
+      "regionalBounds": [
+        -1.3393126236065722, 3.852797598894604, 0.7015447076034409,
+        5.681243917014076
+      ],
+      "target": [-1.3694180302434065, 0.1943805271142845, 4.079732846151001],
+      "targetGround": 0.17884056592372782,
+      "targetPlaneWidth": 1.064881278881995,
+      "targetWater": null,
+      "terrainMeshes": 3,
+      "textures": 6,
+      "time": 421879.1,
+      "triangles": 4066810,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1912, 804],
+      "visibility": "visible"
+    },
+    "progress": "299.2"
+  },
+  "followAfter": {
+    "diagnostics": {
+      "calls": 27,
+      "cameraFloor": 0.18650349315818332,
+      "closeBounds": [
+        -2.487294872412207, 4.114004215768814, -1.8495269564090773,
+        4.832322412172893
+      ],
+      "distance": 0.2146834879537781,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 3,
+      "fov": 43,
+      "frameMedianMs": 4.2000000000116415,
+      "frameP95Ms": 545.8000000000466,
+      "geometries": 65,
+      "heightVersion": 31,
+      "materials": 4,
+      "morphing": false,
+      "near": 0.002576201855445337,
+      "position": [-2.1495947634810624, 0.30234954651979123, 4.653260020626745],
+      "region": null,
+      "regionalBounds": null,
+      "target": [-2.1762960450085065, 0.18534954651979124, 4.475251477110452],
+      "targetGround": 0.17922594473609474,
+      "targetPlaneWidth": 0.40221476394676314,
+      "targetWater": null,
+      "terrainMeshes": 2,
+      "textures": 6,
+      "time": 445399.9,
+      "triangles": 629526,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1912, 804],
+      "visibility": "visible"
+    },
+    "progress": "322.4"
+  }
+}

@@ -46,6 +46,16 @@ import '../../styles/exhibition-panorama.css';
 import '../../styles/exhibition-map-controls.css';
 import '../../styles/exhibition-map-toolbox.css';
 import '../../styles/exhibition-art-notebook.css';
+const GLOBAL_REGION_LABEL_OFFSETS: Record<string, readonly [number, number]> = {
+  'view:ruijin': [70, 0],
+  'view:zunyi': [130, 35],
+  'view:chishui': [110, -25],
+  'view:jinsha': [-90, 50],
+  'view:luding': [-130, 10],
+  'view:snow': [-90, -30],
+  'view:grass': [-20, -30],
+  'view:reunion': [90, -35],
+};
 const geographicMarkers = GEOGRAPHIC_VIEWS.map((view) => ({
   id: `view:${view.id}`,
   coordinates: regionCenter(REGIONS[view.id]),
@@ -73,6 +83,7 @@ export function ExhibitionPanorama(
     journey?: JourneyTransport;
     opening?: boolean;
     arrivalEventId?: string | null;
+    showMarch?: boolean;
     observationScope?: 'single' | 'continuous';
     onObservationOpened?: () => void;
   },
@@ -80,6 +91,7 @@ export function ExhibitionPanorama(
   const host = useRef<HTMLDivElement>(null),
     api = useRef<PanoramaMapAdapter | null>(null);
   const eventLayer = useRef<EventMapLayerHandle>(null);
+  const geographyLeaders = useRef<Record<string, SVGLineElement | null>>({});
   const [safeAreas, setSafeAreas] = useState<readonly MapSafeRect[]>([]);
   const safeAreasRef = useRef<readonly MapSafeRect[]>([]);
   const latest = useRef(props),
@@ -232,6 +244,13 @@ export function ExhibitionPanorama(
                   viewport.height,
                   null,
                   safeAreasRef.current,
+                  {
+                    width: 150,
+                    offsets:
+                      latest.current.geographicRegion === null
+                        ? GLOBAL_REGION_LABEL_OFFSETS
+                        : {},
+                  },
                 )
               : [];
           markers.forEach((marker) => {
@@ -274,6 +293,14 @@ export function ExhibitionPanorama(
                 : 'hidden';
             label.tabIndex =
               marker.visible && geographicVisible && !occupied ? 0 : -1;
+            const leader = geographyLeaders.current[marker.id];
+            if (leader && packed) {
+              leader.setAttribute('x1', String(marker.x));
+              leader.setAttribute('y1', String(marker.y));
+              leader.setAttribute('x2', String(packed.labelX));
+              leader.setAttribute('y2', String(packed.labelY));
+              leader.style.visibility = label.style.visibility;
+            }
           });
         },
         onViewChange: (bookmark) => {
@@ -285,7 +312,10 @@ export function ExhibitionPanorama(
               phaseId: latest.current.phaseId,
             });
         },
-        onUserNavigate: () => latest.current.journey?.camera('free'),
+        onUserNavigate: () => {
+          latest.current.journey?.pause();
+          latest.current.journey?.camera('free');
+        },
       });
       api.current = map;
       latest.current.onMapAdapter?.(map);
@@ -305,6 +335,9 @@ export function ExhibitionPanorama(
       latest.current.onMapAdapter?.(null);
     };
   }, []);
+  useEffect(() => {
+    api.current?.setMarchVisible?.(props.showMarch !== false);
+  }, [props.showMarch, epoch]);
   useEffect(() => {
     api.current?.setMarchTransport?.(props.journey ?? null);
   }, [props.journey, epoch]);
@@ -471,7 +504,8 @@ export function ExhibitionPanorama(
       <div ref={host} className="museum-map-canvas" />
       {props.eventMap &&
         (props.geographicRegion === undefined ||
-          props.geographicRegion !== null) && (
+          props.geographicRegion !== null ||
+          props.eventMap.entries.length > 0) && (
           <EventMapLayer
             ref={eventLayer}
             model={props.eventMap}
@@ -797,6 +831,18 @@ export function ExhibitionPanorama(
         inert={Boolean(visibleCinematic)}
         aria-hidden={Boolean(visibleCinematic)}
       >
+        {props.journey && (
+          <svg className="journey-geography-leaders" aria-hidden="true">
+            {GEOGRAPHIC_VIEWS.map((v) => (
+              <line
+                key={v.id}
+                ref={(el) => {
+                  geographyLeaders.current[`view:${v.id}`] = el;
+                }}
+              />
+            ))}
+          </svg>
+        )}
         {GEOGRAPHIC_VIEWS.filter((item) => item.id !== focusedView).map(
           (item) => (
             <button

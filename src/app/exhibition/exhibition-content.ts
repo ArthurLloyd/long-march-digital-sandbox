@@ -36,6 +36,8 @@ const trackSchema = z.strictObject({
   id,
   chapterId: id,
   holdChapterIds: z.array(id).optional(),
+  sequenceIds: z.array(id).min(1).optional(),
+  presentation: z.enum(['regional_transfer', 'local_transfer']).optional(),
   unitId: id,
   unitName: id,
   camp: z.enum(['red_army', 'nationalist_army']),
@@ -157,6 +159,12 @@ export function createJourneyContent(input: unknown, audience: 'exhibition') {
   for (const t of tracks) {
     if (
       !chapters.some((c) => c.id === t.chapterId) ||
+      (t.sequenceIds ?? []).some(
+        (id) =>
+          !sequences.some(
+            (s) => s.id === id && s.chapterIds.includes(t.chapterId),
+          ),
+      ) ||
       (t.holdChapterIds ?? []).some(
         (id) => !chapters.some((c) => c.id === id),
       ) ||
