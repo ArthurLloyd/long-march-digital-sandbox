@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "coordinateSystem": "WGS84",
+  "nodes": [
+    {
+      "locationNodeId": "node-zunyi",
+      "name": "遵义会议会址附近",
+      "coordinates": [106.916, 27.691],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "historical_site_approximation",
+      "locationReferenceIds": ["loc-zunyi"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": true,
+      "missingEvidence": [
+        "历史定位图件、误差核查及真人复核；节点之间尚无可信中间行军几何。"
+      ],
+      "eventIds": ["event-zy"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-tucheng",
+      "name": "土城附近",
+      "coordinates": [105.993, 28.284],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-tucheng", "ctx-crossings"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-sd-1"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-yuanhou",
+      "name": "猿猴场（今元厚）附近",
+      "coordinates": [105.935, 28.368],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-yuanhou", "ctx-crossings"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-sd-1"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-taiping",
+      "name": "太平渡相关地区（今太平镇参考）",
+      "coordinates": [106.038, 28.139],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-taiping", "ctx-crossings"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-sd-2", "event-sd-4"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-erlang",
+      "name": "二郎滩相关地区（今二郎镇参考）",
+      "coordinates": [106.17, 28.149],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-erlang", "ctx-crossings"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-sd-2", "event-sd-4"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-maotai",
+      "name": "茅台附近",
+      "coordinates": [106.368, 27.855],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-maotai", "ctx-crossings"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-sd-3"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-luding",
+      "name": "泸定桥附近",
+      "coordinates": [102.23, 29.915],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "historical_site_approximation",
+      "locationReferenceIds": ["loc-luding"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": true,
+      "missingEvidence": [
+        "历史定位图件、误差核查及真人复核；节点之间尚无可信中间行军几何。"
+      ],
+      "eventIds": ["event-ld"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-anshun",
+      "name": "安顺场附近",
+      "coordinates": [102.283, 29.276],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "modern_placename_reference",
+      "locationReferenceIds": ["loc-anshun"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "现代镇驻地尚未与1935年具体发生地/渡口完成对应，不能直接作为历史路线端点。",
+        "补充历史图件、地名沿革、坐标误差和独立真人复核；节点之间没有可靠中间路径。"
+      ],
+      "eventIds": ["event-anshunchang"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-jiaoping",
+      "name": "皎平渡相关江段",
+      "coordinates": [102.389, 26.295],
+      "bounds": null,
+      "precision": "approximate",
+      "anchorRole": "historical_site_approximation",
+      "locationReferenceIds": ["loc-jiaoping", "ctx-jiaoping"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": true,
+      "missingEvidence": [
+        "历史定位图件、误差核查及真人复核；节点之间尚无可信中间行军几何。"
+      ],
+      "eventIds": ["event-js"],
+      "isViewAnchorOnly": false
+    },
+    {
+      "locationNodeId": "node-chishui-overview",
+      "name": "四渡赤水相关地区",
+      "coordinates": [106.151, 28.111],
+      "bounds": [105.875, 27.795, 106.428, 28.428],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "locationReferenceIds": [
+        "loc-tucheng",
+        "loc-yuanhou",
+        "loc-taiping",
+        "loc-erlang",
+        "loc-maotai",
+        "ctx-crossings"
+      ],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "此范围仅用于区域浏览，不是历史边界、行军走廊或候选路线端点。"
+      ],
+      "eventIds": ["event-sd"],
+      "isViewAnchorOnly": true
+    },
+    {
+      "locationNodeId": "node-snow",
+      "name": "夹金山及达维相关区域",
+      "coordinates": [102.691, 30.834],
+      "bounds": [102.557, 30.623, 102.825, 31.046],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "locationReferenceIds": ["loc-qiaoqi", "loc-dawei", "ctx-snow"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "此范围仅用于区域浏览，不是历史边界、行军走廊或候选路线端点。"
+      ],
+      "eventIds": ["event-sn"],
+      "isViewAnchorOnly": true
+    },
+    {
+      "locationNodeId": "node-grass",
+      "name": "毛儿盖—松潘草地—班佑／巴西相关区域",
+      "coordinates": [103.127, 33.106],
+      "bounds": [102.904, 32.485, 103.351, 33.728],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "locationReferenceIds": ["loc-maoergai", "loc-banyou", "loc-baxi"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "此范围仅用于区域浏览，不是历史边界、行军走廊或候选路线端点。"
+      ],
+      "eventIds": ["event-gr"],
+      "isViewAnchorOnly": true
+    },
+    {
+      "locationNodeId": "node-zhaxi-region",
+      "name": "云南扎西相关区域",
+      "coordinates": [105.045, 27.844],
+      "bounds": [104.925, 27.724, 105.165, 27.964],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "locationReferenceIds": ["loc-zhaxi", "ctx-zhaxi"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "此范围仅用于区域浏览，不是历史边界、行军走廊或候选路线端点。"
+      ],
+      "eventIds": ["event-zy-resolution"],
+      "isViewAnchorOnly": true
+    }
+  ]
+}

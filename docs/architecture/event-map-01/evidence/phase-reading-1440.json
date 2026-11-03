@@ -1,0 +1,93 @@
+{
+  "before": {
+    "canvas": {
+      "canvasId": 8431,
+      "metrics": {
+        "time": 290349.2,
+        "position": [
+          -0.06680709073890444, 0.24587752486568246, 4.845744383406773
+        ],
+        "target": [-0.09350837226634846, 0.1288775248656825, 4.667735839890479],
+        "distance": 0.21468348795377803,
+        "fov": 43,
+        "near": 0.0025762018554453363,
+        "far": 12,
+        "targetPlaneWidth": 0.35297144283776327,
+        "frameMedianMs": 4.2999999999883585,
+        "frameP95Ms": 999.8999999999942,
+        "calls": 27,
+        "triangles": 2190180,
+        "geometries": 180,
+        "textures": 6,
+        "viewport": [1440, 690],
+        "visibility": "visible",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "terrainMeshes": 3,
+        "morphing": false,
+        "closeBounds": [
+          -0.39860494750195685, 4.367048125865705, 0.2072745727010159,
+          4.971088427387317
+        ],
+        "regionalBounds": [
+          -1.3393126236065722, 3.852797598894604, 0.7015447076034409,
+          5.681243917014076
+        ],
+        "region": "zunyi",
+        "heightVersion": 9,
+        "fieldCache": 2,
+        "exaggeration": 12,
+        "materials": 7,
+        "targetGround": 0.12213191429558636,
+        "targetWater": null,
+        "cameraFloor": 0.1281994104068278
+      }
+    },
+    "timeline": "历史阶段\n2 / 4 个已发布阶段\n一渡赤水\n二渡赤水\n三渡赤水\n四渡赤水\n\n每段展示间隔仅为展陈节奏，不代表历史时长或行军速度。\n\n1935年2月18—21日 · 1935-02-18 至 1935-02-21 · 时间范围\n四渡赤水\n二渡赤水\n二渡赤水"
+  },
+  "after": {
+    "canvas": {
+      "canvasId": 8431,
+      "metrics": {
+        "time": 293357.5,
+        "position": [
+          -0.06680709073890444, 0.24587752486568246, 4.845744383406773
+        ],
+        "target": [-0.09350837226634846, 0.1288775248656825, 4.667735839890479],
+        "distance": 0.21468348795377803,
+        "fov": 43,
+        "near": 0.0025762018554453363,
+        "far": 12,
+        "targetPlaneWidth": 0.35297144283776327,
+        "frameMedianMs": 4.2000000000116415,
+        "frameP95Ms": 999.8999999999942,
+        "calls": 27,
+        "triangles": 2190180,
+        "geometries": 180,
+        "textures": 6,
+        "viewport": [1440, 690],
+        "visibility": "visible",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "terrainMeshes": 3,
+        "morphing": false,
+        "closeBounds": [
+          -0.39860494750195685, 4.367048125865705, 0.2072745727010159,
+          4.971088427387317
+        ],
+        "regionalBounds": [
+          -1.3393126236065722, 3.852797598894604, 0.7015447076034409,
+          5.681243917014076
+        ],
+        "region": "zunyi",
+        "heightVersion": 9,
+        "fieldCache": 2,
+        "exaggeration": 12,
+        "materials": 7,
+        "targetGround": 0.12213191429558636,
+        "targetWater": null,
+        "cameraFloor": 0.1281994104068278
+      }
+    },
+    "timeline": "历史阶段\n2 / 4 个已发布阶段\n一渡赤水\n二渡赤水\n三渡赤水\n四渡赤水\n\n每段展示间隔仅为展陈节奏，不代表历史时长或行军速度。\n\n1935年2月18—21日 · 1935-02-18 至 1935-02-21 · 时间范围\n四渡赤水\n二渡赤水\n二渡赤水",
+    "playButtonCount": 1
+  }
+}

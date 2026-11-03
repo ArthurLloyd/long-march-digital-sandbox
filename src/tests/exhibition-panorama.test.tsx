@@ -14,6 +14,7 @@ import { emptyV2 } from './fixtures/v2-dataset';
 import { simulatePublishedSample } from './fixtures/c1-sample';
 import { simulatePublishedC2 } from './fixtures/c2-sample';
 import { selectScenePhaseView } from '../app/history/scene-phase-view';
+import { loadExhibitionEventMap } from '../app/history/event-map/event-map-loader';
 
 type RendererOptions = Parameters<typeof createPanoramaMap>[1];
 const renderer = vi.hoisted(() => ({
@@ -28,6 +29,7 @@ const renderer = vi.hoisted(() => ({
     overview: vi.fn(),
     zoom: vi.fn(),
     setMarkers: vi.fn(),
+    setEventAreas: vi.fn(),
     setRoutes: vi.fn(),
     setForceRegions: vi.fn(),
     setRivers: vi.fn(),
@@ -97,6 +99,146 @@ async function openMapTools(user: ReturnType<typeof userEvent.setup>) {
   const summary = screen.getByText('地图工具').closest('summary')!;
   if (!summary.parentElement!.hasAttribute('open')) await user.click(summary);
 }
+
+it('全局展陈位置穿过阶段投影接入同一地图，快速点击取最后落点，正文使用宿主入口', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(
+    selectScenePhaseView(data, 'zy-phase').dataset,
+    'zy-phase',
+  );
+  const read = vi.fn(),
+    preview = vi.fn(),
+    user = userEvent.setup();
+  const result = render(
+    <ExhibitionPanorama
+      {...base}
+      eventMap={model}
+      onExhibitionRead={read}
+      onExhibitionPreview={preview}
+    />,
+  );
+  const markerIds = renderer.api.setMarkers.mock.lastCall![0].map(
+    (p: { id: string }) => p.id,
+  );
+  expect(markerIds).toContain('placement:pl-ld-bridge');
+  expect(
+    renderer.api.setEventAreas.mock.lastCall![0].some(
+      (p: { id: string }) => p.id === 'pl-sn-region',
+    ),
+  ).toBe(true);
+  const directory = screen.getByText('事件地图').closest('details')!;
+  await user.click(directory.querySelector('summary')!);
+  await user.click(
+    within(directory).getByRole('button', { name: /飞夺泸定桥/ }),
+  );
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    model.entries.find((p) => p.eventId === 'event-ld')!.anchorCoordinates,
+    undefined,
+  );
+  expect(
+    screen.getByRole('complementary', { name: '事件位置预览' }),
+  ).toHaveTextContent('飞夺泸定桥');
+  await user.click(directory.querySelector('summary')!);
+  await user.click(
+    within(directory).getByRole('button', { name: /安顺场渡河/ }),
+  );
+  const last = model.entries.find((p) => p.eventId === 'event-anshunchang')!;
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    last.anchorCoordinates,
+    undefined,
+  );
+  await user.click(screen.getByRole('button', { name: '阅读事件' }));
+  expect(read).toHaveBeenLastCalledWith('event-anshunchang');
+  expect(preview).toHaveBeenCalledTimes(2);
+  expect(base.onEventSelect).not.toHaveBeenCalled();
+  expect(base.onCameraBookmark).toHaveBeenCalledWith(
+    expect.objectContaining({ phaseId: 'zy-phase' }),
+  );
+  expect(renderer.creates).toBe(1);
+  result.rerender(
+    <ExhibitionPanorama
+      {...base}
+      eventMap={{ ...model, entries: [] }}
+      onExhibitionRead={read}
+    />,
+  );
+  expect(
+    screen.queryByRole('complementary', { name: '事件位置预览' }),
+  ).not.toBeInTheDocument();
+  expect(renderer.api.setEventAreas).toHaveBeenLastCalledWith([]);
+  expect(renderer.creates).toBe(1);
+});
+
+it('同事件多位置可切换，实际阶段变化不移除全局浏览位置，键盘可关闭预览', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(
+      selectScenePhaseView(data, 'zy-phase').dataset,
+      'zy-phase',
+    ),
+    user = userEvent.setup();
+  const result = render(<ExhibitionPanorama {...base} eventMap={model} />);
+  await user.click(screen.getByText('事件地图').closest('summary')!);
+  await user.click(screen.getByRole('button', { name: /二渡赤水/ }));
+  const related = screen.getByLabelText('本事件的关联位置');
+  await user.click(within(related).getByRole('button', { name: /太平渡/ }));
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    model.entries.find(
+      (p) => p.eventId === 'event-sd-2' && p.locationNodeId === 'node-taiping',
+    )!.anchorCoordinates,
+    undefined,
+  );
+  result.rerender(
+    <ExhibitionPanorama {...base} phaseId="sd-phase-2" eventMap={model} />,
+  );
+  expect(renderer.api.setMarkers.mock.lastCall![0]).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ id: 'placement:pl-ld-bridge' }),
+    ]),
+  );
+  await user.keyboard('{Escape}');
+  expect(
+    screen.queryByRole('complementary', { name: '事件位置预览' }),
+  ).not.toBeInTheDocument();
+});
+
+it('鼠标按下期间固定标签并捕获指针，投影更新不会把点击落到地图背景', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(data, 'zy-phase'),
+    user = userEvent.setup();
+  render(<ExhibitionPanorama {...base} eventMap={model} />);
+  const projected = {
+    id: 'placement:pl-ld-bridge',
+    x: 700,
+    y: 300,
+    visible: true,
+  };
+  act(() =>
+    renderer.options!.onMarkers([projected], {
+      width: 1440,
+      height: 700,
+      distance: 2,
+    }),
+  );
+  const label = screen.getByRole('button', { name: '飞夺泸定桥，泸定桥附近' });
+  await user.pointer({ target: label, keys: '[MouseLeft>]' });
+  const transform = label.style.transform;
+  act(() =>
+    renderer.options!.onMarkers([{ ...projected, x: 850, y: 400 }], {
+      width: 1440,
+      height: 700,
+      distance: 2,
+    }),
+  );
+  expect(label.style.transform).toBe(transform);
+  await user.pointer({ keys: '[/MouseLeft]' });
+  expect(
+    screen.getByRole('complementary', { name: '事件位置预览' }),
+  ).toHaveTextContent('飞夺泸定桥');
+  expect(renderer.creates).toBe(1);
+});
 
 it('B故事的外部演绎请求复用A观察路径，并在退出时通知宿主和恢复地图', async () => {
   const props = properties();

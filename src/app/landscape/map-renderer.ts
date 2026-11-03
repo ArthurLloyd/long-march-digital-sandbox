@@ -37,11 +37,17 @@ export interface MarkerProjection {
   y: number;
   visible: boolean;
 }
+export interface MarkerViewport {
+  width: number;
+  height: number;
+  distance: number;
+}
 export interface PanoramaMapAdapter {
   setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
   focus(bounds: GeoBounds, framing?: 'place'): void;
-  focusGeo(point: GeoPoint): void;
+  focusGeo(point: GeoPoint, bounds?: GeoBounds): void;
+  setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
   overview(top?: boolean): void;
@@ -63,7 +69,7 @@ export function createPanoramaMap(
   host: HTMLElement,
   options: {
     reducedMotion: boolean;
-    onMarkers: (markers: MarkerProjection[]) => void;
+    onMarkers: (markers: MarkerProjection[], viewport?: MarkerViewport) => void;
     onError: (message: string) => void;
     onReady: () => void;
     technicalMarkers?: boolean;
@@ -143,7 +149,8 @@ export function createPanoramaMap(
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
   const routeGroup = new THREE.Group();
   const forceGroup = new THREE.Group();
-  scene.add(routeGroup, forceGroup);
+  const eventAreaGroup = new THREE.Group();
+  scene.add(routeGroup, forceGroup, eventAreaGroup);
   const clearRoutes = () => {
     routeGroup.traverse((object) => {
       if (
@@ -169,7 +176,7 @@ export function createPanoramaMap(
     forceGroup.clear();
   };
   const drape = () => {
-    for (const group of [routeGroup, forceGroup])
+    for (const group of [routeGroup, forceGroup, eventAreaGroup])
       group.traverse((object) => {
         if (object instanceof THREE.Line || object instanceof THREE.Points) {
           const points = object.geometry.getAttribute('position');
@@ -565,12 +572,58 @@ export function createPanoramaMap(
             Math.abs(point.y) < 0.94,
         };
       }),
+      { width, height, distance: camera.position.distanceTo(controls.target) },
     );
   };
   frame = requestAnimationFrame(draw);
   return {
     setJourneyMarker: journeyTorch.setMarker,
     entry: () => entry(),
+    setEventAreas(areas) {
+      for (const object of [...eventAreaGroup.children]) {
+        if (object instanceof THREE.Line) {
+          object.geometry.dispose();
+          (object.material as THREE.Material).dispose();
+        }
+      }
+      eventAreaGroup.clear();
+      for (const area of areas) {
+        const [w, s, e, n] = area.bounds;
+        if (!inCoverage([w, s]) || !inCoverage([e, n])) continue;
+        const points: THREE.Vector3[] = [];
+        // A closed display envelope, explicitly not a route or historical border.
+        for (let side = 0; side < 4; side++)
+          for (let i = 0; i < 24; i++) {
+            const t = i / 24;
+            const geo: GeoPoint =
+              side === 0
+                ? [w + (e - w) * t, s]
+                : side === 1
+                  ? [e, s + (n - s) * t]
+                  : side === 2
+                    ? [e - (e - w) * t, n]
+                    : [w, n - (n - s) * t];
+            const [x, z] = projectGeo(geo);
+            points.push(new THREE.Vector3(x, heightAt(x, z) + 0.012, z));
+          }
+        points.push(points[0]!.clone());
+        const line = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(points),
+          new THREE.LineDashedMaterial({
+            color: '#e4caa0',
+            transparent: true,
+            opacity: 0.48,
+            dashSize: 0.035,
+            gapSize: 0.03,
+            depthWrite: false,
+          }),
+        );
+        line.userData.exhibitionAreaId = area.id;
+        line.userData.landscapeLift = 0.012;
+        line.computeLineDistances();
+        eventAreaGroup.add(line);
+      }
+    },
     setForceRegions(state, camps) {
       clearForceRegions();
       for (const { track, snapshot } of state.entries) {
@@ -622,7 +675,7 @@ export function createPanoramaMap(
           };
         });
     },
-    focusGeo(point) {
+    focusGeo(point, bounds) {
       entryFraming = false;
       if (!inCoverage(point)) return;
       const revision = ++focusRevision;
@@ -636,12 +689,22 @@ export function createPanoramaMap(
       const complete = () => {
         if (disposed || revision !== focusRevision) return;
         drape();
-        const [x, z] = projectGeo(point),
-          pose = composeTerrainView(
-            { x, z, y: heightAt(x, z) },
-            { x: 0.15, z: 1 },
-            heightAt,
-          );
+        const [x, z] = projectGeo(point);
+        const pose = bounds
+          ? (() => {
+              const a = projectGeo([bounds[0], bounds[3]]),
+                b = projectGeo([bounds[2], bounds[1]]);
+              return composeRegionalView(
+                [a[0], a[1], b[0], b[1]],
+                { x, z },
+                heightAt,
+              );
+            })()
+          : composeTerrainView(
+              { x, z, y: heightAt(x, z) },
+              { x: 0.15, z: 1 },
+              heightAt,
+            );
         travel(
           new THREE.Vector3(...pose.position),
           new THREE.Vector3(...pose.target),

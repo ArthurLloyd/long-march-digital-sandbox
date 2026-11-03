@@ -1,0 +1,130 @@
+{
+  "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+  "captures": [
+    {
+      "file": "final-global-1920.jpg",
+      "sha256": "456f3959b7d3c5df4f5e2633f5aca25651556d5db1e6c6d17eaab2a33bb87ab6",
+      "bytes": 166051,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1920, 1080],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-global-1440.jpg",
+      "sha256": "02a973762f645b77025486abf729518e098722065e5098dc1e0c7eab806ecbc7",
+      "bytes": 131528,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1440, 900],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-global-1366.jpg",
+      "sha256": "3abdac1a12b155f08677d26d8884e268703da7d39217958cacbd16cb624ffeac",
+      "bytes": 109448,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1366, 768],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-chishui-1366.jpg",
+      "sha256": "47bb3966a92999c3f1b470db5e4b7aa20850c97e6759ff02849f75a05ae8d83e",
+      "bytes": 110255,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1366, 768],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-dadu-1440.jpg",
+      "sha256": "d26267101f7bddb621720e7b28dd8ee1aad4308e26b95eede88c0919d6393897",
+      "bytes": 140476,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1440, 900],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-snow-preview-1920.jpg",
+      "sha256": "6ac1f103b60eae6a623fea8c46cc966e2413a92cd5835e82a5a1e3b1859f92de",
+      "bytes": 215665,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1920, 1080],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-location-evidence-1920.jpg",
+      "sha256": "d837e0f5bb673be790ccf598ff92113ede278a890f16e27bcfb12771db4ff150",
+      "bytes": 231031,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1920, 1080],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-preview-1366.jpg",
+      "sha256": "202065ddfbdb5fc97a89dc60fd5ff2843340fc428abf3d7896ebef49a850be9c",
+      "bytes": 113144,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1366, 768],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-reading-1366.jpg",
+      "sha256": "5b9aa180290dab2b7f9a949c98654d6807248d7b0ece362d4b7e2b2f41c3cc18",
+      "bytes": 71397,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1366, 768],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-returned-1366.jpg",
+      "sha256": "5fc78483f94bdd5f2645f35001cd28d7caa13481183aa9753f9bd3e8f28350d4",
+      "bytes": 113148,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2",
+      "dimensions": [1366, 768],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "final-phase-switch-1440.jpg",
+      "sha256": "ce8cc5d6799a2e148b8aeb16ee157f0818c3f96c8c8090b1ad7949f029f9d0f7",
+      "bytes": 62591,
+      "sourceCommit": "93f1ac75b9cfed580bd513e64ca896613b32bbb8",
+      "dimensions": [1440, 900],
+      "origin": "Actual Edge screenshot via cua_repl, no altered page state"
+    },
+    {
+      "file": "event-map-walkthrough.mp4",
+      "sha256": "ded431ee132a7395e9d059cc48cfdb90a4f06344e0a1410d8fce6cd35f7435ad",
+      "bytes": 1447477,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2"
+    },
+    {
+      "file": "final-read-return.json",
+      "sha256": "f7027b1cee612571141b7bd585d22fef717c1cf353a7affae60b0cfc3aa32c05",
+      "bytes": 2785,
+      "sourceCommit": "2fc680c942fb4b24a4143d4a037fe5caead795e2"
+    },
+    {
+      "file": "phase-reading-1440.json",
+      "sha256": "af999ae87592849438dbf6e40d7ed23f78b3dbb03da597f204f2e90c58426f8c",
+      "bytes": 3540,
+      "sourceCommit": "93f1ac75b9cfed580bd513e64ca896613b32bbb8"
+    },
+    {
+      "file": "navigation-check.json",
+      "sha256": "1ef88045875e898472b3b9a16fbefefd54beb55f5b3d6142724ab7d4f4ff1747",
+      "bytes": 3131,
+      "sourceCommit": "93f1ac75b9cfed580bd513e64ca896613b32bbb8"
+    }
+  ],
+  "video": {
+    "actualSamples": 270,
+    "sampledDurationSeconds": 11.98,
+    "encodedDurationSeconds": 12,
+    "encodedSize": [1280, 720],
+    "recordedViewport": [1366, 768],
+    "method": "Real JPEG viewport frames with sampled time intervals; ffmpeg constant 30fps duplication, no generated frames or optical interpolation"
+  },
+  "limits": [
+    "Desktop sizes only",
+    "Native background hiding test not retried",
+    "Exact bookmark comparison uses a settled view; terrain may finish morphing when reading is opened during a transition"
+  ]
+}

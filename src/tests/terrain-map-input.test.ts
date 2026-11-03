@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 import { createPanoramaMap } from '../app/landscape/map-renderer';
+import { projectGeo } from '../app/landscape/geography';
 const boundary = vi.hoisted(() => ({
   render: vi.fn(),
   dispose: vi.fn(),
@@ -10,6 +11,9 @@ const boundary = vi.hoisted(() => ({
   landDispose: vi.fn(),
   controls: null as unknown,
   frames: [] as FrameRequestCallback[],
+  landFocus: vi.fn(),
+  terrainHeight: 0.1,
+  heightVersion: 0,
 }));
 vi.mock('three', async (importOriginal) => {
   const actual = await importOriginal<typeof import('three')>();
@@ -55,14 +59,16 @@ vi.mock('three/examples/jsm/controls/OrbitControls.js', async () => {
 });
 vi.mock('../app/landscape/modern-landscape', () => ({
   createModernLandscape: () => ({
-    heightAt: () => 0.1,
+    heightAt: () => boundary.terrainHeight,
     navigationHeightAt: () => 0.1,
     waterHeightAt: () => null,
     worldBounds: [-20, -20, 20, 20],
     bounds: [-2, -2, 2, 2],
-    heightVersion: 0,
+    get heightVersion() {
+      return boundary.heightVersion;
+    },
     region: null,
-    focus: async () => ({ x: 0, z: 0 }),
+    focus: boundary.landFocus,
     overview: vi.fn(),
     cancelPending: boundary.cancel,
     observe: vi.fn(),
@@ -77,6 +83,9 @@ vi.mock('../app/landscape/modern-landscape', () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   boundary.frames = [];
+  boundary.terrainHeight = 0.1;
+  boundary.heightVersion = 0;
+  boundary.landFocus.mockReset().mockResolvedValue({ x: 0, z: 0 });
   vi.stubGlobal('requestAnimationFrame', (fn: FrameRequestCallback) => {
     boundary.frames.push(fn);
     return boundary.frames.length;
@@ -136,6 +145,65 @@ const dbl = (canvas: HTMLCanvasElement) =>
     }),
   );
 describe('真实地图输入接线（只模拟GPU边界）', () => {
+  it('事件区域是贴地闭合轮廓而非行军线，地形更新后重贴地，清空释放几何', () => {
+    const { api, host } = setup();
+    api.setEventAreas!([
+      { id: 'area-test', bounds: [105.8, 27.9, 106.2, 28.4] },
+    ]);
+    boundary.frames.shift()!(performance.now());
+    const scene = boundary.render.mock.lastCall![0] as THREE.Scene;
+    let area: THREE.Line | null = null;
+    scene.traverse((object) => {
+      if (object.userData.exhibitionAreaId === 'area-test')
+        area = object as THREE.Line;
+    });
+    expect(area).not.toBeNull();
+    const line = area! as THREE.Line,
+      positions = line.geometry.getAttribute('position');
+    expect(positions.getX(0)).toBe(positions.getX(positions.count - 1));
+    expect(positions.getZ(0)).toBe(positions.getZ(positions.count - 1));
+    expect(positions.getY(0)).toBeCloseTo(0.112);
+    boundary.terrainHeight = 0.5;
+    boundary.heightVersion++;
+    boundary.frames.shift()!(performance.now() + 20);
+    expect(positions.getY(0)).toBeCloseTo(0.512);
+    const disposed = vi.spyOn(line.geometry, 'dispose');
+    api.setEventAreas!([]);
+    expect(disposed).toHaveBeenCalledOnce();
+    expect(line.parent).toBeNull();
+    api.dispose();
+    host.remove();
+  });
+  it('连续选择事件只采用最后一次异步取景；旧区域加载不能拉回', async () => {
+    const { api, host } = setup();
+    let first!: (value: { x: number; z: number }) => void,
+      second!: (value: { x: number; z: number }) => void;
+    boundary.landFocus
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            first = resolve;
+          }),
+      )
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            second = resolve;
+          }),
+      );
+    api.focusGeo([106.916, 27.691]);
+    api.focusGeo([102.23, 29.915]);
+    second({ x: 0, z: 0 });
+    await Promise.resolve();
+    const last = api.bookmark();
+    expect(last.target[0]).toBeCloseTo(projectGeo([102.23, 29.915])[0]);
+    first({ x: 0, z: 0 });
+    await Promise.resolve();
+    expect(api.bookmark()).toEqual(last);
+    expect(host.querySelectorAll('canvas')).toHaveLength(1);
+    api.dispose();
+    host.remove();
+  });
   it('画布滚轮取得鼠标下地表锚点；空白与工具滚轮不改动视角，退出移除监听', () => {
     const { api, canvas, host } = setup();
     boundary.pick.mockReturnValue(new THREE.Vector3(0.8, 0.1, 0.6));

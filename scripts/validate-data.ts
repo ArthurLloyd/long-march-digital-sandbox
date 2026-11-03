@@ -6,6 +6,8 @@ import {
 } from '../src/shared/utils/validate-dataset.ts';
 import { normalizeDataset } from '../src/shared/contracts/dataset.ts';
 import { validatePublishedAssets } from './validate-published-assets.ts';
+import { eventMapInput } from '../src/app/history/event-map/event-map-loader.ts';
+import { validateEventMapResources } from '../src/app/history/event-map/event-map-schema.ts';
 
 const root = new URL('../src/data/verified/', import.meta.url);
 async function collect(directory: URL): Promise<unknown[]> {
@@ -32,6 +34,14 @@ try {
       '当前契约只允许 dataset.json 一个正式数据入口；扩展前须由 C 同步运行时加载器与校验脚本。',
     );
   const data = normalizeDataset(validateDataset(files[0]));
+  const spatial = validateEventMapResources(
+    eventMapInput.positions,
+    eventMapInput.references,
+    data,
+  );
+  console.log(
+    `展陈位置结构校验通过：${spatial.positions.placements.length} 个位置实例，${spatial.positions.nodes.length} 个地点节点；不等于史实审核。`,
+  );
   await validatePublishedAssets(
     new URL('../public/', import.meta.url),
     getPublishedDatasetV2(files[0]).assets,
