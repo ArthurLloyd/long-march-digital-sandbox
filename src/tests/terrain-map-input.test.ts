@@ -187,6 +187,18 @@ describe('真实地图输入接线（只模拟GPU边界）', () => {
     finish({ x: 0, z: 0 });
     await Promise.resolve();
     expect(api.bookmark()).toEqual(manual);
+    boundary.landFocus.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    api.focusMarch!('follow');
+    api.holdCamera!();
+    const freeView = api.bookmark();
+    finish({ x: 0, z: 0 });
+    await Promise.resolve();
+    expect(api.bookmark()).toEqual(freeView);
     api.dispose();
     host.remove();
   });

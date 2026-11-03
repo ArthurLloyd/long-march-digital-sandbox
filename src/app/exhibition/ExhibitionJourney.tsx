@@ -290,7 +290,10 @@ export function ExhibitionJourney({
         api.current?.prepareRegion?.(chapter.regionId);
       else if (p?.bounds) api.current?.prepareRegion?.(null, p.bounds);
     }
-    if (state.camera === 'free') return;
+    if (state.camera === 'free') {
+      api.current?.holdCamera?.();
+      return;
+    }
     const currentSample = sampleJourney(
       content.plan,
       transport.read().sequenceId,

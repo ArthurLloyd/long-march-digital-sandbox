@@ -74,6 +74,7 @@ export interface PanoramaMapAdapter {
   frameMarch?(points: readonly GeoPoint[]): void;
   focusMarch?(mode: 'overview' | 'follow'): void;
   prepareRegion?(region: RegionId | null, bounds?: GeoBounds): void;
+  holdCamera?(): void;
   setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
@@ -912,6 +913,14 @@ export function createPanoramaMap(
     prepareRegion(region, bounds) {
       if (region && landscape.region !== region) void landscape.focus(region);
       else if (!region && bounds) landscape.focusArea(bounds);
+    },
+    holdCamera() {
+      // Retain terrain preparation, but cancel camera work requested before
+      // the viewer chose a free composition (including asynchronous focus).
+      entryFraming = false;
+      preparingEntry = false;
+      focusRevision++;
+      flight = null;
     },
     focusMarch(mode) {
       const selected = march.update(

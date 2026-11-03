@@ -21,6 +21,7 @@ const cameraBoundary = vi.hoisted(() => ({
   frameMarch: vi.fn(),
   focusMarch: vi.fn(),
   prepareRegion: vi.fn(),
+  holdCamera: vi.fn(),
   transport: null as JourneyTransport | null,
   restore: vi.fn(),
 }));
@@ -260,6 +261,7 @@ it('loads the arriving terrain in free mode while keeping the chosen camera mode
   ).toBeVisible();
   expect(cameraBoundary.prepareRegion).toHaveBeenCalledWith('jinsha');
   expect(cameraBoundary.focusMarch).not.toHaveBeenCalled();
+  expect(cameraBoundary.holdCamera).toHaveBeenCalled();
   expect(screen.getByRole('button', { name: '自由' })).toHaveAttribute(
     'aria-pressed',
     'true',
