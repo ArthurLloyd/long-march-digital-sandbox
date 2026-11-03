@@ -55,6 +55,14 @@ describe('独立展陈位置与历史坐标隔离', () => {
     ).toBeNull();
     expect(strict.published.events).toEqual([]);
   });
+  it('资源与当前事件引用失效时，清空标记和附加阅读入口，不重开旧详情', () => {
+    const data = dataset();
+    data.events = data.events.filter((e) => e.id !== 'event-anshunchang');
+    const model = loadExhibitionEventMap(data, 'exhibition')!;
+    expect(model.error).not.toBeNull();
+    expect(model.entries).toEqual([]);
+    expect(model.unlocated).toEqual([]);
+  });
   it('全局位置不受当前阶段过滤；决议位于扎西而非遵义主题会址', () => {
     const data = dataset(),
       model = loadExhibitionEventMap(data, 'exhibition')!;

@@ -43,7 +43,9 @@ export function loadExhibitionEventMap(
         },
         references: [],
       },
-      unlocated: dataset.events.filter((e) => e.reviewStatus !== 'rejected'),
+      // Invalid resource metadata must not reopen a withdrawn/stale event via
+      // the supplementary directory. The existing historical catalogue is separate.
+      unlocated: [],
       error: '事件概略位置暂不可用，仍可从历史专题阅读正文。',
     };
   }
