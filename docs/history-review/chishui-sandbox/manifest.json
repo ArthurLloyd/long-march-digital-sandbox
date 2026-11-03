@@ -1,0 +1,113 @@
+{
+  "version": "chishui-sandbox-1",
+  "baselines": {
+    "journey": "8fb55a843e0d78def6feb56e4f403f48d94c2117",
+    "anchors": "7b7e2c282591b3220ef00a78fc2980e314f9557a"
+  },
+  "files": [
+    {
+      "path": "docs/history-review/chishui-sandbox/CHECKS.md",
+      "sha256": "604eb0e587799bde7a58414c7a3533080aedc7fdccedecdcad0b6a3b5843b832",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/INSTALL.md",
+      "sha256": "b2056f2e5f03bff848c27d39b9fb1a4c436861802910a0b6d5c8f3749b7a288b",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/README.md",
+      "sha256": "b62eaf5e0cead68f7f36533e73ee6072b6056a1306b2bcc516fda5fe53eb1c22",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/files.txt",
+      "sha256": "a4f6973fae893da58c243fcfec9f6dbc87eb894c04d14c3cadc9e0f3e4d9557f",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/RegionalObservation.tsx",
+      "sha256": "e98d1b002ddd73c41824f045e9473c08550dc5cd0e38fddc09feb47dbeacaceb",
+      "before": {
+        "journey": "d3f26aebc1acbe236bf1e6b21409e0ffe3a6d5d229f7bae245662651af83fa89",
+        "anchors": "d3f26aebc1acbe236bf1e6b21409e0ffe3a6d5d229f7bae245662651af83fa89"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/ChishuiSandbox.test.tsx",
+      "sha256": "c5ff82c0da4036ccd0ee36529e26e6656eb9d6c08f848829e2ef19195328a796",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/ChishuiSandbox.tsx",
+      "sha256": "4a9791b099727ee8d5fecb43af8ac38c83210160b8c306da92ca67ec2741c57f",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-renderer.ts",
+      "sha256": "9d1f46ddbc3cc3fb76387e1be914f307ba16d1e29358dd37dc9edc37186c2e30",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-sandbox.css",
+      "sha256": "13704474ce02e7f1db6c3daf5ddbd08b8d9ec23a89f3c188468d35bd33bd367b",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-story.test.ts",
+      "sha256": "5579fc1288650a578497ee50efa546da021dd296fc466dbdf5509eead9f0e6e6",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-story.ts",
+      "sha256": "e7e854cbe21f373accac221a09cb543d83268d0a0feb78ef10086cf0be0c76a0",
+      "before": {
+        "journey": null,
+        "anchors": null
+      }
+    }
+  ],
+  "checks": {
+    "fullTests": {
+      "files": 61,
+      "passed": 460,
+      "command": "npm run test -- --maxWorkers=2 --testTimeout=30000"
+    },
+    "browser": {
+      "desktop": {
+        "canvas": true,
+        "fallback": false,
+        "overflow": false
+      },
+      "errors": [],
+      "exitClosed": true
+    }
+  }
+}
