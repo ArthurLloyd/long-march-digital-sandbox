@@ -24,6 +24,7 @@ import { REGION_STORIES } from './region-stories';
 import { CinematicIntro } from './CinematicIntro';
 import { SCENE_CINEMATICS } from './cinematic-config';
 import './regional-observation.css';
+import { ChishuiSandbox } from './chishui/ChishuiSandbox';
 
 type ViewId = 'arrival' | 'company' | 'landscape' | 'detail';
 type SpotId = 'terrain' | 'people' | 'detail';
@@ -52,14 +53,31 @@ const SPOT_ICONS = { terrain: Mountain, people: Flag, detail: Eye };
 
 /** Local visual observation; it never writes historical completion evidence. */
 export function RegionalObservation(props: RegionalObservationProps) {
-  return <RegionalObservationScene key={props.regionId} {...props} />;
+  const [riverWalk, setRiverWalk] = useState(false);
+  if (props.regionId === 'chishui' && !riverWalk)
+    return (
+      <ChishuiSandbox
+        onExit={props.onExit}
+        onLandscape={() => setRiverWalk(true)}
+      />
+    );
+  return (
+    <RegionalObservationScene
+      key={props.regionId}
+      {...props}
+      onBattle={
+        props.regionId === 'chishui' ? () => setRiverWalk(false) : undefined
+      }
+    />
+  );
 }
 
 function RegionalObservationScene({
   regionId,
   onExit,
   onRegionChange,
-}: RegionalObservationProps) {
+  onBattle,
+}: RegionalObservationProps & { onBattle?: () => void }) {
   const story = REGION_STORIES[regionId];
   const cinematic = SCENE_CINEMATICS[regionId];
   const [introActive, setIntroActive] = useState(Boolean(cinematic?.enabled));
@@ -341,6 +359,15 @@ function RegionalObservationScene({
         )}
 
         <aside className="regional-view-tools" aria-label="空间视角">
+          {onBattle && (
+            <button
+              title="打开四渡赤水战役沙盘"
+              aria-label="打开四渡赤水战役沙盘"
+              onClick={onBattle}
+            >
+              <Flag size={19} />
+            </button>
+          )}
           {cinematic?.enabled && (
             <button
               title="重看开场片段"

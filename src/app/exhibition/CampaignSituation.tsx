@@ -101,7 +101,7 @@ function SituationDiagram({
                   a={[a[0] + (i < 5 ? 25 : -25), a[1] + 4]}
                   b={[184, 132]}
                   bend={i < 5 ? 20 : -15}
-                  progress={Math.min(1, progress * (1.1 + i * 0.09))}
+                  progress={progress}
                   camp="red"
                 />
               </g>

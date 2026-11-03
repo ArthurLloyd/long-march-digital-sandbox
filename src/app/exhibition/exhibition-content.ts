@@ -32,6 +32,7 @@ const chapterSchema = z.strictObject({
   eventIds: z.array(id).min(1),
   duration: z.number().positive(),
   arrival: z.number().min(0.01).max(1),
+  pauseAtArrival: z.boolean().optional(),
 });
 const trackSchema = z.strictObject({
   id,
@@ -42,6 +43,8 @@ const trackSchema = z.strictObject({
   unitId: id,
   unitName: id,
   camp: z.enum(['red_army', 'nationalist_army']),
+  role: z.enum(['pursuit', 'reinforcement', 'blockade', 'reported']).optional(),
+  visibleFrom: z.number().min(0).max(0.7).optional(),
   points: z.array(point).min(2),
   sourceIds: z.array(id).min(1),
   evidenceType: z.enum(['documented_geometry', 'sourced_strategic_direction']),

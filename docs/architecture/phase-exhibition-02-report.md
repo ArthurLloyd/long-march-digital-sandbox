@@ -1,5 +1,7 @@
 # C-EXHIBITION-02：展馆重整与本轮用户反馈验收
 
+2026-11-04 更新：区域到达、金沙江后半程、黔北/赤水连片地形、于都汇聚、区域体验与部队标签的修正，以及远端 A 最新成果接入，见[后续处理记录](exhibition-02/arrival-campaign-followup-2026-11-04.md)。组合版本480项工程测试通过，本轮真实网页验收因电脑控制工具中止而保留未完成；下文旧截图与旧检查结果仅对应当时版本。
+
 日期：2026-11-03。独立分支 `feat/exhibition-journey-integration`，工程基线为 `7b7e2c282591b3220ef00a78fc2980e314f9557a`。开始及上传前核对的 main 为 `10e9ce7240816f51840902e4cba4936666d02a81`。
 
 [Draft PR #25](https://github.com/ArthurLloyd/long-march-digital-sandbox/pull/25) 以 `feat/event-map-anchors` 为 base，依赖尚未合并的 #24、#23。没有合并、直接推送 main 或公开部署。原工作区及原预览保留；本轮生产预览为 `http://127.0.0.1:4192/`。
