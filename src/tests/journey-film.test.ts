@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { heightAt } from '../app/landscape/geography';
+import { heightAt, projectGeo } from '../app/landscape/geography';
 import * as THREE from 'three';
 import raw from '../data/verified/dataset.json';
 import { createJourneyContent } from '../app/exhibition/exhibition-content';
@@ -67,6 +67,59 @@ it('places every crossing seal on an existing route vertex and reconstructs the 
     expect(frame()).toEqual(before);
   }
   layer.dispose();
+});
+
+it('centres the two Ganzi reunion chapters on their stationary flags at every shot and follow distance', () => {
+  const terrain = (x: number, z: number) => heightAt(x, z, 12);
+  for (const id of ['chapter-ex-event-ganzi', 'chapter-ex-event-red2-formed']) {
+    const chapter = plan.chapters.find((c) => c.id === id)!;
+    const formation = plan.formations!.find((f) => f.chapterId === id)!;
+    const [x, z] = projectGeo(formation.anchor);
+    const point = new THREE.Vector3(x, terrain(x, z) + 0.018, z);
+    const bounds = filmExtent([]);
+    const frame = marchFraming(id, undefined, terrain, point);
+    expect(frame).not.toBeNull();
+    const datum = routeCameraLevel(bounds, point, terrain);
+    for (const zoom of [0.7, 1, 1.4]) {
+      for (const progress of [0, 0.2, 0.34, 0.5, 0.72, 0.9, 1]) {
+        const pose = sampleFilmCamera(
+          chapter.cues!,
+          progress,
+          point,
+          bounds,
+          zoom,
+          datum,
+          false,
+          bounds,
+          false,
+          frame,
+        );
+        for (const [width, height] of [
+          [1912, 805],
+          [1280, 810],
+        ]) {
+          const camera = new THREE.PerspectiveCamera(
+            43,
+            width! / height!,
+            0.02,
+            160,
+          );
+          camera.setViewOffset(width!, height!, -96, -32, width!, height!);
+          camera.position.copy(pose.position);
+          camera.lookAt(pose.target);
+          camera.updateMatrixWorld();
+          const projected = point.clone().project(camera);
+          const y = (1 - projected.y) / 2;
+          expect(y, id + ' at ' + progress).toBeGreaterThan(0.45);
+          expect(y, id + ' at ' + progress).toBeLessThan(0.7);
+          expect(Math.abs(projected.x)).toBeLessThan(0.27);
+        }
+      }
+    }
+    expect(
+      marchFraming('chapter-ex-event-red25-start', undefined, terrain, point),
+    ).toBeNull();
+  }
 });
 
 it('keeps the marching subject clear of the subtitle in the bridge, mountain and reunion chapters without following small rises', () => {

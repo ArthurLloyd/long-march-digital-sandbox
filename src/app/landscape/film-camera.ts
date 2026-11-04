@@ -64,7 +64,16 @@ export function marchFraming(
   chapterId: string,
   track: JourneyTrack | undefined,
   height: (x: number, z: number) => number,
+  anchor?: THREE.Vector3,
 ) {
+  if (
+    anchor &&
+    (chapterId === 'chapter-ex-event-ganzi' ||
+      chapterId === 'chapter-ex-event-red2-formed')
+  ) {
+    const level = height(anchor.x, anchor.z);
+    return { levelAt: () => level, deviation: 0 };
+  }
   if (!subjectChapters.has(chapterId) || !track || track.points.length < 2)
     return null;
   const station = (fraction: number) => {
