@@ -709,6 +709,7 @@ export function createPanoramaMap(
             chapter.id,
             sample.tracks.find((track) => track.id === marching?.track.id),
             landscape.navigationHeightAt,
+            subject,
           );
           finalBounds =
             chapter.id === 'chapter-event-js'

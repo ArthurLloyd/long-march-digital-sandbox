@@ -64,7 +64,16 @@ export function marchFraming(
   chapterId: string,
   track: JourneyTrack | undefined,
   height: (x: number, z: number) => number,
+  anchor?: THREE.Vector3,
 ) {
+  if (
+    anchor &&
+    (chapterId === 'chapter-ex-event-ganzi' ||
+      chapterId === 'chapter-ex-event-red2-formed')
+  ) {
+    const level = height(anchor.x, anchor.z);
+    return { levelAt: () => level, deviation: 0, cameraLevel: level };
+  }
   if (!subjectChapters.has(chapterId) || !track || track.points.length < 2)
     return null;
   const station = (fraction: number) => {
@@ -199,6 +208,8 @@ export function sampleFilmCamera(
     // Eye elevation stays on the chapter's stable clearance datum. Lower
     // only the gaze to the route, leaving some terrain ahead of the arrow.
     target.y = framing.levelAt(point) + range * 0.055;
+    if (framing.cameraLevel !== undefined)
+      position.y = framing.cameraLevel + 0.09 + range * mix(1);
   }
   return { position, target };
 }
