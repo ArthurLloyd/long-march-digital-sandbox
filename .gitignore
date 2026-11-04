@@ -13,3 +13,6 @@ coverage/
 .impeccable/mocks/
 .impeccable/config.local.json
 artifacts/browser/
+/artifacts/book-font/
+/artifacts/event-terrain-cache/
+/artifacts/edge-acceptance/

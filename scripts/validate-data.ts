@@ -6,6 +6,9 @@ import {
 } from '../src/shared/utils/validate-dataset.ts';
 import { normalizeDataset } from '../src/shared/contracts/dataset.ts';
 import { validatePublishedAssets } from './validate-published-assets.ts';
+import { eventMapInput } from '../src/app/history/event-map/event-map-loader.ts';
+import { validateEventMapResources } from '../src/app/history/event-map/event-map-schema.ts';
+import { createJourneyContent } from '../src/app/exhibition/exhibition-content.ts';
 
 const root = new URL('../src/data/verified/', import.meta.url);
 async function collect(directory: URL): Promise<unknown[]> {
@@ -32,6 +35,18 @@ try {
       '当前契约只允许 dataset.json 一个正式数据入口；扩展前须由 C 同步运行时加载器与校验脚本。',
     );
   const data = normalizeDataset(validateDataset(files[0]));
+  const exhibition = createJourneyContent(data, 'exhibition');
+  console.log(
+    `展馆补充校验：${exhibition.dataset.events.length} 个展出事件、${exhibition.plan.chapters.length} 个章节、${exhibition.plan.tracks.length} 项战略方向/部署示意（其中 ${exhibition.plan.tracks.filter((t) => t.evidenceType === 'sourced_deployment').length} 项为单点部署）；不等于史实审核。`,
+  );
+  const spatial = validateEventMapResources(
+    eventMapInput.positions,
+    eventMapInput.references,
+    data,
+  );
+  console.log(
+    `展陈位置结构校验通过：${spatial.positions.placements.length} 个位置实例，${spatial.positions.nodes.length} 个地点节点；不等于史实审核。`,
+  );
   await validatePublishedAssets(
     new URL('../public/', import.meta.url),
     getPublishedDatasetV2(files[0]).assets,

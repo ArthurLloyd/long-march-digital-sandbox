@@ -1,16 +1,53 @@
-import { sampleCameraFlight } from './camera-flight';
+import { sampleChapterCameraFlight } from './camera-flight';
+import {
+  filmExtent,
+  marchFraming,
+  routeCameraLevel,
+  sampleFilmCamera,
+} from './film-camera';
+import { campaignFrames, campaignView } from './campaign-framing';
+import { campaignRiver, type CampaignRiver } from './campaign-rivers';
+import {
+  cueIndex,
+  crossingSeals,
+} from '../../shared/content/journey-screenplay';
+import { createFilmSignals } from './film-signals';
 import { composeTerrainView } from './camera-composition';
 import { createModernLandscape } from './modern-landscape';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import type { GeoBounds, GeoPoint } from './geography';
-import { projectGeo, regionCenter, inCoverage } from './geography';
+import {
+  projectGeo,
+  unprojectGeo,
+  regionCenter,
+  inCoverage,
+} from './geography';
 import { REGIONS, type RegionId } from './map-regions';
 import type { PublishedMapRoute } from './map-objects';
 import type { ForcePhaseState } from '../history/force-state';
 import { EXHIBITION_LIGHT } from './exhibition-atmosphere';
 import { composeReliefEntry, composeRegionalView } from './relief-block';
 import { createJourneyTorch, type JourneyMarker } from './journey-torch';
+import { createTerrainDiagnostics } from './terrain-diagnostics';
+import { createMarchLayer } from './march-layer';
+import { createChapterLandmark } from './chapter-landmark';
+import { clearMarchSightline } from './march-presentation';
+import {
+  browseRegionAt,
+  geographicRegionAt,
+  regionalMarchDistance,
+  translateMarchView,
+} from './journey-navigation';
+import { sampleJourney, type JourneyTransport } from '../../features/timeline';
+import type { MapSafeRect } from './map-safe-area';
+import {
+  constrainTerrainCamera,
+  createSurfaceGesture,
+  localTerrainPose,
+  cursorTerrainZoom,
+  TERRAIN_NAVIGATION,
+} from './terrain-navigation';
 import {
   PANORAMA_SCENE,
   RUIJIN_SCENE,
@@ -20,6 +57,7 @@ import {
 
 export interface PanoramaBookmark {
   sceneId: PanoramaSceneId;
+  regionId?: RegionId | null;
   position: [number, number, number];
   target: [number, number, number];
 }
@@ -29,11 +67,31 @@ export interface MarkerProjection {
   y: number;
   visible: boolean;
 }
+export interface MarkerViewport {
+  width: number;
+  height: number;
+  distance: number;
+}
 export interface PanoramaMapAdapter {
+  setMarchTransport?(transport: JourneyTransport | null): void;
+  setMarchVisible?(visible: boolean): void;
+  setMarchCamps?(camps: readonly string[]): void;
+  setChapterLandmark?(point: GeoPoint | null): void;
+  setSafeAreas?(areas: readonly MapSafeRect[]): void;
   setJourneyMarker(marker: JourneyMarker | null): void;
   entry(): void;
   focus(bounds: GeoBounds, framing?: 'place'): void;
-  focusGeo(point: GeoPoint): void;
+  focusGeo(
+    point: GeoPoint,
+    bounds?: GeoBounds,
+    transition?: 'regional' | 'local',
+    regionHint?: RegionId,
+  ): void;
+  frameMarch?(points: readonly GeoPoint[]): void;
+  focusMarch?(mode: 'overview' | 'follow'): void;
+  prepareRegion?(region: RegionId | null, bounds?: GeoBounds): void;
+  holdCamera?(): void;
+  setEventAreas?(areas: readonly { id: string; bounds: GeoBounds }[]): void;
   setMarkers(markers: readonly { id: string; coordinates: GeoPoint }[]): void;
   setForceRegions(state: ForcePhaseState, camps: readonly string[]): void;
   overview(top?: boolean): void;
@@ -55,13 +113,16 @@ export function createPanoramaMap(
   host: HTMLElement,
   options: {
     reducedMotion: boolean;
-    onMarkers: (markers: MarkerProjection[]) => void;
+    onMarkers: (markers: MarkerProjection[], viewport?: MarkerViewport) => void;
     onError: (message: string) => void;
     onReady: () => void;
     technicalMarkers?: boolean;
+    hideGuides?: boolean;
     entryView?: boolean;
     initialBookmark?: PanoramaBookmark;
     onViewChange?: (bookmark: PanoramaBookmark) => void;
+    onUserNavigate?: () => void;
+    onGeographicBrowse?: (region: RegionId | null) => void;
   },
 ): PanoramaMapAdapter {
   const scene = new THREE.Scene();
@@ -79,6 +140,8 @@ export function createPanoramaMap(
   renderer.setClearColor(EXHIBITION_LIGHT.background);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   let shaderProblem = false;
   renderer.debug.onShaderError = () => {
     shaderProblem = true;
@@ -86,16 +149,17 @@ export function createPanoramaMap(
   };
   renderer.domElement.setAttribute(
     'aria-label',
-    '长征涉及区域现代三维地理参考。方向键可环顾，地图按钮提供区域定位。',
+    '长征涉及区域现代三维地理参考。双击山坡或河面聚焦，滚轮继续靠近；方向键环顾，Home 返回全景。',
   );
   renderer.domElement.setAttribute('role', 'img');
   renderer.domElement.tabIndex = 0;
   host.append(renderer.domElement);
+  const measure = createTerrainDiagnostics(renderer.domElement);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
-  controls.minDistance = 0.18;
-  controls.maxDistance = 58;
+  controls.minDistance = TERRAIN_NAVIGATION.minDistance;
+  controls.maxDistance = TERRAIN_NAVIGATION.maxDistance;
   controls.maxPolarAngle = Math.PI * 0.46;
   controls.minPolarAngle = 0.12;
   controls.enablePan = true;
@@ -119,13 +183,65 @@ export function createPanoramaMap(
   scene.add(ambient, sun, sun.target);
 
   const landscape = createModernLandscape(scene, renderer);
+  const constrain = (levelTarget = false) =>
+    constrainTerrainCamera(
+      camera,
+      controls.target,
+      landscape.navigationHeightAt,
+      landscape.worldBounds,
+      levelTarget,
+    );
   const journeyTorch = createJourneyTorch();
   scene.add(journeyTorch.root);
   let verticalExaggeration: 1 | 6 | 12 | 24 = 12;
   const heightAt = (x: number, z: number) => landscape.heightAt(x, z);
+  const march = createMarchLayer(scene, landscape.navigationHeightAt);
+  const filmSignals = createFilmSignals(scene);
+  const chapterLandmark = createChapterLandmark(
+    scene,
+    landscape.navigationHeightAt,
+  );
+  let chapterArea: GeoBounds | null = null;
+  let safeAreas: readonly MapSafeRect[] = [];
+  let centeredMarch = false;
+  const applySafeFrame = () => {
+    if (entryFraming || !safeAreas.length) {
+      camera.clearViewOffset();
+      return;
+    }
+    let left = 0,
+      right = width,
+      top = 0,
+      bottom = height;
+    for (const r of safeAreas) {
+      if (r.width > width * 0.6 && r.y < 100)
+        top = Math.max(top, r.y + r.height);
+      else if (r.width > width * 0.6 && r.y > height * 0.55)
+        bottom = Math.min(bottom, r.y);
+      else if (r.height > 120 && r.x < width * 0.2)
+        left = Math.max(left, r.x + r.width);
+      else if (r.height > 120 && r.x > width * 0.6)
+        right = Math.min(right, r.x);
+    }
+    if (right - left < width * 0.3) {
+      left = 0;
+      right = width;
+    }
+    const sideOffset = width / 2 - (left + right) / 2;
+    camera.setViewOffset(
+      width,
+      height,
+      centeredMarch && width >= 900 ? sideOffset * 0.5 : sideOffset,
+      height / 2 - (top + bottom) / 2,
+      width,
+      height,
+    );
+  };
   const routeGroup = new THREE.Group();
   const forceGroup = new THREE.Group();
-  scene.add(routeGroup, forceGroup);
+  const eventAreaGroup = new THREE.Group();
+  scene.add(routeGroup, forceGroup, eventAreaGroup);
+  eventAreaGroup.visible = !options.hideGuides;
   const clearRoutes = () => {
     routeGroup.traverse((object) => {
       if (
@@ -151,7 +267,7 @@ export function createPanoramaMap(
     forceGroup.clear();
   };
   const drape = () => {
-    for (const group of [routeGroup, forceGroup])
+    for (const group of [routeGroup, forceGroup, eventAreaGroup])
       group.traverse((object) => {
         if (object instanceof THREE.Line || object instanceof THREE.Points) {
           const points = object.geometry.getAttribute('position');
@@ -194,27 +310,54 @@ export function createPanoramaMap(
     to: THREE.Vector3;
     targetFrom: THREE.Vector3;
     targetTo: THREE.Vector3;
+    overview?: {
+      position: [number, number, number];
+      target: [number, number, number];
+    };
   } = null;
-  const travel = (position: THREE.Vector3, target: THREE.Vector3) => {
+  const travel = (
+    position: THREE.Vector3,
+    target: THREE.Vector3,
+    regional = false,
+  ) => {
     if (options.reducedMotion) {
       camera.position.copy(position);
       controls.target.copy(target);
+      constrain();
       controls.update();
       flight = null;
       viewChanged();
     } else
       flight = {
         start: performance.now(),
-        duration:
-          camera.position.distanceTo(controls.target) /
-            Math.max(0.01, position.distanceTo(target)) >
-            6 || controls.target.distanceTo(target) > 3
+        duration: regional
+          ? 2600
+          : camera.position.distanceTo(controls.target) /
+                Math.max(0.01, position.distanceTo(target)) >
+                6 || controls.target.distanceTo(target) > 3
             ? 2400
             : 1600,
         from: camera.position.clone(),
         to: position,
         targetFrom: controls.target.clone(),
         targetTo: target,
+        overview: regional
+          ? (() => {
+              const middle = controls.target.clone().lerp(target, 0.5);
+              const rise = Math.max(
+                2.4,
+                controls.target.distanceTo(target) * 0.85,
+              );
+              return {
+                position: [
+                  middle.x,
+                  Math.max(middle.y, heightAt(middle.x, middle.z)) + rise,
+                  middle.z + rise * 0.15,
+                ] as [number, number, number],
+                target: middle.toArray(),
+              };
+            })()
+          : undefined,
       };
   };
   const cancel = () => {
@@ -224,14 +367,98 @@ export function createPanoramaMap(
     focusRevision++;
     landscape.cancelPending();
   };
-  controls.addEventListener('start', cancel);
+  let browseAnchor: THREE.Vector3 | null = null;
+  let browseRequested = false;
+  const userCancel = () => {
+    browseAnchor = null;
+    browseRequested = true;
+    cancel();
+    options.onUserNavigate?.();
+  };
+  controls.addEventListener('start', userCancel);
+  const gesture = createSurfaceGesture(renderer.domElement);
+  const ray = new THREE.Raycaster();
+  const pickSurface = (clientX: number, clientY: number) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    camera.updateMatrixWorld();
+    scene.updateMatrixWorld(true);
+    ray.setFromCamera(
+      new THREE.Vector2(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        (-(clientY - rect.top) / rect.height) * 2 + 1,
+      ),
+      camera,
+    );
+    return landscape.pick(ray);
+  };
+  const wheelSurface = (event: WheelEvent) => {
+    if (event.target !== renderer.domElement || suspended || preparingEntry)
+      return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const hit = pickSurface(event.clientX, event.clientY);
+    browseAnchor = hit;
+    browseRequested = true;
+    const delta =
+      event.deltaY *
+      (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? height : 1) *
+      (event.ctrlKey ? 4 : 1);
+    const pose = cursorTerrainZoom(
+      camera.position,
+      controls.target,
+      hit,
+      delta,
+      THREE.MathUtils.clamp(
+        camera.position.distanceTo(controls.target) * 0.6,
+        0.45,
+        1,
+      ),
+    );
+    cancel();
+    options.onUserNavigate?.();
+    if (!pose) return;
+    camera.position.copy(pose.position);
+    controls.target.copy(pose.target);
+    controls.update();
+    constrain();
+    viewChanged();
+    if (delta > 0 && camera.position.distanceTo(controls.target) > 19)
+      overview();
+  };
+  const focusSurface = (event: MouseEvent) => {
+    if (!gesture.accept(event)) return;
+    const hit = pickSurface(event.clientX, event.clientY);
+    if (!hit) return;
+    options.onUserNavigate?.();
+    const pose = localTerrainPose(camera.position, controls.target, hit);
+    if (!pose) return;
+    cancel();
+    travel(pose.position, pose.target);
+  };
+  renderer.domElement.addEventListener('pointerdown', gesture.down);
+  renderer.domElement.addEventListener('pointermove', gesture.move);
+  renderer.domElement.addEventListener('pointerup', gesture.up);
+  renderer.domElement.addEventListener('dblclick', focusSurface);
+  renderer.domElement.addEventListener('wheel', wheelSurface, {
+    passive: false,
+    capture: true,
+  });
   const bookmark = (): PanoramaBookmark => ({
     sceneId: entryFraming ? RUIJIN_SCENE : PANORAMA_SCENE,
+    regionId: landscape.region,
     position: camera.position.toArray(),
     target: controls.target.toArray(),
   });
-  const viewChanged = () => options.onViewChange?.(bookmark());
-  controls.addEventListener('end', viewChanged);
+  const viewChanged = () => {
+    constrain();
+    options.onViewChange?.(bookmark());
+  };
+  const userEnd = () => {
+    browseRequested = true;
+    viewChanged();
+  };
+  controls.addEventListener('end', userEnd);
   const overview = (top = false) => {
     entryFraming = false;
     preparingEntry = false;
@@ -245,6 +472,7 @@ export function createPanoramaMap(
     sun.shadow.camera.top = 16;
     sun.shadow.camera.bottom = -16;
     sun.shadow.camera.updateProjectionMatrix();
+    renderer.shadowMap.needsUpdate = true;
     travel(
       new THREE.Vector3(0, top ? 31 : 23, top ? 0.1 : 23),
       new THREE.Vector3(0, top ? 0 : -0.6, 0),
@@ -259,6 +487,7 @@ export function createPanoramaMap(
     height = Math.max(1, rect.height);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    applySafeFrame();
     camera.updateProjectionMatrix();
     if (entryFraming && !preparingEntry) {
       const pose = composeReliefEntry(
@@ -269,6 +498,7 @@ export function createPanoramaMap(
       camera.position.fromArray(pose.position);
       controls.target.fromArray(pose.target);
       controls.update();
+      constrain();
     }
   };
   const observer = new ResizeObserver(resize);
@@ -276,6 +506,8 @@ export function createPanoramaMap(
   resize();
   const entry = (initial = false) => {
     entryFraming = true;
+    applySafeFrame();
+    camera.updateProjectionMatrix();
     const revision = ++focusRevision;
     preparingEntry = true;
     void landscape.focus('ruijin', true).then((pivot) => {
@@ -296,6 +528,7 @@ export function createPanoramaMap(
       sun.shadow.camera.top = 5;
       sun.shadow.camera.bottom = -5;
       sun.shadow.camera.updateProjectionMatrix();
+      renderer.shadowMap.needsUpdate = true;
       drape();
       if (initial) {
         camera.position.fromArray(pose.position);
@@ -324,6 +557,7 @@ export function createPanoramaMap(
       return;
     event.preventDefault();
     cancel();
+    options.onUserNavigate?.();
     if (event.key === 'Home') return overview();
     const offset = camera.position.clone().sub(controls.target);
     if (event.key === '+' || event.key === '-')
@@ -333,13 +567,19 @@ export function createPanoramaMap(
         new THREE.Vector3(0, 1, 0),
         event.key === 'ArrowLeft' ? 0.12 : -0.12,
       );
-    else
-      offset.y = Math.max(
-        0.5,
-        offset.y + (event.key === 'ArrowUp' ? 0.5 : -0.5),
+    else {
+      const spherical = new THREE.Spherical().setFromVector3(offset);
+      spherical.phi = THREE.MathUtils.clamp(
+        spherical.phi + (event.key === 'ArrowUp' ? -0.08 : 0.08),
+        controls.minPolarAngle,
+        controls.maxPolarAngle,
       );
+      offset.setFromSpherical(spherical);
+    }
+    offset.clampLength(controls.minDistance, controls.maxDistance);
     camera.position.copy(controls.target).add(offset);
     controls.update();
+    constrain();
     viewChanged();
   };
   const contextLost = (event: Event) => {
@@ -349,38 +589,307 @@ export function createPanoramaMap(
   };
   renderer.domElement.addEventListener('keydown', key);
   renderer.domElement.addEventListener('webglcontextlost', contextLost);
+  let drawnHeightVersion = -1;
+  let shadowDistance = 0;
+  let lastMarchPoint: THREE.Vector3 | null = null;
+  let browseRegion: RegionId | null = 'ruijin';
+  let browsePublished = false;
+  let browseSince = 0;
+  let browseCandidate: RegionId | null = 'ruijin';
+  const shadowTarget = new THREE.Vector3(Infinity, Infinity, Infinity);
+  let filmKey = '';
+  let filmGround = 0;
+  let framing: ReturnType<typeof marchFraming> = null;
+  let cut: { start: number; eye: THREE.Vector3; target: THREE.Vector3 } | null =
+    null;
+  let bounds = new THREE.Box2();
+  let finalBounds = new THREE.Box2();
+  let filmWater = false;
+  let activeRiver: CampaignRiver | null = null;
+  let frames: ReturnType<typeof campaignFrames> = null;
+
   const draw = (now: number) => {
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     if (suspended || preparingEntry) return;
+    const marching = march.update(camera.position.distanceTo(controls.target));
+    chapterLandmark.update(camera.position.distanceTo(controls.target));
+    const marchingState = march.transport?.read();
+    if (marchingState?.playing) browseRequested = false;
+    // Playback translates the user's entire composition; it never rewrites
+    // the orbit angle, pitch, distance or chosen offset on resume.
+    if (
+      marching &&
+      marchingState?.playing &&
+      (marchingState.camera === 'free' || !marchingState.cinematic) &&
+      !flight &&
+      lastMarchPoint
+    )
+      translateMarchView(
+        camera.position,
+        controls.target,
+        lastMarchPoint,
+        marching.point,
+      );
+    lastMarchPoint = marching ? marching.point.clone() : null;
     let flightFinished = false;
     if (flight) {
       const t = Math.min(1, (now - flight.start) / flight.duration);
-      const pose = sampleCameraFlight(
+      const pose = sampleChapterCameraFlight(
         {
           position: flight.from.toArray(),
           target: flight.targetFrom.toArray(),
         },
         { position: flight.to.toArray(), target: flight.targetTo.toArray() },
         t,
+        flight.overview,
       );
       camera.position.fromArray(pose.position);
       controls.target.fromArray(pose.target);
-      camera.position.y = Math.max(
-        camera.position.y,
-        heightAt(camera.position.x, camera.position.z) + 0.015,
-      );
       if (t === 1) {
         flight = null;
         flightFinished = true;
       }
     }
+    const film = Boolean(marchingState?.cinematic);
+    if (!film || marchingState?.camera !== 'follow') {
+      filmKey = '';
+      cut = null;
+    }
+    let river: CampaignRiver | null = null;
+    let sites: ReadonlyArray<{ name: string; position: THREE.Vector2 }> = [];
+
+    filmSignals.root.visible = false;
+    if (film && marchingState?.camera === 'follow' && march.transport) {
+      const { plan } = march.transport;
+      const sample = sampleJourney(
+        plan,
+        marchingState.sequenceId,
+        marchingState.time,
+      );
+      const chapter = sample.chapter;
+      const subject =
+        marching?.point ??
+        (chapterLandmark.root.visible ? chapterLandmark.root.position : null);
+      if (chapter?.cues && subject) {
+        const key = [
+          plan.key,
+          marchingState.sequenceId,
+          chapter.id,
+          marchingState.unitId,
+          verticalExaggeration,
+        ].join('/');
+        const overhead =
+          chapter.id.startsWith('chapter-event-sd') ||
+          chapter.id === 'chapter-event-zy-resolution';
+        if (filmKey !== key) {
+          cut =
+            filmKey && marchingState.playing && !options.reducedMotion
+              ? {
+                  start: now,
+                  eye: camera.position.clone(),
+                  target: controls.target.clone(),
+                }
+              : null;
+          filmKey = key;
+          frames = campaignFrames(chapter.id, chapter.cues, plan.tracks);
+          bounds = filmExtent(
+            overhead
+              ? plan.tracks.filter((t) =>
+                  crossingSeals.slice(0, 4).some((s) => s.track === t.id),
+                )
+              : sample.tracks,
+          );
+          filmGround = routeCameraLevel(
+            bounds,
+            subject,
+            landscape.navigationHeightAt,
+          );
+          framing = marchFraming(
+            chapter.id,
+            sample.tracks.find((track) => track.id === marching?.track.id),
+            landscape.navigationHeightAt,
+          );
+          finalBounds =
+            chapter.id === 'chapter-event-js'
+              ? filmExtent(
+                  plan.tracks.filter(
+                    (track) =>
+                      track.chapterId.startsWith('chapter-event-sd') ||
+                      track.chapterId === chapter.id,
+                  ),
+                )
+              : bounds;
+        }
+        const shot = cueIndex(chapter.cues, sample.progress);
+        river = campaignRiver(chapter.id, chapter.cues[shot]![2]);
+        const campaignPose = campaignView(
+          marchingState.unitId === 'central-red' ? frames : null,
+          chapter.cues,
+          sample.progress,
+          subject,
+          camera.aspect,
+          marchingState.distance,
+          filmGround,
+          Boolean(options.reducedMotion),
+        );
+        sites = campaignPose?.labels ?? [];
+        const pose =
+          campaignPose ??
+          sampleFilmCamera(
+            chapter.cues,
+            sample.progress,
+            subject,
+            bounds,
+            marchingState.distance,
+            filmGround,
+            Boolean(options.reducedMotion),
+            finalBounds,
+            overhead,
+            framing,
+          );
+        const openingPressure =
+          chapter.id === 'chapter-event-sd' &&
+          sample.progress < chapter.cues[1]![0];
+        const seal = crossingSeals.find(
+          (s) =>
+            sample.tracks.some((t) => t.id === s.track) &&
+            sample.progress + 1e-8 >= s.at &&
+            sample.progress < s.at + 0.055,
+        );
+        const coordinates =
+          seal &&
+          sample.tracks.find((t) => t.id === seal.track)?.points[seal.point];
+        const anchor = coordinates && projectGeo(coordinates);
+        filmSignals.update(
+          openingPressure
+            ? subject
+            : anchor
+              ? new THREE.Vector3(
+                  anchor[0],
+                  heightAt(...anchor) + 0.09,
+                  anchor[1],
+                )
+              : undefined,
+          pose.position.distanceTo(pose.target),
+          openingPressure
+            ? sample.progress / chapter.cues[1]![0]
+            : seal
+              ? (sample.progress - seal.at) / 0.055
+              : 0,
+          openingPressure,
+          Boolean(options.reducedMotion),
+        );
+        if (cut && marchingState.playing) {
+          const t = THREE.MathUtils.smoothstep(
+            now - cut.start,
+            0,
+            850 / marchingState.speed,
+          );
+          pose.target.lerp(cut.target, 1 - t);
+          pose.position.lerp(cut.eye, 1 - t);
+          if (t === 1) cut = null;
+        } else cut = null;
+        controls.target.copy(pose.target);
+        camera.position.copy(pose.position);
+        flight = null;
+      }
+    }
+    const centerSubject = !!(
+      film &&
+      marchingState?.camera === 'follow' &&
+      framing &&
+      filmKey
+    );
+    if (centeredMarch !== centerSubject) {
+      centeredMarch = centerSubject;
+      applySafeFrame();
+    }
+    if (filmWater !== film || activeRiver !== river) {
+      landscape.setFilmWater(film, river);
+      filmWater = film;
+      activeRiver = river;
+    }
     controls.update();
+    const levelFollow =
+      marchingState?.camera === 'follow' && (film || marchingState.playing);
+    constrain(levelFollow);
     if (flightFinished) viewChanged();
     landscape.update(
       options.reducedMotion ? 0 : now / 1000,
       camera.position.distanceTo(controls.target),
+      camera.position,
     );
+    controls.zoomSpeed = THREE.MathUtils.clamp(
+      camera.position.distanceTo(controls.target) * 0.8,
+      0.32,
+      1,
+    );
+    if (!flight)
+      landscape.observe(
+        controls.target.x,
+        controls.target.z,
+        camera.position.distanceTo(controls.target),
+        now,
+        !marchingState ||
+          (marchingState.camera === 'free' && !marchingState.playing),
+      );
+    if (landscape.heightVersion !== drawnHeightVersion) {
+      drawnHeightVersion = landscape.heightVersion;
+      drape();
+      march.drape();
+      renderer.shadowMap.needsUpdate = true;
+    }
+    constrain(levelFollow);
+    const viewDistance = camera.position.distanceTo(controls.target);
+    if (
+      !entryFraming &&
+      !flight &&
+      browseRequested &&
+      !marchingState?.playing &&
+      marchingState?.camera === 'free'
+    ) {
+      const candidate = browseRegionAt(
+        browseAnchor ?? controls.target,
+        viewDistance,
+        browseRegion,
+      );
+      if (candidate !== browseCandidate) {
+        browseCandidate = candidate;
+        browseSince = now;
+      }
+      if (
+        now - browseSince > 200 &&
+        (!browsePublished || candidate !== browseRegion || browseRequested)
+      ) {
+        browseRegion = candidate;
+        browsePublished = true;
+        browseRequested = false;
+        if (candidate && landscape.region !== candidate)
+          void landscape.focus(candidate);
+        options.onGeographicBrowse?.(candidate);
+      }
+    }
+    if (
+      !levelFollow &&
+      viewDistance < 0.7 &&
+      (Math.abs(Math.log(viewDistance / Math.max(0.001, shadowDistance))) >
+        0.25 ||
+        shadowTarget.distanceTo(controls.target) > viewDistance * 0.3)
+    ) {
+      shadowTarget.copy(controls.target);
+      shadowDistance = viewDistance;
+      sun.target.position.copy(controls.target);
+      sun.position.copy(controls.target).add(new THREE.Vector3(7, 8, -6));
+      const span = Math.max(0.025, viewDistance * 2.5);
+      sun.shadow.camera.left = -span;
+      sun.shadow.camera.right = span;
+      sun.shadow.camera.top = span;
+      sun.shadow.camera.bottom = -span;
+      sun.shadow.camera.updateProjectionMatrix();
+      renderer.shadowMap.needsUpdate = true;
+      renderer.shadowMap.needsUpdate = true;
+    }
     journeyTorch.update(
       now / 1000,
       camera.position.distanceTo(controls.target),
@@ -389,6 +898,22 @@ export function createPanoramaMap(
     );
     try {
       renderer.render(scene, camera);
+      measure(now, renderer, camera, controls.target, () => ({
+        ...landscape.diagnostics,
+        marchPoint: marching?.point.toArray() ?? null,
+        marchTrack: marching?.track.id ?? null,
+        marchStage: marching?.transferring ? 'transfer' : 'local',
+        browseRegion,
+        targetGround: heightAt(controls.target.x, controls.target.z),
+        targetWater: landscape.waterHeightAt(
+          controls.target.x,
+          controls.target.z,
+        ),
+        cameraFloor: landscape.navigationHeightAt(
+          camera.position.x,
+          camera.position.z,
+        ),
+      }));
       if (shaderProblem) {
         suspended = true;
         return;
@@ -406,27 +931,102 @@ export function createPanoramaMap(
       );
       return;
     }
+    const placeLabels = sites.map(({ name, position }) => {
+      const p = new THREE.Vector3(
+        position.x,
+        heightAt(position.x, position.y) + 0.018,
+        position.y,
+      ).project(camera);
+      return {
+        id: 'march:place:' + name,
+        x: ((p.x + 1) * width) / 2,
+        y: ((1 - p.y) * height) / 2,
+        visible:
+          Math.abs(p.x) < 0.94 && Math.abs(p.y) < 0.9 && Math.abs(p.z) < 1,
+      };
+    });
     options.onMarkers(
-      markers.map((marker) => {
-        marker.point.y = heightAt(marker.point.x, marker.point.z) + marker.lift;
-        const point = marker.point.clone().project(camera);
-        return {
-          id: marker.id,
-          x: ((point.x + 1) * width) / 2,
-          y: ((1 - point.y) * height) / 2,
-          visible:
-            point.z < 1 &&
-            point.z > -1 &&
-            Math.abs(point.x) < 0.97 &&
-            Math.abs(point.y) < 0.94,
-        };
-      }),
+      [
+        ...markers.map((marker) => {
+          marker.point.y =
+            heightAt(marker.point.x, marker.point.z) + marker.lift;
+          const point = marker.point.clone().project(camera);
+          return {
+            id: marker.id,
+            x: ((point.x + 1) * width) / 2,
+            y: ((1 - point.y) * height) / 2,
+            visible:
+              point.z < 1 &&
+              point.z > -1 &&
+              Math.abs(point.x) < 0.97 &&
+              Math.abs(point.y) < 0.94,
+          };
+        }),
+        ...march.projections(camera, width, height),
+        ...placeLabels,
+      ],
+      { width, height, distance: camera.position.distanceTo(controls.target) },
     );
   };
   frame = requestAnimationFrame(draw);
   return {
+    setMarchTransport: (transport) => march.setTransport(transport),
+    setMarchVisible: march.setVisible,
+    setMarchCamps: march.setCamps,
+    setChapterLandmark: chapterLandmark.set,
+    setSafeAreas: (areas) => {
+      safeAreas = areas;
+      applySafeFrame();
+      camera.updateProjectionMatrix();
+    },
     setJourneyMarker: journeyTorch.setMarker,
     entry: () => entry(),
+    setEventAreas(areas) {
+      for (const object of [...eventAreaGroup.children]) {
+        if (object instanceof THREE.Line) {
+          object.geometry.dispose();
+          (object.material as THREE.Material).dispose();
+        }
+      }
+      eventAreaGroup.clear();
+      if (options.hideGuides) return;
+      for (const area of areas) {
+        const [w, s, e, n] = area.bounds;
+        if (!inCoverage([w, s]) || !inCoverage([e, n])) continue;
+        const points: THREE.Vector3[] = [];
+        // A closed display envelope, explicitly not a route or historical border.
+        for (let side = 0; side < 4; side++)
+          for (let i = 0; i < 24; i++) {
+            const t = i / 24;
+            const geo: GeoPoint =
+              side === 0
+                ? [w + (e - w) * t, s]
+                : side === 1
+                  ? [e, s + (n - s) * t]
+                  : side === 2
+                    ? [e - (e - w) * t, n]
+                    : [w, n - (n - s) * t];
+            const [x, z] = projectGeo(geo);
+            points.push(new THREE.Vector3(x, heightAt(x, z) + 0.012, z));
+          }
+        points.push(points[0]!.clone());
+        const line = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(points),
+          new THREE.LineDashedMaterial({
+            color: '#e4caa0',
+            transparent: true,
+            opacity: 0.48,
+            dashSize: 0.035,
+            gapSize: 0.03,
+            depthWrite: false,
+          }),
+        );
+        line.userData.exhibitionAreaId = area.id;
+        line.userData.landscapeLift = 0.012;
+        line.computeLineDistances();
+        eventAreaGroup.add(line);
+      }
+    },
     setForceRegions(state, camps) {
       clearForceRegions();
       for (const { track, snapshot } of state.entries) {
@@ -478,33 +1078,135 @@ export function createPanoramaMap(
           };
         });
     },
-    focusGeo(point) {
+    focusGeo(point, bounds, transition, regionHint) {
       entryFraming = false;
       if (!inCoverage(point)) return;
       const revision = ++focusRevision;
-      const region = (Object.entries(REGIONS) as [RegionId, GeoBounds][]).find(
-        ([, b]) =>
-          point[0] >= b[0] &&
-          point[0] <= b[2] &&
-          point[1] >= b[1] &&
-          point[1] <= b[3],
-      )?.[0];
+      const region = regionHint ?? geographicRegionAt(point, landscape.region);
       const complete = () => {
         if (disposed || revision !== focusRevision) return;
         drape();
-        const [x, z] = projectGeo(point),
-          pose = composeTerrainView(
-            { x, z, y: heightAt(x, z) },
-            { x: 0.15, z: 1 },
-            heightAt,
-          );
+        const [x, z] = projectGeo(point);
+        const pose = bounds
+          ? (() => {
+              const a = projectGeo([bounds[0], bounds[3]]),
+                b = projectGeo([bounds[2], bounds[1]]);
+              return composeRegionalView(
+                [a[0], a[1], b[0], b[1]],
+                { x, z },
+                heightAt,
+              );
+            })()
+          : composeTerrainView(
+              { x, z, y: heightAt(x, z) },
+              { x: 0.15, z: 1 },
+              heightAt,
+            );
         travel(
           new THREE.Vector3(...pose.position),
           new THREE.Vector3(...pose.target),
+          transition === 'regional',
         );
       };
-      if (region) void landscape.focus(region).then(complete);
+      if (chapterArea) void landscape.focusArea(chapterArea).then(complete);
+      else if (region) void landscape.focus(region).then(complete);
       else complete();
+    },
+    frameMarch(points) {
+      const selected = march.update(
+        camera.position.distanceTo(controls.target),
+      );
+      const coordinates = points.filter(inCoverage).map(projectGeo);
+      if (coordinates.length < 2) return;
+      entryFraming = false;
+      preparingEntry = false;
+      focusRevision++;
+      // A broad moving regional context, not a fit-to-entire-route zoom jump.
+      const [x, z] = coordinates[0]!;
+      const target =
+        selected?.point.clone() ?? new THREE.Vector3(x, heightAt(x, z), z);
+      const area = new THREE.Box2().setFromPoints(
+        coordinates.map(([x, z]) => new THREE.Vector2(x, z)),
+      );
+      target.y = routeCameraLevel(area, target, landscape.navigationHeightAt);
+      const distance = 7.2;
+      travel(
+        new THREE.Vector3(
+          target.x + distance * 0.12,
+          target.y + distance * 0.7,
+          target.z + distance,
+        ),
+        target,
+      );
+    },
+    prepareRegion(region, bounds) {
+      chapterArea = !region && bounds ? bounds : null;
+      if (region && landscape.region !== region) void landscape.focus(region);
+      else if (!region && bounds) void landscape.focusArea(bounds);
+    },
+    holdCamera() {
+      // Retain terrain preparation, but cancel camera work requested before
+      // the viewer chose a free composition (including asynchronous focus).
+      entryFraming = false;
+      preparingEntry = false;
+      focusRevision++;
+      flight = null;
+    },
+    focusMarch(mode) {
+      const selected = march.update(
+        camera.position.distanceTo(controls.target),
+      );
+      if (!selected) return;
+      entryFraming = false;
+      preparingEntry = false;
+      const revision = ++focusRevision;
+      const state = march.transport?.read();
+      const region = state
+        ? (sampleJourney(march.transport!.plan, state.sequenceId, state.time)
+            .chapter?.regionId ?? null)
+        : null;
+      const complete = () => {
+        if (disposed || revision !== focusRevision) return;
+        drape();
+        march.drape();
+        const current = march.update(
+          camera.position.distanceTo(controls.target),
+        );
+        if (!current) return;
+        const distance =
+          mode === 'follow'
+            ? regionalMarchDistance(region) *
+              (march.transport?.read().distance ?? 1)
+            : 3.1;
+        const target = current.point.clone();
+        if (march.transport && state) {
+          const tracks = sampleJourney(
+            march.transport.plan,
+            state.sequenceId,
+            state.time,
+          ).tracks;
+          target.y =
+            routeCameraLevel(
+              filmExtent(tracks),
+              target,
+              landscape.navigationHeightAt,
+            ) + 0.09;
+        }
+        const position = new THREE.Vector3(
+          target.x + distance * 0.22,
+          target.y + distance * 0.7,
+          target.z + distance,
+        );
+        clearMarchSightline(position, target, landscape.navigationHeightAt);
+        travel(position, target);
+      };
+      if (chapterArea) void landscape.focusArea(chapterArea).then(complete);
+      else if (region && region in REGIONS) {
+        browseRegion = region as RegionId;
+        void landscape.focus(region as RegionId).then((pivot) => {
+          if (pivot) complete();
+        });
+      } else complete();
     },
     focus(bounds, framing) {
       entryFraming = false;
@@ -542,14 +1244,21 @@ export function createPanoramaMap(
         sun.shadow.camera.top = 3;
         sun.shadow.camera.bottom = -3;
         sun.shadow.camera.updateProjectionMatrix();
+        renderer.shadowMap.needsUpdate = true;
         travel(position, target);
       };
-      if (id) void landscape.focus(id).then(complete);
-      else complete(null);
+      if (id) {
+        browseRegion = id;
+        browseRequested = false;
+        void landscape.focus(id).then(complete);
+      } else complete(null);
     },
     overview,
     zoom(direction) {
+      browseRequested = true;
+      browseAnchor = null;
       cancel();
+      options.onUserNavigate?.();
       const offset = camera.position
         .clone()
         .sub(controls.target)
@@ -583,7 +1292,21 @@ export function createPanoramaMap(
       if (bookmark.sceneId === RUIJIN_SCENE && landscape.region !== 'ruijin')
         void landscape.focus('ruijin', true).then(complete);
       else {
-        complete();
+        const point = new THREE.Vector3(...bookmark.target);
+        const region =
+          bookmark.regionId !== undefined
+            ? bookmark.regionId
+            : geographicRegionAt(
+                unprojectGeo([point.x, point.z]),
+                landscape.region,
+              );
+        if (region && landscape.region !== region)
+          void landscape.focus(region).then(complete);
+        else {
+          if (region === null && landscape.region !== null)
+            landscape.overview();
+          complete();
+        }
       }
     },
     setRoutes(routes, camps) {
@@ -649,10 +1372,7 @@ export function createPanoramaMap(
       const delta = heightAt(controls.target.x, controls.target.z) - previous;
       controls.target.y += delta;
       camera.position.y += delta;
-      camera.position.y = Math.max(
-        camera.position.y,
-        heightAt(camera.position.x, camera.position.z) + 0.25,
-      );
+      constrain();
       drape();
     },
     suspend: (value) => {
@@ -662,12 +1382,20 @@ export function createPanoramaMap(
       if (disposed) return;
       disposed = true;
       journeyTorch.dispose();
+      filmSignals.dispose();
+      march.dispose();
+      chapterLandmark.dispose();
       landscape.dispose();
       cancelAnimationFrame(frame);
       observer.disconnect();
-      controls.removeEventListener('start', cancel);
-      controls.removeEventListener('end', viewChanged);
+      controls.removeEventListener('start', userCancel);
+      controls.removeEventListener('end', userEnd);
       controls.dispose();
+      renderer.domElement.removeEventListener('pointerdown', gesture.down);
+      renderer.domElement.removeEventListener('pointermove', gesture.move);
+      renderer.domElement.removeEventListener('pointerup', gesture.up);
+      renderer.domElement.removeEventListener('dblclick', focusSurface);
+      renderer.domElement.removeEventListener('wheel', wheelSurface, true);
       renderer.domElement.removeEventListener('keydown', key);
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
       const geometries = new Set<THREE.BufferGeometry>(),

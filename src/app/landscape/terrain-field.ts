@@ -18,6 +18,57 @@ export interface TerrainField {
   metres(x: number, z: number): number;
   height(x: number, z: number, gain: number): number;
 }
+
+/** Join adjacent source fields for one continuous display tile. The original
+ * samples remain untouched; only overlap seams are blended for rendering. */
+export function combineTerrainFields(
+  fields: readonly TerrainField[],
+): TerrainField {
+  if (!fields.length) throw new Error('合并地形缺少来源');
+  const worldBounds: GeoBounds = [
+    Math.min(...fields.map((f) => f.worldBounds[0])),
+    Math.min(...fields.map((f) => f.worldBounds[1])),
+    Math.max(...fields.map((f) => f.worldBounds[2])),
+    Math.max(...fields.map((f) => f.worldBounds[3])),
+  ];
+  const sample = (
+    x: number,
+    z: number,
+    read: (field: TerrainField) => number,
+  ) => {
+    const inside = fields.filter((f) => f.contains(x, z));
+    if (!inside.length) return 0;
+    let sum = 0,
+      total = 0,
+      low = Infinity,
+      high = -Infinity;
+    for (const field of inside) {
+      const [l, t, r, b] = field.worldBounds;
+      const weight = Math.max(
+        1e-6,
+        Math.min(
+          (x - l) / (r - l),
+          (r - x) / (r - l),
+          (z - t) / (b - t),
+          (b - z) / (b - t),
+          0.15,
+        ),
+      );
+      const value = read(field);
+      low = Math.min(low, value);
+      high = Math.max(high, value);
+      sum += value * weight;
+      total += weight;
+    }
+    return Math.max(low, Math.min(high, sum / total));
+  };
+  return {
+    worldBounds,
+    contains: (x, z) => fields.some((f) => f.contains(x, z)),
+    metres: (x, z) => sample(x, z, (f) => f.metres(x, z)),
+    height: (x, z, gain) => sample(x, z, (f) => f.height(x, z, gain)),
+  };
+}
 /** Raw source remains intact. Smoothing affects artistic display only. */
 export function createTerrainField(data: ModernHeightfield): TerrainField {
   if (
@@ -38,6 +89,9 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
   const datum =
     data.heights.reduce((sum, value) => sum + Math.max(0, value), 0) /
     data.heights.length;
+  const kernel = Array.from({ length: 5 }, (_, index) =>
+    Math.exp(-((index - 2) ** 2) / 1.6),
+  );
   for (let row = 0; row < data.rows; row++)
     for (let col = 0; col < data.cols; col++) {
       let total = 0,
@@ -46,7 +100,7 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
         for (let dx = -2; dx <= 2; dx++) {
           const x = Math.min(data.cols - 1, Math.max(0, col + dx)),
             y = Math.min(data.rows - 1, Math.max(0, row + dy));
-          const w = Math.exp(-(dx * dx + dy * dy) / 2.4);
+          const w = kernel[dx + 2]! * kernel[dy + 2]!;
           total += (data.heights[y * data.cols + x] ?? 0) * w;
           weight += w;
         }
@@ -108,15 +162,15 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
       // Continental height enhancement cannot be applied literally to every
       // local hill: it turns a valley into a vertical slot. Keep the regional
       // datum aligned, but adapt local relief to the cinematic viewing scale.
-      const relief = gain;
+      const relief = Math.min(gain, 9);
       const visual =
         gain === 1
           ? raw
           : data.id
             ? datum * gain +
               (broad - datum) * relief +
-              (raw - broad) * Math.min(relief, 4)
-            : broad * gain + (raw - broad) * Math.min(gain, 2);
+              (raw - broad) * Math.min(gain, 6)
+            : broad * gain + (raw - broad) * Math.min(gain, 4);
       return (
         Math.max(0, visual) /
         100000 /

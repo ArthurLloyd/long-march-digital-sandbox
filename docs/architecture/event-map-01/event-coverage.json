@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "events": [
+    {
+      "eventId": "event-zy",
+      "title": "遵义会议",
+      "dateText": "1935年1月15—17日",
+      "locationText": "贵州遵义",
+      "topicIds": ["topic-zy"],
+      "phaseIds": ["zy-phase"],
+      "placementIds": ["pl-zy-site"],
+      "regionIds": ["zunyi"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": [
+        "src-zy-chronicle",
+        "src-zy-qingshan",
+        "src-zy-resolution",
+        "src-zy-site",
+        "src-zy-resolution-date"
+      ],
+      "locationReferenceIds": ["loc-zunyi"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-sd",
+      "title": "四渡赤水",
+      "dateText": "1935年1—3月",
+      "locationText": "川黔滇交界赤水河流域",
+      "topicIds": ["topic-sd"],
+      "phaseIds": ["sd-phase-1", "sd-phase-2", "sd-phase-3", "sd-phase-4"],
+      "placementIds": ["pl-sd-overview"],
+      "regionIds": ["chishui"],
+      "placementKind": ["area"],
+      "precision": ["schematic"],
+      "historicalSourceIds": ["src-sd-deployment", "src-sd-four"],
+      "locationReferenceIds": [
+        "loc-tucheng",
+        "loc-yuanhou",
+        "loc-taiping",
+        "loc-erlang",
+        "loc-maotai",
+        "ctx-crossings"
+      ],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "区域外也可能涉及其他活动；边框仅为展陈参考范围，不能作为历史边界、路径或路线端点。"
+      ]
+    },
+    {
+      "eventId": "event-sd-1",
+      "title": "一渡赤水",
+      "dateText": "1935年1月29日起（本卡仅登记起日）",
+      "locationText": "土城、猿猴场地区",
+      "topicIds": ["topic-sd"],
+      "phaseIds": ["sd-phase-1"],
+      "placementIds": ["pl-sd1-tucheng", "pl-sd1-yuanhou"],
+      "regionIds": ["chishui"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-sd-deployment"],
+      "locationReferenceIds": ["loc-tucheng", "ctx-crossings", "loc-yuanhou"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-sd-2",
+      "title": "二渡赤水",
+      "dateText": "1935年2月18—21日",
+      "locationText": "太平渡、二郎滩等地",
+      "topicIds": ["topic-sd"],
+      "phaseIds": ["sd-phase-2"],
+      "placementIds": ["pl-sd-2-taiping", "pl-sd-2-erlang"],
+      "regionIds": ["chishui"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-sd-deployment"],
+      "locationReferenceIds": ["loc-taiping", "ctx-crossings", "loc-erlang"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-sd-3",
+      "title": "三渡赤水",
+      "dateText": "1935年3月16—17日",
+      "locationText": "茅台及附近地区",
+      "topicIds": ["topic-sd"],
+      "phaseIds": ["sd-phase-3"],
+      "placementIds": ["pl-sd3-maotai"],
+      "regionIds": ["chishui"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-sd-four"],
+      "locationReferenceIds": ["loc-maotai", "ctx-crossings"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-sd-4",
+      "title": "四渡赤水",
+      "dateText": "1935年3月21—22日",
+      "locationText": "太平渡、二郎滩等地",
+      "topicIds": ["topic-sd"],
+      "phaseIds": ["sd-phase-4"],
+      "placementIds": ["pl-sd-4-taiping", "pl-sd-4-erlang"],
+      "regionIds": ["chishui"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-sd-four"],
+      "locationReferenceIds": ["loc-taiping", "ctx-crossings", "loc-erlang"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-js",
+      "title": "巧渡金沙江",
+      "dateText": "1935年5月3—9日（主力渡江范围）",
+      "locationText": "金沙江皎平渡及相关渡口",
+      "topicIds": ["topic-js"],
+      "phaseIds": ["js-phase"],
+      "placementIds": ["pl-js-jiaoping"],
+      "regionIds": ["jinsha"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-js-passage"],
+      "locationReferenceIds": ["loc-jiaoping", "ctx-jiaoping"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。 现代水库和岸线已变化，不将现代遗址或桥梁点等同历史渡口。"
+      ]
+    },
+    {
+      "eventId": "event-ld",
+      "title": "飞夺泸定桥",
+      "dateText": "1935年5月29日",
+      "locationText": "四川泸定，大渡河泸定桥",
+      "topicIds": ["topic-ld"],
+      "phaseIds": ["ld-phase"],
+      "placementIds": ["pl-ld-bridge"],
+      "regionIds": ["luding"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": [
+        "src-ld-study",
+        "src-ld-review",
+        "src-huang-profile",
+        "src-yang-official"
+      ],
+      "locationReferenceIds": ["loc-luding"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-sn",
+      "title": "翻越雪山",
+      "dateText": "1935年6月（夹金山相关批次）",
+      "locationText": "夹金山及达维相关地区",
+      "topicIds": ["topic-sn"],
+      "phaseIds": ["sn-phase"],
+      "placementIds": ["pl-sn-region"],
+      "regionIds": ["snow"],
+      "placementKind": ["area"],
+      "precision": ["schematic"],
+      "historicalSourceIds": ["src-sn-study", "src-sn-daily"],
+      "locationReferenceIds": ["loc-qiaoqi", "loc-dawei", "ctx-snow"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "区域外也可能涉及其他活动；边框仅为展陈参考范围，不能作为历史边界、路径或路线端点。"
+      ]
+    },
+    {
+      "eventId": "event-gr",
+      "title": "穿越草地",
+      "dateText": "1935年8月（右路军本次北上范围）",
+      "locationText": "毛儿盖出发、松潘草地及班佑/巴西相关地区",
+      "topicIds": ["topic-gr"],
+      "phaseIds": ["gr-phase"],
+      "placementIds": ["pl-gr-region"],
+      "regionIds": ["grass"],
+      "placementKind": ["area"],
+      "precision": ["schematic"],
+      "historicalSourceIds": [
+        "src-gr-archive",
+        "src-gr-plans",
+        "src-gr-living"
+      ],
+      "locationReferenceIds": ["loc-maoergai", "loc-banyou", "loc-baxi"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "区域外也可能涉及其他活动；边框仅为展陈参考范围，不能作为历史边界、路径或路线端点。"
+      ]
+    },
+    {
+      "eventId": "event-anshunchang",
+      "title": "安顺场渡河",
+      "dateText": "1935年5月25日",
+      "locationText": "大渡河安顺场",
+      "topicIds": [],
+      "phaseIds": [],
+      "placementIds": ["pl-anshun-town"],
+      "regionIds": ["luding"],
+      "placementKind": ["point"],
+      "precision": ["approximate"],
+      "historicalSourceIds": ["src-ld-review"],
+      "locationReferenceIds": ["loc-anshun"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "现代参考不等于1935年的精确发生位置；尚缺历史图件、岸线/渡口对应和真人定位复核。"
+      ]
+    },
+    {
+      "eventId": "event-zy-resolution",
+      "title": "遵义会议相关决议通过",
+      "dateText": "1935年2月8日",
+      "locationText": "云南扎西会议相关范围",
+      "topicIds": [],
+      "phaseIds": [],
+      "placementIds": ["pl-zy-resolution-region"],
+      "regionIds": ["zhaxi"],
+      "placementKind": ["region_reference"],
+      "precision": ["schematic"],
+      "historicalSourceIds": ["src-zy-resolution-date", "src-zy-resolution"],
+      "locationReferenceIds": ["loc-zhaxi", "ctx-zhaxi"],
+      "implementationStatus": "mapped",
+      "unresolvedNotes": [
+        "区域外也可能涉及其他活动；边框仅为展陈参考范围，不能作为历史边界、路径或路线端点。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,889 @@
+.chishui-sandbox {
+  --cs-paper: #efe3c9;
+  --cs-gold: #ccb078;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #101f24;
+  color: var(--cs-paper);
+  font-family: 'Noto Sans SC', sans-serif;
+  isolation: isolate;
+}
+.chishui-sandbox::backdrop {
+  background: #101f24;
+}
+.chishui-sandbox *,
+.chishui-sandbox *::before,
+.chishui-sandbox *::after {
+  box-sizing: border-box;
+}
+.chishui-sandbox button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d6bf8c40;
+  border-radius: 2px;
+  background: #15292bbb;
+  color: var(--cs-paper);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  min-height: 38px;
+  padding: 8px 12px;
+}
+.chishui-sandbox button:hover {
+  background: #57614a80;
+  border-color: var(--cs-gold);
+}
+.chishui-sandbox button:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+.chishui-sandbox button:focus-visible,
+.chishui-sandbox a:focus-visible,
+.chishui-sandbox select:focus-visible,
+.chishui-sandbox input:focus-visible {
+  outline: 2px solid #ffd68b;
+  outline-offset: 4px;
+}
+.cs-world {
+  position: absolute;
+  inset: 0 0 110px;
+}
+.cs-world canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+.cs-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      #0a171a99,
+      transparent 26%,
+      transparent 66%,
+      #0a171a88
+    ),
+    linear-gradient(#0a1519b0, transparent 24%, transparent 70%, #0b181ee0 88%);
+}
+.cs-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 76px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #d6bf8c28;
+}
+.cs-header > button {
+  background: transparent;
+  border-color: transparent;
+  font-size: 13px;
+}
+.cs-brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #c3c4b4;
+}
+.cs-brand i {
+  height: 16px;
+  width: 1px;
+  background: #d6bf8c50;
+}
+.cs-brand b {
+  color: var(--cs-gold);
+  font-size: 17px;
+}
+.cs-title {
+  position: absolute;
+  top: 118px;
+  left: 42px;
+  pointer-events: none;
+}
+.cs-eyebrow {
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--cs-gold);
+}
+.cs-title h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(32px, 4vw, 58px);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  margin: 12px 0;
+  text-shadow: 0 4px 24px #061518;
+}
+.cs-title p {
+  margin: 0 0 22px;
+  color: #ded4be;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+.cs-art-label {
+  font-size: 10px;
+  color: #c3c5b6;
+  padding-left: 10px;
+  border-left: 2px solid #d68859;
+}
+.cs-story {
+  position: absolute;
+  top: 120px;
+  right: 32px;
+  width: 290px;
+  padding: 22px;
+  background: linear-gradient(130deg, #14292bf2, #112327e0);
+  border: 1px solid #d1b78040;
+  box-shadow: 0 24px 60px #07171a66;
+  backdrop-filter: blur(10px);
+}
+.cs-story::before {
+  content: '';
+  position: absolute;
+  width: 35px;
+  height: 3px;
+  top: -2px;
+  left: 20px;
+  background: var(--cs-gold);
+}
+.cs-story-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--cs-gold);
+  letter-spacing: 2px;
+}
+.cs-story-top b {
+  font:
+    30px Georgia,
+    serif;
+}
+.cs-story-top small {
+  font-size: 12px;
+  opacity: 0.5;
+}
+.cs-story-heading > span {
+  display: block;
+  font-size: 11px;
+  color: #b2bdb7;
+  margin: 18px 0 7px;
+}
+.cs-story-heading h3 {
+  font:
+    600 27px 'Noto Serif SC',
+    serif;
+  margin: 0 0 18px;
+}
+.cs-story-heading em {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 4px;
+  color: var(--cs-gold);
+  margin-top: 9px;
+}
+.cs-story > p {
+  font-size: 13px;
+  line-height: 1.95;
+  color: #d8d7c8;
+  margin: 0 0 18px;
+}
+.cs-strategy {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 14px 0;
+  border-top: 1px solid #d6bf8c28;
+  border-bottom: 1px solid #d6bf8c28;
+  font-size: 11px;
+  color: #b7c2b8;
+  line-height: 1.8;
+}
+.cs-strategy svg {
+  flex-shrink: 0;
+  color: var(--cs-gold);
+  margin-top: 3px;
+}
+.cs-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 10px;
+  margin-top: 15px;
+  color: #c2c6b8;
+}
+.cs-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cs-legend i {
+  width: 16px;
+  height: 3px;
+  background: #ef7458;
+}
+.cs-legend span:nth-child(2) i {
+  background: #79bbdd;
+}
+.cs-legend small {
+  font-size: 9px;
+  color: #a8b0a8;
+  line-height: 1.7;
+}
+.cs-field-caption {
+  position: absolute;
+  left: 42px;
+  bottom: 244px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  pointer-events: none;
+  border-left: 2px solid var(--cs-gold);
+  padding: 2px 0 2px 16px;
+  text-shadow: 0 2px 6px #081819;
+}
+.cs-field-caption span {
+  font-size: 11px;
+  color: #ccd5cd;
+}
+.cs-field-caption b {
+  font:
+    500 22px 'Noto Serif SC',
+    serif;
+  letter-spacing: 2px;
+}
+.cs-camera {
+  position: absolute;
+  right: 32px;
+  bottom: 233px;
+  display: flex;
+  gap: 4px;
+}
+.cs-camera button {
+  font-size: 10px;
+}
+.cs-camera [aria-pressed='true'] {
+  color: #ffe1a7;
+  border-color: #ccb078a0;
+  background: #61543c55;
+}
+.cs-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 32px 14px;
+  background: linear-gradient(#102326ed, #0d1b20);
+  border-top: 1px solid #d6bf8c55;
+}
+.cs-chapters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.cs-chapters button {
+  position: relative;
+  justify-content: flex-start;
+  padding: 10px 14px 16px;
+  background: transparent;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid #d6bf8c35;
+}
+.cs-chapters button > span {
+  font:
+    27px Georgia,
+    serif;
+  color: #7a8c83;
+  margin-right: 8px;
+}
+.cs-chapters button > div {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+}
+.cs-chapters b {
+  font:
+    500 17px 'Noto Serif SC',
+    serif;
+}
+.cs-chapters small {
+  color: #97a99f;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.cs-chapters button[aria-current='step'] {
+  background: linear-gradient(90deg, #b29b6540, transparent);
+}
+.cs-chapters button[aria-current='step'] > span {
+  color: #f1c78a;
+}
+.cs-chapters i {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: var(--cs-progress);
+  background: #d7b678;
+}
+.cs-transport {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.cs-transport > button {
+  border-color: transparent;
+  background: transparent;
+  flex-shrink: 0;
+}
+.cs-transport .cs-play {
+  width: 46px;
+  height: 46px;
+  border: 1px solid #d6b575a0;
+  border-radius: 50%;
+  background: #7b362ec0;
+  color: #f4ddae;
+}
+.cs-scrub {
+  flex: 1;
+  min-width: 60px;
+  margin: 0 18px;
+}
+.cs-scrub label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #bec4b5;
+  margin-bottom: 6px;
+}
+.cs-scrub label span {
+  font-variant-numeric: tabular-nums;
+  color: #a7b1a7;
+}
+.cs-scrub input {
+  display: block;
+  width: 100%;
+  accent-color: #d7b678;
+  height: 16px;
+  cursor: pointer;
+}
+.cs-speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #b6c0b4;
+}
+.cs-speed select {
+  color: #efe3c9;
+  background: #1b3031;
+  border: 1px solid #d6bf8c40;
+  padding: 7px;
+  font: inherit;
+  font-size: 12px;
+}
+.cs-transport > .cs-landscape {
+  color: #d5c59f;
+  font-size: 11px;
+  border-left: 1px solid #d6bf8c35;
+  border-radius: 0;
+  margin-left: 8px;
+  padding-left: 18px;
+}
+.cs-footnote {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 14px 0 0;
+  font-size: 9px;
+  color: #8fa49c;
+  line-height: 1.6;
+}
+.cs-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.cs-sources {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: min(520px, 100%);
+  padding: 55px 38px;
+  background: #11252afa;
+  border-left: 1px solid #d6bf8c55;
+  box-shadow: -30px 0 100px #0008;
+  overflow-y: auto;
+  z-index: 10;
+}
+.cs-sources > button {
+  position: absolute;
+  right: 22px;
+  top: 17px;
+  background: transparent;
+  border: 0;
+}
+.cs-sources h3 {
+  font:
+    26px 'Noto Serif SC',
+    serif;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+.cs-sources h4 {
+  font-size: 13px;
+  color: #d7b678;
+  margin-top: 30px;
+}
+.cs-sources p {
+  font-size: 13px;
+  line-height: 2;
+  color: #c1cbbf;
+}
+.cs-sources a {
+  display: block;
+  padding: 15px 0;
+  color: #efdfbd;
+  border-bottom: 1px solid #d6bf8c28;
+  font-size: 14px;
+  text-decoration: none;
+}
+.cs-sources a small {
+  display: block;
+  font-size: 10px;
+  margin-top: 7px;
+  color: #a3b5ac;
+}
+.cs-sources > small {
+  display: block;
+  margin-top: 24px;
+  font-size: 10px;
+  line-height: 1.9;
+  color: #8fa49c;
+}
+.cs-fallback {
+  position: absolute;
+  inset: 76px 300px 208px 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.cs-fallback svg {
+  width: 100%;
+  height: calc(100% - 35px);
+}
+.cs-fallback > span {
+  font-size: 10px;
+  color: #c2d0c4;
+  padding: 8px;
+}
+@media (min-width: 1600px) {
+  .cs-title {
+    top: 145px;
+    left: 60px;
+  }
+  .cs-story {
+    top: 145px;
+    right: 50px;
+    width: 325px;
+    padding: 27px;
+  }
+  .cs-story > p {
+    font-size: 14px;
+  }
+  .cs-header,
+  .cs-controls {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .cs-field-caption {
+    left: 60px;
+  }
+  .cs-camera {
+    right: 50px;
+  }
+}
+@media (max-height: 750px) and (min-width: 901px) {
+  .cs-title {
+    top: 95px;
+  }
+  .cs-title h2 {
+    font-size: 39px;
+  }
+  .cs-story {
+    top: 94px;
+    padding: 16px;
+    width: 270px;
+  }
+  .cs-story-heading > span {
+    margin-top: 7px;
+  }
+  .cs-story-heading h3 {
+    margin-bottom: 10px;
+  }
+  .cs-story > p {
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .cs-strategy {
+    padding: 9px 0;
+  }
+  .cs-legend {
+    margin-top: 10px;
+  }
+  .cs-field-caption {
+    bottom: 213px;
+  }
+  .cs-camera {
+    bottom: 208px;
+  }
+  .cs-controls {
+    padding-top: 10px;
+  }
+  .cs-chapters button {
+    padding-top: 6px;
+    padding-bottom: 10px;
+  }
+  .cs-transport {
+    margin-top: 10px;
+  }
+  .cs-footnote {
+    margin-top: 8px;
+  }
+}
+@media (max-width: 1100px) {
+  .cs-chapters small {
+    display: none;
+  }
+  .cs-story {
+    width: 255px;
+    right: 20px;
+    padding: 18px;
+  }
+  .cs-story > p {
+    font-size: 12px;
+  }
+  .cs-title {
+    left: 25px;
+  }
+  .cs-camera {
+    right: 20px;
+    gap: 2px;
+  }
+  .cs-camera button {
+    padding: 7px;
+  }
+  .cs-fallback {
+    left: 70px;
+    right: 230px;
+  }
+}
+@media (max-width: 900px) {
+  .cs-header {
+    height: 58px;
+    padding: 0 12px;
+  }
+  .cs-header > button {
+    font-size: 11px;
+    padding: 6px;
+  }
+  .cs-brand {
+    font-size: 10px;
+    gap: 7px;
+  }
+  .cs-brand > span,
+  .cs-brand > i,
+  .cs-brand > b {
+    display: none;
+  }
+  .cs-title {
+    top: 82px;
+    left: 22px;
+  }
+  .cs-title h2 {
+    font-size: 34px;
+    margin: 8px 0;
+  }
+  .cs-title p {
+    font-size: 10px;
+    margin-bottom: 12px;
+  }
+  .cs-eyebrow {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+  .cs-art-label {
+    font-size: 8px;
+  }
+  .cs-story {
+    top: auto;
+    bottom: 213px;
+    right: 15px;
+    left: 15px;
+    width: auto;
+    padding: 12px 15px;
+  }
+  .cs-story-top {
+    display: none;
+  }
+  .cs-story-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    gap: 10px;
+  }
+  .cs-story-heading > span {
+    margin: 0;
+    font-size: 9px;
+  }
+  .cs-story-heading h3 {
+    font-size: 20px;
+    margin: 0;
+    white-space: nowrap;
+  }
+  .cs-story-heading em {
+    display: inline;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-left: 12px;
+  }
+  .cs-story > p {
+    font-size: 11px;
+    line-height: 1.8;
+    margin: 8px 0 0;
+  }
+  .cs-strategy {
+    display: none;
+  }
+  .cs-legend {
+    margin-top: 9px;
+    gap: 9px;
+    font-size: 9px;
+  }
+  .cs-legend small {
+    flex: 1;
+    font-size: 8px;
+  }
+  .cs-controls {
+    padding: 12px 15px 10px;
+  }
+  .cs-chapters {
+    gap: 5px;
+  }
+  .cs-chapters button {
+    gap: 4px;
+    padding: 7px 3px 12px;
+  }
+  .cs-chapters button > span {
+    font-size: 19px;
+    margin-right: 2px;
+  }
+  .cs-chapters b {
+    font-size: 13px;
+  }
+  .cs-transport {
+    margin-top: 12px;
+    gap: 2px;
+  }
+  .cs-transport > button {
+    padding: 5px;
+    min-width: 29px;
+  }
+  .cs-transport .cs-play {
+    width: 38px;
+    height: 38px;
+  }
+  .cs-scrub {
+    margin: 0 8px;
+  }
+  .cs-speed {
+    font-size: 0;
+    gap: 0;
+  }
+  .cs-speed select {
+    padding: 5px;
+    font-size: 11px;
+  }
+  .cs-transport > .cs-landscape {
+    display: none;
+  }
+  .cs-footnote {
+    display: block;
+    font-size: 8px;
+    margin-top: 10px;
+  }
+  .cs-footnote > span {
+    display: block;
+    margin-top: 3px;
+  }
+  .cs-field-caption {
+    bottom: 365px;
+    left: 24px;
+  }
+  .cs-field-caption b {
+    font-size: 17px;
+  }
+  .cs-field-caption > span {
+    font-size: 9px;
+  }
+  .cs-camera {
+    right: 15px;
+    bottom: 181px;
+    left: 15px;
+    justify-content: center;
+  }
+  .cs-camera button {
+    font-size: 9px;
+    padding: 6px 9px;
+    min-height: 30px;
+  }
+  .cs-controls {
+    padding-top: 37px;
+  }
+  .cs-world {
+    bottom: 245px;
+  }
+  .cs-fallback {
+    inset: 120px 8px 340px;
+  }
+  .cs-fallback > span {
+    font-size: 9px;
+  }
+  .cs-sources {
+    padding: 50px 25px;
+  }
+}
+@media (max-width: 900px) and (max-height: 650px) {
+  .cs-title {
+    top: 70px;
+  }
+  .cs-title h2 {
+    font-size: 25px;
+  }
+  .cs-title p,
+  .cs-art-label,
+  .cs-field-caption {
+    display: none;
+  }
+  .cs-story {
+    bottom: 180px;
+  }
+  .cs-legend {
+    display: none;
+  }
+  .cs-camera {
+    bottom: 145px;
+  }
+  .cs-controls {
+    padding-top: 34px;
+    padding-bottom: 7px;
+  }
+  .cs-footnote {
+    margin-top: 5px;
+  }
+  .cs-footnote > span {
+    display: inline;
+  }
+  .cs-transport {
+    margin-top: 7px;
+  }
+  .cs-world {
+    bottom: 175px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chishui-sandbox * {
+    scroll-behavior: auto;
+  }
+}
+@media (max-width: 900px) {
+  .cs-camera {
+    z-index: 2;
+  }
+  .cs-chapters b {
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  .cs-chapters button > span {
+    font-size: 17px;
+  }
+}
+.cs-story {
+  max-height: calc(100dvh - 370px);
+  overflow-y: auto;
+}
+.cs-causal-story h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e2c38a;
+  line-height: 1.7;
+}
+.cs-causal-story dl {
+  margin: 0;
+}
+.cs-causal-story dl > div {
+  display: grid;
+  grid-template-columns: 25px 1fr;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.cs-causal-story dt {
+  font-size: 10px;
+  color: #86bce8;
+}
+.cs-causal-story dl > div:nth-child(2) dt {
+  color: #ef967c;
+}
+.cs-causal-story dl > div:nth-child(3) dt {
+  color: #d3b77a;
+}
+.cs-causal-story dd {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.85;
+  color: #d0d8c9;
+}
+@media (max-width: 900px) {
+  .cs-story {
+    max-height: 29dvh;
+  }
+  .cs-causal-story h4 {
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .cs-causal-story dd {
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .cs-causal-story dl > div {
+    margin-bottom: 8px;
+  }
+}

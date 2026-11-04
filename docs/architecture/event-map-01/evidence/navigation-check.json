@@ -1,0 +1,93 @@
+{
+  "before": {
+    "canvas": {
+      "canvasId": 8431,
+      "metrics": {
+        "time": 644494.7,
+        "position": [
+          -3.9478092361796624, 1.3903622033204925, -1.1133883808814262
+        ],
+        "target": [-4.311403878423497, 0.6025738117921837, -2.3253705216942078],
+        "distance": 1.4905409499052065,
+        "fov": 43,
+        "near": 0.01788649139886248,
+        "far": 12,
+        "targetPlaneWidth": 2.591513134347952,
+        "frameMedianMs": 4.2000000000116415,
+        "frameP95Ms": 999.9000000000233,
+        "calls": 15,
+        "triangles": 716352,
+        "geometries": 43,
+        "textures": 6,
+        "viewport": [1920, 870],
+        "visibility": "visible",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "terrainMeshes": 3,
+        "morphing": false,
+        "closeBounds": [
+          -5.516692473427071, -3.526289327801841, -3.5077235380172134,
+          -1.6325413554638146
+        ],
+        "regionalBounds": [
+          -5.6123576608275405, -3.526289327801841, -3.5077235380172134,
+          -1.6325413554638146
+        ],
+        "region": "grass",
+        "heightVersion": 19,
+        "fieldCache": 3,
+        "exaggeration": 12,
+        "materials": 6,
+        "targetGround": 0.5128151681505109,
+        "targetWater": null,
+        "cameraFloor": 0.517050726726675
+      }
+    },
+    "markerStyle": "visibility: visible; transform: translate(960px, 471.16px) translate(-50%, -100%);"
+  },
+  "after": {
+    "canvas": {
+      "canvasId": 8431,
+      "metrics": {
+        "time": 656519.6,
+        "position": [
+          -4.269359623645544, 1.2604454866855272, -1.4926420989057512
+        ],
+        "target": [-4.21767811595008, 0.5858749229950567, -2.334782084765916],
+        "distance": 1.0802389455208112,
+        "fov": 43,
+        "near": 0.012962867346249735,
+        "far": 12,
+        "targetPlaneWidth": 1.8781459279796373,
+        "frameMedianMs": 4.2000000000116415,
+        "frameP95Ms": 999.9000000000233,
+        "calls": 18,
+        "triangles": 746568,
+        "geometries": 47,
+        "textures": 6,
+        "viewport": [1920, 870],
+        "visibility": "visible",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "terrainMeshes": 3,
+        "morphing": false,
+        "closeBounds": [
+          -5.516692473427071, -3.526289327801841, -3.5077235380172134,
+          -1.6325413554638146
+        ],
+        "regionalBounds": [
+          -5.6123576608275405, -3.526289327801841, -3.5077235380172134,
+          -1.6325413554638146
+        ],
+        "region": "grass",
+        "heightVersion": 19,
+        "fieldCache": 3,
+        "exaggeration": 12,
+        "materials": 6,
+        "targetGround": 0.5149754314454288,
+        "targetWater": null,
+        "cameraFloor": 0.5083843385875049
+      }
+    },
+    "markerStyle": "visibility: visible; transform: translate(867.597px, 481.815px) translate(-50%, -100%);",
+    "canvasCount": 1
+  }
+}

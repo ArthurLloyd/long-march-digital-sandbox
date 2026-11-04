@@ -20,12 +20,8 @@ export function createExhibitionAtmosphere(bounds: GeoBounds) {
     bounds: { value: new THREE.Vector4(...bounds) },
     origin: { value: new THREE.Vector3() },
     local: { value: 0 },
+    film: { value: 0 },
     haze: { value: new THREE.Color(EXHIBITION_LIGHT.haze) },
-    regionBounds: { value: new THREE.Vector4(...bounds) },
-    regionActive: { value: 0 },
-    regionForest: { value: new THREE.Color(EXHIBITION_LIGHT.foliage) },
-    regionGround: { value: new THREE.Color('#77816a') },
-    regionRock: { value: new THREE.Color(EXHIBITION_LIGHT.stone) },
   };
 }
 export type ExhibitionAtmosphere = ReturnType<

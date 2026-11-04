@@ -9,3 +9,4 @@ artifacts
 src/app/landscape/data/modern-geography.json
 
 src/app/landscape/data/details/*.json
+src/app/landscape/data/event-terrain/*.json

@@ -370,6 +370,68 @@
     font-size: 34px;
   }
 }
+.museum-terrain-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  transform: translateX(-50%);
+  margin: 0;
+  color: var(--gold-bright, #e4caa0);
+  font-size: 13px;
+  line-height: 1.8;
+  text-shadow: 0 2px 5px #080c11;
+  pointer-events: none;
+  white-space: nowrap;
+}
+/* Geography belongs with the right-hand map tools; the left stays editorial. */
+@media (min-width: 801px) {
+  .panorama-exploration .museum-panorama .museum-geographic-views {
+    top: 82px;
+    left: auto;
+    right: calc(clamp(24px, 4vw, 80px) + 110px);
+    width: 230px;
+  }
+  .museum-geographic-views > summary {
+    min-height: 40px;
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+  .museum-geographic-views[open] {
+    background: none;
+    box-shadow: none;
+  }
+  .museum-geographic-views > .museum-geographic-menu {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: calc(100% + 16px);
+    width: 280px;
+    margin: 0;
+    padding: 12px;
+    max-height: calc(100dvh - 220px);
+    overflow: auto;
+    background: #121e28fa;
+    box-shadow: 0 14px 36px #050c1266;
+  }
+}
+.museum-geographic-menu > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.museum-geographic-menu > p {
+  padding: 0;
+  margin: 12px 4px 4px;
+}
+.panorama-exploration:has(.museum-panorama.is-entry) .phase-overview {
+  visibility: hidden;
+  pointer-events: none;
+}
+@media (max-height: 820px) {
+  .museum-terrain-hint {
+    font-size: 12px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .museum-panorama *,
   .museum-panorama *::before,

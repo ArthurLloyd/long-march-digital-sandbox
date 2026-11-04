@@ -1,0 +1,228 @@
+{
+  "version": "chishui-battle-v2",
+  "baseline": "8fb55a843e0d78def6feb56e4f403f48d94c2117",
+  "historicalDatasetUnchanged": true,
+  "files": [
+    {
+      "path": "docs/history-review/chishui-sandbox/CHECKS.md",
+      "sha256": "3ff08e587e26b694eddfaea60039c498d94b036a94653238fba7b7588afee5c1",
+      "before": {
+        "original": null,
+        "chishui-v1": "604eb0e587799bde7a58414c7a3533080aedc7fdccedecdcad0b6a3b5843b832"
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/INSTALL.md",
+      "sha256": "b26ff059ad61003b0d1ff2aa7d4be13484d89e1d22f20b24e906cdc112bef877",
+      "before": {
+        "original": null,
+        "chishui-v1": "b2056f2e5f03bff848c27d39b9fb1a4c436861802910a0b6d5c8f3749b7a288b"
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/README.md",
+      "sha256": "216abf0012fe8758fde27ceb63e377c185e9d244c5b6ec5fd75a67659cf71466",
+      "before": {
+        "original": null,
+        "chishui-v1": "b62eaf5e0cead68f7f36533e73ee6072b6056a1306b2bcc516fda5fe53eb1c22"
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/SOURCES.md",
+      "sha256": "e3bcfd61fbc31843a57c2784fd15c34aba03b9586070e374da35b05d32a5f5b7",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "docs/history-review/chishui-sandbox/files.txt",
+      "sha256": "d5e7be220fda3cc3e980fc08b035339e48fbf7f02732d160894a6ced701f9291",
+      "before": {
+        "original": null,
+        "chishui-v1": "a4f6973fae893da58c243fcfec9f6dbc87eb894c04d14c3cadc9e0f3e4d9557f"
+      }
+    },
+    {
+      "path": "src/app/exhibition/CampaignNarration.tsx",
+      "sha256": "e1736ed3a534abe1f657336347bd84d27fc38c20c29cde9b462a6aeda311116a",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "src/app/exhibition/ExhibitionJourney.tsx",
+      "sha256": "49ce51f11dfe88ed9bc16b295307cfe6e977d92f54a1c10deb8e13ea6ef9dd60",
+      "before": {
+        "original": "a284d87dc595d6af006792a9e0edc57aaffc8e8294b000b38b111a5708815a21",
+        "chishui-v1": "a284d87dc595d6af006792a9e0edc57aaffc8e8294b000b38b111a5708815a21"
+      }
+    },
+    {
+      "path": "src/app/exhibition/JourneyArrival.tsx",
+      "sha256": "2a61e280ccae2a07dff5f59e967bf66ce3be5f30def48ccc37f26e28f1d81ed7",
+      "before": {
+        "original": "a40cd592644556286f31a7287eb4b81596194c8ce71648bad4aaffef0ae85615",
+        "chishui-v1": "a40cd592644556286f31a7287eb4b81596194c8ce71648bad4aaffef0ae85615"
+      }
+    },
+    {
+      "path": "src/app/exhibition/JourneyControls.tsx",
+      "sha256": "11b35fd59d8e2ccf461dc16739d3dcf04b4c522539641b8554f36a0f21d9e3a9",
+      "before": {
+        "original": "8d91b69545faae24961b65cbe8f20e6f719afe2f0eb396e3d18e4330dbd71d98",
+        "chishui-v1": "8d91b69545faae24961b65cbe8f20e6f719afe2f0eb396e3d18e4330dbd71d98"
+      }
+    },
+    {
+      "path": "src/app/exhibition/campaign-narration.css",
+      "sha256": "563fd0e293347b6c8ef1a5b14c5006434b08df6d820f6db8f5d1ad654cb94623",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "src/app/exhibition/data/exhibition-supplement.json",
+      "sha256": "82b8384cccbd62df7fd7331d1d6ec188049db62da8f33f9656a2cd32249112ef",
+      "before": {
+        "original": "720ddc3b35bc0c6a5bc6bab27019cb0eb9db4b0df356353696737389ec7470ae",
+        "chishui-v1": "720ddc3b35bc0c6a5bc6bab27019cb0eb9db4b0df356353696737389ec7470ae"
+      }
+    },
+    {
+      "path": "src/app/exhibition/exhibition-content.ts",
+      "sha256": "93ba0c697a9bc6d20fb850de2b7a5b160158bf582a453a8f274e172039c83f0f",
+      "before": {
+        "original": "e035874725cf1a3725f69520ae7e32f0b6d077fb6fe4e86576c9ec2e84670b88",
+        "chishui-v1": "e035874725cf1a3725f69520ae7e32f0b6d077fb6fe4e86576c9ec2e84670b88"
+      }
+    },
+    {
+      "path": "src/app/landscape/EventMapLayer.tsx",
+      "sha256": "36fcd38f6131709059dce9b2f13e593264ea6dbd716457f48498e86ce151f287",
+      "before": {
+        "original": "05b29bd071bba0e544da609e7b281c7639cbab466a0e3c06ab24fec7713f9b44",
+        "chishui-v1": "05b29bd071bba0e544da609e7b281c7639cbab466a0e3c06ab24fec7713f9b44"
+      }
+    },
+    {
+      "path": "src/app/landscape/event-marker-caption.ts",
+      "sha256": "941455ad890e339f01c678ffe282d9e32e4b16979801c06bb043a7fa1be8dd1e",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "src/app/landscape/march-layer.ts",
+      "sha256": "743ce674d94342b31115ddf3f3b6d1b8c8877d2997ff3d322f35e8a221316a1b",
+      "before": {
+        "original": "a043eb6e2dad243965d41373ab14e5b5ceb9db72e9451393600c32edad701811",
+        "chishui-v1": "a043eb6e2dad243965d41373ab14e5b5ceb9db72e9451393600c32edad701811"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/RegionalObservation.tsx",
+      "sha256": "e98d1b002ddd73c41824f045e9473c08550dc5cd0e38fddc09feb47dbeacaceb",
+      "before": {
+        "original": "d3f26aebc1acbe236bf1e6b21409e0ffe3a6d5d229f7bae245662651af83fa89",
+        "chishui-v1": "e98d1b002ddd73c41824f045e9473c08550dc5cd0e38fddc09feb47dbeacaceb"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/ChishuiSandbox.test.tsx",
+      "sha256": "c8b41f2b66f173a8ff18a8831f5500aee39a3448cda3abdcec9e04f21f5f4b24",
+      "before": {
+        "original": null,
+        "chishui-v1": "c5ff82c0da4036ccd0ee36529e26e6656eb9d6c08f848829e2ef19195328a796"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/ChishuiSandbox.tsx",
+      "sha256": "3d67748708e3dbcb12378ce83ff123be951c77dd05f67f52e65cc2d9ba9efd5e",
+      "before": {
+        "original": null,
+        "chishui-v1": "4a9791b099727ee8d5fecb43af8ac38c83210160b8c306da92ca67ec2741c57f"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-renderer.ts",
+      "sha256": "2717816f732e0413f5b57d4e9a183af7728a12fc0830ccd9d1d406d1a55bfa3e",
+      "before": {
+        "original": null,
+        "chishui-v1": "9d1f46ddbc3cc3fb76387e1be914f307ba16d1e29358dd37dc9edc37186c2e30"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-sandbox.css",
+      "sha256": "f842349e415e8787db3dee6960308659088259f19998a890a45b92c6d173fd04",
+      "before": {
+        "original": null,
+        "chishui-v1": "13704474ce02e7f1db6c3daf5ddbd08b8d9ec23a89f3c188468d35bd33bd367b"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-story.test.ts",
+      "sha256": "f84a8df755fe10b667c784772d54c2733888820c4fa66c78654e4333693f239f",
+      "before": {
+        "original": null,
+        "chishui-v1": "5579fc1288650a578497ee50efa546da021dd296fc466dbdf5509eead9f0e6e6"
+      }
+    },
+    {
+      "path": "src/features/scene/integration/chishui/chishui-story.ts",
+      "sha256": "3585855a5ee9ca5de50920b1b71d2af4bdf51968dbee7e4bec0197975c0c623f",
+      "before": {
+        "original": null,
+        "chishui-v1": "e7e854cbe21f373accac221a09cb543d83268d0a0feb78ef10086cf0be0c76a0"
+      }
+    },
+    {
+      "path": "src/features/timeline/journey/journey-model.ts",
+      "sha256": "aac53e38c4b84e095c729c3100656078b7f47b7ba2379b1a12f55f0e34fc8ca1",
+      "before": {
+        "original": "ff844de610289a3ab0e720e5b6ef0b08e3a4cb252b3b326e5feba4bb545b837c",
+        "chishui-v1": "ff844de610289a3ab0e720e5b6ef0b08e3a4cb252b3b326e5feba4bb545b837c"
+      }
+    },
+    {
+      "path": "src/features/timeline/journey/journey-transport.ts",
+      "sha256": "1c4038710576cb725bf21f1da783e75d0990714088c936f2380a15d97a33a29d",
+      "before": {
+        "original": "31a7304a4cdad95916876abb872b5df8c254f28a1d8ef0cdafbf32d91058540f",
+        "chishui-v1": "31a7304a4cdad95916876abb872b5df8c254f28a1d8ef0cdafbf32d91058540f"
+      }
+    },
+    {
+      "path": "src/shared/content/chishui-campaign.ts",
+      "sha256": "9cb1c051c51813df4da88625b5febdf4f659a08eadd6965c67e716b13e27bf08",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "src/tests/chishui-campaign-regression.test.tsx",
+      "sha256": "f0fa0227d02cb2783094c7609795679f730a34de001e790319cf5bcb61b8d1e3",
+      "before": {
+        "original": null,
+        "chishui-v1": null
+      }
+    },
+    {
+      "path": "src/tests/journey-transport.test.ts",
+      "sha256": "924895f8c9d73966f0ee855cbd088211b5849619989d710307f4794c04ad5f5e",
+      "before": {
+        "original": "dc0faab3c2c31382a64a074d3c2a3b5cb3c4fd43fe5e16b75dc201fbef85c170",
+        "chishui-v1": "dc0faab3c2c31382a64a074d3c2a3b5cb3c4fd43fe5e16b75dc201fbef85c170"
+      }
+    }
+  ],
+  "validation": {
+    "fullSuiteFiles": 62,
+    "fullSuiteTestsPassed": 467,
+    "command": "npm run test -- --maxWorkers=2 --testTimeout=30000"
+  }
+}

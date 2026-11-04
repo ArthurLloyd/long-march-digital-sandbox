@@ -15,7 +15,7 @@ export function ExhibitionHeader({
   onFullscreen,
 }: Props) {
   return (
-    <header className="exhibition-header">
+    <header className="exhibition-header" data-map-obstacle="true">
       <button
         className="exhibition-brand"
         onClick={onHome}

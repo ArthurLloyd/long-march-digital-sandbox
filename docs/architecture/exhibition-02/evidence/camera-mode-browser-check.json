@@ -1,0 +1,221 @@
+{
+  "near": {
+    "canvas": {
+      "bottom": 758,
+      "height": 758,
+      "left": 0,
+      "right": 1440,
+      "top": 0,
+      "width": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "data": {
+      "calls": 30,
+      "cameraFloor": 0.0342479432022434,
+      "closeBounds": [
+        9.893374796998543, 6.7832093319521505, 10.188342458149991,
+        7.077066775935638
+      ],
+      "distance": 0.13372946438168373,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 1,
+      "fov": 43,
+      "frameMedianMs": 4.200000000000728,
+      "frameP95Ms": 258.2999999999993,
+      "geometries": 92,
+      "heightVersion": 9,
+      "materials": 7,
+      "morphing": false,
+      "near": 0.0016047535725802048,
+      "position": [10.020429066349504, 0.1292968164076851, 6.856133684861673],
+      "region": "ruijin",
+      "regionalBounds": [
+        8.737420449242874, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "target": [9.93211170619989, 0.04647702982480229, 6.912918334991624],
+      "targetGround": 0.04599560375302823,
+      "targetPlaneWidth": 0.2001464621698722,
+      "targetWater": null,
+      "terrainMeshes": 3,
+      "textures": 6,
+      "time": 29045.2,
+      "triangles": 3732864,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1440, 758],
+      "visibility": "visible"
+    },
+    "progress": "7.1",
+    "scroll": 0
+  },
+  "modePanStart": {
+    "data": {
+      "calls": 30,
+      "cameraFloor": 0.06817586216390539,
+      "closeBounds": [
+        8.85700193349346, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "distance": 0.7420599706223211,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 1,
+      "fov": 43,
+      "frameMedianMs": 4.200000000000728,
+      "frameP95Ms": 258.40000000000146,
+      "geometries": 93,
+      "heightVersion": 14,
+      "materials": 7,
+      "morphing": false,
+      "near": 0.008904719647467854,
+      "position": [9.957916749740448, 0.5021438878855181, 7.526791003479795],
+      "region": "ruijin",
+      "regionalBounds": [
+        8.737420449242874, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "target": [9.895916749740447, 0.09914388788551808, 6.906791003479795],
+      "targetGround": 0.03313285891190584,
+      "targetPlaneWidth": 1.1106054938950238,
+      "targetWater": null,
+      "terrainMeshes": 3,
+      "textures": 6,
+      "time": 77491.3,
+      "triangles": 2018170,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1440, 758],
+      "visibility": "visible"
+    },
+    "labels": [
+      {
+        "name": "中央机关野战纵队·于都集结方向",
+        "rect": {
+          "bottom": 544.4983520507812,
+          "height": 30.3984375,
+          "left": 637,
+          "right": 835,
+          "top": 514.0999145507812,
+          "width": 198,
+          "x": 637,
+          "y": 514.0999145507812
+        }
+      }
+    ],
+    "progress": "7.8",
+    "scroll": 0
+  },
+  "modePanInner": {
+    "data": {
+      "calls": 30,
+      "cameraFloor": 0.06817586216390595,
+      "closeBounds": [
+        8.85700193349346, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "distance": 0.7420599706223211,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 1,
+      "fov": 43,
+      "frameMedianMs": 4.200000000000728,
+      "frameP95Ms": 258.40000000000146,
+      "geometries": 93,
+      "heightVersion": 14,
+      "materials": 7,
+      "morphing": false,
+      "near": 0.008904719647467854,
+      "position": [9.957916749740448, 0.5021438878855181, 7.526791003479795],
+      "region": "ruijin",
+      "regionalBounds": [
+        8.737420449242874, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "target": [9.895916749740447, 0.09914388788551808, 6.906791003479794],
+      "targetGround": 0.0331328589119062,
+      "targetPlaneWidth": 1.1106054938950238,
+      "targetWater": null,
+      "terrainMeshes": 3,
+      "textures": 6,
+      "time": 78491.3,
+      "triangles": 2018170,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1440, 758],
+      "visibility": "visible"
+    },
+    "labels": [
+      {
+        "name": "中央机关野战纵队·于都集结方向",
+        "rect": {
+          "bottom": 515.3201904296875,
+          "height": 30.398468017578125,
+          "left": 590.163330078125,
+          "right": 788.163330078125,
+          "top": 484.9217224121094,
+          "width": 198,
+          "x": 590.163330078125,
+          "y": 484.9217224121094
+        }
+      }
+    ],
+    "progress": "10.2",
+    "scroll": 0
+  },
+  "modePanEdge": {
+    "data": {
+      "calls": 32,
+      "cameraFloor": 0.04215061975511682,
+      "closeBounds": [
+        8.85700193349346, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "distance": 0.7420599706223214,
+      "exaggeration": 12,
+      "far": 12,
+      "fieldCache": 1,
+      "fov": 43,
+      "frameMedianMs": 4.19999999999709,
+      "frameP95Ms": 258.3000000000029,
+      "geometries": 93,
+      "heightVersion": 14,
+      "materials": 7,
+      "morphing": false,
+      "near": 0.008904719647467856,
+      "position": [9.745486355745976, 0.5059460632301291, 7.490823640650138],
+      "region": "ruijin",
+      "regionalBounds": [
+        8.737420449242874, 6.0077521881068385, 10.778277780452887,
+        7.770896852007759
+      ],
+      "target": [9.683486355745975, 0.10294606323012868, 6.870823640650138],
+      "targetGround": 0.030795206090117457,
+      "targetPlaneWidth": 1.1106054938950245,
+      "targetWater": null,
+      "terrainMeshes": 3,
+      "textures": 6,
+      "time": 84391.3,
+      "triangles": 2035058,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1440, 758],
+      "visibility": "visible"
+    },
+    "labels": [
+      {
+        "name": "中央机关野战纵队·于都集结方向",
+        "rect": {
+          "bottom": 535.937255859375,
+          "height": 30.398406982421875,
+          "left": 608.5994873046875,
+          "right": 806.5994873046875,
+          "top": 505.5388488769531,
+          "width": 198,
+          "x": 608.5994873046875,
+          "y": 505.5388488769531
+        }
+      }
+    ],
+    "progress": "20.6",
+    "scroll": 0
+  }
+}

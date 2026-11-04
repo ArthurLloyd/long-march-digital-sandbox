@@ -1,4 +1,11 @@
 import raw from '../data/verified/dataset.json';
+import { createRef } from 'react';
+import {
+  EventMapLayer,
+  type EventMapLayerHandle,
+} from '../app/landscape/EventMapLayer';
+import { createJourneyContent } from '../app/exhibition/exhibition-content';
+import { createJourneyTransport } from '../features/timeline';
 import { normalizeDataset } from '../shared/contracts';
 import { validateDataset } from '../shared/utils/validate-dataset';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
@@ -14,6 +21,51 @@ import { emptyV2 } from './fixtures/v2-dataset';
 import { simulatePublishedSample } from './fixtures/c1-sample';
 import { simulatePublishedC2 } from './fixtures/c2-sample';
 import { selectScenePhaseView } from '../app/history/scene-phase-view';
+import { loadExhibitionEventMap } from '../app/history/event-map/event-map-loader';
+
+it('prioritizes the observed army crossing when two placements of the same arrival event overlap', () => {
+  const content = createJourneyContent(raw, 'exhibition');
+  const entries = content.map.entries.filter((p) => p.eventId === 'event-sd-4');
+  const erlang = entries.find((p) => p.locationNodeId === 'node-erlang')!;
+  const taiping = entries.find((p) => p.locationNodeId === 'node-taiping')!;
+  const ref = createRef<EventMapLayerHandle>();
+  render(
+    <EventMapLayer
+      model={{ ...content.map, entries }}
+      ref={ref}
+      activeEventIds={[]}
+      onChoose={vi.fn()}
+      onRead={vi.fn()}
+      onOverview={vi.fn()}
+      onRegion={vi.fn()}
+      reading={false}
+      directRead
+      arrivingEventId="event-sd-4"
+      arrivingCoordinates={erlang.anchorCoordinates}
+    />,
+  );
+  act(() =>
+    ref.current!.project(
+      entries.map((p) => ({
+        id: `placement:${p.placementId}`,
+        x: 500,
+        y: 400,
+        visible: true,
+      })),
+      { width: 1200, height: 800, distance: 3 },
+    ),
+  );
+  expect(
+    screen.getByLabelText(
+      `${erlang.displayLabel ?? erlang.event.title}，${erlang.locationLabel}`,
+    ),
+  ).toHaveStyle({ visibility: 'visible' });
+  expect(
+    screen.getByLabelText(
+      `${taiping.displayLabel ?? taiping.event.title}，${taiping.locationLabel}`,
+    ),
+  ).toHaveStyle({ visibility: 'hidden' });
+});
 
 type RendererOptions = Parameters<typeof createPanoramaMap>[1];
 const renderer = vi.hoisted(() => ({
@@ -28,7 +80,9 @@ const renderer = vi.hoisted(() => ({
     overview: vi.fn(),
     zoom: vi.fn(),
     setMarkers: vi.fn(),
+    setEventAreas: vi.fn(),
     setRoutes: vi.fn(),
+    setMarchCamps: vi.fn(),
     setForceRegions: vi.fn(),
     setRivers: vi.fn(),
     setVerticalExaggeration: vi.fn(),
@@ -51,8 +105,20 @@ vi.mock('../app/landscape/map-renderer', () => ({
 // Lazy component boundary only; A's real module has its original tests and UI QA.
 vi.mock('../features/scene', () => ({
   loadRegionalObservation: async () => ({
-    RegionalObservation: ({ onExit }: { onExit: () => void }) => (
-      <button onClick={onExit}>返回艺术观察地图</button>
+    RegionalObservation: ({
+      onExit,
+      onRegionChange,
+      regionId,
+    }: {
+      onExit: () => void;
+      onRegionChange?: (id: 'zunyi') => void;
+      regionId: string;
+    }) => (
+      <>
+        <output aria-label="A区域">{regionId}</output>
+        <button onClick={() => onRegionChange?.('zunyi')}>A下一地域</button>
+        <button onClick={onExit}>返回艺术观察地图</button>
+      </>
     ),
   }),
 }));
@@ -93,6 +159,221 @@ beforeEach(() => {
   }));
 });
 afterEach(() => vi.unstubAllGlobals());
+async function openMapTools(user: ReturnType<typeof userEvent.setup>) {
+  const summary = screen.getByText('地图工具').closest('summary')!;
+  if (!summary.parentElement!.hasAttribute('open')) await user.click(summary);
+}
+
+it('国军图层控制主地图行军层，敌军标签保留具体动作名称', async () => {
+  // jsdom has no layout observer; only this browser API boundary is replaced.
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
+  const content = createJourneyContent(raw, 'exhibition');
+  const transport = createJourneyTransport(content.plan);
+  const user = userEvent.setup();
+  render(
+    <ExhibitionPanorama {...properties(content.dataset)} journey={transport} />,
+  );
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'nationalist_army',
+    'other',
+  ]);
+  expect(screen.getByLabelText('湘军·嘉禾向宁远追击')).toHaveTextContent(
+    '湘军·嘉禾向宁远追击',
+  );
+  const before = transport.read();
+  await openMapTools(user);
+  await user.click(screen.getByText('地图图层'));
+  await user.click(screen.getByRole('checkbox', { name: '国军图层' }));
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'other',
+  ]);
+  await user.click(screen.getByRole('checkbox', { name: '国军图层' }));
+  expect(renderer.api.setMarchCamps).toHaveBeenLastCalledWith([
+    'red_army',
+    'other',
+    'nationalist_army',
+  ]);
+  expect(transport.read()).toBe(before);
+});
+
+it.each(['single', 'continuous'] as const)(
+  'A公共边界按%s控制结束，恢复同一地图且不改宏观历史状态',
+  async (scope) => {
+    const closed = vi.fn(),
+      user = userEvent.setup();
+    render(
+      <ExhibitionPanorama
+        {...properties()}
+        observationRequest="ruijin"
+        observationScope={scope}
+        onObservationClosed={closed}
+      />,
+    );
+    expect(await screen.findByLabelText('A区域')).toHaveTextContent('ruijin');
+    await user.click(screen.getByRole('button', { name: 'A下一地域' }));
+    if (scope === 'single') {
+      expect(closed).toHaveBeenCalledOnce();
+      expect(screen.queryByLabelText('A区域')).not.toBeInTheDocument();
+    } else {
+      expect(screen.getByLabelText('A区域')).toHaveTextContent('zunyi');
+      expect(closed).not.toHaveBeenCalled();
+      await user.click(
+        screen.getByRole('button', { name: '返回艺术观察地图' }),
+      );
+      expect(closed).toHaveBeenCalledOnce();
+    }
+    expect(renderer.creates).toBe(1);
+    expect(renderer.api.restore).toHaveBeenCalled();
+  },
+);
+
+it('全局展陈位置穿过阶段投影接入同一地图，快速点击取最后落点，正文使用宿主入口', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(
+    selectScenePhaseView(data, 'zy-phase').dataset,
+    'zy-phase',
+  );
+  const read = vi.fn(),
+    preview = vi.fn(),
+    user = userEvent.setup();
+  const result = render(
+    <ExhibitionPanorama
+      {...base}
+      eventMap={model}
+      onExhibitionRead={read}
+      onExhibitionPreview={preview}
+    />,
+  );
+  const markerIds = renderer.api.setMarkers.mock.lastCall![0].map(
+    (p: { id: string }) => p.id,
+  );
+  expect(markerIds).toContain('placement:pl-ld-bridge');
+  expect(
+    renderer.api.setEventAreas.mock.lastCall![0].some(
+      (p: { id: string }) => p.id === 'pl-sn-region',
+    ),
+  ).toBe(true);
+  const directory = screen.getByText('事件地图').closest('details')!;
+  await user.click(directory.querySelector('summary')!);
+  await user.click(
+    within(directory).getByRole('button', { name: /飞夺泸定桥/ }),
+  );
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    model.entries.find((p) => p.eventId === 'event-ld')!.anchorCoordinates,
+    undefined,
+  );
+  expect(
+    screen.getByRole('complementary', { name: '事件位置预览' }),
+  ).toHaveTextContent('飞夺泸定桥');
+  await user.click(directory.querySelector('summary')!);
+  await user.click(
+    within(directory).getByRole('button', { name: /安顺场渡河/ }),
+  );
+  const last = model.entries.find((p) => p.eventId === 'event-anshunchang')!;
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    last.anchorCoordinates,
+    undefined,
+  );
+  await user.click(screen.getByRole('button', { name: '阅读事件' }));
+  expect(read).toHaveBeenLastCalledWith('event-anshunchang');
+  expect(preview).toHaveBeenCalledTimes(2);
+  expect(base.onEventSelect).not.toHaveBeenCalled();
+  expect(base.onCameraBookmark).toHaveBeenCalledWith(
+    expect.objectContaining({ phaseId: 'zy-phase' }),
+  );
+  expect(renderer.creates).toBe(1);
+  result.rerender(
+    <ExhibitionPanorama
+      {...base}
+      eventMap={{ ...model, entries: [] }}
+      onExhibitionRead={read}
+    />,
+  );
+  expect(
+    screen.queryByRole('complementary', { name: '事件位置预览' }),
+  ).not.toBeInTheDocument();
+  expect(renderer.api.setEventAreas).toHaveBeenLastCalledWith([]);
+  expect(renderer.creates).toBe(1);
+});
+
+it('同事件多位置可切换，实际阶段变化不移除全局浏览位置，键盘可关闭预览', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(
+      selectScenePhaseView(data, 'zy-phase').dataset,
+      'zy-phase',
+    ),
+    user = userEvent.setup();
+  const result = render(<ExhibitionPanorama {...base} eventMap={model} />);
+  await user.click(screen.getByText('事件地图').closest('summary')!);
+  await user.click(screen.getByRole('button', { name: /二渡赤水/ }));
+  const related = screen.getByLabelText('本事件的关联位置');
+  await user.click(within(related).getByRole('button', { name: /太平渡/ }));
+  expect(renderer.api.focusGeo).toHaveBeenLastCalledWith(
+    model.entries.find(
+      (p) => p.eventId === 'event-sd-2' && p.locationNodeId === 'node-taiping',
+    )!.anchorCoordinates,
+    undefined,
+  );
+  result.rerender(
+    <ExhibitionPanorama {...base} phaseId="sd-phase-2" eventMap={model} />,
+  );
+  expect(renderer.api.setMarkers.mock.lastCall![0]).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ id: 'placement:pl-ld-bridge' }),
+    ]),
+  );
+  await user.keyboard('{Escape}');
+  expect(
+    screen.queryByRole('complementary', { name: '事件位置预览' }),
+  ).not.toBeInTheDocument();
+});
+
+it('鼠标按下期间固定标签并捕获指针，投影更新不会把点击落到地图背景', async () => {
+  const data = normalizeDataset(validateDataset(raw)),
+    model = loadExhibitionEventMap(data, 'exhibition')!;
+  const base = properties(data, 'zy-phase'),
+    user = userEvent.setup();
+  render(<ExhibitionPanorama {...base} eventMap={model} />);
+  const projected = {
+    id: 'placement:pl-ld-bridge',
+    x: 700,
+    y: 300,
+    visible: true,
+  };
+  act(() =>
+    renderer.options!.onMarkers([projected], {
+      width: 1440,
+      height: 700,
+      distance: 2,
+    }),
+  );
+  const label = screen.getByRole('button', { name: '飞夺泸定桥，泸定桥附近' });
+  await user.pointer({ target: label, keys: '[MouseLeft>]' });
+  const transform = label.style.transform;
+  act(() =>
+    renderer.options!.onMarkers([{ ...projected, x: 850, y: 400 }], {
+      width: 1440,
+      height: 700,
+      distance: 2,
+    }),
+  );
+  expect(label.style.transform).toBe(transform);
+  await user.pointer({ keys: '[/MouseLeft]' });
+  expect(
+    screen.getByRole('complementary', { name: '事件位置预览' }),
+  ).toHaveTextContent('飞夺泸定桥');
+  expect(renderer.creates).toBe(1);
+});
 
 it('B故事的外部演绎请求复用A观察路径，并在退出时通知宿主和恢复地图', async () => {
   const props = properties();
@@ -130,11 +411,30 @@ it('文字专题已有阶段但没有历史定位时，仍保留瑞金启程意�
   expect(dataset.events.every((event) => event.coordinates === null)).toBe(
     true,
   );
+  await openMapTools(user);
   await user.click(screen.getByRole('button', { name: '全景' }));
   expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
 });
 
 describe('原展馆的现代全景与正式历史边界', () => {
+  it('工具默认收纳，四个视角按钮独立可用；收起与Esc不重挂地图或改变历史状态', async () => {
+    const props = properties(),
+      user = userEvent.setup();
+    render(<ExhibitionPanorama {...props} />);
+    expect(
+      screen.getByRole('navigation', { name: '全景地图视角' }),
+    ).toBeVisible();
+    await openMapTools(user);
+    expect(screen.getByRole('button', { name: /^全景$/ })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: '收起地图工具' }));
+    expect(screen.getByRole('button', { name: /^全景$/ })).toBeVisible();
+    await openMapTools(user);
+    await user.keyboard('{Escape}');
+    expect(screen.getByText('地图工具').closest('summary')).toHaveFocus();
+    expect(renderer.creates).toBe(1);
+    expect(props.onEventSelect).not.toHaveBeenCalled();
+    expect(props.onObjectSelect).not.toHaveBeenCalled();
+  });
   it('空态启程火炬与真实阶段态势分离，撤回或未知位置清除火炬', async () => {
     const user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...properties()} />);
@@ -146,6 +446,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     expect(screen.getByText('从瑞金启程，重温长征之路。')).toBeInTheDocument();
     expect(screen.queryByText('现代地理 · 艺术表现')).not.toBeInTheDocument();
     expect(screen.queryByText(/成员 A 艺术空间/)).not.toBeInTheDocument();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '全景' }));
     expect(renderer.api.setJourneyMarker).toHaveBeenLastCalledWith(null);
     const data = simulatePublishedC2();
@@ -170,6 +471,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const props = properties(),
       user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
     expect(renderer.api.suspend).toHaveBeenLastCalledWith(true);
     await user.click(
@@ -180,6 +482,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
       renderer.api.bookmark.mock.results[0]!.value,
     );
     renderer.api.restore.mockClear();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '走进瑞金艺术场景' }));
     view.rerender(<ExhibitionPanorama {...props} phaseId="different" />);
     await user.click(
@@ -197,6 +500,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const user = userEvent.setup(),
       props = properties(data);
     const view = render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     await user.keyboard('{Escape}');
@@ -242,6 +546,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     expect(renderer.api.focus).toHaveBeenCalledTimes(1);
     expect(renderer.api.focus.mock.lastCall?.[1]).toBe('place');
     expect(renderer.api.entry).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByRole('button', { name: '全景' }));
     expect(renderer.api.overview).toHaveBeenCalled();
     expect(
@@ -317,6 +622,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     const props = properties(),
       user = userEvent.setup();
     render(<ExhibitionPanorama {...props} />);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     expect(renderer.api.focus).toHaveBeenCalledTimes(1);
@@ -325,6 +631,7 @@ describe('原展馆的现代全景与正式历史边界', () => {
     ).toBeInTheDocument();
     expect(props.onEventSelect).not.toHaveBeenCalled();
     expect(props.onObjectSelect).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '大渡河谷' }));
     expect(
@@ -421,12 +728,14 @@ describe('原展馆的现代全景与正式历史边界', () => {
       user = userEvent.setup();
     const view = render(<ExhibitionPanorama {...props} />);
     expect(renderer.api.focusGeo).toHaveBeenLastCalledWith([106, 28]);
+    await openMapTools(user);
     await user.click(screen.getByText('山河取景'));
     await user.click(screen.getByRole('button', { name: '赤水河谷' }));
     await user.keyboard('{Escape}');
     renderer.api.focusGeo.mockClear();
     view.rerender(<ExhibitionPanorama {...props} phaseId="another-phase" />);
     expect(renderer.api.focusGeo).not.toHaveBeenCalled();
+    await openMapTools(user);
     await user.click(screen.getByText('地图图层'));
     await user.click(screen.getByRole('checkbox', { name: '随阶段取景' }));
     expect(renderer.api.focusGeo).toHaveBeenLastCalledWith([106, 28]);

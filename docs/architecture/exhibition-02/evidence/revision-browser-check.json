@@ -1,0 +1,689 @@
+{
+  "scope": "2026-11-03 desktop revision; raw real DOM/canvas observations, no injected app state",
+  "arrivals": [
+    {
+      "arrival": "一渡赤水已到达 · 点击阅读，三秒后自动展开",
+      "chapter": "chapter-event-sd-1",
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 96,
+        "cameraFloor": 0.17147180551879032,
+        "closeBounds": null,
+        "distance": 3.2669840183170016,
+        "exaggeration": 12,
+        "far": 17.067936073268008,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 12.5,
+        "frameP95Ms": 12.60000000000582,
+        "geometries": 145,
+        "heightVersion": 7,
+        "marchPoint": [
+          -1.128923114623092, 0.29213444124593524, 3.931870410832735
+        ],
+        "marchStage": "local",
+        "marchTrack": "march-sd1",
+        "materials": 7,
+        "morphing": false,
+        "near": 0.02,
+        "position": [-0.5464320261786741, 2.11259887410765, 6.561407571409793],
+        "region": "chishui",
+        "regionalBounds": [
+          -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+          5.224132337484209
+        ],
+        "target": [-1.125907494539302, 0.2688132929601987, 3.927428169770576],
+        "targetGround": 0.06914420174616931,
+        "targetPlaneWidth": 5.775942077128978,
+        "targetWater": 0.06981258042267871,
+        "terrainMeshes": 2,
+        "textures": 6,
+        "time": 184002.8,
+        "triangles": 2752686,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "progress": "290.2",
+      "regions": ["赤水河谷区域"]
+    },
+    {
+      "chapter": "chapter-event-sd-2",
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 92,
+        "cameraFloor": 0.1414063933191976,
+        "closeBounds": null,
+        "distance": 3.2669840183170016,
+        "exaggeration": 12,
+        "far": 17.067936073268008,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 12.39999999999418,
+        "frameP95Ms": 12.60000000000582,
+        "geometries": 122,
+        "heightVersion": 9,
+        "marchPoint": [
+          -1.0708932472738624, 0.32818955859541915, 4.103352658521914
+        ],
+        "marchStage": "local",
+        "marchTrack": "march-sd2",
+        "materials": 7,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          -0.4940376270373392, 2.1456533744692474, 6.738214595073848
+        ],
+        "region": "chishui",
+        "regionalBounds": [
+          -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+          5.224132337484209
+        ],
+        "target": [-1.0735130953979668, 0.3018677933217948, 4.104235193434632],
+        "targetGround": 0.0733897688388836,
+        "targetPlaneWidth": 5.775942077128978,
+        "targetWater": 0.07520017375622647,
+        "terrainMeshes": 2,
+        "textures": 6,
+        "time": 262819.1,
+        "triangles": 2747988,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "dialog": "二渡赤水",
+      "progress": "338.6"
+    },
+    {
+      "chapter": "chapter-event-sd-3",
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 49,
+        "cameraFloor": 0.14362823913759054,
+        "closeBounds": null,
+        "distance": 3.266984018316993,
+        "exaggeration": 12,
+        "far": 17.067936073267973,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 12.5,
+        "frameP95Ms": 12.599999999976715,
+        "geometries": 139,
+        "heightVersion": 9,
+        "marchPoint": [-0.7040625292884, 0.3002319984427947, 4.46199399928791],
+        "marchStage": "local",
+        "marchTrack": "march-sd3",
+        "materials": 7,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          -1.4209769861803323, 2.4374894816018564, 6.833355117276726
+        ],
+        "region": "chishui",
+        "regionalBounds": [
+          -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+          5.224132337484209
+        ],
+        "target": [-0.6897625421583468, 0.3072441622161606, 4.466803851821528],
+        "targetGround": 0.09337621761873652,
+        "targetPlaneWidth": 5.775942077128963,
+        "targetWater": null,
+        "terrainMeshes": 2,
+        "textures": 6,
+        "time": 410376.7,
+        "triangles": 2667986,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "dialog": "三渡赤水",
+      "progress": "362.2"
+    },
+    {
+      "chapter": "chapter-event-sd-4",
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 91,
+        "cameraFloor": 0.15968218120752384,
+        "closeBounds": null,
+        "distance": 3.266984018317,
+        "exaggeration": 12,
+        "far": 17.067936073268,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.400000000023283,
+        "frameP95Ms": 12.5,
+        "geometries": 143,
+        "heightVersion": 9,
+        "marchPoint": [
+          -0.9243547501408308, 0.265096935701294, 4.0908605997563665
+        ],
+        "marchStage": "local",
+        "marchTrack": "march-sd4",
+        "materials": 7,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          -0.34920944805456855, 2.1094808920183974, 6.726264460742868
+        ],
+        "region": "chishui",
+        "regionalBounds": [
+          -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+          5.224132337484209
+        ],
+        "target": [-0.928684916415196, 0.26569531087094606, 4.092285059103653],
+        "targetGround": 0.0966130831134274,
+        "targetPlaneWidth": 5.775942077128975,
+        "targetWater": null,
+        "terrainMeshes": 2,
+        "textures": 6,
+        "time": 516484.5,
+        "triangles": 2739136,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "dialog": "四渡赤水",
+      "progress": "392"
+    }
+  ],
+  "customFollow": {
+    "before": {
+      "browseRegion": "chishui",
+      "calls": 53,
+      "cameraFloor": 0.1733996073250728,
+      "closeBounds": null,
+      "distance": 3.266984018316992,
+      "exaggeration": 12,
+      "far": 17.067936073267965,
+      "fieldCache": 2,
+      "fov": 43,
+      "frameMedianMs": 12.5,
+      "frameP95Ms": 12.600000000034925,
+      "geometries": 138,
+      "heightVersion": 9,
+      "marchPoint": [
+        -0.1962006025231443, 0.3083282457518998, 4.105574469416705
+      ],
+      "marchStage": "local",
+      "marchTrack": "march-sd3",
+      "materials": 7,
+      "morphing": false,
+      "near": 0.02,
+      "position": [-0.9274150465451282, 2.438573565137595, 6.472125734871902],
+      "region": "chishui",
+      "regionalBounds": [
+        -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+        5.224132337484209
+      ],
+      "target": [-0.1962006025231443, 0.3083282457518992, 4.105574469416705],
+      "targetGround": 0.14296942701030002,
+      "targetPlaneWidth": 5.775942077128961,
+      "targetWater": null,
+      "terrainMeshes": 2,
+      "textures": 6,
+      "time": 324052.1,
+      "triangles": 2674818,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1912, 852],
+      "visibility": "visible"
+    },
+    "frames": [
+      {
+        "data": {
+          "browseRegion": "chishui",
+          "calls": 53,
+          "cameraFloor": 0.1733996073250728,
+          "closeBounds": null,
+          "distance": 3.266984018316992,
+          "exaggeration": 12,
+          "far": 17.067936073267965,
+          "fieldCache": 2,
+          "fov": 43,
+          "frameMedianMs": 12.5,
+          "frameP95Ms": 12.600000000034925,
+          "geometries": 138,
+          "heightVersion": 9,
+          "marchPoint": [
+            -0.1962006025231443, 0.3083282457518998, 4.105574469416705
+          ],
+          "marchStage": "local",
+          "marchTrack": "march-sd3",
+          "materials": 7,
+          "morphing": false,
+          "near": 0.02,
+          "position": [
+            -0.9274150465451282, 2.438573565137595, 6.472125734871902
+          ],
+          "region": "chishui",
+          "regionalBounds": [
+            -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+            5.224132337484209
+          ],
+          "target": [
+            -0.1962006025231443, 0.3083282457518992, 4.105574469416705
+          ],
+          "targetGround": 0.14296942701030002,
+          "targetPlaneWidth": 5.775942077128961,
+          "targetWater": null,
+          "terrainMeshes": 2,
+          "textures": 6,
+          "time": 324052.1,
+          "triangles": 2674818,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+          "viewport": [1912, 852],
+          "visibility": "visible"
+        },
+        "region": "赤水河谷 · 区域体验",
+        "time": "348.8"
+      },
+      {
+        "data": {
+          "browseRegion": "chishui",
+          "calls": 53,
+          "cameraFloor": 0.1733996073250728,
+          "closeBounds": null,
+          "distance": 3.266984018316992,
+          "exaggeration": 12,
+          "far": 17.067936073267965,
+          "fieldCache": 2,
+          "fov": 43,
+          "frameMedianMs": 12.5,
+          "frameP95Ms": 12.600000000034925,
+          "geometries": 138,
+          "heightVersion": 9,
+          "marchPoint": [
+            -0.1962006025231443, 0.3083282457518998, 4.105574469416705
+          ],
+          "marchStage": "local",
+          "marchTrack": "march-sd3",
+          "materials": 7,
+          "morphing": false,
+          "near": 0.02,
+          "position": [
+            -0.9274150465451282, 2.438573565137595, 6.472125734871902
+          ],
+          "region": "chishui",
+          "regionalBounds": [
+            -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+            5.224132337484209
+          ],
+          "target": [
+            -0.1962006025231443, 0.3083282457518992, 4.105574469416705
+          ],
+          "targetGround": 0.14296942701030002,
+          "targetPlaneWidth": 5.775942077128961,
+          "targetWater": null,
+          "terrainMeshes": 2,
+          "textures": 6,
+          "time": 324052.1,
+          "triangles": 2674818,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+          "viewport": [1912, 852],
+          "visibility": "visible"
+        },
+        "region": "赤水河谷 · 区域体验",
+        "time": "351.2"
+      },
+      {
+        "data": {
+          "browseRegion": "chishui",
+          "calls": 54,
+          "cameraFloor": 0.16615724693336104,
+          "closeBounds": null,
+          "distance": 3.2669840183169927,
+          "exaggeration": 12,
+          "far": 17.067936073267973,
+          "fieldCache": 2,
+          "fov": 43,
+          "frameMedianMs": 8.400000000023283,
+          "frameP95Ms": 12.600000000034925,
+          "geometries": 139,
+          "heightVersion": 9,
+          "marchPoint": [
+            -0.13996465110749007, 0.2991120184396109, 4.4130723043830695
+          ],
+          "marchStage": "local",
+          "marchTrack": "march-sd3",
+          "materials": 7,
+          "morphing": false,
+          "near": 0.02,
+          "position": [
+            -0.8711790951294747, 2.429357337825306, 6.779623569838268
+          ],
+          "region": "chishui",
+          "regionalBounds": [
+            -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+            5.224132337484209
+          ],
+          "target": [
+            -0.1399646511074898, 0.29911201843961066, 4.4130723043830695
+          ],
+          "targetGround": 0.15053470661490168,
+          "targetPlaneWidth": 5.775942077128962,
+          "targetWater": null,
+          "terrainMeshes": 2,
+          "textures": 6,
+          "time": 325052.2,
+          "triangles": 2677522,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+          "viewport": [1912, 852],
+          "visibility": "visible"
+        },
+        "region": "赤水河谷 · 区域体验",
+        "time": "352.8"
+      },
+      {
+        "data": {
+          "browseRegion": "chishui",
+          "calls": 54,
+          "cameraFloor": 0.16615724693336104,
+          "closeBounds": null,
+          "distance": 3.2669840183169927,
+          "exaggeration": 12,
+          "far": 17.067936073267973,
+          "fieldCache": 2,
+          "fov": 43,
+          "frameMedianMs": 8.400000000023283,
+          "frameP95Ms": 12.600000000034925,
+          "geometries": 139,
+          "heightVersion": 9,
+          "marchPoint": [
+            -0.13996465110749007, 0.2991120184396109, 4.4130723043830695
+          ],
+          "marchStage": "local",
+          "marchTrack": "march-sd3",
+          "materials": 7,
+          "morphing": false,
+          "near": 0.02,
+          "position": [
+            -0.8711790951294747, 2.429357337825306, 6.779623569838268
+          ],
+          "region": "chishui",
+          "regionalBounds": [
+            -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+            5.224132337484209
+          ],
+          "target": [
+            -0.1399646511074898, 0.29911201843961066, 4.4130723043830695
+          ],
+          "targetGround": 0.15053470661490168,
+          "targetPlaneWidth": 5.775942077128962,
+          "targetWater": null,
+          "terrainMeshes": 2,
+          "textures": 6,
+          "time": 325052.2,
+          "triangles": 2677522,
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+          "viewport": [1912, 852],
+          "visibility": "visible"
+        },
+        "region": "赤水河谷 · 区域体验",
+        "time": "355.2"
+      }
+    ]
+  },
+  "crossRegion": [
+    {
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 131,
+        "cameraFloor": 0.007840219816986668,
+        "closeBounds": null,
+        "distance": 8.83108690932209,
+        "exaggeration": 12,
+        "far": 39.32434763728836,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.300000000046566,
+        "frameP95Ms": 12.5,
+        "geometries": 176,
+        "heightVersion": 106,
+        "marchPoint": [
+          2.3740551204027422, 0.215157369886912, 6.485696026707561
+        ],
+        "marchStage": "transfer",
+        "marchTrack": "march-zunyi",
+        "materials": 4,
+        "morphing": false,
+        "near": 0.02,
+        "position": [3.2380551204027426, 5.25581869634636, 13.685696026707562],
+        "region": null,
+        "regionalBounds": null,
+        "target": [2.3740551204027427, 0.21581869634636136, 6.485696026707561],
+        "targetGround": 0.08802087475511827,
+        "targetPlaneWidth": 15.613130085837774,
+        "targetWater": null,
+        "terrainMeshes": 1,
+        "textures": 6,
+        "time": 570301.4,
+        "triangles": 950886,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "value": "195.7"
+    },
+    {
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 131,
+        "cameraFloor": 0.007840219816986668,
+        "closeBounds": null,
+        "distance": 8.83108690932209,
+        "exaggeration": 12,
+        "far": 39.32434763728836,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.300000000046566,
+        "frameP95Ms": 12.5,
+        "geometries": 176,
+        "heightVersion": 106,
+        "marchPoint": [
+          2.3740551204027422, 0.215157369886912, 6.485696026707561
+        ],
+        "marchStage": "transfer",
+        "marchTrack": "march-zunyi",
+        "materials": 4,
+        "morphing": false,
+        "near": 0.02,
+        "position": [3.2380551204027426, 5.25581869634636, 13.685696026707562],
+        "region": null,
+        "regionalBounds": null,
+        "target": [2.3740551204027427, 0.21581869634636136, 6.485696026707561],
+        "targetGround": 0.08802087475511827,
+        "targetPlaneWidth": 15.613130085837774,
+        "targetWater": null,
+        "terrainMeshes": 1,
+        "textures": 6,
+        "time": 570301.4,
+        "triangles": 950886,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "value": "198.6"
+    },
+    {
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 131,
+        "cameraFloor": 0.007830931189939555,
+        "closeBounds": null,
+        "distance": 8.83108690932209,
+        "exaggeration": 12,
+        "far": 39.32434763728836,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.300000000046566,
+        "frameP95Ms": 12.599999999976715,
+        "geometries": 176,
+        "heightVersion": 106,
+        "marchPoint": [
+          2.3721804879805632, 0.21618846821626547, 6.484644690441136
+        ],
+        "marchStage": "transfer",
+        "marchTrack": "march-zunyi",
+        "materials": 4,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          3.2361804879805636, 5.2568497946757144, 13.684644690441136
+        ],
+        "region": null,
+        "regionalBounds": null,
+        "target": [2.3721804879805637, 0.21684979467571489, 6.484644690441136],
+        "targetGround": 0.08761498274156722,
+        "targetPlaneWidth": 15.613130085837774,
+        "targetWater": null,
+        "terrainMeshes": 1,
+        "textures": 6,
+        "time": 571301.4,
+        "triangles": 950886,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "value": "202.9"
+    },
+    {
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 131,
+        "cameraFloor": 0.007830931189939555,
+        "closeBounds": null,
+        "distance": 8.83108690932209,
+        "exaggeration": 12,
+        "far": 39.32434763728836,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.300000000046566,
+        "frameP95Ms": 12.599999999976715,
+        "geometries": 176,
+        "heightVersion": 106,
+        "marchPoint": [
+          2.3721804879805632, 0.21618846821626547, 6.484644690441136
+        ],
+        "marchStage": "transfer",
+        "marchTrack": "march-zunyi",
+        "materials": 4,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          3.2361804879805636, 5.2568497946757144, 13.684644690441136
+        ],
+        "region": null,
+        "regionalBounds": null,
+        "target": [2.3721804879805637, 0.21684979467571489, 6.484644690441136],
+        "targetGround": 0.08761498274156722,
+        "targetPlaneWidth": 15.613130085837774,
+        "targetWater": null,
+        "terrainMeshes": 1,
+        "textures": 6,
+        "time": 571301.4,
+        "triangles": 950886,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "value": "205.8"
+    },
+    {
+      "data": {
+        "browseRegion": "chishui",
+        "calls": 131,
+        "cameraFloor": 0.007830931189939555,
+        "closeBounds": null,
+        "distance": 8.83108690932209,
+        "exaggeration": 12,
+        "far": 39.32434763728836,
+        "fieldCache": 2,
+        "fov": 43,
+        "frameMedianMs": 8.300000000046566,
+        "frameP95Ms": 12.599999999976715,
+        "geometries": 176,
+        "heightVersion": 106,
+        "marchPoint": [
+          2.3721804879805632, 0.21618846821626547, 6.484644690441136
+        ],
+        "marchStage": "transfer",
+        "marchTrack": "march-zunyi",
+        "materials": 4,
+        "morphing": false,
+        "near": 0.02,
+        "position": [
+          3.2361804879805636, 5.2568497946757144, 13.684644690441136
+        ],
+        "region": null,
+        "regionalBounds": null,
+        "target": [2.3721804879805637, 0.21684979467571489, 6.484644690441136],
+        "targetGround": 0.08761498274156722,
+        "targetPlaneWidth": 15.613130085837774,
+        "targetWater": null,
+        "terrainMeshes": 1,
+        "textures": 6,
+        "time": 571301.4,
+        "triangles": 950886,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+        "viewport": [1912, 852],
+        "visibility": "visible"
+      },
+      "value": "208.7"
+    }
+  ],
+  "notes": [
+    "Final build confirmed the observed Erlang crossing label, four-crossing arrival prompt and Chishui terrain together; DOM regression also passes.",
+    "Temporary viewport reset to native desktop."
+  ],
+  "finalFourthCrossing": {
+    "arrival": "四渡赤水已到达 · 点击阅读，三秒后自动展开",
+    "chapter": "chapter-event-sd-4",
+    "data": {
+      "browseRegion": "chishui",
+      "calls": 94,
+      "cameraFloor": 0.1596642928945306,
+      "closeBounds": null,
+      "distance": 3.2669840183170016,
+      "exaggeration": 12,
+      "far": 17.067936073268008,
+      "fieldCache": 2,
+      "fov": 43,
+      "frameMedianMs": 12.5,
+      "frameP95Ms": 12.60000000000582,
+      "geometries": 146,
+      "heightVersion": 3,
+      "marchPoint": [
+        -0.9243547501408308, 0.26509693570129406, 4.0908605997563665
+      ],
+      "marchStage": "local",
+      "marchTrack": "march-sd4",
+      "materials": 7,
+      "morphing": false,
+      "near": 0.02,
+      "position": [-0.34790526937500077, 2.0847306495605604, 6.725835437339615],
+      "region": "chishui",
+      "regionalBounds": [
+        -1.9770805396097015, 3.395686019364735, 0.06377679160031136,
+        5.224132337484209
+      ],
+      "target": [-0.9273807377356283, 0.2409450684131079, 4.091856035700399],
+      "targetGround": 0.09260295257267662,
+      "targetPlaneWidth": 5.775942077128978,
+      "targetWater": null,
+      "terrainMeshes": 2,
+      "textures": 6,
+      "time": 121762.5,
+      "triangles": 2752696,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "viewport": [1912, 852],
+      "visibility": "visible"
+    },
+    "progress": "392",
+    "visibleMarkers": [
+      "一渡赤水，猿猴场（今元厚）附近",
+      "三渡赤水，茅台附近",
+      "四渡赤水·第四次渡河，二郎滩相关地区（今二郎镇参考）",
+      "遵义会议相关决议通过，云南扎西相关区域"
+    ]
+  }
+}
