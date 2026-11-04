@@ -1,0 +1,203 @@
+@font-face {
+  font-family: 'Journey Book Brush';
+  src: url('../app/exhibition/assets/book-calligraphy.woff2') format('woff2');
+  font-display: swap;
+}
+.drawer-layer:has(.journey-epilogue) {
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.journey-exhibition .exhibition-drawer.journey-epilogue {
+  width: min(1120px, calc(100vw - 48px));
+  height: auto;
+  max-height: calc(100dvh - 40px);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.journey-epilogue > header {
+  border: 0;
+  padding: 0 12px 16px;
+}
+.journey-epilogue > header h2 {
+  font:
+    400 30px/1.5 'Journey Book Brush',
+    var(--font-art);
+  color: #eddaa9;
+}
+.journey-exhibition .journey-epilogue > .drawer-content {
+  padding: 0;
+  overflow: auto;
+  flex: none;
+}
+.journey-epilogue > .drawer-footer {
+  display: none;
+}
+.journey-epilogue .close-button {
+  color: #f0dba6;
+  font-family: 'Journey Book Brush', var(--font-art);
+  font-size: 21px;
+}
+.victory-book {
+  position: relative;
+  isolation: isolate;
+  padding: 14px 12px 20px;
+}
+.victory-book-cover {
+  position: absolute;
+  inset: 4px 0 10px;
+  background: #623c2b;
+  border: 1px solid #a47b55;
+  border-radius: 3px 10px 10px 3px;
+  rotate: -0.6deg;
+  box-shadow: 0 26px 70px #0009;
+  z-index: -1;
+}
+.victory-book-spread {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 430px;
+  background: #e5d5ad;
+  border-bottom: 8px solid #c3ac7f;
+}
+.victory-book-page {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 54px 30px 58px;
+  background: linear-gradient(
+    90deg,
+    #d0ba8a30,
+    #f1e5c5 14%,
+    #eadbb6 86%,
+    #a58b5c25
+  );
+}
+.victory-book-page:nth-child(2) {
+  border-left: 1px solid #a88c5c60;
+}
+.victory-book-page h3 {
+  position: absolute;
+  right: 15px;
+  top: 32px;
+  writing-mode: vertical-rl;
+  font:
+    400 31px/1.3 'Journey Book Brush',
+    var(--font-art);
+  margin: 0;
+  color: #652b20;
+}
+.victory-book-columns {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: clamp(12px, 2.5vw, 32px);
+}
+.victory-book-columns p {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  margin: 0;
+  white-space: nowrap;
+  font:
+    400 clamp(21px, 2.25vw, 29px)/1.2 'Journey Book Brush',
+    var(--font-art);
+  letter-spacing: 0.12em;
+  color: #30291f;
+  animation: victory-ink 3.1s linear both;
+}
+.victory-book-binding {
+  position: absolute;
+  inset: 0 auto 0 50%;
+  width: 24px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, #6b502438, transparent);
+  pointer-events: none;
+}
+.victory-book-folio {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  font:
+    400 20px 'Journey Book Brush',
+    var(--font-art);
+  color: #756140;
+}
+.victory-book-seal {
+  position: absolute;
+  bottom: 58px;
+  left: 39px;
+  border: 2px solid #963d2a;
+  padding: 3px;
+  font:
+    400 20px/1.1 'Journey Book Brush',
+    var(--font-art);
+  color: #963d2a;
+  rotate: -6deg;
+}
+.victory-book-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 20px 8px 0;
+}
+.victory-book-actions :is(button, a) {
+  border: 0;
+  border-bottom: 1px solid #c5a16a80;
+  background: transparent;
+  color: #f0dba6;
+  padding: 8px 3px;
+  font:
+    400 22px/1.3 'Journey Book Brush',
+    var(--font-art);
+  text-decoration: none;
+}
+.victory-book-actions :is(button, a):hover {
+  color: #fff2cc;
+  border-color: currentColor;
+}
+.victory-book.is-complete .victory-book-columns p {
+  animation: none;
+}
+@keyframes victory-ink {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@media (max-width: 760px) {
+  .victory-book-page {
+    padding: 50px 12px 50px;
+  }
+  .victory-book-columns {
+    gap: 8px;
+  }
+  .victory-book-columns p {
+    font-size: 18px;
+  }
+  .victory-book-page h3 {
+    font-size: 24px;
+    right: 4px;
+    top: 12px;
+    writing-mode: horizontal-tb;
+  }
+  .victory-book-spread {
+    min-height: 350px;
+  }
+  .victory-book-seal {
+    bottom: 45px;
+    left: 25px;
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .victory-book-columns p {
+    animation: none;
+  }
+}

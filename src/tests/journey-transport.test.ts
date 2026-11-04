@@ -263,7 +263,7 @@ describe('真实补充内容与原始审核隔离', () => {
   });
   it('战略轨道具备逐点定位来源和时间范围，strict不因此增加发布数据', () => {
     const c = createJourneyContent(dataset, 'exhibition');
-    expect(c.plan.tracks).toHaveLength(62);
+    expect(c.plan.tracks).toHaveLength(65);
     expect(c.plan.tracks.some((t) => t.camp === 'nationalist_army')).toBe(true);
     for (const t of c.supplement.tracks) {
       expect(t.points).toHaveLength(t.locationReferenceIds.length);
@@ -331,14 +331,15 @@ it('regional transfers show overview, move along their own source vertices and a
     for (const track of start.tracks.filter(
       (t) => t.presentation === 'regional_transfer',
     )) {
-      expect(start.stage).toBe('overview');
+      const seamless = chapter.id === 'chapter-event-sd';
+      expect(start.stage).toBe(seamless ? 'local' : 'overview');
       expect(journeyTrackProgress(track, start)).toBe(0);
       const moving = sampleJourney(
         c.plan,
         'central',
         chapter.start + chapter.duration * 0.5,
       );
-      expect(moving.stage).toBe('transit');
+      expect(moving.stage).toBe(seamless ? 'local' : 'transit');
       expect(journeyTrackProgress(track, moving)).toBeGreaterThan(0);
       const arrived = sampleJourney(
         c.plan,
@@ -357,10 +358,60 @@ it('regional transfers show overview, move along their own source vertices and a
   }
 });
 
-it('does not borrow the central army route when the red twenty-fifth army sequence reaches the shared meeting chapter', () => {
-  const c = createJourneyContent(dataset, 'exhibition');
-  const chapter = journeyChapters(c.plan, 'red25').find(
-    (c) => c.id === 'chapter-ex-event-ganquan',
+it('follows the Red 25th Army from departure and hands the last leg to the 15th Corps at Yongping', () => {
+  const { plan } = createJourneyContent(dataset, 'exhibition');
+  const chapters = journeyChapters(plan, 'red25');
+  const t = createJourneyTransport(plan);
+  t.unit('nationalist-blockade');
+  t.sequence('red25');
+  expect(t.read().unitId).toBe('central-red');
+  let lastEndpoint;
+  for (const [i, chapter] of chapters.entries()) {
+    const start = sampleJourney(plan, 'red25', chapter.start);
+    expect(start.transition).toBe(false);
+    expect(start.tracks).toHaveLength(1);
+    const track = start.tracks[0]!;
+    expect(track.unitId).toBe(
+      i === 2 ? 'red-fifteenth-corps' : 'red-twenty-fifth',
+    );
+    expect(track.precision).toBe('schematic');
+    if (i > 0) expect(track.points[0]).toEqual(lastEndpoint);
+    lastEndpoint = track.points.at(-1);
+    const mid = chapter.start + chapter.duration * 0.5;
+    t.seek(chapter.start);
+    t.play();
+    t.advance(mid - chapter.start);
+    t.pause();
+    const pause = sampleJourney(plan, 'red25', t.read().time);
+    const pose = sampleTrack(track, journeyTrackProgress(track, pause));
+    expect(pose?.coordinates).not.toEqual(track.points[0]);
+    t.seek(chapter.end);
+    t.seek(mid);
+    expect(
+      sampleTrack(
+        track,
+        journeyTrackProgress(
+          track,
+          sampleJourney(plan, 'red25', t.read().time),
+        ),
+      ),
+    ).toEqual(pose);
+  }
+  const ganquan = chapters.at(-1)!;
+  const central = journeyChapters(plan, 'central').find(
+    (c) => c.id === ganquan.id,
   )!;
-  expect(sampleJourney(c.plan, 'red25', chapter.start).tracks).toHaveLength(0);
+  expect(central.cues).not.toEqual(ganquan.cues);
+  expect(
+    sampleJourney(plan, 'central', central.start).tracks.map((t) => t.id),
+  ).toContain('march-ganquan');
+  expect(
+    sampleJourney(plan, 'central', central.start).tracks.map((t) => t.id),
+  ).not.toContain('march-red25-ganquan');
+  t.restart();
+  expect(t.read()).toMatchObject({
+    sequenceId: 'red25',
+    playing: false,
+    time: 0,
+  });
 });

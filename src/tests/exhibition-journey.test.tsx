@@ -7,6 +7,7 @@ import raw from '../data/verified/dataset.json';
 import { COMPLETION_STORAGE_KEY } from '../app/experience/experience-completion-service';
 import { GEOGRAPHIC_VIEWS } from '../app/landscape/map-regions';
 import { isGeographicRegion } from '../app/exhibition/exhibition-content';
+import { eventTerrainBounds } from '../app/landscape/event-terrain';
 import type { ComponentProps } from 'react';
 import type { ExhibitionPanorama } from '../app/landscape/ExhibitionPanorama';
 import { createJourneyContent } from '../app/exhibition/exhibition-content';
@@ -144,6 +145,7 @@ it('uses the same overview, moving corridor and close arrival flow for all regio
     c = createJourneyContent(raw, 'exhibition');
   await user.click(screen.getByRole('button', { name: '自由探索山河' }));
   for (const chapter of journeyChapters(c.plan, 'central')) {
+    if (chapter.id === 'chapter-event-sd') continue; // The joined field has its own seamless handoff regression below.
     if (
       !c.plan.tracks.some(
         (t) =>
@@ -192,6 +194,17 @@ it('loads the arriving region and moves into follow scale before opening every s
     fireEvent.click(screen.getByRole('button', { name: '开始或继续行军' }));
     act(() => cameraBoundary.transport!.advance(1));
     const event = c.dataset.events.find((e) => e.id === chapter.eventIds[0])!;
+    if (chapter.id === 'chapter-ex-event-jiangtai') {
+      const book = screen.getByRole('dialog', { name: '长征胜利 · 薪火长明' });
+      expect(book).toBeVisible();
+      expect(
+        within(book).getByText('长征的胜利，保存和锻炼了'),
+      ).toBeInTheDocument();
+      expect(cameraBoundary.focusMarch).toHaveBeenCalledWith('follow');
+      fireEvent.click(within(book).getByRole('button', { name: '返回地图' }));
+      expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
+      continue;
+    }
     expect(
       screen.getByRole('button', { name: `已到达${event.title}，点击阅读` }),
       chapter.id,
@@ -199,7 +212,16 @@ it('loads the arriving region and moves into follow scale before opening every s
     expect(cameraBoundary.focusMarch, chapter.id).toHaveBeenCalledWith(
       'follow',
     );
-    if (isGeographicRegion(chapter.regionId)) {
+    const placement = c.map.entries.find((p) =>
+      chapter.eventIds.includes(p.eventId),
+    )!;
+    const eventBounds = eventTerrainBounds(placement.anchorCoordinates);
+    if (eventBounds) {
+      expect(cameraBoundary.prepareRegion, chapter.id).toHaveBeenCalledWith(
+        null,
+        eventBounds,
+      );
+    } else if (isGeographicRegion(chapter.regionId)) {
       expect(cameraBoundary.prepareRegion, chapter.id).toHaveBeenCalledWith(
         chapter.regionId,
       );
@@ -266,6 +288,82 @@ it('loads the arriving terrain in free mode while keeping the chosen camera mode
     'aria-pressed',
     'true',
   );
+});
+
+it('keeps the joined Zunyi–Chishui terrain and user composition through both automatic and manual chapter handoffs', async () => {
+  const user = await enter(),
+    c = createJourneyContent(raw, 'exhibition');
+  await user.selectOptions(
+    screen.getByLabelText('跳转行军章节'),
+    'chapter-event-zy',
+  );
+  await user.click(screen.getByRole('button', { name: '自由' }));
+  for (const method of [
+    cameraBoundary.focusMarch,
+    cameraBoundary.frameMarch,
+    cameraBoundary.focusGeo,
+    cameraBoundary.overview,
+  ])
+    method.mockClear();
+  await user.click(screen.getByRole('button', { name: '下一行军章节' }));
+  expect(screen.getByLabelText('跳转行军章节')).toHaveValue('chapter-event-sd');
+  expect(screen.getByRole('button', { name: '自由' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+  expect(screen.getByLabelText('当前区域')).toHaveTextContent('chishui');
+  expect(cameraBoundary.prepareRegion).toHaveBeenCalledWith('chishui');
+  for (const method of [
+    cameraBoundary.focusMarch,
+    cameraBoundary.frameMarch,
+    cameraBoundary.focusGeo,
+    cameraBoundary.overview,
+  ])
+    expect(method).not.toHaveBeenCalled();
+  const next = journeyChapters(c.plan, 'central').find(
+    (x) => x.id === 'chapter-event-sd',
+  )!;
+  await user.selectOptions(
+    screen.getByLabelText('跳转行军章节'),
+    'chapter-event-zy',
+  );
+  fireEvent.change(screen.getByLabelText('行军演示进度'), {
+    target: { value: next.start + 0.1 },
+  });
+  expect(screen.getByLabelText('当前区域')).toHaveTextContent('chishui');
+  expect(cameraBoundary.frameMarch).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: '自由' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+});
+
+it('the final book can reveal text, open the reunion story, close, and restart without creating completion', async () => {
+  const user = await enter(),
+    c = createJourneyContent(raw, 'exhibition');
+  const final = journeyChapters(c.plan, 'central').at(-1)!;
+  fireEvent.change(screen.getByLabelText('行军演示进度'), {
+    target: { value: final.start + final.duration * final.arrival - 0.1 },
+  });
+  await user.click(screen.getByRole('button', { name: '开始或继续行军' }));
+  act(() => cameraBoundary.transport!.advance(1));
+  const book = screen.getByRole('dialog', { name: '长征胜利 · 薪火长明' });
+  await user.click(within(book).getByRole('button', { name: '显示全文' }));
+  expect(book.querySelector('.victory-book')).toHaveClass('is-complete');
+  expect(within(book).getByRole('link', { name: '资料来源' })).toHaveAttribute(
+    'href',
+    expect.stringContaining('20161021'),
+  );
+  await user.click(within(book).getByRole('button', { name: '会师纪事' }));
+  const story = screen.getByRole('dialog', { name: final.title });
+  expect(story).toHaveTextContent('1936年10月22日');
+  await user.click(
+    within(story).getByRole('button', { name: '返回地图，继续行军' }),
+  );
+  expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
+  await user.click(screen.getByRole('button', { name: '瑞金开篇' }));
+  expect(screen.getByRole('button', { name: '开始行军' })).toBeVisible();
+  expect(cameraBoundary.transport!.read().time).toBe(0);
 });
 async function enter() {
   const user = userEvent.setup();
@@ -463,49 +561,31 @@ it('passes single and continuous A scopes and restores macro time, unit, camera 
   );
   expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
 });
-it('retains the real five-step B/C1 interaction, active completion, record and replay', async () => {
+it('moves teaching knowledge into ordinary reading with sources, no task gate, and no false completion record', async () => {
   const user = await enter();
   await read(user, 'event-ld');
-  await user.click(screen.getByRole('button', { name: '开始图文互动' }));
-  await screen.findByRole('heading', { name: '第 1 / 5 步' });
+  const dialog = screen.getByRole('dialog', { name: '飞夺泸定桥' });
   expect(
-    screen.getByRole('button', { name: '完成体验，阅读资料' }),
-  ).toBeDisabled();
-  for (let step = 0; step < 5; step++) {
-    await user.click(screen.getByRole('button', { name: '我已阅读本段' }));
-    if (step === 1) {
-      const q = raw.interactions.find((i) => i.interactionId === 'ld-01')!;
-      if (q.interactionType !== 'observe_hotspots') throw new Error('bad data');
-      for (const m of q.materials!) {
-        await user.click(screen.getByRole('button', { name: m.title }));
-        await user.click(
-          screen.getByRole('button', { name: '确认已阅读此材料' }),
-        );
-      }
-    }
-    if (step === 3)
-      await user.click(screen.getByRole('button', { name: '提交本次判断' }));
-    if (step === 1 || step === 3) {
-      expect(screen.getByRole('button', { name: '继续主线' })).toBeDisabled();
-      await user.click(
-        screen.getByRole('button', { name: '我已阅读并理解解释' }),
-      );
-      await user.click(screen.getByRole('button', { name: '继续主线' }));
-    }
-    if (step < 4)
-      await user.click(screen.getByRole('button', { name: '下一段' }));
-  }
+    within(dialog).queryByRole('button', { name: '开始图文互动' }),
+  ).not.toBeInTheDocument();
+  expect(
+    within(dialog).queryByRole('button', { name: '我已阅读本段' }),
+  ).not.toBeInTheDocument();
+  expect(dialog).toHaveTextContent('桥梁');
+  expect(dialog).toHaveTextContent('铺板');
+  expect(
+    within(dialog).getByRole('button', { name: '资料来源' }),
+  ).toBeEnabled();
+  expect(
+    within(dialog).getByRole('button', { name: '返回地图，继续行军' }),
+  ).toBeEnabled();
   expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
-  await user.click(screen.getByRole('button', { name: '完成体验，阅读资料' }));
-  await screen.findByRole('dialog', { name: '飞夺泸定桥' });
-  const saved = JSON.parse(localStorage.getItem(COMPLETION_STORAGE_KEY)!);
-  expect(saved.records).toHaveLength(1);
-  expect(saved.records[0].completedInteractionIds.sort()).toEqual([
-    'ld-01',
-    'ld-02',
-  ]);
-  await user.click(screen.getByRole('button', { name: '开始图文互动' }));
-  expect(
-    await screen.findByRole('heading', { name: '第 1 / 5 步' }),
-  ).toBeVisible();
+  await user.click(
+    within(dialog).getByRole('button', { name: '返回地图，继续行军' }),
+  );
+  await read(user, 'event-ld');
+  expect(screen.getByRole('dialog', { name: '飞夺泸定桥' })).toHaveTextContent(
+    '铺板',
+  );
+  expect(localStorage.getItem(COMPLETION_STORAGE_KEY)).toBeNull();
 });

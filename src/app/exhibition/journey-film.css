@@ -1,0 +1,306 @@
+[data-film='true'] .film-seal {
+  color: #fff7e7;
+  background: #b84228;
+  border: 1px solid #ffbd8d;
+  border-radius: 2px;
+  font-family: 'Noto Serif SC', serif;
+  box-shadow: 0 2px 6px #301b164d;
+}
+[data-film='true'] .film-decoy {
+  background: #57420d;
+  color: #ffe797;
+  border-color: #ddba64;
+}
+.film-seal small {
+  font-size: 0.83em;
+}
+.film-card {
+  position: absolute;
+  z-index: 7;
+  top: 158px;
+  left: clamp(32px, 4.2vw, 80px);
+  width: min(320px, 32vw);
+  color: #faf0db;
+  background: rgba(13, 20, 22, 0.94);
+  border: 1px solid #b69c6f80;
+  border-top: 2px solid #d2ae70;
+  box-shadow: 0 8px 25px #0004;
+  padding: 14px 18px 8px;
+}
+.film-card[data-tone='blue'] {
+  border-top-color: #93bdf4;
+}
+.film-card[data-tone='red'] {
+  border-top-color: #f48b67;
+}
+.film-annotation {
+  margin: 7px 0 0;
+  color: #f3e8d3;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.film-dispositions {
+  margin: 8px 0 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.film-dispositions div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.film-dispositions dt {
+  color: #a7caf1;
+  font-weight: 600;
+}
+.film-dispositions dd {
+  margin: 0;
+  color: #e5dece;
+}
+.film-annotation b {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #d9b87d;
+}
+.film-card[data-tone='blue'] .film-annotation b {
+  color: #a4ccfa;
+}
+.film-card[data-tone='red'] .film-annotation b {
+  color: #ff9f7c;
+}
+.film-caption em {
+  font-style: normal;
+  color: #ffcc7c;
+}
+.film-card header,
+.film-card footer,
+.film-forces,
+.film-crossings,
+.film-card nav,
+.film-card footer button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.film-card header,
+.film-card footer {
+  justify-content: space-between;
+}
+.film-card header {
+  font-size: 12px;
+  color: #e7d4ad;
+  gap: 14px;
+  align-items: baseline;
+}
+.film-card time {
+  font-size: 11px;
+  text-align: right;
+}
+.film-card section {
+  padding: 18px 0 12px;
+  animation: film-enter 0.32s ease-out;
+}
+.film-card small {
+  color: #c8c5b8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.film-card h3 {
+  font:
+    600 clamp(18px, 2vw, 30px)/1.45 'Noto Serif SC',
+    serif;
+  margin: 5px 0 0;
+}
+.film-card del {
+  display: block;
+  font-size: 14px;
+  color: #aec5dd;
+  text-decoration-color: #ff765a;
+}
+.film-card footer {
+  border-top: 1px solid #d9b97744;
+}
+.film-card footer button {
+  cursor: pointer;
+  color: #dfc89d;
+  font-size: 12px;
+  background: transparent;
+  border: 0;
+  min-height: 32px;
+}
+.film-card nav {
+  gap: 1px;
+}
+.film-card nav button {
+  width: 22px;
+  justify-content: center;
+}
+.film-card nav button::after {
+  content: '';
+  height: 3px;
+  width: 15px;
+  background: #70706b;
+}
+.film-card nav button[aria-current]::after {
+  background: #ff9468;
+}
+.film-forces {
+  margin-top: 12px;
+  color: #ff9568;
+  justify-content: space-around;
+  font-size: 12px;
+}
+.film-forces span + span {
+  color: #9acaff;
+}
+.film-forces strong {
+  display: block;
+  font:
+    600 26px/1.2 'Noto Serif SC',
+    serif;
+}
+.film-crossings {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #999;
+}
+.film-crossings span {
+  padding: 2px 5px;
+}
+.film-crossings [data-current='true'] {
+  color: #fff;
+  background: #a63d28;
+}
+.film-crossings [data-past='true'] {
+  color: #e8b38d;
+}
+.film-caption {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+  left: 50%;
+  bottom: 202px;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(72vw, 840px);
+  margin: 0;
+  padding: 9px 22px;
+  text-align: center;
+  text-wrap: balance;
+  color: #fff3d8;
+  background: #081012df;
+  font:
+    500 clamp(15px, 1.45vw, 23px)/1.6 'Noto Serif SC',
+    serif;
+  border-bottom: 1px solid #c4a7777a;
+}
+[data-film='true'] .journey-unit-label {
+  color: #fff5df;
+  border-radius: 1px;
+  border: 1px solid #fbe3c693;
+  background: #922f23ed;
+  font-weight: 600;
+}
+[data-film='true'] .journey-unit-label[data-camp='nationalist_army'] {
+  background: #264e87ef;
+  color: #e3f2ff;
+}
+[data-campaign-film='true'] .journey-unit-label.film-place {
+  color: #fff3d6;
+  font:
+    600 clamp(13px, 1.1vw, 19px)/1.3 'Noto Serif SC',
+    serif;
+  padding: 1px 3px;
+  background: transparent;
+  border: 0;
+  text-shadow:
+    0 1px 3px #100e0b,
+    0 0 4px #100e0b,
+    1px 1px 1px #21180d;
+}
+[data-campaign-film='true'] .journey-unit-label.film-seal {
+  font:
+    700 clamp(14px, 1.1vw, 20px)/1.3 'Noto Serif SC',
+    serif;
+  color: #fff7e1;
+  border: 3px double #f6c7a5;
+  background: #ad3827;
+  padding: 2px 7px;
+}
+[data-campaign-film='true'] .film-seal[data-past='true'] {
+  opacity: 0.62;
+  font-size: 12px;
+  border-width: 1px;
+}
+[data-campaign-film='true'] .journey-unit-label.film-decoy {
+  background: #4a3917;
+  color: #ffe9a5;
+  border: 1px dashed #e7c569;
+}
+.film-map-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 12px;
+  padding-top: 10px;
+  font-size: 11px;
+  color: #e1dbcf;
+}
+.film-map-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.film-map-key span::before {
+  content: '';
+  width: 14px;
+  border-top: 2px dashed #ff976b;
+}
+.film-map-key [data-ink='river']::before {
+  border-top: 2px solid #c9f1ff;
+}
+.film-map-key [data-ink='blue']::before {
+  border-color: #8ec9ff;
+}
+.film-map-key [data-ink='feint']::before {
+  border-color: #ffdc79;
+}
+@keyframes film-enter {
+  from {
+    opacity: 0.45;
+    transform: translateY(4px);
+  }
+}
+@media (max-width: 760px) {
+  .film-card {
+    width: min(56vw, 255px);
+    left: 15px;
+    top: 152px;
+    padding: 9px 11px 3px;
+  }
+  .film-card header {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+  .film-card section {
+    padding: 5px 0;
+  }
+  .film-card h3 {
+    font-size: 17px;
+  }
+  .film-caption {
+    max-width: 92vw;
+    bottom: clamp(194px, 29vh, 244px);
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  .film-card nav button {
+    width: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-card section {
+    animation: none;
+  }
+}

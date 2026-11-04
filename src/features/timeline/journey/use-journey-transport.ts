@@ -28,7 +28,11 @@ export function useJourneyTransport(
     let previous = performance.now();
     const timer = window.setInterval(() => {
       const now = performance.now();
-      transport.tickWallTime(Math.min(0.25, (now - previous) / 1000));
+      const elapsed = (now - previous) / 1000;
+      if (!document.hidden)
+        transport.tickWallTime(
+          transport.read().cinematic ? elapsed : Math.min(0.25, elapsed),
+        );
       previous = now;
     }, 40);
     return () => window.clearInterval(timer);

@@ -18,6 +18,13 @@ import { validateEventMapResources } from '../history/event-map/event-map-schema
 import { REGIONS, type RegionId } from '../landscape/map-regions';
 import type { JourneyPlan } from '../../features/timeline/journey';
 import { validateCampaignSituations } from './campaign-situations';
+import {
+  referenceCues,
+  type Cue,
+} from '../../shared/content/journey-screenplay';
+import { eventNarrative, readingCopy } from './story-display';
+import { chapterFormations } from './chapter-forces';
+import { red25Cues } from './red25-cues';
 const id = z.string().min(1);
 const point = z.tuple([
   z.number().min(-180).max(180),
@@ -272,9 +279,13 @@ export function createJourneyContent(input: unknown, audience: 'exhibition') {
     )
       throw new Error('补充叙事引用失效');
   const plan: JourneyPlan = {
-    key: `exhibition-${supplement.version}`,
+    key: `exhibition-${supplement.version}-chapter-review-2`,
     chapters,
-    sequences,
+    sequences: sequences.map((sequence) =>
+      sequence.id === 'red25'
+        ? { ...sequence, cuesByChapter: red25Cues }
+        : sequence,
+    ),
     tracks: tracks.filter(
       (t) =>
         t.availability === 'available' &&
@@ -286,6 +297,63 @@ export function createJourneyContent(input: unknown, audience: 'exhibition') {
     ),
   };
   const campaign = validateCampaignSituations(chapters.map((c) => c.id));
+  plan.tracks = plan.tracks.map((t) =>
+    t.id === 'march-huining'
+      ? { ...t, unitId: 'red-fourth-front' }
+      : t.id === 'march-jiangtai'
+        ? { ...t, unitId: 'red-second-front' }
+        : t.id === 'march-ganquan'
+          ? { ...t, unitName: '红一方面军·甘泉会师（原陕甘支队）' }
+          : t,
+  );
+  plan.chapters = chapters.map((chapter) => {
+    const stage = campaign.stages.find((s) =>
+      s.chapterIds.includes(chapter.id),
+    )!;
+    const event = dataset.events.find((e) => chapter.eventIds.includes(e.id))!;
+    const sentences = eventNarrative(event)
+      .flatMap((p) => p.split(/(?<=[。！？])/u))
+      .filter(Boolean);
+    const title = event.title.split(/[：:]/u)[0]!;
+    const route = tracks.find(
+      (t) =>
+        t.chapterId === chapter.id &&
+        t.camp === 'red_army' &&
+        t.availability === 'available',
+    );
+    const routeText =
+      route && route.waypointNames.length > 1
+        ? route.unitName.split('·')[0] +
+          '从' +
+          route.waypointNames[0] +
+          '向' +
+          route.waypointNames.at(-1) +
+          '方向行进。'
+        : null;
+    const cues: readonly Cue[] = referenceCues(chapter.id) ?? [
+      [0, 'wide', title, sentences[0] || readingCopy(event.summary)],
+      [
+        0.34,
+        stage.kind === 'meeting' || chapter.id === 'chapter-event-zy'
+          ? 'detail'
+          : 'advance',
+        stage.red,
+        routeText ??
+          (sentences[Math.floor(sentences.length / 2)] || stage.summary),
+      ],
+      [
+        0.72,
+        'resolve',
+        stage.title,
+        sentences.at(-1) || readingCopy(stage.summary),
+        undefined,
+        undefined,
+        'annotation',
+      ],
+    ];
+    return { ...chapter, cues };
+  });
+  plan.formations = chapterFormations(plan, map.entries, campaign);
   return { catalog, dataset, map, plan, supplement, campaign };
 }
 export type JourneyContent = ReturnType<typeof createJourneyContent>;

@@ -39,9 +39,9 @@
   z-index: 6;
   top: 140px;
   right: 36px;
-  width: 286px;
+  width: max-content;
   display: grid;
-  grid-template-columns: 1.2fr 1.2fr 1fr 1fr;
+  grid-template-columns: auto 44px 44px;
   gap: 7px;
 }
 .journey-exploration .museum-map-toolbar button {
@@ -50,6 +50,20 @@
   padding: 8px 10px;
   gap: 6px;
   white-space: nowrap;
+}
+.journey-exploration .museum-map-toolbar .map-zoom-button {
+  inline-size: 44px;
+  block-size: 44px;
+  min-inline-size: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+.journey-exploration .museum-map-toolbar .map-zoom-button::after {
+  inset: 7px;
+}
+.journey-exploration .museum-map-toolbar button > svg {
+  flex-shrink: 0;
 }
 .journey-exploration .museum-terrain-hint {
   display: none;
@@ -168,9 +182,6 @@
   background: var(--red-muted);
   border-color: var(--gold);
   color: var(--text);
-}
-.journey-experience-entry button:hover {
-  background: var(--red-muted);
 }
 .journey-controls {
   position: absolute;
@@ -317,6 +328,19 @@
   white-space: nowrap;
   transition: none;
   will-change: transform;
+}
+.journey-unit-label::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  left: var(--leader-x);
+  top: var(--leader-y);
+  width: var(--leader-length, 0px);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.62;
+  transform-origin: left center;
+  transform: rotate(var(--leader-angle, 0rad));
 }
 .journey-unit-label[data-camp='red_army'] {
   color: #f3a19a;
@@ -586,7 +610,7 @@
   }
   .journey-exploration .museum-map-toolbar {
     right: 24px;
-    width: 264px;
+    width: max-content;
   }
   .journey-exploration .museum-map-tool-panel {
     right: 24px;

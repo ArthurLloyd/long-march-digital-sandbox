@@ -118,6 +118,46 @@ describe('连续地形近景与共享高度', () => {
     expect(root.children).toHaveLength(0);
     material.dispose();
   });
+  it('keeps adjacent chapter relief resident when switching, with one mesh per overlapping envelope', () => {
+    const root = new THREE.Group(),
+      mat = new THREE.MeshStandardMaterial();
+    const lod = createTerrainLod(
+      root,
+      mat,
+      [0, 0, 6, 6],
+      25,
+      25,
+      (x, z) => Math.sin(x) * Math.cos(z),
+      () => 100,
+      () => 0,
+      [
+        [0.5, 0.5, 2, 2],
+        [1.5, 1, 3, 2.5],
+        [4, 4, 5, 5],
+      ],
+    );
+    const before = lod.meshes.map((m) => m.geometry.uuid);
+    const heights = [
+      [1, 1],
+      [2, 2],
+      [4.5, 4.5],
+    ].map(([x, z]) => lod.heightAt(x!, z!));
+    for (const next of [null, [4, 4, 5, 5] as const, null]) {
+      lod.setRegion(next);
+      expect(lod.meshes.map((m) => m.geometry.uuid)).toEqual(before);
+      expect(
+        [
+          [1, 1],
+          [2, 2],
+          [4.5, 4.5],
+        ].map(([x, z]) => lod.heightAt(x!, z!)),
+      ).toEqual(heights);
+    }
+    expect(before).toHaveLength(3);
+    lod.dispose();
+    mat.dispose();
+    expect(root.children).toHaveLength(0);
+  });
   it('全域原始高程与局部增强均保持有限值；真实源数据未改写', () => {
     const data = {
       id: 'sample',

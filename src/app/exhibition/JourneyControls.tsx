@@ -13,6 +13,7 @@ import {
   journeyDuration,
   sampleJourney,
   JOURNEY_FOLLOW_RANGE,
+  sameJourneyRegion,
   type JourneyTransport,
   type JourneyState,
   type JourneyCamera,
@@ -25,7 +26,6 @@ export function JourneyControls({
   onOrigin,
   onInteraction,
   onNavigate,
-  onSample,
   onDefaultView,
 }: {
   transport: JourneyTransport;
@@ -35,7 +35,6 @@ export function JourneyControls({
   onOrigin: () => void;
   onInteraction: () => void;
   onNavigate: () => void;
-  onSample: () => void;
   onDefaultView: () => void;
 }) {
   const chapters = journeyChapters(t.plan, state.sequenceId),
@@ -46,7 +45,11 @@ export function JourneyControls({
     const chapter = chapters[index + delta];
     if (chapter) {
       onNavigate();
-      t.camera('follow');
+      if (
+        !current.chapter ||
+        !sameJourneyRegion(current.chapter.regionId, chapter.regionId)
+      )
+        t.camera('follow');
       t.seek(chapter.start);
     }
   };
@@ -63,7 +66,19 @@ export function JourneyControls({
         </button>
         <button onClick={onBrowse}>自由探索</button>
         <button onClick={onFullExperience}>完整互动体验</button>
-        <button onClick={onSample}>四渡赤水行军</button>
+        <button
+          aria-pressed={!!state.cinematic}
+          onClick={() => {
+            onNavigate();
+            t.cinematic(!state.cinematic);
+            if (!state.cinematic) {
+              t.camera('follow');
+              t.play();
+            }
+          }}
+        >
+          连续演绎
+        </button>
       </nav>
       <section
         className="journey-controls"
@@ -154,14 +169,20 @@ export function JourneyControls({
                   const c = chapters.find((c) => c.id === e.target.value);
                   if (c) {
                     onNavigate();
-                    t.camera('follow');
+                    if (
+                      !current.chapter ||
+                      !sameJourneyRegion(current.chapter.regionId, c.regionId)
+                    )
+                      t.camera('follow');
                     t.seek(c.start);
                   }
                 }}
               >
                 {chapters.map((c) => (
                   <option value={c.id} key={c.id}>
-                    {c.title}
+                    {c.id === 'chapter-event-sd'
+                      ? '四渡赤水 · 战役总览'
+                      : c.title}
                   </option>
                 ))}
               </select>
@@ -216,9 +237,22 @@ export function JourneyControls({
               value={state.unitId}
               onChange={(e) => t.unit(e.target.value)}
             >
-              <option value="central-red">红军主方向</option>
-              <option value="red-alternative">红军关联方向</option>
-              <option value="nationalist-blockade">敌军追堵与增援</option>
+              {state.sequenceId === 'red25' ? (
+                <option value="central-red">
+                  {current.tracks
+                    .find((t) => t.camp === 'red_army')
+                    ?.unitName.split('·')[0] ?? '红二十五军'}
+                </option>
+              ) : (
+                <>
+                  <option value="central-red">红军主方向</option>
+                  <option value="red-alternative">红军关联方向</option>
+                  <option value="red-second-front">红二方面军</option>
+                  <option value="red-fourth-front">红四方面军</option>
+                  <option value="red-first-front">红一方面军接应部队</option>
+                  <option value="nationalist-blockade">敌军追堵与增援</option>
+                </>
+              )}
             </select>
           </label>
           {state.camera === 'follow' && (

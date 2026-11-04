@@ -1,5 +1,7 @@
+import type { Cue } from '../../../shared/content/journey-screenplay';
 export type JourneyCamera = 'overview' | 'follow' | 'free';
 export interface JourneyChapter {
+  cues?: readonly Cue[];
   id: string;
   title: string;
   dateText: string;
@@ -44,14 +46,40 @@ export interface JourneySequence {
   id: string;
   title: string;
   chapterIds: string[];
+  /** A meeting shared by two sequences can follow either participant. */
+  cuesByChapter?: Readonly<Record<string, readonly Cue[]>>;
 }
 export interface JourneyPlan {
   key: string;
   sequences: JourneySequence[];
   chapters: JourneyChapter[];
   tracks: JourneyTrack[];
+  formations?: JourneyFormation[];
+}
+/** A display glyph tied to a registered event.
+ * The layout has no geographic waypoints and is never a historical route. */
+export interface JourneyFormation {
+  id: string;
+  chapterId: string;
+  sequenceId?: string;
+  unitId: string;
+  unitName: string;
+  camp: 'red_army' | 'nationalist_army';
+  action: 'assembly' | 'hold';
+  departChapterId?: string;
+  anchor: [number, number];
+  sourceUrls: string[];
+  lane: number;
+  lanes: number;
+  replacesPrimary?: boolean;
+}
+export function sameJourneyRegion(a: string, b: string) {
+  const group = (r: string) =>
+    r === 'zunyi' || r === 'chishui' ? 'zunyi-chishui' : r;
+  return group(a) === group(b);
 }
 export interface JourneyState {
+  cinematic?: boolean;
   sequenceId: string;
   time: number;
   playing: boolean;
@@ -73,7 +101,12 @@ export function journeyChapters(plan: JourneyPlan, sequenceId: string) {
   const result = (sequence?.chapterIds ?? []).flatMap((id) => {
     const chapter = plan.chapters.find((c) => c.id === id);
     if (!chapter) return [];
-    const item = { ...chapter, start, end: start + chapter.duration };
+    const item = {
+      ...chapter,
+      cues: sequence?.cuesByChapter?.[id] ?? chapter.cues,
+      start,
+      end: start + chapter.duration,
+    };
     start = item.end;
     return [item];
   });
@@ -101,7 +134,14 @@ export function sampleJourney(
       t.chapterId === chapter?.id &&
       (!t.sequenceIds || t.sequenceIds.includes(sequenceId)),
   );
-  const regional = tracks.some((t) => t.presentation === 'regional_transfer');
+  const previous = chapter ? chapters[chapters.indexOf(chapter) - 1] : null;
+  const regional =
+    tracks.some((t) => t.presentation === 'regional_transfer') &&
+    !(
+      previous &&
+      previous.regionId !== chapter?.regionId &&
+      sameJourneyRegion(previous.regionId, chapter!.regionId)
+    );
   const stage =
     regional && chapter && progress < chapter.arrival - 1e-6
       ? progress < 0.18
@@ -126,7 +166,9 @@ export function journeyTrackProgress(
   )
     return sample.progress;
   const start = Math.max(
-    track.presentation === 'regional_transfer' ? 0.18 : 0,
+    track.presentation === 'regional_transfer' && sample.stage !== 'local'
+      ? 0.18
+      : 0,
     track.visibleFrom ?? 0,
   );
   const end = track.presentation

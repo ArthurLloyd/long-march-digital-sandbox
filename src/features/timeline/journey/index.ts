@@ -5,6 +5,7 @@ export {
   sampleJourney,
   sampleTrack,
   journeyTrackProgress,
+  sameJourneyRegion,
 } from './journey-model';
 export type {
   JourneyPlan,
@@ -12,6 +13,7 @@ export type {
   JourneyTrack,
   JourneyState,
   JourneyCamera,
+  JourneyFormation,
 } from './journey-model';
 export {
   createJourneyTransport,

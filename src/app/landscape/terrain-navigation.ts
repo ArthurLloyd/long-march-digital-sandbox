@@ -13,6 +13,7 @@ export function constrainTerrainCamera(
   target: THREE.Vector3,
   floor: Surface,
   bounds: GeoBounds,
+  levelTarget = false,
 ) {
   target.x = THREE.MathUtils.clamp(target.x, bounds[0], bounds[2]);
   target.z = THREE.MathUtils.clamp(target.z, bounds[1], bounds[3]);
@@ -24,7 +25,7 @@ export function constrainTerrainCamera(
   );
   const distance = offset.length();
   const clearance = THREE.MathUtils.clamp(distance * 0.012, 0.00012, 0.008);
-  if (distance < 1.2) {
+  if (!levelTarget && distance < 1.2) {
     const base = floor(target.x, target.z);
     const t = THREE.MathUtils.smoothstep(distance, 0.18, 1.2);
     // Ease the old regional bookmark's large air gap away when approaching.

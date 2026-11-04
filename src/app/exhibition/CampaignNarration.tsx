@@ -80,9 +80,6 @@ export function CampaignNarration({
               敌军追堵 / 增援
             </span>
           </div>
-          <p className="campaign-disclosure">
-            方向示意，不是精确行军道路；虚线情报不等于已执行调动。
-          </p>
           <button
             className="campaign-sources"
             onClick={() =>

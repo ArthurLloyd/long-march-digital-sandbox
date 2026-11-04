@@ -64,9 +64,10 @@ it('keeps arbitrary camera orientation, zoom and composition while translating w
   ]) {
     translateMarchView(eye, target, previous, point);
     expect(eye.clone().sub(target).distanceTo(offset)).toBeLessThan(1e-10);
-    expect(target.clone().sub(point).distanceTo(composition)).toBeLessThan(
-      1e-10,
-    );
+    expect(target.y).toBe(1);
+    expect(eye.y).toBe(5);
+    expect(target.x - point.x).toBeCloseTo(composition.x);
+    expect(target.z - point.z).toBeCloseTo(composition.z);
     previous.copy(point);
   }
 });

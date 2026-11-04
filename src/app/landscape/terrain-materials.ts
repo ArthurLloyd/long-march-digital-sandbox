@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import rockAlbedoUrl from './assets/rock/albedo.jpg';
 import rockHeightUrl from './assets/rock/height.jpg';
 import { projectGeo } from './geography';
-import { REGIONS } from './map-regions';
+import { REGIONS, type RegionId } from './map-regions';
+import { REGION_MOOD } from '../../features/scene';
 import {
   EXHIBITION_LIGHT,
   atmosphereDeclarations,
@@ -53,6 +54,7 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
     shader.uniforms.panMapBounds = atmosphere.bounds;
     shader.uniforms.panMistOrigin = atmosphere.origin;
     shader.uniforms.panLocalMist = atmosphere.local;
+    shader.uniforms.panFilm = atmosphere.film;
     shader.uniforms.panHazeColor = atmosphere.haze;
     shader.uniforms.panInkShadow = {
       value: new THREE.Color(EXHIBITION_LIGHT.shadow),
@@ -64,18 +66,25 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       value: new THREE.Color(EXHIBITION_LIGHT.stone),
     };
     shader.uniforms.panSnow = { value: new THREE.Color(EXHIBITION_LIGHT.snow) };
-    shader.uniforms.panRegionBounds = atmosphere.regionBounds;
-    shader.uniforms.panRegionActive = atmosphere.regionActive;
-    shader.uniforms.panRegionForest = atmosphere.regionForest;
-    shader.uniforms.panRegionGround = atmosphere.regionGround;
-    shader.uniforms.panRegionRock = atmosphere.regionRock;
-    const projectedBounds = (id: 'snow' | 'grass') => {
+    const regionIds = Object.keys(REGIONS) as RegionId[];
+    const projectedBounds = (id: RegionId) => {
       const b = REGIONS[id];
       return new THREE.Vector4(
         ...projectGeo([b[0], b[3]]),
         ...projectGeo([b[2], b[1]]),
       );
     };
+    shader.uniforms.panRegionBounds = { value: regionIds.map(projectedBounds) };
+    for (const [uniform, color] of [
+      ['panRegionForest', 'forest'],
+      ['panRegionGround', 'ground'],
+      ['panRegionRock', 'rock'],
+    ] as const) {
+      shader.uniforms[uniform] = {
+        value: regionIds.map((id) => new THREE.Color(REGION_MOOD[id][color])),
+      };
+    }
+    shader.defines = { ...shader.defines, PAN_REGIONS: regionIds.length };
     shader.uniforms.panSnowBounds = { value: projectedBounds('snow') };
     shader.uniforms.panGrassBounds = { value: projectedBounds('grass') };
     shader.vertexShader =
@@ -86,7 +95,7 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       '#include <begin_vertex>\npanWorld=(modelMatrix*vec4(transformed,1.)).xyz;panTerrainNormal=normalize(mat3(modelMatrix)*normal);panMetres=panElevation;panSlope=1.-abs(normalize(normal).y);panShore=panBank;',
     );
     shader.fragmentShader =
-      'uniform vec4 panSnowBounds; uniform vec4 panGrassBounds; uniform vec4 panRegionBounds; uniform float panRegionActive; uniform vec3 panRegionForest; uniform vec3 panRegionGround; uniform vec3 panRegionRock; uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;uniform vec3 panInkShadow;uniform vec3 panFoliage;uniform vec3 panStone;uniform vec3 panSnow;varying float panShore; varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
+      'uniform float panFilm; uniform vec4 panSnowBounds; uniform vec4 panGrassBounds; uniform vec4 panRegionBounds[PAN_REGIONS]; uniform vec3 panRegionForest[PAN_REGIONS]; uniform vec3 panRegionGround[PAN_REGIONS]; uniform vec3 panRegionRock[PAN_REGIONS]; uniform sampler2D panRockAlbedo;uniform sampler2D panRockHeight;uniform float panRockReady;uniform vec3 panInkShadow;uniform vec3 panFoliage;uniform vec3 panStone;uniform vec3 panSnow;varying float panShore; varying vec3 panWorld; varying vec3 panTerrainNormal; varying float panMetres; varying float panSlope;\n' +
       atmosphereDeclarations +
       noise +
       exhibitionSky +
@@ -117,12 +126,13 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       vec3 hill=mix(vec3(.16,.27,.19),vec3(.39,.43,.25),smoothstep(120.,850.,panMetres));
       hill=mix(hill,vec3(.57,.47,.31),smoothstep(650.,1600.,panMetres)*.72);
       ground=mix(ground,hill,.48*(1.-smoothstep(1800.,2800.,panMetres)));
-      vec2 regionSpan=panRegionBounds.zw-panRegionBounds.xy;
-      vec2 regionEdge=min((panWorld.xz-panRegionBounds.xy)/regionSpan,(panRegionBounds.zw-panWorld.xz)/regionSpan);
-      float regionMix=smoothstep(0.,.12,min(regionEdge.x,regionEdge.y))*panRegionActive;
-      vec3 regional=mix(panRegionForest,panRegionGround,clamp(broad*.65+panSlope*.3,0.,1.));
-      regional=mix(regional,panRegionRock,exposed*.8);
-      ground=mix(ground,regional,regionMix*.72);
+      for(int i=0;i<PAN_REGIONS;i++){
+        vec4 b=panRegionBounds[i];
+        vec2 edge=min(panWorld.xz-b.xy,b.zw-panWorld.xz)/(b.zw-b.xy);
+        float weight=smoothstep(0.,.16,min(edge.x,edge.y));
+        vec3 regional=mix(panRegionForest[i],panRegionGround[i],clamp(broad*.65+panSlope*.3,0.,1.));
+        ground=mix(ground,mix(regional,panRegionRock[i],exposed*.8),weight*.72);
+      }
       // Modern regional art palettes, not a land-cover survey or 1935 weather.
       vec2 snowEdge=min((panWorld.xz-panSnowBounds.xy)/(panSnowBounds.zw-panSnowBounds.xy),(panSnowBounds.zw-panWorld.xz)/(panSnowBounds.zw-panSnowBounds.xy));
       vec2 grassEdge=min((panWorld.xz-panGrassBounds.xy)/(panGrassBounds.zw-panGrassBounds.xy),(panGrassBounds.zw-panWorld.xz)/(panGrassBounds.zw-panGrassBounds.xy));
@@ -140,6 +150,9 @@ export function terrainMaterial(atmosphere: ExhibitionAtmosphere) {
       vec3 earthTone=mix(vec3(.25,.19,.12),vec3(.49,.39,.24),grain);
       ground=mix(ground,earthTone,panShore*.75*(1.-snow));
       float micro=panNoise(panWorld.xz*18000.);
+      // Lower the relief under emissive cartographic marks during narration.
+      float reliefLight=clamp(dot(normalize(panTerrainNormal),normalize(vec3(-.6,.65,-.4))),0.,1.);
+      ground*=mix(vec3(1.),vec3(.53,.65,.60)*(.70+.38*reliefLight),panFilm*(1.-.7*snow));
       diffuseColor.rgb=ground*(.88+.22*grain+micro*.08*detail);
     `,
     );

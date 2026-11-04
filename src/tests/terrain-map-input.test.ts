@@ -91,6 +91,7 @@ beforeEach(() => {
   boundary.terrainHeight = 0.1;
   boundary.heightVersion = 0;
   boundary.landFocus.mockReset().mockResolvedValue({ x: 0, z: 0 });
+  boundary.focusArea.mockReset().mockResolvedValue(undefined);
   vi.stubGlobal('requestAnimationFrame', (fn: FrameRequestCallback) => {
     boundary.frames.push(fn);
     return boundary.frames.length;
@@ -150,6 +151,46 @@ const dbl = (canvas: HTMLCanvasElement) =>
     }),
   );
 describe('真实地图输入接线（只模拟GPU边界）', () => {
+  it('独立事件的到达镜头等待真实地形窗口，异步完成不覆盖后来的自由视角', async () => {
+    const { api, host } = setup(),
+      c = createJourneyContent(raw, 'exhibition');
+    const t = createJourneyTransport(c.plan),
+      chapter = journeyChapters(c.plan, 'central').find(
+        (x) => x.id === 'chapter-ex-event-ganquan',
+      )!;
+    t.seek(chapter.start + chapter.duration * chapter.arrival);
+    api.setMarchTransport!(t);
+    api.prepareRegion!(null, [108, 36, 109, 37]);
+    let finish!: () => void;
+    boundary.focusArea.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const before = api.bookmark();
+    api.focusMarch!('follow');
+    expect(api.bookmark()).toEqual(before);
+    expect(boundary.landFocus).not.toHaveBeenCalled();
+    boundary.terrainHeight = 0.8;
+    finish();
+    await Promise.resolve();
+    expect(api.bookmark().target[1]).toBeGreaterThan(0.8);
+    boundary.focusArea.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    api.focusMarch!('follow');
+    api.holdCamera!();
+    const free = api.bookmark();
+    finish();
+    await Promise.resolve();
+    expect(api.bookmark()).toEqual(free);
+    api.dispose();
+    host.remove();
+  });
   it('到达镜头等待新地区地形；旧异步响应不能覆盖用户手动镜头', async () => {
     const { api, host } = setup(),
       content = createJourneyContent(raw, 'exhibition');

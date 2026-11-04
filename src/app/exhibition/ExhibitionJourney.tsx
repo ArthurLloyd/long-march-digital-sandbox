@@ -14,6 +14,7 @@ import {
   sampleJourney,
   sampleTrack,
   journeyTrackProgress,
+  sameJourneyRegion,
   type JourneyState,
 } from '../../features/timeline';
 import { ExhibitionLanding } from '../../components/exhibition/ExhibitionLanding';
@@ -64,6 +65,9 @@ import { OrnamentFrame } from '../../components/exhibition/ExhibitionOrnaments';
 import { JourneyControls } from './JourneyControls';
 import { CampaignSituation } from './CampaignSituation';
 import { CampaignNarration } from './CampaignNarration';
+import { JourneyFilm } from './JourneyFilm';
+import { JourneyEpilogue } from './JourneyEpilogue';
+import { eventTerrainBounds } from '../landscape/event-terrain';
 import { campaignBeat } from '../../shared/content/chishui-campaign';
 import '../../styles/exhibition-journey.css';
 const Panorama = lazy(() =>
@@ -107,6 +111,14 @@ export function ExhibitionJourney({
     wantOpening && state.time === 0 && state.sequenceId === 'central';
   const activeCampaign = campaignBeat(sample.chapter?.id, sample.progress);
   const journeyStage = sample.stage;
+  const campaignFilm = Boolean(
+    state.cinematic &&
+    state.camera === 'follow' &&
+    !opening &&
+    (sample.chapter?.id.startsWith('chapter-event-sd') ||
+      sample.chapter?.id === 'chapter-event-js' ||
+      sample.chapter?.id === 'chapter-event-zy-resolution'),
+  );
   const transferring =
     !opening &&
     journeyStage !== 'local' &&
@@ -199,26 +211,6 @@ export function ExhibitionJourney({
     restoreContext: restoreSaved,
     reducedMotion,
   });
-  const queuedTeaching = useRef<string | null>(null),
-    hadRun = useRef(false);
-  useEffect(() => {
-    if (queuedTeaching.current && historical.state.status === 'reading') {
-      queuedTeaching.current = null;
-      historical.start('equivalent');
-      return;
-    }
-    if (historical.state.status === 'idle') hadRun.current = false;
-    if (historical.state.run) hadRun.current = true;
-    if (hadRun.current && historical.state.status === 'reading') {
-      hadRun.current = false;
-      const selected = historical.state.selection;
-      const frame = requestAnimationFrame(() => {
-        historical.close();
-        if (selected?.kind === 'event') setStoryId(selected.id);
-      });
-      return () => cancelAnimationFrame(frame);
-    }
-  }, [historical]);
   const openStory = useCallback(
     (id: string) => {
       const event = content.dataset.events.find(
@@ -272,7 +264,9 @@ export function ExhibitionJourney({
     )
       return;
     const transition =
-      previous && previous.region !== chapter.regionId ? 'regional' : 'local';
+      previous && !sameJourneyRegion(previous.region, chapter.regionId)
+        ? 'regional'
+        : 'local';
     previousChapter.current = {
       id: chapter.id,
       region: chapter.regionId,
@@ -283,10 +277,13 @@ export function ExhibitionJourney({
     const p = content.map.entries.find((p) =>
       chapter.eventIds.includes(p.eventId),
     );
+    api.current?.setChapterLandmark?.(p?.anchorCoordinates ?? null);
     // Terrain readiness is independent of camera mode and of the reading
     // pause. Otherwise the very arrival that should reveal a region skips it.
-    if (journeyStage === 'local') {
-      if (isGeographicRegion(chapter.regionId))
+    if (previous?.id !== chapter.id || journeyStage === 'local') {
+      const localBounds = p ? eventTerrainBounds(p.anchorCoordinates) : null;
+      if (localBounds) api.current?.prepareRegion?.(null, localBounds);
+      else if (isGeographicRegion(chapter.regionId))
         api.current?.prepareRegion?.(chapter.regionId);
       else if (p?.bounds) api.current?.prepareRegion?.(null, p.bounds);
     }
@@ -311,6 +308,12 @@ export function ExhibitionJourney({
         api.current?.frameMarch?.(tracks.flatMap((t) => t.points));
       return;
     }
+    const continuous =
+      previous &&
+      previous.id !== chapter.id &&
+      previous.region !== chapter.regionId &&
+      sameJourneyRegion(previous.region, chapter.regionId);
+    if (continuous) return;
     if ((tracks.length || held) && api.current?.focusMarch) {
       api.current.focusMarch('follow');
       return;
@@ -381,6 +384,7 @@ export function ExhibitionJourney({
   };
   const origin = () => {
     transport.pause();
+    transport.cinematic(false);
     transport.sequence('central');
     transport.restart();
     transport.camera('follow');
@@ -398,13 +402,18 @@ export function ExhibitionJourney({
     requestAnimationFrame(() => enterRef.current?.focus());
   };
   const story = content.dataset.events.find((e) => e.id === activeStoryId);
-  const interactionAvailable =
-    story &&
-    content.dataset.experiences.some((e) =>
-      e.linkedEventIds.includes(story.id),
-    );
+  const [completedTour, setCompletedTour] = useState(false);
+  const endingOpen =
+    (completedTour ||
+      state.pendingEventId === 'ex-event-jiangtai' ||
+      (state.cinematic &&
+        !!state.pendingEventId &&
+        state.time === journeyDuration(content.plan, state.sequenceId))) &&
+    !story &&
+    !screen.overlay &&
+    !observationRequest;
   const modal = Boolean(
-    story || screen.overlay || historical.state.status !== 'idle',
+    story || screen.overlay || historical.state.status !== 'idle' || endingOpen,
   );
   const chapterItems = journeyChapters(content.plan, state.sequenceId);
   const jump = (id: string, read = false) => {
@@ -421,7 +430,13 @@ export function ExhibitionJourney({
     if (!c) return;
     setOpening(false);
     setRegion(undefined);
-    transport.camera('follow');
+    const current = sampleJourney(
+      content.plan,
+      transport.read().sequenceId,
+      transport.read().time,
+    ).chapter;
+    if (!current || !sameJourneyRegion(current.regionId, c.regionId))
+      transport.camera('follow');
     transport.seek(c.start);
     dispatch({ type: 'close' });
     if (read && c.eventIds[0]) openStory(c.eventIds[0]);
@@ -460,6 +475,8 @@ export function ExhibitionJourney({
             <main
               id="main-content"
               className="exploration panorama-exploration journey-exploration"
+              data-film={Boolean(state.cinematic && !opening)}
+              data-campaign-film={campaignFilm}
               ref={exploreRef}
               tabIndex={-1}
               aria-label="长征沙盘探索空间"
@@ -516,11 +533,20 @@ export function ExhibitionJourney({
                     journey={transport}
                     showMarch={
                       !opening &&
-                      (state.playing || state.time > 0 || region !== null)
+                      (state.playing ||
+                        state.time > 0 ||
+                        region !== null ||
+                        state.sequenceId === 'red25')
                     }
 
                     opening={opening}
                     geographicRegion={region}
+                    campaignFilm={campaignFilm ? sample.chapter?.id : undefined}
+                    marchRegion={
+                      state.camera === 'follow' && !opening
+                        ? sample.chapter?.regionId
+                        : undefined
+                    }
                     onBrowseRegion={(id) => {
                       transport.pause();
                       transport.camera('free');
@@ -537,6 +563,7 @@ export function ExhibitionJourney({
                     observationRequest={observationRequest}
                     observationScope={scope}
                     onObservationOpened={transport.pause}
+                    onTourComplete={() => setCompletedTour(true)}
                     onObservationClosed={() => {
                       setObservationRequest(null);
                       restoreSaved();
@@ -560,6 +587,7 @@ export function ExhibitionJourney({
                       setRegion(undefined);
                       transport.camera('follow');
                       transport.distance(1);
+                      transport.cinematic(true);
                       transport.play();
                     }}
                   >
@@ -582,7 +610,8 @@ export function ExhibitionJourney({
               )}
               {!opening &&
                 sample.chapter &&
-                !campaignBeat(sample.chapter.id, sample.progress) && (
+                !state.cinematic &&
+                !activeCampaign && (
                   <CampaignSituation
                     research={content.campaign}
                     chapterId={sample.chapter.id}
@@ -608,26 +637,24 @@ export function ExhibitionJourney({
                 !opening &&
                 sample.chapter &&
                 !isGeographicRegion(sample.chapter.regionId) && (
-                  <aside
+                  <button
                     className="journey-experience-entry"
                     data-map-obstacle="true"
+                    onClick={() => {
+                      const id = sample.chapter?.eventIds[0];
+                      if (id) openStory(id);
+                    }}
                   >
-                    <button
-                      onClick={() => {
-                        const id = sample.chapter?.eventIds[0];
-                        if (id) openStory(id);
-                      }}
-                    >
-                      阅读本章故事
-                      <ArrowUpRight size={16} />
-                    </button>
-                    <p>本章提供历史故事，可继续阅读与观察山河。</p>
-                  </aside>
+                    <BookOpen size={18} aria-hidden="true" />
+                    阅读本章故事
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </button>
                 )}
               {!opening &&
                 !story &&
                 !screen.overlay &&
                 !observationRequest &&
+                !state.cinematic &&
                 activeCampaign &&
                 sample.chapter &&
                 (region === null ||
@@ -656,7 +683,34 @@ export function ExhibitionJourney({
                     }}
                   />
                 )}
+              {!opening &&
+                state.cinematic &&
+                sample.chapter?.cues &&
+                !modal &&
+                !observationRequest && (
+                  <JourneyFilm
+                    id={sample.chapter.id}
+                    title={sample.chapter.title}
+                    date={sample.chapter.dateText}
+                    cues={sample.chapter.cues}
+                    situation={content.campaign.stages.find((s) =>
+                      s.chapterIds.includes(sample.chapter!.id),
+                    )}
+                    progress={sample.progress}
+                    onRead={() => {
+                      const id = sample.chapter?.eventIds[0];
+                      if (id) openStory(id);
+                    }}
+                    onSeek={(at) => {
+                      if (sample.chapter)
+                        transport.seek(
+                          sample.chapter.start + sample.chapter.duration * at,
+                        );
+                    }}
+                  />
+                )}
               {state.pendingEventId &&
+                !endingOpen &&
                 !story &&
                 !screen.overlay &&
                 !observationRequest &&
@@ -674,11 +728,6 @@ export function ExhibitionJourney({
                 )}
               <JourneyControls
                 onDefaultView={() => api.current?.focusMarch?.('follow')}
-                onSample={() => {
-                  jump('chapter-event-sd-1');
-                  transport.camera('follow');
-                  transport.play();
-                }}
                 onNavigate={() => {
                   setOpening(false);
                   setRegion(undefined);
@@ -687,6 +736,7 @@ export function ExhibitionJourney({
                 transport={transport}
                 state={state}
                 onBrowse={() => {
+                  transport.cinematic(false);
                   transport.pause();
                   transport.camera('free');
                   setOpening(false);
@@ -735,25 +785,25 @@ export function ExhibitionJourney({
               setStoryId(null);
               dispatch({ type: 'open', overlay: 'sources' });
             }}
-            onTeaching={
-              interactionAvailable
-                ? () => {
-                    savedMap.current = snapshot('teaching');
-                    transport.acknowledge();
-                    queuedTeaching.current = story.id;
-                    setStoryId(null);
-                    historical.openHistoricalObject(
-                      { kind: 'event', id: story.id },
-                      {
-                        topicId: clock.selectedTopicId,
-                        phaseId: clock.activePhaseId,
-                        selection: { kind: 'event', id: story.id },
-                        bookmark: bookmark.current,
-                      },
-                    );
-                  }
-                : undefined
-            }
+          />
+        )}
+        {endingOpen && (
+          <JourneyEpilogue
+            returnFocusRef={trigger}
+            onClose={() => {
+              setCompletedTour(false);
+              transport.acknowledge();
+            }}
+            onRestart={() => {
+              setCompletedTour(false);
+              transport.acknowledge();
+              origin();
+            }}
+            onStory={() => {
+              setCompletedTour(false);
+              transport.acknowledge();
+              openStory(state.pendingEventId ?? 'ex-event-jiangtai');
+            }}
           />
         )}
         {screen.overlay && (
@@ -965,6 +1015,24 @@ export function ExhibitionJourney({
                       </h4>
                       <p>{t.limitations}</p>
                       <p>{t.sourceIds.join('、')}</p>
+                    </article>
+                  ))}
+                  <p>
+                    主地图中的战局关系箭头采用事件锚定的显示布局，说明各部行动、策应与会合关系，不将布局偏移作为部队经纬度或历史道路。
+                  </p>
+                  {content.plan.formations?.map((f) => (
+                    <article key={f.id}>
+                      <h4>{f.unitName}</h4>
+                      {f.sourceUrls.map((url) => (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          史料依据
+                        </a>
+                      ))}
                     </article>
                   ))}
                 </details>

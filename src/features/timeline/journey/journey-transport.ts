@@ -1,3 +1,4 @@
+import { narrationSeconds } from '../../../shared/content/journey-screenplay';
 import {
   journeyChapters,
   sampleJourney,
@@ -10,6 +11,7 @@ import {
 /** Wall-clock pacing: the former 4x is the exhibition's new displayed 1x. */
 export const JOURNEY_BASE_RATE = 4;
 export const JOURNEY_FOLLOW_RANGE = { min: 0.5, max: 2.5, step: 0.05 } as const;
+const CHAPTER_HANDOFF_SECONDS = 0.55;
 
 /** C2's continuous exhibition transport. It has no RAF, storage or completion writes. */
 export function createJourneyTransport(plan: JourneyPlan) {
@@ -79,7 +81,7 @@ export function createJourneyTransport(plan: JourneyPlan) {
           !state.seen.includes(c.id) && c.time >= state.time && c.time <= next,
       )
       .sort((a, b) => a.time - b.time)[0];
-    if (cue)
+    if (cue && !state.cinematic)
       publish({
         ...state,
         time: cue.time,
@@ -87,7 +89,55 @@ export function createJourneyTransport(plan: JourneyPlan) {
         pendingEventId: cue.id,
         seen: [...state.seen, cue.id],
       });
-    else publish({ ...state, time: next, playing: next < end }, next === end);
+    else {
+      const finalChapter =
+        next === end && state.cinematic
+          ? journeyChapters(plan, state.sequenceId).at(-1)
+          : null;
+      publish(
+        {
+          ...state,
+          time: next,
+          playing: next < end,
+          pendingEventId: finalChapter?.eventIds.at(-1) ?? null,
+        },
+        next === end,
+      );
+    }
+  };
+  // Both the map and subtitles sample logical time. Only its wall-clock
+  // mapping changes, so seeks and alternate speeds land on the same waypoint.
+  const schedules = new Map<
+    string,
+    { start: number; end: number; seconds: number }[]
+  >();
+  const playbackSchedule = () => {
+    let schedule = schedules.get(state.sequenceId);
+    if (!schedule) {
+      const chapters = journeyChapters(plan, state.sequenceId);
+      schedule = chapters.flatMap(
+        (chapter) =>
+          chapter.cues?.map((cue, index, cues) => ({
+            start: chapter.start + cue[0] * chapter.duration,
+            end: chapter.start + (cues[index + 1]?.[0] ?? 1) * chapter.duration,
+            // A sidebar postscript has no spoken line between the two chapters.
+            seconds:
+              cue[6] === 'annotation' &&
+              index === cues.length - 1 &&
+              chapter !== chapters.at(-1)
+                ? CHAPTER_HANDOFF_SECONDS
+                : narrationSeconds(cue[3]),
+          })) ?? [
+            {
+              start: chapter.start,
+              end: chapter.end,
+              seconds: chapter.duration / JOURNEY_BASE_RATE,
+            },
+          ],
+      );
+      schedules.set(state.sequenceId, schedule);
+    }
+    return schedule;
   };
   return {
     plan,
@@ -107,10 +157,30 @@ export function createJourneyTransport(plan: JourneyPlan) {
     },
     advance,
     tickWallTime: (seconds: number) => {
+      if (!state.playing || !Number.isFinite(seconds) || seconds <= 0) return;
+      if (state.cinematic) {
+        let remaining = seconds * state.speed,
+          time = state.time;
+        for (const cue of playbackSchedule()) {
+          if (time >= cue.end) continue;
+          const rate = (cue.end - cue.start) / cue.seconds;
+          const needed = (cue.end - time) / rate;
+          if (remaining < needed) {
+            time += remaining * rate;
+            break;
+          }
+          time = cue.end;
+          remaining -= needed;
+        }
+        advance((time - state.time) / state.speed);
+        return;
+      }
       const sample = sampleJourney(plan, state.sequenceId, state.time);
       const rate = sample.stage !== 'local' ? 1.8 : 1;
       advance(seconds * JOURNEY_BASE_RATE * rate);
     },
+    cinematic: (enabled: boolean) =>
+      publish({ ...state, cinematic: enabled, pendingEventId: null }),
     pause,
     seek,
     acknowledge,
@@ -140,6 +210,7 @@ export function createJourneyTransport(plan: JourneyPlan) {
         publish({
           ...state,
           sequenceId: id,
+          unitId: id === 'red25' ? 'central-red' : state.unitId,
           time: 0,
           seen: [],
           pendingEventId: null,
@@ -161,7 +232,12 @@ export function createJourneyTransport(plan: JourneyPlan) {
     unit: (unitId: string) => publish({ ...state, unitId }),
     restore: (saved: JourneyState) => {
       if (plan.sequences.some((s) => s.id === saved.sequenceId))
-        publish({ ...saved, playing: false, pendingEventId: null });
+        publish({
+          ...saved,
+          unitId: saved.sequenceId === 'red25' ? 'central-red' : saved.unitId,
+          playing: false,
+          pendingEventId: null,
+        });
     },
   };
 }

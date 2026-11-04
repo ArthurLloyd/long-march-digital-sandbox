@@ -31,6 +31,8 @@ import type { EventMapModel } from '../history/event-map/event-map-selectors';
 import { EventMapLayer, type EventMapLayerHandle } from './EventMapLayer';
 import { RUIJIN_SCENE, isPanoramaSceneId } from './panorama-bookmark';
 import type { JourneyTransport } from '../../features/timeline';
+import { campaignPlaceNames } from './campaign-framing';
+import { crossingSeals } from '../../shared/content/journey-screenplay';
 import {
   observeMapSafeAreas,
   intersectsMapRect,
@@ -39,6 +41,7 @@ import {
 import {
   layoutAnchoredMapLabels,
   layoutMovingMapLabels,
+  type MovingLabelAnchors,
 } from './event-marker-layout';
 import {
   selectForceStateForPhase,
@@ -75,11 +78,14 @@ export function ExhibitionPanorama(
     historyRegions?: readonly string[];
     observationRequest?: RegionId | null;
     onObservationClosed?: () => void;
+    onTourComplete?: () => void;
     eventMap?: EventMapModel | null;
     eventMapReading?: boolean;
     onExhibitionPreview?: () => void;
     onExhibitionRead?: (eventId: string) => void;
     geographicRegion?: RegionId | null;
+    marchRegion?: string;
+    campaignFilm?: string;
     onBrowseRegion?: (region: RegionId | null) => void;
     onMapAdapter?: (adapter: PanoramaMapAdapter | null) => void;
     onGeographicBrowse?: (region: RegionId | null) => void;
@@ -96,11 +102,21 @@ export function ExhibitionPanorama(
     api = useRef<PanoramaMapAdapter | null>(null);
   const eventLayer = useRef<EventMapLayerHandle>(null);
   const geographyLeaders = useRef<Record<string, SVGLineElement | null>>({});
+  const unitLabelAnchors = useRef<MovingLabelAnchors>(new Map());
   const unitLabelSizes = useRef(
     new Map<string, { width: number; height: number }>(),
   );
   useEffect(() => {
-    const invalidate = () => unitLabelSizes.current.clear();
+    unitLabelSizes.current.clear();
+  }, [props.campaignFilm]);
+  useEffect(() => {
+    unitLabelAnchors.current.clear();
+  }, [props.journey]);
+  useEffect(() => {
+    const invalidate = () => {
+      unitLabelSizes.current.clear();
+      unitLabelAnchors.current.clear();
+    };
     let live = true;
     void document.fonts?.ready.then(() => {
       if (live) invalidate();
@@ -172,6 +188,11 @@ export function ExhibitionPanorama(
   const closeObservation = () => {
     setObservation(null);
     props.onObservationClosed?.();
+    if (
+      observation === 'reunion' &&
+      latest.current.observationScope === 'continuous'
+    )
+      props.onTourComplete?.();
     api.current?.suspend(false);
     if (
       observationBookmark.current &&
@@ -258,6 +279,9 @@ export function ExhibitionPanorama(
                   markers.filter(
                     (m) =>
                       m.id.startsWith('view:') &&
+                      m.id !== 'view:' + latest.current.marchRegion &&
+                      (!latest.current.journey ||
+                        m.id !== 'view:' + latest.current.geographicRegion) &&
                       ((viewport.distance >= 5.5 && !latest.current.opening) ||
                         !latest.current.geographicRegion ||
                         m.id === `view:${latest.current.geographicRegion}`),
@@ -276,10 +300,21 @@ export function ExhibitionPanorama(
                   },
                 )
               : [];
+          const projectedPlaces = new Set(
+            markers
+              .filter((m) => m.id.startsWith('march:place:'))
+              .map((m) => m.id),
+          );
+          for (const name of campaignPlaceNames) {
+            const id = 'march:place:' + name,
+              label = labels.current[id];
+            if (label && !projectedPlaces.has(id))
+              label.style.visibility = 'hidden';
+          }
           const moving = markers.filter((m) => m.id.startsWith('march:'));
           for (const m of moving) {
             const label = labels.current[m.id];
-            if (label && !unitLabelSizes.current.has(m.id))
+            if (m.visible && label && !unitLabelSizes.current.has(m.id))
               unitLabelSizes.current.set(m.id, {
                 width: label.offsetWidth || 160,
                 height: label.offsetHeight || 28,
@@ -290,6 +325,14 @@ export function ExhibitionPanorama(
               .filter((t) => t.unitId === latest.current.journey?.read().unitId)
               .map((t) => `march:${t.id}`),
           );
+          if (latest.current.campaignFilm) {
+            moving
+              .filter(
+                (m) =>
+                  m.id.startsWith('march:seal:') || m.id === 'march:film-feint',
+              )
+              .forEach((m) => preferredIds.add(m.id));
+          }
           const movingLayout = viewport
             ? new Map(
                 layoutMovingMapLabels(
@@ -309,6 +352,7 @@ export function ExhibitionPanorama(
                       })),
                   ],
                   preferredIds,
+                  unitLabelAnchors.current,
                 ).map((m) => [m.id, m]),
               )
             : new Map();
@@ -317,9 +361,31 @@ export function ExhibitionPanorama(
             if (!label) return;
             if (marker.id.startsWith('march:')) {
               const packed = movingLayout.get(marker.id);
+              if (
+                !packed?.visible &&
+                label.getAttribute('aria-hidden') === 'true'
+              )
+                return;
               label.style.transform = `translate(${packed?.labelX ?? marker.x}px,${packed?.labelY ?? marker.y}px)`;
               label.style.visibility = packed?.visible ? 'visible' : 'hidden';
               label.setAttribute('aria-hidden', String(!packed?.visible));
+              if (packed?.visible) {
+                const dx = marker.x - packed.labelX,
+                  dy = marker.y - packed.labelY;
+                const size = unitLabelSizes.current.get(marker.id);
+                const left = Math.min(Math.max(0, dx), size?.width ?? 0),
+                  top = Math.min(Math.max(0, dy), size?.height ?? 0);
+                label.style.setProperty('--leader-x', left + 'px');
+                label.style.setProperty('--leader-y', top + 'px');
+                label.style.setProperty(
+                  '--leader-length',
+                  Math.hypot(dx - left, dy - top) + 'px',
+                );
+                label.style.setProperty(
+                  '--leader-angle',
+                  Math.atan2(dy - top, dx - left) + 'rad',
+                );
+              }
               label.dataset.anchorX = String(marker.x);
               label.dataset.anchorY = String(marker.y);
               return;
@@ -577,6 +643,7 @@ export function ExhibitionPanorama(
     >
       <div ref={host} className="museum-map-canvas" />
       {props.eventMap &&
+        !props.campaignFilm &&
         (props.geographicRegion === undefined ||
           props.geographicRegion !== null ||
           props.eventMap.entries.length > 0) && (
@@ -883,11 +950,19 @@ export function ExhibitionPanorama(
           <Expand size={16} />
           全景
         </button>
-        <button aria-label="拉近地图" onClick={() => api.current?.zoom(1)}>
+        <button
+          className="map-zoom-button"
+          aria-label="拉近地图"
+          onClick={() => api.current?.zoom(1)}
+        >
           <MapControlFrame />
           <ZoomIn size={18} />
         </button>
-        <button aria-label="拉远地图" onClick={() => api.current?.zoom(-1)}>
+        <button
+          className="map-zoom-button"
+          aria-label="拉远地图"
+          onClick={() => api.current?.zoom(-1)}
+        >
           <MapControlFrame />
           <ZoomOut size={18} />
         </button>
@@ -899,7 +974,9 @@ export function ExhibitionPanorama(
       >
         {props.journey && (
           <svg className="journey-geography-leaders" aria-hidden="true">
-            {GEOGRAPHIC_VIEWS.map((v) => (
+            {GEOGRAPHIC_VIEWS.filter(
+              (v) => v.id !== focusedView && v.id !== props.marchRegion,
+            ).map((v) => (
               <line
                 key={v.id}
                 ref={(el) => {
@@ -909,25 +986,41 @@ export function ExhibitionPanorama(
             ))}
           </svg>
         )}
-        {GEOGRAPHIC_VIEWS.filter(
-          (item) => !entry || item.id !== focusedView,
-        ).map((item) => (
-          <button
-            key={`view:${item.id}`}
-            ref={(element) => {
-              labels.current[`view:${item.id}`] = element;
-            }}
-            className="museum-geographic-marker"
-            aria-pressed={view === item.id}
-            aria-label={`取景${item.title}区域`}
-            title="现代地理取景区，不是历史事件发生点"
-            onClick={() => chooseView(item.id)}
-          >
-            <MapControlFrame />
-            {item.title}
-            <small>区域</small>
-          </button>
-        ))}
+        {!props.campaignFilm &&
+          GEOGRAPHIC_VIEWS.filter((item) =>
+            props.journey
+              ? item.id !== focusedView && item.id !== props.marchRegion
+              : !entry || item.id !== focusedView,
+          ).map((item) => (
+            <button
+              key={`view:${item.id}`}
+              ref={(element) => {
+                labels.current[`view:${item.id}`] = element;
+              }}
+              className="museum-geographic-marker"
+              aria-pressed={view === item.id}
+              aria-label={`取景${item.title}区域`}
+              title="现代地理取景区，不是历史事件发生点"
+              onClick={() => chooseView(item.id)}
+            >
+              <MapControlFrame />
+              {item.title}
+              <small>区域</small>
+            </button>
+          ))}
+        {props.campaignFilm &&
+          campaignPlaceNames.map((name) => (
+            <span
+              key={name}
+              aria-hidden="true"
+              ref={(el) => {
+                labels.current['march:place:' + name] = el;
+              }}
+              className="journey-unit-label film-place"
+            >
+              {name}
+            </span>
+          ))}
         {props.journey?.plan.tracks.map((track) => (
           <span
             key={track.id}
@@ -939,9 +1032,52 @@ export function ExhibitionPanorama(
             aria-label={track.unitName}
             title={`${track.unitName} · ${track.dateText}`}
           >
-            {track.camp === 'nationalist_army'
-              ? track.unitName
-              : track.unitName.split('·')[0]!.trim()}
+            {props.campaignFilm
+              ? /^march-sd[24](?:-alt)?$/u.test(track.id)
+                ? track.unitName
+                : track.unitName.split(/[·・]/u)[0]
+              : track.unitName}
+          </span>
+        ))}
+        {props.journey &&
+          crossingSeals.map((seal) => (
+            <span
+              key={seal.track}
+              ref={(el) => {
+                labels.current['march:seal:' + seal.track] = el;
+              }}
+              className="journey-unit-label film-seal"
+              data-past={
+                props.campaignFilm !==
+                props.journey?.plan.tracks.find((t) => t.id === seal.track)
+                  ?.chapterId
+              }
+            >
+              {seal.label} <small>{seal.place}</small>
+            </span>
+          ))}
+        {props.journey && (
+          <span
+            className="journey-unit-label film-decoy"
+            ref={(el) => {
+              labels.current['march:film-feint'] = el;
+            }}
+          >
+            佯动部队 · 古蔺方向
+          </span>
+        )}
+        {props.journey?.plan.formations?.map((unit) => (
+          <span
+            key={unit.id}
+            ref={(el) => {
+              labels.current[`march:${unit.id}`] = el;
+            }}
+            className="journey-unit-label"
+            data-camp={unit.camp}
+            aria-label={unit.unitName}
+            title={`${unit.unitName} · 战局关系箭头`}
+          >
+            {unit.unitName}
           </span>
         ))}
         {forcePoints.map(({ track, snapshot }) => (
@@ -1037,7 +1173,9 @@ export function ExhibitionPanorama(
               onRegionChange={(id) => {
                 if (latest.current.observationScope === 'single')
                   closeObservation();
-                else setObservation(id);
+                else {
+                  setObservation(id);
+                }
               }}
             />
           </div>

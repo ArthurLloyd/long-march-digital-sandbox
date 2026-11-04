@@ -3,11 +3,14 @@ import { expect, it } from 'vitest';
 import { createMarchLayer } from '../app/landscape/march-layer';
 import {
   createJourneyTransport,
+  journeyChapters,
   sampleTrack,
   type JourneyPlan,
 } from '../features/timeline/journey';
 import { projectGeo } from '../app/landscape/geography';
 import { MARCH_PRESENTATION } from '../app/landscape/march-presentation';
+import { createJourneyContent } from '../app/exhibition/exhibition-content';
+import dataset from '../data/verified/dataset.json';
 const plan: JourneyPlan = {
   key: 'memory-geometry-test',
   sequences: [{ id: 'central', title: '工程样本', chapterIds: ['a'] }],
@@ -88,6 +91,37 @@ it('does not follow a different army when the selected unit has no route in the 
   layer.dispose();
 });
 
+it('draws the branch arrow at rest and keeps its geographic tip with each narrated stage on replay', () => {
+  const { plan } = createJourneyContent(dataset, 'exhibition');
+  const transport = createJourneyTransport(plan);
+  const scene = new THREE.Scene();
+  const layer = createMarchLayer(scene, () => 0);
+  layer.setTransport(transport);
+  transport.sequence('red25');
+  transport.cinematic(true);
+  for (const chapter of journeyChapters(plan, 'red25')) {
+    const track = plan.tracks.find(
+      (t) => t.chapterId === chapter.id && t.sequenceIds?.includes('red25'),
+    )!;
+    const cues = chapter.cues!;
+    for (const index of [0, 1, 2, 0]) {
+      transport.seek(chapter.start + chapter.duration * cues[index]![0]);
+      const selected = layer.update(1)!;
+      expect(selected.track.id).toBe(track.id);
+      expect(scene.getObjectByName(track.id + ':film-front')?.visible).toBe(
+        true,
+      );
+      if (index === 1 && track.points.length === 2) continue;
+      const [x, z] = projectGeo(
+        track.points[Math.min(index, track.points.length - 1)]!,
+      );
+      expect(selected.point.x).toBeCloseTo(x);
+      expect(selected.point.z).toBeCloseTo(z);
+    }
+  }
+  layer.dispose();
+});
+
 it('keeps the full dashed corridor separate from the travelled trail and uses a narrow pointed tail', () => {
   const scene = new THREE.Scene(),
     layer = createMarchLayer(scene, () => 0);
@@ -154,4 +188,64 @@ it('keeps the same tip-anchored suspended glyph in custom and default follow vie
   }
   layer.dispose();
   expect(scene.children).toHaveLength(0);
+});
+
+it('电影行迹按已走距离显露；倒拖和暂停重建同一前锋，下一章只保留走过的线', () => {
+  const battle: JourneyPlan = {
+    ...plan,
+    key: 'film-ink',
+    sequences: [{ id: 'central', title: '工程演示', chapterIds: ['a', 'b'] }],
+    chapters: [
+      {
+        ...plan.chapters[0]!,
+        cues: [
+          [0, 'wide', '集结', '部队从这里出发。'],
+          [0.28, 'advance', '行军', '前锋继续向渡口行进。'],
+          [0.87, 'resolve', '回望', '到达渡口。'],
+        ],
+      },
+      { ...plan.chapters[0]!, id: 'b' },
+    ],
+  };
+  const scene = new THREE.Scene(),
+    layer = createMarchLayer(scene, () => 0.4),
+    t = createJourneyTransport(battle);
+  layer.setTransport(t);
+  t.cinematic(true);
+  const trail = scene.getObjectByName('t:film-trail') as THREE.Mesh<
+    THREE.BufferGeometry,
+    THREE.ShaderMaterial
+  >;
+  const front = scene.getObjectByName('t:film-front') as THREE.Mesh;
+  const frame = (time: number) => {
+    t.seek(time);
+    layer.update(3.5);
+    return {
+      pos: front.position.toArray(),
+      head: trail.material.uniforms.head!.value as number,
+      count: trail.geometry.drawRange.count,
+    };
+  };
+  const earlier = frame(10);
+  expect(earlier.head).toBeGreaterThan(0);
+  const later = frame(55);
+  expect(later.count).toBeGreaterThan(earlier.count);
+  expect(frame(10)).toEqual(earlier);
+  expect(frame(55)).toEqual(later);
+  expect(front.visible).toBe(true);
+  expect(scene.getObjectByName('t:arrow')!.visible).toBe(false);
+  t.tickWallTime(2);
+  layer.update(3.5);
+  expect(front.position.toArray()).toEqual(later.pos);
+  frame(110);
+  expect(front.visible).toBe(false);
+  expect(trail.visible).toBe(true);
+  expect(trail.material.uniforms.archived!.value).toBe(1);
+  expect(trail.material.uniforms.head!.value).toBe(1);
+  frame(10);
+  expect(trail.material.uniforms.archived!.value).toBe(0);
+  layer.setCamps(['nationalist_army']);
+  layer.update(3.5);
+  expect(front.visible || trail.visible).toBe(false);
+  layer.dispose();
 });

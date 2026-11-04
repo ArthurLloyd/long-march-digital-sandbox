@@ -89,6 +89,9 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
   const datum =
     data.heights.reduce((sum, value) => sum + Math.max(0, value), 0) /
     data.heights.length;
+  const kernel = Array.from({ length: 5 }, (_, index) =>
+    Math.exp(-((index - 2) ** 2) / 1.6),
+  );
   for (let row = 0; row < data.rows; row++)
     for (let col = 0; col < data.cols; col++) {
       let total = 0,
@@ -97,7 +100,7 @@ export function createTerrainField(data: ModernHeightfield): TerrainField {
         for (let dx = -2; dx <= 2; dx++) {
           const x = Math.min(data.cols - 1, Math.max(0, col + dx)),
             y = Math.min(data.rows - 1, Math.max(0, row + dy));
-          const w = Math.exp(-(dx * dx + dy * dy) / 1.6);
+          const w = kernel[dx + 2]! * kernel[dy + 2]!;
           total += (data.heights[y * data.cols + x] ?? 0) * w;
           weight += w;
         }

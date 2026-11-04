@@ -70,7 +70,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         sourceKeys: ['strategy', 'campaign'],
       },
       {
-        title: '不是沿一条路一直走',
+        title: '机动之中争取主动',
         date: '1935年1—3月',
         threat: '追兵随红军转移重新部署，河流与山地又限制了行动空间。',
         response: '红军反复改变行进方向，在川滇黔边地区调动敌军、寻找空隙。',
@@ -81,7 +81,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
       {
         title: '把四次渡河连成因果',
         date: '战役概览',
-        threat: '西进、东返并不是没有目标的往返。',
+        threat: '部队通过西进与东返调动追堵军，寻找有利战机。',
         response: '依次观察土城脱离接触、扎西转兵、回师黔北和折返东渡。',
         significance:
           '每一幕都回答：敌军怎样压迫，红军为什么转向，这次转向争取到了什么。',
@@ -98,8 +98,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         threat:
           '土城、青杠坡战斗中，川军后续部队增援；继续僵持会使红军面临更大围堵压力。',
         response: '红军决定主动撤出战斗，准备从土城南北和猿猴场等处渡河。',
-        significance:
-          '西渡首先是为脱离不利接触、保存力量，不是已经实现了北渡长江。',
+        significance: '西渡有助于脱离不利接触、保存力量，为继续机动创造条件。',
         sourceKeys: ['campaign', 'strategy', 'first'],
       },
       {
@@ -107,8 +106,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         date: '1935年1月29日',
         threat: '土城方向有追兵，川南又有敌军防堵；渡河需要掩护与分路行动。',
         response: '中央红军从不同渡口西渡赤水，向古蔺、叙永相关地区转移。',
-        significance:
-          '同一画面里的土城、猿猴场是同一次渡河的不同地点，不是发生了两次“一渡”。',
+        significance: '土城、猿猴场等地的渡河行动，共同组成第一次西渡赤水。',
         sourceKeys: ['strategy', 'north'],
       },
       {
@@ -127,7 +125,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
     title: '扎西会议 · 为什么决定回师黔北？',
     beats: [
       {
-        title: '扎西不是安全的终点',
+        title: '扎西：重围中的调整',
         date: '1935年2月上旬',
         threat: '川军从北面、滇军从南面逼近扎西，中央军也向川滇边追击。',
         response: '中央领导在集结和行军过程中继续分析敌情，讨论新的行动方向。',
@@ -142,8 +140,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
           '既要回应现实敌情，也要完成遵义会议尚待落实的工作，增强部队机动与战斗能力。',
         response:
           '扎西期间连续开会，讨论战略方向和部队缩编；2月8日通过遵义会议决议。',
-        significance:
-          '会议延续并落实遵义会议的转变。这里通过的是决议，不是在扎西重新召开一次遵义会议。',
+        significance: '会议通过遵义会议决议，进一步落实军事和组织调整。',
         sourceKeys: ['zhaxi'],
       },
       {
@@ -152,8 +149,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         threat: '敌军主力向川滇边集中，继续留在扎西会承受夹击。',
         response:
           '红军决定突然回师东进，准备再渡赤水，攻向兵力相对薄弱的黔北。',
-        significance:
-          '不是简单返回原路，而是利用敌军调动后的部署空隙重新选择战场。',
+        significance: '红军利用敌军调动后的部署空隙，重新选择战场。',
         sourceKeys: ['second', 'north'],
       },
     ],
@@ -223,8 +219,7 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         threat:
           '敌军判断红军可能再寻北渡长江机会，向赤水河西岸集中，并加强川南防堵。',
         response: '红军以机动和佯动继续牵动对手，同时准备再次改变方向。',
-        significance:
-          '三渡与四渡是连在一起的调敌、摆脱过程，不能只看成又过了一次河。',
+        significance: '三渡与四渡紧密相接，调动追兵、争取脱离重围的主动。',
         sourceKeys: ['campaign', 'west'],
       },
     ],
@@ -253,10 +248,9 @@ export const CHISHUI_CAMPAIGN: Record<string, CampaignChapter> = {
         sourceKeys: ['strategy', 'north'],
       },
       {
-        title: '东渡不是终点，继续南下',
+        title: '东渡之后，继续南下',
         date: '1935年3月下旬及以后',
-        threat:
-          '渡河后敌军仍可能重新追堵，不能把过河瞬间当成全部突围已经完成。',
+        threat: '东渡后红军继续南下机动，应对追堵，争取进一步突围。',
         response:
           '主力继续向南疾进，随后南渡乌江，向贵阳方向机动，再向云南转移。',
         significance:

@@ -99,6 +99,33 @@ describe('敌军态势直接接入共享地图', () => {
     a.layer.dispose();
   });
 
+  it('在连续演绎中先显示湘江渡口防线，红军从宜章向西推进后两路湘军才在其后追击', () => {
+    const a = setup();
+    a.transport.cinematic(true);
+    try {
+      const ids = ['xiangjiang-jiahe', 'xiangjiang-linwu'];
+      const seen = new Set<string>();
+      for (let frame = 0; frame < 120; frame++) {
+        const p = frame / 120;
+        const red = a.seek('chapter-ex-event-xiangjiang', p)!;
+        expect(a.object('xiangjiang-quanzhou').visible).toBe(true);
+        for (const id of ids) {
+          const tip = a.object(id, 'film-front');
+          if (p < 0.34) expect(tip.visible).toBe(false);
+          if (tip.visible) {
+            seen.add(id);
+            expect(tip.position.x).toBeGreaterThan(red.point.x);
+          }
+        }
+      }
+      expect(seen.size).toBe(2);
+      a.seek('chapter-ex-event-xiangjiang', 0);
+      expect(ids.every((id) => !a.object(id, 'film-front').visible)).toBe(true);
+    } finally {
+      a.layer.dispose();
+    }
+  });
+
   it('驻防点不生成来路，按时间窗口出现和退出；回援命令没有移动箭头', () => {
     const a = setup();
     a.seek('chapter-event-sn', 0.1);

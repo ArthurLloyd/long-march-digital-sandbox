@@ -39,7 +39,7 @@ export function browseRegionAt(
   return geographicRegionAt(unprojectGeo([target.x, target.z]), previous);
 }
 
-/** Apply exactly the arrow's displacement to both eye and target. */
+/** Pan in the horizontal plane, preserving the viewer’s established altitude. */
 export function translateMarchView(
   position: THREE.Vector3,
   target: THREE.Vector3,
@@ -47,6 +47,7 @@ export function translateMarchView(
   current: THREE.Vector3,
 ) {
   const shift = current.clone().sub(previous);
+  shift.y = 0;
   position.add(shift);
   target.add(shift);
 }

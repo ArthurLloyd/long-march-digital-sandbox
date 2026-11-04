@@ -16,6 +16,7 @@ import {
   personBiography,
   portraitCaption,
   eventNarrative,
+  teachingKnowledge,
 } from './story-display';
 import { ExhibitionDrawer } from '../../components/overlay/ExhibitionDrawer';
 
@@ -25,7 +26,6 @@ export function StoryDialog({
   onClose,
   onContinue,
   onSources,
-  onTeaching,
   returnFocusRef,
   extension,
   onRelated,
@@ -37,7 +37,6 @@ export function StoryDialog({
   onClose: () => void;
   onContinue?: () => void;
   onSources: (ids: string[]) => void;
-  onTeaching?: () => void;
   returnFocusRef: RefObject<HTMLElement | null>;
 }) {
   const [person, setPerson] = useState<HistoricalPerson | null>(null);
@@ -175,10 +174,12 @@ export function StoryDialog({
         </button>
       );
     });
-  const paragraphs = [
+  const baseParagraphs = [
     ...eventNarrative(event),
     ...(extension?.paragraphs.map(readingCopy).filter(Boolean) ?? []),
   ];
+  const knowledge = teachingKnowledge(event, dataset, baseParagraphs);
+  const paragraphs = [...baseParagraphs, ...knowledge.paragraphs];
   const photo =
     person &&
     dataset.assets.find(
@@ -229,6 +230,7 @@ export function StoryDialog({
                 ...new Set([
                   ...event.sourceIds,
                   ...(extension?.sourceIds ?? []),
+                  ...knowledge.sourceIds,
                 ]),
               ])
             }
@@ -236,11 +238,6 @@ export function StoryDialog({
             <BookOpen size={16} />
             资料来源
           </button>
-          {onTeaching && (
-            <button className="story-primary" onClick={onTeaching}>
-              开始图文互动
-            </button>
-          )}
           <button onClick={onContinue ?? onClose}>返回地图，继续行军</button>
         </footer>
         {person && (

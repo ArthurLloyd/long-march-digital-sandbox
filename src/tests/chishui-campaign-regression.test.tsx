@@ -134,7 +134,7 @@ it('pairs real enemy deployments with an explanation of response and significanc
   );
   expect(screen.getByText(/2月8日通过遵义会议决议/)).toBeInTheDocument();
   expect(
-    screen.getByText(/不是在扎西重新召开一次遵义会议/),
+    screen.getByText(/会议通过遵义会议决议，进一步落实军事和组织调整/),
   ).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: '本段史料依据' }));
   expect(sources).toHaveBeenCalledWith(['ex-src-zhaxi-meetings']);

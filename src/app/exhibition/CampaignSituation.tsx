@@ -6,6 +6,7 @@ import {
   type CampaignSituation as Situation,
 } from './campaign-situations';
 import '../../styles/campaign-situation.css';
+import { readingCopy } from './story-display';
 
 type Point = readonly [number, number];
 function curve(a: Point, b: Point, bend: number, t: number) {
@@ -227,7 +228,7 @@ export function CampaignSituation({
             </p>
           ))}
         </div>
-        <p className="campaign-summary">{situation.summary}</p>
+        <p className="campaign-summary">{readingCopy(situation.summary)}</p>
         <button
           className="campaign-source-toggle"
           aria-expanded={showSources}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "exhibition-chishui-causality-2026-11-04",
+  "version": "exhibition-chishui-causality-2026-11-04-review2",
   "sources": [
     {
       "sourceId": "ex-src-ruijin",
@@ -585,6 +585,45 @@
       "reviewedBy": [],
       "reviewedAt": null,
       "reviews": []
+    },
+    {
+      "sourceId": "ex-src-red25-stages",
+      "title": "“中央红军之向导”——回望红二十五军的长征",
+      "publisherOrAuthor": "陈劲松／人民政协报（黑龙江省政协转载）",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.hljzx.gov.cn/contents/68/14160.html",
+      "publicationDate": "2026-04-13",
+      "pageOrSection": "血战独树镇、恶战庾家河、创建鄂豫陕革命根据地、挺进陕北策应中央红军",
+      "accessedAt": "2026-11-04",
+      "supports": [
+        "何家冲出发、经过方城独树镇，在今丹凤县庾家河一带进入创建鄂豫陕根据地的新阶段。",
+        "西征北上经过甘肃泾川，九月在永坪会师并合编为红十五军团。"
+      ],
+      "limitations": "编辑概述依据，未代替原始档案或独立真人复核。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
+    },
+    {
+      "sourceId": "ex-src-red25-departure",
+      "title": "党史上的今天：1934年11月红二十五军转移",
+      "publisherOrAuthor": "国家林业和草原局·党史学习教育官网",
+      "sourceType": "official_website",
+      "urlOrCatalogNumber": "https://www.forestry.gov.cn/c/www/dszl/531169.jhtml",
+      "publicationDate": "2023-11-11",
+      "pageOrSection": "1934年11月11日条目：红二十五军决定转移与11月16日出发",
+      "accessedAt": "2026-11-04",
+      "supports": ["红二十五军于1934年11月16日从河南罗山县何家冲出发"],
+      "limitations": "编辑概述依据，未代替原始档案或独立真人复核。",
+      "rightsNote": "仅链接原文并自主概述事实；不复制原网页图片、影像、地图图件或扫描件。",
+      "reviewStatus": "draft",
+      "releaseStatus": "unpublished",
+      "reviewedBy": [],
+      "reviewedAt": null,
+      "reviews": []
     }
   ],
   "events": [
@@ -796,7 +835,11 @@
       "coordinatePrecision": "unknown",
       "summary": "红二十五军有自己的出发地区和行动过程，不从瑞金起步。",
       "detail": "中央红军开始战略转移之后，其他根据地的红军也面对各自的形势。红二十五军的长征出发地在鄂豫皖地区。\n\n1934年11月，红二十五军离开原根据地，随后进入陕南，转入创建鄂豫陕苏区的斗争。1935年7月，部队继续向西北转移。\n\n这支队伍到达永坪并与当地红军会合，是另一条行动线的结果，不能用中央红军的空间轨迹代替。",
-      "sourceIds": ["ex-src-meetings"],
+      "sourceIds": [
+        "ex-src-meetings",
+        "ex-src-red25-departure",
+        "ex-src-red25-stages"
+      ],
       "contentType": "editorial_summary",
       "reviewStatus": "draft",
       "releaseStatus": "unpublished",
@@ -814,7 +857,11 @@
       "coordinatePrecision": "unknown",
       "summary": "红二十五军与陕甘红军会合，为更大范围的会师积累力量。",
       "detail": "红二十五军结束转战陕南等地的过程后，向陕甘根据地前进。永坪的会合连接了这支长征队伍与当地红军。\n\n9月中旬，红二十五军与红二十六、红二十七军会合，并合编红十五军团，徐海东任军团长、程子华任政治委员、刘志丹任副军团长兼参谋长。\n\n不同官方叙述分别记载15日到达、16日会师和18日庆祝或整编等节点。本章保留过程性日期，不将这些日期静默拼成一次精确接触。",
-      "sourceIds": ["ex-src-yongping", "ex-src-meetings"],
+      "sourceIds": [
+        "ex-src-yongping",
+        "ex-src-meetings",
+        "ex-src-red25-stages"
+      ],
       "contentType": "editorial_summary",
       "reviewStatus": "draft",
       "releaseStatus": "unpublished",
@@ -1550,6 +1597,62 @@
       "kind": "modern_location",
       "notes": "由该条目公开P625度分秒换算。仅作同名地区的战略方向锚点，不代表1935年城界、驻地、渡口或部队抵达该中心。扎西方向线的终点为展示锚点，不把大湾子定位到扎西镇。",
       "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-fangcheng",
+      "title": "方城县：现代县域方位参考",
+      "url": "https://www.wikidata.org/wiki/Q340150",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [113.0025, 33.25638889],
+      "revision": "Q340150 P625；读取于2026-11-04",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "仅取现代县域方位作为战略示意锚点，不定位历史部队、镇址、战场或道路。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-danfeng",
+      "title": "丹凤县：现代县域方位参考",
+      "url": "https://www.wikidata.org/wiki/Q972615",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [110.32444444, 33.69722222],
+      "revision": "Q972615 P625；读取于2026-11-04",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "仅取现代县域方位作为战略示意锚点，不定位历史部队、镇址、战场或道路。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-jingchuan",
+      "title": "泾川县：现代县域方位参考",
+      "url": "https://www.wikidata.org/wiki/Q1201917",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [107.36111111, 35.33277778],
+      "revision": "Q1201917 P625；读取于2026-11-04",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "仅取现代县域方位作为战略示意锚点，不定位历史部队、镇址、战场或道路。",
+      "availability": "available"
+    },
+    {
+      "referenceId": "ex-loc-red25-departure",
+      "title": "罗山县：现代地区取景参考",
+      "url": "https://www.wikidata.org/wiki/Special:EntityData/Q1198730.json?revision=2529928048",
+      "publisher": "Wikidata",
+      "accessedAt": "2026-11-04",
+      "coordinateSystem": "WGS84",
+      "coordinates": [114.52461, 32.20256],
+      "revision": "Q1198730@2529928048",
+      "license": "Wikidata structured data CC0",
+      "kind": "modern_location",
+      "notes": "P625原值为现代县域参考，不是何家冲村出发点或部队位置。",
+      "availability": "available"
     }
   ],
   "mapRegions": [
@@ -1606,6 +1709,12 @@
       "title": "陕西永坪相关地区（现代地名参考）",
       "bounds": [109.524, 36.71, 110.124, 37.309999999999995],
       "anchorCoordinates": [109.824, 37.01]
+    },
+    {
+      "regionId": "branch-red25",
+      "title": "罗山地区",
+      "bounds": [114.04460999999999, 31.80256, 115.00461, 32.60256],
+      "anchorCoordinates": [114.52461, 32.20256]
     }
   ],
   "mapNodes": [
@@ -1814,6 +1923,21 @@
       "precision": "schematic",
       "anchorRole": "regional_view_anchor",
       "locationReferenceIds": ["ex-loc-jiangtai"],
+      "availability": "available",
+      "version": "1.0.0",
+      "candidateRouteEndpoint": false,
+      "missingEvidence": [
+        "旧地名与现代位置复核、历史图件及误差说明；不提供中间道路几何。"
+      ]
+    },
+    {
+      "locationNodeId": "ex-node-red25-departure",
+      "name": "河南罗山地区",
+      "coordinates": [114.52461, 32.20256],
+      "bounds": [114.04460999999999, 31.80256, 115.00461, 32.60256],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "locationReferenceIds": ["ex-loc-red25-departure"],
       "availability": "available",
       "version": "1.0.0",
       "candidateRouteEndpoint": false,
@@ -2123,6 +2247,25 @@
       "historicalSourceIds": ["ex-src-huining", "ex-src-jiangtai"],
       "locationReferenceIds": ["ex-loc-jiangtai"],
       "locationLabel": "将台堡相关地区（今宁夏西吉）（现代地名参考）",
+      "displayLabel": null,
+      "rationale": "历史资料支持地名或区域关系；现代地理参考只用于取景，不回填原历史坐标。",
+      "limitations": "区域包络是展陈留白，不是历史边界、渡口岸线或部队活动范围；中心不能作为真实路线端点。",
+      "availability": "available",
+      "version": "1.0.0"
+    },
+    {
+      "placementId": "ex-placement-ex-event-red25-start",
+      "eventId": "ex-event-red25-start",
+      "locationNodeId": "ex-node-red25-departure",
+      "regionIds": ["branch-red25"],
+      "placementKind": "area",
+      "anchorCoordinates": [114.52461, 32.20256],
+      "bounds": [114.04460999999999, 31.80256, 115.00461, 32.60256],
+      "precision": "schematic",
+      "anchorRole": "regional_view_anchor",
+      "historicalSourceIds": ["ex-src-red25-departure"],
+      "locationReferenceIds": ["ex-loc-red25-departure"],
+      "locationLabel": "河南罗山地区（现代县域取景参考）",
       "displayLabel": null,
       "rationale": "历史资料支持地名或区域关系；现代地理参考只用于取景，不回填原历史坐标。",
       "limitations": "区域包络是展陈留白，不是历史边界、渡口岸线或部队活动范围；中心不能作为真实路线端点。",
@@ -3122,6 +3265,85 @@
       "availability": "available",
       "presentation": "regional_transfer",
       "sequenceIds": ["central"]
+    },
+    {
+      "id": "march-red25-departure",
+      "chapterId": "chapter-ex-event-red25-start",
+      "sequenceIds": ["red25"],
+      "unitId": "red-twenty-fifth",
+      "unitName": "红二十五军·西进陕南",
+      "camp": "red_army",
+      "points": [
+        [114.52461, 32.20256],
+        [113.0025, 33.25638889],
+        [110.32444444, 33.69722222]
+      ],
+      "sourceIds": ["ex-src-red25-departure", "ex-src-red25-stages"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "虚线仅连接来源支持的阶段地点，省略区间行程；现代地名锚点不代表历史道路、逐日位置或部队速度。",
+      "locationReferenceIds": [
+        "ex-loc-red25-departure",
+        "ex-loc-fangcheng",
+        "ex-loc-danfeng"
+      ],
+      "waypointNames": ["罗山地区", "方城地区", "丹凤地区"],
+      "dateText": "1934年11月至12月",
+      "evidenceNote": "依据出发、经过与会师的记述展示所在地区的先后次序，仅作跨区战略方向示意。",
+      "availability": "available",
+      "presentation": "regional_transfer",
+      "motionWindow": [0, 0.74]
+    },
+    {
+      "id": "march-red25-yongping",
+      "chapterId": "chapter-ex-event-yongping",
+      "sequenceIds": ["red25"],
+      "unitId": "red-twenty-fifth",
+      "unitName": "红二十五军·北上永坪",
+      "camp": "red_army",
+      "points": [
+        [110.32444444, 33.69722222],
+        [107.36111111, 35.33277778],
+        [109.82429, 37.01027]
+      ],
+      "sourceIds": ["ex-src-red25-stages", "ex-src-yongping"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "虚线仅连接来源支持的阶段地点，省略区间行程；现代地名锚点不代表历史道路、逐日位置或部队速度。",
+      "locationReferenceIds": [
+        "ex-loc-danfeng",
+        "ex-loc-jingchuan",
+        "ex-loc-yongping"
+      ],
+      "waypointNames": ["丹凤地区", "泾川地区", "永坪地区"],
+      "dateText": "1935年夏至9月",
+      "evidenceNote": "依据出发、经过与会师的记述展示所在地区的先后次序，仅作跨区战略方向示意。",
+      "availability": "available",
+      "presentation": "regional_transfer",
+      "motionWindow": [0, 0.74]
+    },
+    {
+      "id": "march-red25-ganquan",
+      "chapterId": "chapter-ex-event-ganquan",
+      "sequenceIds": ["red25"],
+      "unitId": "red-fifteenth-corps",
+      "unitName": "红十五军团·甘泉会合方向",
+      "camp": "red_army",
+      "points": [
+        [109.82429, 37.01027],
+        [109.12527777778, 36.368333333333]
+      ],
+      "sourceIds": ["ex-src-yongping", "ex-src-ganquan", "ex-src-meetings"],
+      "evidenceType": "sourced_strategic_direction",
+      "precision": "schematic",
+      "limitations": "虚线仅连接来源支持的阶段地点，省略区间行程；现代地名锚点不代表历史道路、逐日位置或部队速度。",
+      "locationReferenceIds": ["ex-loc-yongping", "ex-loc-ganquan"],
+      "waypointNames": ["永坪地区", "甘泉地区"],
+      "dateText": "1935年9月至11月",
+      "evidenceNote": "依据出发、经过与会师的记述展示所在地区的先后次序，仅作跨区战略方向示意。",
+      "availability": "available",
+      "presentation": "regional_transfer",
+      "motionWindow": [0, 0.96]
     },
     {
       "id": "march-huining",
