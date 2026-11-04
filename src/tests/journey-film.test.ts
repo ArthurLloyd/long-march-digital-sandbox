@@ -94,6 +94,22 @@ it('centres the two Ganzi reunion chapters on their stationary flags at every sh
           false,
           frame,
         );
+        const shifted = sampleFilmCamera(
+          chapter.cues!,
+          progress,
+          point.clone().add(new THREE.Vector3(0, 0.15, 0)),
+          bounds,
+          zoom,
+          datum + 1,
+          false,
+          bounds,
+          false,
+          frame,
+        );
+        expect(shifted).toEqual(pose);
+        expect(pose.position.y - terrain(x, z)).toBeLessThan(
+          pose.position.distanceTo(pose.target),
+        );
         for (const [width, height] of [
           [1912, 805],
           [1280, 810],
