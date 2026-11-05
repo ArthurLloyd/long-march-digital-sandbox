@@ -1,0 +1,96 @@
+{
+  "date": "2026-11-02",
+  "main": "cbbc916bd3fe4698c6fe2eb61e8bb3bd2c9dde25",
+  "fixPr": 13,
+  "fixHead": "3fc70c5820277770b4feb5308ba9327251e40482",
+  "aPr": 12,
+  "aHead": "9afccd024f5aba6da53d27f86186a98be2a63e06",
+  "aBrowserTree": "bb0a3b3ed9288beabb78ecf607e1882cbdff7475 (identical tree to 9afccd0)",
+  "checks": [
+    {
+      "tree": "3fc70c5",
+      "files": 27,
+      "tests": 258
+    },
+    {
+      "tree": "bb0a3b3",
+      "files": 28,
+      "tests": 262
+    },
+    {
+      "tree": "8d1ba70",
+      "files": 28,
+      "tests": 260
+    },
+    {
+      "tree": "47afee3",
+      "files": 29,
+      "tests": 264
+    }
+  ],
+  "allCheckCommands": [
+    "lint",
+    "typecheck",
+    "format:check",
+    "test",
+    "validate:data",
+    "build",
+    "git diff --check"
+  ],
+  "allListedChecksPassed": true,
+  "mainCi": "failure; PR13 unmerged",
+  "aCi": "success",
+  "fixCi": "success",
+  "hiddenPause": "skipped; unverified",
+  "screenshots": [
+    {
+      "file": "a-desktop-sandbox.jpg",
+      "bytes": 119321,
+      "width": 1440,
+      "height": 900,
+      "sha256": "4fc27f17451bc1e09031e57e80a23bda0c327f1c355e514e3188056d3a4d4076"
+    },
+    {
+      "file": "a-local-scene.jpg",
+      "bytes": 108153,
+      "width": 1440,
+      "height": 900,
+      "sha256": "39822f1400253ce2eebe7c699dadbcde570e24fbbd1e5855f720ddfe2a7eaacf"
+    },
+    {
+      "file": "a-near.jpg",
+      "bytes": 120710,
+      "width": 1440,
+      "height": 900,
+      "sha256": "a41da88296f9ce04f2aa3c33112b5faf81815925d6e0d76048f4c97f5ad268c9"
+    },
+    {
+      "file": "a-regional-overview.jpg",
+      "bytes": 92182,
+      "width": 904,
+      "height": 757,
+      "sha256": "7d6a069b8434ac8ee04984db6f3fa4c2c913a1c4cbf428432d8ac2813e91687e"
+    },
+    {
+      "file": "b-luding-complete.jpg",
+      "bytes": 124251,
+      "width": 1912,
+      "height": 994,
+      "sha256": "e3b36bedc688350e66d74d2d7b91fc5ab093287f51617bb63f667a38820a7161"
+    },
+    {
+      "file": "b-zhou-rights-pending.jpg",
+      "bytes": 107895,
+      "width": 1897,
+      "height": 986,
+      "sha256": "a8743279642ddf9f010a71499dfa46ea1cc72cd92fd40d46fb930453970eb900"
+    },
+    {
+      "file": "production-release-gate.jpg",
+      "bytes": 90459,
+      "width": 904,
+      "height": 753,
+      "sha256": "e6a47771ca5c8115a9c238fb9a4884b6d975f8ad5364d3dd60a9b68786d75e94"
+    }
+  ]
+}
